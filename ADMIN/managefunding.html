@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="manage_funding.title">Manage Funding - Green Economy Toolkit</title>
+    <script type="module" src="/ADMIN/scripts/adminAuthCheck.js"></script>
+    <script type="module" src="/Master%20Page(Header%20and%20Footer)/MasterPage.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
+    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
+    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
+    <script src="/Master%20Page(Header%20and%20Footer)/Trans.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/ADMIN/Funding-Hub.css">
+    <link rel="stylesheet" href="/Master%20Page(Header%20and%20Footer)/MasterPage.css">
+    <style>
+        :root {
+            --green-primary: #2b9589;
+            --green-dark: #005d6a;
+            --green-light: #b8e5e1;
+            --danger: #dc3545;
+            --danger-dark: #c82333;
+        }
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #f8f9fa;
+        }
+        body.loading {
+            visibility: hidden;
+            opacity: 0;
+        }
+        body.loaded {
+            visibility: visible;
+            opacity: 1;
+            transition: opacity 0.3s;
+        }
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--green-primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        .main-content {
+            flex: 1;
+        }
+        .checkbox-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            background-color: #e2e8f0;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .checkbox-item:hover {
+            background-color: #cbd5e1;
+        }
+        .checkbox-item.selected {
+            background-color: var(--green-primary);
+            color: white;
+        }
+        .checkbox-item input {
+            display: none;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            background-color: var(--green-light);
+            color: var(--green-dark);
+        }
+        .badge i {
+            margin-right: 0.25rem;
+        }
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+        .logo-preview {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            border: 1px dashed #ccc;
+            border-radius: 0.5rem;
+            display: none;
+        }
+        .funding-item {
+            transition: all 0.2s;
+            border-left: 4px solid var(--green-primary);
+        }
+        .funding-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .filter-option {
+            transition: all 0.2s;
+        }
+        .filter-option:hover {
+            background-color: #f1f5f9;
+        }
+        .filter-option.selected {
+            background-color: var(--green-light);
+            color: var(--green-dark);
+            font-weight: 500;
+        }
+        .tab {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tab:hover {
+            background-color: #f1f5f9;
+        }
+        .tab.active {
+            background-color: var(--green-primary);
+            color: white;
+        }
+        .error-message {
+            text-align: center;
+            padding: 20px;
+            color: var(--danger);
+            background-color: #fff5f5;
+            border-radius: 8px;
+            margin: 20px auto;
+            max-width: 600px;
+        }
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .btn-danger:hover {
+            background-color: var(--danger-dark);
+            transform: translateY(-2px);
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .url-input {
+            &:invalid {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body class="loading">
+    <div class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+    <green-economy-header></green-economy-header>
+    <div class="main-content min-h-screen bg-gray-50">
+        <div style="background: linear-gradient(to right, #2b9589, #2b9589);" class="h-64 flex items-center justify-center text-white">
+            <div class="text-center px-4 flex justify-between items-center w-full max-w-6xl">
+                <div>
+                    <h1 class="text-4xl font-bold mb-4" data-i18n="manage_funding.hero_title">Manage Funding Opportunities</h1>
+                    <p class="text-xl" data-i18n="manage_funding.hero_subtitle">Add, edit, and manage funding opportunities in the database</p>
+                </div>
+                <button id="logoutBtn" class="btn-danger flex items-center px-4 py-2 rounded-lg" data-i18n="[html]manage_funding.logout_button">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                </button>
+            </div>
+        </div>
+        <div class="container mx-auto px-4 py-8">
+            <div id="errorMessage" class="error-message hidden">
+                Failed to load content. Please check your connection or try again later.
+            </div>
+            <div class="flex space-x-2 mb-6 bg-white p-1 rounded-lg shadow-sm">
+                <div class="tab active" data-tab="list" data-i18n="manage_funding.tab_list">List View</div>
+                <div class="tab" data-tab="grid" data-i18n="manage_funding.tab_grid">Grid View</div>
+            </div>
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                <div class="relative w-full md:w-64">
+                    <input
+                        type="text"
+                        id="search-input"
+                        class="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                        data-i18n="[placeholder]manage_funding.search_placeholder"
+                        placeholder="Search funding..."
+                    >
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+                <button id="filter-btn" class="flex items-center px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-50" data-i18n="[html]manage_funding.filter_button">
+                    <i class="fas fa-filter mr-2"></i> Filters
+                </button>
+                <button
+                    id="add-funding-btn"
+                    style="background-color: #2b9589;"
+                    onmouseover="this.style.backgroundColor='#23786f'"
+                    onmouseout="this.style.backgroundColor='#2b9589'"
+                    class="text-white px-4 py-2 rounded-lg flex items-center"
+                    data-i18n="[html]manage_funding.add_button"
+                >
+                    <i class="fas fa-plus-circle mr-2"></i> Add New Funding
+                </button>
+            </div>
+            <div id="filters-panel" class="hidden bg-white p-4 rounded-lg shadow-md mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <h3 class="font-medium mb-2" data-i18n="manage_funding.sector_label">Sector</h3>
+                        <div class="space-y-2">
+                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="sector" data-value="Energy" data-i18n="[html]manage_funding.sector_energy">
+                                <i class="fas fa-bolt mr-2"></i> Energy
+                            </div>
+                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="sector" data-value="Agriculture" data-i18n="[html]manage_funding.sector_agriculture">
+                                <i class="fas fa-tractor mr-2"></i> Agriculture
+                            </div>
+                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="sector" data-value="Climate Finance" data-i18n="[html]manage_funding.sector_climate_finance">
+                                <i class="fas fa-cloud-sun mr-2"></i> Climate Finance
+                            </div>
+                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="sector" data-value="Waste" data-i18n="[html]manage_funding.sector_waste">
+                                <i class="fas fa-trash mr-2"></i> Waste
+                            </div>
+                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="sector" data-value="Water and Sanitation" data-i18n="[html]manage_funding.sector_water_sanitation">
+                                <i class="fas fa-tint mr-2"></i> Water & Sanitation
+                            </div>
+                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="sector" data-value="Green Infrastructure" data-i18n="[html]manage_funding.sector_green_infrastructure">
+                                <i class="fas fa-leaf mr-2"></i> Green Infrastructure
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-medium mb-2" data-i18n="manage_funding.funding_type_label">Funding Type</h3>
+                        <div class="space-y-2">
+                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="type" data-value="Grant" data-i18n="[html]manage_funding.type_grant">
+                                <i class="fas fa-gift mr-2"></i> Grant
+                            </div>
+                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="type" data-value="Debt" data-i18n="[html]manage_funding.type_debt">
+                                <i class="fas fa-hand-holding-usd mr-2"></i> Debt
+                            </div>
+                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="type" data-value="Equity" data-i18n="[html]manage_funding.type_equity">
+                                <i class="fas fa-chart-line mr-2"></i> Equity
+                            </div>
+                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="type" data-value="Working Capital" data-i18n="[html]manage_funding.type_working_capital">
+                                <i class="fas fa-money-bill-wave mr-2"></i> Working Capital
+                            </div>
+                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="type" data-value="Business Development or Technical Assistance" data-i18n="[html]manage_funding.type_business_development">
+                                <i class="fas fa-cogs mr-2"></i> Business Development
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-medium mb-2" data-i18n="manage_funding.target_label">Target</h3>
+                        <div class="space-y-2">
+                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="target" data-value="SMMEs" data-i18n="[html]manage_funding.target_smme">
+                                <i class="fas fa-store mr-2"></i> SMME's
+                            </div>
+                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="target" data-value="no" data-i18n="[html]manage_funding.target_non_smme">
+                                <i class="fas fa-building mr-2"></i> Non-SMME's
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-end mt-4">
+                    <button id="apply-filters" class="bg-green-600 text-white px-4 py-2 rounded-lg mr-2" data-i18n="manage_funding.apply_filters">Apply Filters</button>
+                    <button id="clear-filters" class="border border-gray-300 px-4 py-2 rounded-lg" data-i18n="manage_funding.clear_filters">Clear All</button>
+                </div>
+            </div>
+            <div id="list-view" class="space-y-4"></div>
+            <div id="grid-view" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            <div id="loading" class="text-center py-8">
+                <i class="fas fa-spinner fa-spin text-3xl text-green-600"></i>
+                <p class="mt-2" data-i18n="manage_funding.loading">Loading funding opportunities...</p>
+            </div>
+            <div id="no-results" class="hidden text-center py-12">
+                <i class="fas fa-search text-3xl text-gray-400 mb-4"></i>
+                <h3 class="text-xl font-medium text-gray-600" data-i18n="manage_funding.no_results_title">No funding opportunities found</h3>
+                <p class="text-gray-500 mt-2" data-i18n="manage_funding.no_results_message">Try adjusting your search or filters</p>
+            </div>
+        </div>
+    </div>
+    <div id="funding-modal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay absolute inset-0"></div>
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-4xl relative max-h-[90vh] overflow-y-auto">
+                <button id="close-modal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+                <div class="p-6">
+                    <h2 id="modal-title" class="text-2xl font-bold text-gray-800 mb-6" data-i18n="manage_funding.add_modal_title">Add New Funding Opportunity</h2>
+                    <form id="funding-form" class="space-y-6">
+                        <input type="hidden" id="doc-id">
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h3 class="text-lg font-medium text-gray-800 mb-4" data-i18n="manage_funding.basic_info">Basic Information</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-gray-700 mb-2" data-i18n="manage_funding.name_label">Name of Funding Opportunity*</label>
+                                    <input
+                                        type="text"
+                                        id="funding-name"
+                                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                        required
+                                        data-i18n="[placeholder]manage_funding.name_placeholder"
+                                        placeholder="Enter funding opportunity name"
+                                    >
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 mb-2" data-i18n="manage_funding.channel_label">Name of Disbursement Channel*</label>
+                                    <input
+                                        type="text"
+                                        id="disbursement-channel"
+                                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                        required
+                                        data-i18n="[placeholder]manage_funding.channel_placeholder"
+                                        placeholder="Enter disbursement channel name"
+                                    >
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 mb-2" data-i18n="manage_funding.channel_type_label">Type of Disbursement Channel*</label>
+                                    <input
+                                        type="text"
+                                        id="channel-type"
+                                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                        required
+                                        data-i18n="[placeholder]manage_funding.channel_type_placeholder"
+                                        placeholder="Enter channel type"
+                                    >
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 mb-2" data-i18n="manage_funding.website_label">Website URL*</label>
+                                    <div class="flex items-center space-x-2">
+                                        <input
+                                            type="text"
+                                            id="website"
+                                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 url-input"
+                                            required
+                                            data-i18n="[placeholder]manage_funding.website_placeholder"
+                                            placeholder="www.example.com"
+                                        >
+                                        <button type="button" id="fetch-logo" class="px-3 py-2 bg-gray-100 rounded-lg">
+                                            <i class="fas fa-image"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 mb-2" data-i18n="manage_funding.email_label">Contact Email</label>
+                                    <input
+                                        type="email"
+                                        id="contact-email"
+                                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                        data-i18n="[placeholder]manage_funding.email_placeholder"
+                                        placeholder="Enter contact email"
+                                    >
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 mb-2" data-i18n="manage_funding.number_label">Contact Number</label>
+                                    <input
+                                        type="tel"
+                                        id="contact-number"
+                                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                        data-i18n="[placeholder]manage_funding.number_placeholder"
+                                        placeholder="Enter contact number"
+                                    >
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-gray-700 mb-2" data-i18n="manage_funding.logo_label">Website Logo</label>
+                                    <div class="flex items-center space-x-4">
+                                        <img id="logo-preview" src="" class="logo-preview">
+                                        <input
+                                            type="text"
+                                            id="logo-url"
+                                            class="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                            data-i18n="[placeholder]manage_funding.logo_placeholder"
+                                            placeholder="Logo URL or leave blank to auto-fetch"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h3 class="text-lg font-medium text-gray-800 mb-4" data-i18n="manage_funding.funding_type_label">Funding Type</h3>
+                            <div class="checkbox-container">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="funding-type" value="Grant">
+                                    <span data-i18n="[html]manage_funding.type_grant"><i class="fas fa-gift mr-2"></i> Grant</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="funding-type" value="Debt">
+                                    <span data-i18n="[html]manage_funding.type_debt"><i class="fas fa-hand-holding-usd mr-2"></i> Debt</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="funding-type" value="Equity">
+                                    <span data-i18n="[html]manage_funding.type_equity"><i class="fas fa-chart-line mr-2"></i> Equity</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="funding-type" value="Working Capital">
+                                    <span data-i18n="[html]manage_funding.type_working_capital"><i class="fas fa-money-bill-wave mr-2"></i> Working Capital</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="funding-type" value="Business Development or Technical Assistance">
+                                    <span data-i18n="[html]manage_funding.type_business_development"><i class="fas fa-cogs mr-2"></i> Business Development</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h3 class="text-lg font-medium text-gray-800 mb-4" data-i18n="manage_funding.target_label">Target</h3>
+                            <div class="checkbox-container">
+                                <label class="checkbox-item">
+                                    <input type="radio" name="target" value="SMMEs">
+                                    <span data-i18n="[html]manage_funding.target_smme"><i class="fas fa-store mr-2"></i> SMME's</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="radio" name="target" value="no">
+                                    <span data-i18n="[html]manage_funding.target_non_smme"><i class="fas fa-building mr-2"></i> Non-SMME's</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h3 class="text-lg font-medium text-gray-800 mb-4" data-i18n="manage_funding.sector_label">Sector</h3>
+                            <div class="checkbox-container">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="sector" value="Energy">
+                                    <span data-i18n="[html]manage_funding.sector_energy"><i class="fas fa-bolt mr-2"></i> Energy</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="sector" value="Agriculture">
+                                    <span data-i18n="[html]manage_funding.sector_agriculture"><i class="fas fa-tractor mr-2"></i> Agriculture</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="sector" value="Climate Finance">
+                                    <span data-i18n="[html]manage_funding.sector_climate_finance"><i class="fas fa-cloud-sun mr-2"></i> Climate Finance</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="sector" value="Waste">
+                                    <span data-i18n="[html]manage_funding.sector_waste"><i class="fas fa-trash mr-2"></i> Waste</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="sector" value="Water and Sanitation">
+                                    <span data-i18n="[html]manage_funding.sector_water_sanitation"><i class="fas fa-tint mr-2"></i> Water & Sanitation</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="sector" value="Green Infrastructure">
+                                    <span data-i18n="[html]manage_funding.sector_green_infrastructure"><i class="fas fa-leaf mr-2"></i> Green Infrastructure</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h3 class="text-lg font-medium text-gray-800 mb-4" data-i18n="manage_funding.additional_info">Additional Information</h3>
+                            <div class="grid grid-cols-1 gap-6">
+                                <div>
+                                    <label class="block text-gray-700 mb-2" data-i18n="manage_funding.focus_label">Focus of Fund</label>
+                                    <textarea
+                                        id="focus"
+                                        rows="3"
+                                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                        data-i18n="[placeholder]manage_funding.focus_placeholder"
+                                        placeholder="Enter fund focus"
+                                    ></textarea>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div>
+                                        <label class="block text-gray-700 mb-2" data-i18n="manage_funding.keywords_label">Key Words</label>
+                                        <input
+                                            type="text"
+                                            id="keywords"
+                                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                            data-i18n="[placeholder]manage_funding.keywords_placeholder"
+                                            placeholder="Enter keywords"
+                                        >
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 mb-2" data-i18n="manage_funding.keywords2_label">Key Words 2</label>
+                                        <input
+                                            type="text"
+                                            id="keywords2"
+                                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                            data-i18n="[placeholder]manage_funding.keywords2_placeholder"
+                                            placeholder="Enter additional keywords"
+                                        >
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 mb-2" data-i18n="manage_funding.keywords3_label">Key Words 3</label>
+                                        <input
+                                            type="text"
+                                            id="keywords3"
+                                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                            data-i18n="[placeholder]manage_funding.keywords3_placeholder"
+                                            placeholder="Enter more keywords"
+                                        >
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 mb-2" data-i18n="manage_funding.ticket_size_label">Ticket Size</label>
+                                    <input
+                                        type="text"
+                                        id="ticket-size"
+                                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                        data-i18n="[placeholder]manage_funding.ticket_size_placeholder"
+                                        placeholder="Enter ticket size"
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-end space-x-4 pt-4">
+                            <button
+                                type="button"
+                                id="cancel-btn"
+                                class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100"
+                                data-i18n="manage_funding.cancel_button"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                id="submit-btn"
+                                class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center"
+                                data-i18n="[html]manage_funding.save_button"
+                            >
+                                <i class="fas fa-save mr-2"></i> Save Funding Opportunity
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <green-economy-footer></green-economy-footer>
+    <script type="module">
+        import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
+        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, query, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+        import { getAuth } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+        import { resetAdminSession } from '/ADMIN/scripts/adminAuthCheck.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCfa827mvCLf1ETts6B_DmCfb7owTohBxk",
+            authDomain: "nbi-green-economy.firebaseapp.com",
+            projectId: "nbi-green-economy",
+            storageBucket: "nbi-green-economy.appspot.com",
+            messagingSenderId: "53732340059",
+            appId: "1:53732340059:web:3fb3f086c6662e1e9baa7e",
+            measurementId: "G-37VRZ5CGE4"
+        };
+
+        // Initialize Firebase
+        let app, db, fundingRef, auth;
+        if (!getApps().length) {
+            app = initializeApp(firebaseConfig);
+        } else {
+            app = getApp();
+        }
+        db = getFirestore(app);
+        auth = getAuth(app);
+        fundingRef = collection(db, "funding");
+
+        // Initialize i18next
+        i18next
+            .use(i18nextHttpBackend)
+            .use(i18nextBrowserLanguageDetector)
+            .init({
+                fallbackLng: 'en',
+                supportedLngs: ['en', 'zu', 'tn'],
+                backend: {
+                    loadPath: '/locales/{{lng}}.json?v=' + new Date().getTime()
+                },
+                detection: {
+                    order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
+                    caches: ['localStorage', 'cookie']
+                }
+            }, (err, t) => {
+                if (err) {
+                    console.error('i18next initialization error:', err);
+                    setTimeout(() => {
+                        i18next.loadResources((loadErr) => {
+                            if (loadErr) {
+                                console.error('Retry failed:', loadErr);
+                                applyFallbackTranslations();
+                            } else {
+                                console.log('i18next retry successful, language:', i18next.language);
+                                finalizeLoading();
+                            }
+                        });
+                    }, 2000);
+                    return;
+                }
+                console.log('i18next initialized for manage_funding.html at', new Date().toLocaleString('en-ZA'), ':', i18next.language);
+                finalizeLoading();
+            });
+
+        function applyFallbackTranslations() {
+            document.querySelectorAll('[data-i18n]').forEach(elem => {
+                const key = elem.getAttribute('data-i18n');
+                if (key.startsWith('[')) {
+                    const match = key.match(/\[(\w+)\](.+)/);
+                    if (match) {
+                        const [, attr, i18nKey] = match;
+                        const fallback = elem.getAttribute(attr) || 'Content not available';
+                        elem.setAttribute(attr, fallback);
+                    }
+                } else {
+                    const fallback = elem.textContent.trim() || 'Content not available';
+                    elem.textContent = fallback;
+                }
+            });
+            console.warn('Applied fallback translations');
+            finalizeLoading();
+        }
+
+        function updateContent() {
+            const missingKeys = [];
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                try {
+                    if (key.startsWith('[')) {
+                        const match = key.match(/\[(\w+)\](.+)/);
+                        if (match) {
+                            const [, attr, translationKey] = match;
+                            const translation = i18next.t(translationKey, { defaultValue: element.getAttribute(attr) || 'Content not available' });
+                            if (translation === translationKey) missingKeys.push(translationKey);
+                            element.setAttribute(attr, translation);
+                        }
+                    } else {
+                        const translation = i18next.t(key, { defaultValue: element.textContent.trim() || 'Content not available' });
+                        if (translation === key) missingKeys.push(key);
+                        element.textContent = translation;
+                    }
+                } catch (error) {
+                    console.error(`Error translating key ${key}:`, error);
+                }
+            });
+            if (missingKeys.length > 0) {
+                console.warn('Missing translations:', missingKeys);
+            }
+        }
+
+        function finalizeLoading() {
+            i18next.loadResources(() => {
+                updateContent();
+                loadFundingOpportunities();
+                document.body.classList.remove('loading');
+                document.body.classList.add('loaded');
+                document.querySelector('.loading-overlay').style.display = 'none';
+                console.log('Translations loaded, content displayed');
+            });
+        }
+
+        i18next.on('languageChanged', () => {
+            console.log('Language changed to:', i18next.language);
+            updateContent();
+            displayFunding(allFunding);
+        });
+
+        i18next.on('loaded', () => {
+            updateContent();
+        });
+
+        // DOM elements
+        const elements = {
+            addFundingBtn: document.getElementById('add-funding-btn'),
+            fundingModal: document.getElementById('funding-modal'),
+            closeModalBtn: document.getElementById('close-modal'),
+            cancelBtn: document.getElementById('cancel-btn'),
+            fundingForm: document.getElementById('funding-form'),
+            fundingList: document.getElementById('list-view'),
+            fundingGrid: document.getElementById('grid-view'),
+            loadingIndicator: document.getElementById('loading'),
+            noResults: document.getElementById('no-results'),
+            searchInput: document.getElementById('search-input'),
+            filterBtn: document.getElementById('filter-btn'),
+            filtersPanel: document.getElementById('filters-panel'),
+            applyFiltersBtn: document.getElementById('apply-filters'),
+            clearFiltersBtn: document.getElementById('clear-filters'),
+            tabs: document.querySelectorAll('[data-tab]'),
+            fetchLogoBtn: document.getElementById('fetch-logo'),
+            logoPreview: document.getElementById('logo-preview'),
+            logoUrlInput: document.getElementById('logo-url'),
+            websiteInput: document.getElementById('website'),
+            errorMessage: document.getElementById('errorMessage'),
+            modalTitle: document.getElementById('modal-title'),
+            submitBtn: document.getElementById('submit-btn'),
+            logoutBtn: document.getElementById('logoutBtn')
+        };
+
+        // State management
+        let activeFilters = { sector: [], type: [], target: [] };
+        let allFunding = [];
+        let currentPage = 0;
+        const itemsPerPage = 20;
+
+        // Utility functions
+        function showErrorMessage(message) {
+            if (elements.errorMessage) {
+                elements.errorMessage.textContent = i18next.t('manage_funding.alert_load_error', { defaultValue: message });
+                elements.errorMessage.classList.remove('hidden');
+            } else {
+                console.warn('Error message container not found');
+            }
+        }
+
+        // Fetch website logo
+        async function fetchWebsiteLogo(url) {
+            try {
+                if (!url) return null;
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    url = 'https://' + url;
+                }
+                const domain = url.replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0];
+                const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+                const response = await fetch(faviconUrl, { method: 'HEAD' });
+                if (response.ok) {
+                    return faviconUrl;
+                }
+                console.warn(`No favicon found for ${domain}`);
+                return null;
+            } catch (error) {
+                console.warn(`Failed to fetch logo for ${url}:`, error);
+                return null;
+            }
+        }
+
+        // Load funding opportunities from Firestore
+        async function loadFundingOpportunities() {
+            if (!fundingRef) {
+                showErrorMessage('Database connection failed. Please try again later.');
+                return;
+            }
+            try {
+                elements.loadingIndicator.classList.remove('hidden');
+                const q = query(fundingRef);
+                const querySnapshot = await getDocs(q);
+                console.log('Retrieved documents:', querySnapshot.size);
+                allFunding = [];
+                querySnapshot.forEach(doc => {
+                    const data = doc.data();
+                    data.id = doc.id;
+                    console.log('Document:', doc.id, data);
+                    allFunding.push(data);
+                });
+                const logoPromises = allFunding.map(async (funding) => {
+                    if (funding.Website && funding.Website !== 'no' && !funding.logo) {
+                        try {
+                            const logoUrl = await fetchWebsiteLogo(funding.Website);
+                            if (logoUrl) funding.logo = logoUrl;
+                        } catch (error) {
+                            console.warn(`Skipping logo fetch for ${funding.Website}:`, error);
+                            funding.logo = null;
+                        }
+                    }
+                    return funding;
+                });
+                allFunding = await Promise.all(logoPromises);
+                currentPage = 0;
+                filterFunding();
+                elements.loadingIndicator.classList.add('hidden');
+            } catch (error) {
+                console.error('Error loading funding opportunities:', error);
+                elements.loadingIndicator.classList.add('hidden');
+                let errorMessage = 'Error loading funding opportunities. Please try again.';
+                if (error.code === 'failed-precondition') {
+                    errorMessage = 'Missing index for query. Please create an index in Firestore or remove sorting.';
+                } else if (error.code === 'permission-denied') {
+                    errorMessage = 'Permission denied. Please check your authentication status.';
+                }
+                showErrorMessage(errorMessage);
+            }
+        }
+
+        // Filter funding opportunities
+        function filterFunding() {
+            let filtered = [...allFunding];
+            const searchTerm = elements.searchInput.value.toLowerCase();
+            if (searchTerm) {
+                filtered = filtered.filter(funding =>
+                    (funding['Name of funding opportunity']?.toLowerCase().includes(searchTerm) || '') ||
+                    (funding['Name of disbursement channel']?.toLowerCase().includes(searchTerm) || '') ||
+                    (funding['Focus of Fund'] !== 'no' && funding['Focus of Fund']?.toLowerCase().includes(searchTerm))
+                );
+            }
+            if (activeFilters.sector.length > 0) {
+                filtered = filtered.filter(funding =>
+                    activeFilters.sector.some(sector => funding[sector] === true || funding[sector] === sector)
+                );
+            }
+            if (activeFilters.type.length > 0) {
+                filtered = filtered.filter(funding =>
+                    activeFilters.type.some(type => funding[type] === true || funding[type] === type)
+                );
+            }
+            if (activeFilters.target.length > 0) {
+                filtered = filtered.filter(funding =>
+                    activeFilters.target.includes(funding.SMMEs)
+                );
+            }
+            displayFunding(filtered);
+        }
+
+        // Handle edit button click
+        function handleEditClick(event) {
+            const id = event.currentTarget.getAttribute('data-id');
+            editFundingOpportunity(id);
+        }
+
+        // Handle delete button click
+        function handleDeleteClick(event) {
+            const id = event.currentTarget.getAttribute('data-id');
+            deleteFundingOpportunity(id);
+        }
+
+        // Display funding opportunities with pagination
+        function displayFunding(fundingArray) {
+            if (!elements.fundingList || !elements.fundingGrid) {
+                showErrorMessage('Page rendering error. Please refresh the page.');
+                return;
+            }
+            elements.fundingList.innerHTML = '';
+            elements.fundingGrid.innerHTML = '';
+            if (fundingArray.length === 0) {
+                console.log('No funding data to display');
+                elements.noResults.classList.remove('hidden');
+                return;
+            }
+            elements.noResults.classList.add('hidden');
+            const startIdx = currentPage * itemsPerPage;
+            const endIdx = startIdx + itemsPerPage;
+            const itemsToDisplay = fundingArray.slice(startIdx, endIdx);
+            itemsToDisplay.forEach(funding => {
+                const listItem = document.createElement('div');
+                listItem.className = 'funding-item bg-white p-4 rounded-lg shadow-sm';
+                listItem.innerHTML = `
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div class="flex items-start space-x-4">
+                            ${funding.logo ? `<img src="${funding.logo}" class="w-12 h-12 object-contain rounded-lg" alt="Funding Logo">` : '<div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center"><i class="fas fa-link text-gray-400"></i></div>'}
+                            <div>
+                                <h3 class="font-medium text-lg">${funding['Name of funding opportunity'] || i18next.t('manage_funding.no_name', { defaultValue: 'No name' })}</h3>
+                                <h3 class="text-gray-600">${funding['Name of disbursement channel'] || i18next.t('manage_funding.no_channel', { defaultValue: 'No channel' })}</h3>
+                                <div class="flex flex-wrap gap-2 mt-2">
+                                    ${funding.Grant === true || funding.Grant === 'Grant' ? `<span class="badge" data-i18n="[html]manage_funding.type_grant"><i class="fas fa-gift"></i> ${i18next.t('manage_funding.type_grant', { defaultValue: 'Grant' })}</span>` : ''}
+                                    ${funding.Debt === true || funding.Debt === 'Debt' ? `<span class="badge" data-i18n="[html]manage_funding.type_debt"><i class="fas fa-hand-holding-usd"></i> ${i18next.t('manage_funding.type_debt', { defaultValue: 'Debt' })}</span>` : ''}
+                                    ${funding.Equity === true || funding.Equity === 'Equity' ? `<span class="badge" data-i18n="[html]manage_funding.type_equity"><i class="fas fa-chart-line"></i> ${i18next.t('manage_funding.type_equity', { defaultValue: 'Equity' })}</span>` : ''}
+                                    ${funding['Working Capital'] === true || funding['Working Capital'] === 'Working Capital' ? `<span class="badge" data-i18n="[html]manage_funding.type_working_capital"><i class="fas fa-money-bill-wave"></i> ${i18next.t('manage_funding.type_working_capital', { defaultValue: 'Working Capital' })}</span>` : ''}
+                                    ${funding['Business Development or Technical Assistance'] === true || funding['Business Development or Technical Assistance'] === 'Business Development or Technical Assistance' ? `<span class="badge" data-i18n="[html]manage_funding.type_business_development"><i class="fas fa-cogs"></i> ${i18next.t('manage_funding.type_business_development', { defaultValue: 'Business Development' })}</span>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="edit-btn px-3 py-1 bg-blue-100 text-blue-600 rounded-md hover:bg-blue-200" data-id="${funding.id}" data-i18n="[title]manage_funding.edit_button">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="delete-btn px-3 py-1 bg-red-100 text-red-600 rounded-md hover:bg-red-200" data-id="${funding.id}" data-i18n="[title]manage_funding.delete_button">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    ${funding['Focus of Fund'] !== 'no' ? `<p class="mt-3 text-gray-700">${funding['Focus of Fund']}</p>` : ''}
+                `;
+                elements.fundingList.appendChild(listItem);
+                const gridItem = document.createElement('div');
+                gridItem.className = 'bg-white rounded-lg shadow-md overflow-hidden';
+                gridItem.innerHTML = `
+                    <div class="p-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-medium">${funding['Name of funding opportunity'] || i18next.t('manage_funding.no_name', { defaultValue: 'No name' })}</h3>
+                                <p class="text-gray-600 text-sm">${funding['Name of disbursement channel'] || i18next.t('manage_funding.no_channel', { defaultValue: 'No channel' })}</p>
+                            </div>
+                            ${funding.logo ? `<img src="${funding.logo}" class="w-12 h-12 object-contain rounded-lg" alt="Funding Logo">` : '<div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center"><i class="fas fa-link text-gray-400"></i></div>'}
+                        </div>
+                        ${funding['Focus of Fund'] !== 'no' ? `<p class="mt-3 text-gray-700 text-sm">${funding['Focus of Fund']}</p>` : ''}
+                        <div class="flex flex-wrap gap-2 mt-4">
+                            ${funding.Grant === true || funding.Grant === 'Grant' ? `<span class="badge" data-i18n="[html]manage_funding.type_grant"><i class="fas fa-gift"></i> ${i18next.t('manage_funding.type_grant', { defaultValue: 'Grant' })}</span>` : ''}
+                            ${funding.Debt === true || funding.Debt === 'Debt' ? `<span class="badge" data-i18n="[html]manage_funding.type_debt"><i class="fas fa-hand-holding-usd"></i> ${i18next.t('manage_funding.type_debt', { defaultValue: 'Debt' })}</span>` : ''}
+                            ${funding.Equity === true || funding.Equity === 'Equity' ? `<span class="badge" data-i18n="[html]manage_funding.type_equity"><i class="fas fa-chart-line"></i> ${i18next.t('manage_funding.type_equity', { defaultValue: 'Equity' })}</span>` : ''}
+                            ${funding['Working Capital'] === true || funding['Working Capital'] === 'Working Capital' ? `<span class="badge" data-i18n="[html]manage_funding.type_working_capital"><i class="fas fa-money-bill-wave"></i> ${i18next.t('manage_funding.type_working_capital', { defaultValue: 'Working Capital' })}</span>` : ''}
+                            ${funding['Business Development or Technical Assistance'] === true || funding['Business Development or Technical Assistance'] === 'Business Development or Technical Assistance' ? `<span class="badge" data-i18n="[html]manage_funding.type_business_development"><i class="fas fa-cogs"></i> ${i18next.t('manage_funding.type_business_development', { defaultValue: 'Business Development' })}</span>` : ''}
+                        </div>
+                        <div class="flex justify-end space-x-2 mt-4">
+                            <button class="edit-btn px-3 py-1 bg-blue-100 text-blue-600 rounded-md hover:bg-blue-200" data-id="${funding.id}" data-i18n="[title]manage_funding.edit_button">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="delete-btn px-3 py-1 bg-red-100 text-red-600 rounded-md hover:bg-red-200" data-id="${funding.id}" data-i18n="[title]manage_funding.delete_button">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                elements.fundingGrid.appendChild(gridItem);
+            });
+            const totalPages = Math.ceil(fundingArray.length / itemsPerPage);
+            if (totalPages > 1) {
+                const createPagination = () => {
+                    const paginationDiv = document.createElement('div');
+                    paginationDiv.className = 'flex justify-center items-center mt-8 gap-4';
+                    if (currentPage > 0) {
+                        const prevButton = document.createElement('button');
+                        prevButton.className = 'px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700';
+                        prevButton.textContent = 'Previous';
+                        prevButton.addEventListener('click', () => {
+                            currentPage--;
+                            filterFunding();
+                        });
+                        paginationDiv.appendChild(prevButton);
+                    }
+                    const pageInfo = document.createElement('span');
+                    pageInfo.className = 'text-gray-700';
+                    pageInfo.textContent = `Page ${currentPage + 1} of ${totalPages}`;
+                    paginationDiv.appendChild(pageInfo);
+                    if (currentPage < totalPages - 1) {
+                        const nextButton = document.createElement('button');
+                        nextButton.className = 'px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700';
+                        nextButton.textContent = 'Next';
+                        nextButton.addEventListener('click', () => {
+                            currentPage++;
+                            filterFunding();
+                        });
+                        paginationDiv.appendChild(nextButton);
+                    }
+                    return paginationDiv;
+                };
+                const listViewActive = !elements.fundingList.classList.contains('hidden');
+                if (listViewActive) {
+                    elements.fundingList.appendChild(createPagination());
+                } else {
+                    elements.fundingGrid.appendChild(createPagination());
+                }
+            }
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.removeEventListener('click', handleEditClick);
+                btn.addEventListener('click', handleEditClick);
+            });
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.removeEventListener('click', handleDeleteClick);
+                btn.addEventListener('click', handleDeleteClick);
+            });
+            updateContent();
+        }
+
+        // Edit funding opportunity
+        async function editFundingOpportunity(id) {
+            if (!auth.currentUser) {
+                alert(i18next.t('manage_funding.alert_not_authenticated', { defaultValue: 'You must be logged in to edit funding opportunities.' }));
+                return;
+            }
+            try {
+                const docRef = doc(db, "funding", id);
+                const docSnap = await getDoc(docRef);
+                if (!docSnap.exists()) {
+                    showErrorMessage('Funding opportunity not found.');
+                    return;
+                }
+                const data = docSnap.data();
+                elements.fundingForm.querySelector('#doc-id').value = id;
+                elements.fundingForm.querySelector('#funding-name').value = data['Name of funding opportunity'] || '';
+                elements.fundingForm.querySelector('#disbursement-channel').value = data['Name of disbursement channel'] || '';
+                elements.fundingForm.querySelector('#channel-type').value = data['Type of Disbursement Channel'] || '';
+                let websiteUrl = data.Website || '';
+                if (websiteUrl.startsWith('http://')) {
+                    websiteUrl = websiteUrl.substring(7);
+                } else if (websiteUrl.startsWith('https://')) {
+                    websiteUrl = websiteUrl.substring(8);
+                }
+                elements.websiteInput.value = websiteUrl;
+                elements.fundingForm.querySelector('#contact-email').value = data['Contact Email'] !== 'no' ? data['Contact Email'] : '';
+                elements.fundingForm.querySelector('#contact-number').value = data['Contact Number'] !== 'no' ? data['Contact Number'] : '';
+                elements.fundingForm.querySelector('#focus').value = data['Focus of Fund'] !== 'no' ? data['Focus of Fund'] : '';
+                elements.fundingForm.querySelector('#keywords').value = data['Key Words'] !== 'no' ? data['Key Words'] : '';
+                elements.fundingForm.querySelector('#keywords2').value = data['Key Words2'] !== 'no' ? data['Key Words2'] : '';
+                elements.fundingForm.querySelector('#keywords3').value = data['Key Words3'] !== 'no' ? data['Key Words3'] : '';
+                elements.fundingForm.querySelector('#ticket-size').value = data['Ticket Size'] !== 'no' ? data['Ticket Size'] : '';
+                elements.logoUrlInput.value = data.logo || '';
+                if (data.logo) {
+                    elements.logoPreview.src = data.logo;
+                    elements.logoPreview.style.display = 'block';
+                } else {
+                    elements.logoPreview.style.display = 'none';
+                }
+                const targetRadios = elements.fundingForm.querySelectorAll('input[name="target"]');
+                targetRadios.forEach(radio => {
+                    radio.checked = false;
+                    radio.parentElement.classList.remove('selected');
+                });
+                if (data.SMMEs === 'SMMEs') {
+                    const smmeRadio = elements.fundingForm.querySelector('input[name="target"][value="SMMEs"]');
+                    if (smmeRadio) {
+                        smmeRadio.checked = true;
+                        smmeRadio.parentElement.classList.add('selected');
+                    }
+                } else {
+                    const nonSmmeRadio = elements.fundingForm.querySelector('input[name="target"][value="no"]');
+                    if (nonSmmeRadio) {
+                        nonSmmeRadio.checked = true;
+                        nonSmmeRadio.parentElement.classList.add('selected');
+                    }
+                }
+                const fundingTypes = ['Grant', 'Debt', 'Equity', 'Working Capital', 'Business Development or Technical Assistance'];
+                const fundingCheckboxes = elements.fundingForm.querySelectorAll('input[name="funding-type"]');
+                fundingCheckboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                    checkbox.parentElement.classList.remove('selected');
+                });
+                fundingTypes.forEach(type => {
+                    if (data[type] === true || data[type] === type) {
+                        const checkbox = elements.fundingForm.querySelector(`input[name="funding-type"][value="${type}"]`);
+                        if (checkbox) {
+                            checkbox.checked = true;
+                            checkbox.parentElement.classList.add('selected');
+                        }
+                    }
+                });
+                const sectors = ['Energy', 'Agriculture', 'Climate Finance', 'Waste', 'Water and Sanitation', 'Green Infrastructure'];
+                const sectorCheckboxes = elements.fundingForm.querySelectorAll('input[name="sector"]');
+                sectorCheckboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                    checkbox.parentElement.classList.remove('selected');
+                });
+                sectors.forEach(sector => {
+                    if (data[sector] === true || data[sector] === sector) {
+                        const checkbox = elements.fundingForm.querySelector(`input[name="sector"][value="${sector}"]`);
+                        if (checkbox) {
+                            checkbox.checked = true;
+                            checkbox.parentElement.classList.add('selected');
+                        }
+                    }
+                });
+                elements.modalTitle.setAttribute('data-i18n', 'manage_funding.edit_modal_title');
+                elements.submitBtn.setAttribute('data-i18n', '[html]manage_funding.update_button');
+                updateContent();
+                toggleModal();
+            } catch (error) {
+                console.error('Error retrieving funding opportunity:', error);
+                showErrorMessage('Error loading funding opportunity. Please try again.');
+            }
+        }
+
+        // Delete funding opportunity
+        async function deleteFundingOpportunity(id) {
+            if (!auth.currentUser) {
+                alert(i18next.t('manage_funding.alert_not_authenticated', { defaultValue: 'You must be logged in to delete funding opportunities.' }));
+                return;
+            }
+            if (confirm(i18next.t('manage_funding.delete_confirm', { defaultValue: 'Are you sure you want to delete this funding opportunity?' }))) {
+                try {
+                    await deleteDoc(doc(db, "funding", id));
+                    loadFundingOpportunities();
+                    alert(i18next.t('manage_funding.alert_delete_success', { defaultValue: 'Funding opportunity deleted successfully.' }));
+                } catch (error) {
+                    console.error('Error deleting funding opportunity:', error);
+                    showErrorMessage('Error deleting funding opportunity. Please try again.');
+                }
+            }
+        }
+
+        // Toggle modal visibility
+        function toggleModal() {
+            elements.fundingModal.classList.toggle('hidden');
+        }
+
+        // Event listeners
+        function setupEventListeners() {
+            document.querySelectorAll('.checkbox-item').forEach(item => {
+                item.removeEventListener('click', handleCheckboxClick);
+                item.addEventListener('click', handleCheckboxClick);
+            });
+            function handleCheckboxClick() {
+                const input = this.querySelector('input');
+                if (input.type === 'radio') {
+                    document.querySelectorAll(`input[name="${input.name}"]`).forEach(radio => {
+                        radio.parentElement.classList.remove('selected');
+                    });
+                }
+                this.classList.toggle('selected');
+                if (input.type === 'checkbox') {
+                    input.checked = !input.checked;
+                } else {
+                    input.checked = true;
+                }
+                updateContent();
+            }
+            document.querySelectorAll('.filter-option').forEach(option => {
+                option.removeEventListener('click', handleFilterClick);
+                option.addEventListener('click', handleFilterClick);
+            });
+            function handleFilterClick() {
+                this.classList.toggle('selected');
+                updateContent();
+            }
+            elements.applyFiltersBtn.addEventListener('click', () => {
+                activeFilters = { sector: [], type: [], target: [] };
+                document.querySelectorAll('.filter-option.selected').forEach(option => {
+                    const filterType = option.getAttribute('data-filter');
+                    const filterValue = option.getAttribute('data-value');
+                    activeFilters[filterType].push(filterValue);
+                });
+                currentPage = 0;
+                filterFunding();
+                elements.filtersPanel.classList.add('hidden');
+            });
+            elements.clearFiltersBtn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-option.selected').forEach(option => {
+                    option.classList.remove('selected');
+                });
+                activeFilters = { sector: [], type: [], target: [] };
+                currentPage = 0;
+                filterFunding();
+                elements.filtersPanel.classList.add('hidden');
+            });
+            elements.fundingForm.addEventListener('submit', async e => {
+                e.preventDefault();
+                const name = elements.fundingForm.querySelector('#funding-name').value.trim();
+                const channel = elements.fundingForm.querySelector('#disbursement-channel').value.trim();
+                const channelType = elements.fundingForm.querySelector('#channel-type').value.trim();
+                let websiteUrl = elements.websiteInput.value.trim();
+                if (!name || !channel || !channelType || !websiteUrl) {
+                    alert(i18next.t('manage_funding.alert_missing_fields', { defaultValue: 'Please fill in all required fields.' }));
+                    return;
+                }
+                if (!/^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w- ./?%&=]*)?$/.test(websiteUrl)) {
+                    alert(i18next.t('manage_funding.alert_invalid_url', { defaultValue: 'Please enter a valid website URL.' }));
+                    return;
+                }
+                if (!websiteUrl.startsWith('http://') && !websiteUrl.startsWith('https://')) {
+                    websiteUrl = 'https://' + websiteUrl;
+                }
+                const fundingData = {
+                    'Name of funding opportunity': name,
+                    'Name of disbursement channel': channel,
+                    'Type of Disbursement Channel': channelType,
+                    'Website': websiteUrl || 'no',
+                    'Contact Email': elements.fundingForm.querySelector('#contact-email').value.trim() || 'no',
+                    'Contact Number': elements.fundingForm.querySelector('#contact-number').value.trim() || 'no',
+                    'Focus of Fund': elements.fundingForm.querySelector('#focus').value.trim() || 'no',
+                    'Key Words': elements.fundingForm.querySelector('#keywords').value.trim() || 'no',
+                    'Key Words2': elements.fundingForm.querySelector('#keywords2').value.trim() || 'no',
+                    'Key Words3': elements.fundingForm.querySelector('#keywords3').value.trim() || 'no',
+                    'Ticket Size': elements.fundingForm.querySelector('#ticket-size').value.trim() || 'no',
+                    'Key': 'no',
+                    'SMMEs': elements.fundingForm.querySelector('input[name="target"]:checked')?.value || 'no',
+                    'Business Development or Technical Assistance': false,
+                    'Climate Finance': false,
+                    'Energy': false,
+                    'Agriculture': false,
+                    'Waste': false,
+                    'Water and Sanitation': false,
+                    'Green Infrastructure': false,
+                    'Grant': false,
+                    'Debt': false,
+                    'Equity': false,
+                    'Working Capital': false,
+                    'updatedAt': new Date()
+                };
+                const logoUrl = elements.logoUrlInput.value.trim();
+                if (logoUrl) fundingData.logo = logoUrl;
+                document.querySelectorAll('input[name="funding-type"]:checked').forEach(checkbox => {
+                    fundingData[checkbox.value] = true;
+                });
+                document.querySelectorAll('input[name="sector"]:checked').forEach(checkbox => {
+                    fundingData[checkbox.value] = true;
+                });
+                try {
+                    const user = auth.currentUser;
+                    if (!user) {
+                        alert(i18next.t('manage_funding.alert_not_authenticated', { defaultValue: 'You must be logged in to save funding opportunities.' }));
+                        return;
+                    }
+                    const docId = elements.fundingForm.querySelector('#doc-id').value;
+                    if (docId) {
+                        await updateDoc(doc(db, "funding", docId), fundingData);
+                        alert(i18next.t('manage_funding.alert_update_success', { defaultValue: 'Funding opportunity updated successfully.' }));
+                    } else {
+                        fundingData.createdAt = new Date();
+                        await addDoc(fundingRef, fundingData);
+                        alert(i18next.t('manage_funding.alert_add_success', { defaultValue: 'Funding opportunity added successfully.' }));
+                    }
+                    elements.fundingForm.reset();
+                    elements.logoPreview.style.display = 'none';
+                    toggleModal();
+                    loadFundingOpportunities();
+                } catch (error) {
+                    console.error('Error saving funding opportunity:', error);
+                    showErrorMessage('Error saving funding opportunity: ' + error.message);
+                }
+            });
+            elements.fetchLogoBtn.addEventListener('click', async () => {
+                let websiteUrl = elements.websiteInput.value.trim();
+                if (!websiteUrl) {
+                    alert(i18next.t('manage_funding.alert_no_website', { defaultValue: 'Please enter a website URL first.' }));
+                    return;
+                }
+                if (!/^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w- ./?%&=]*)?$/.test(websiteUrl)) {
+                    alert(i18next.t('manage_funding.alert_invalid_url', { defaultValue: 'Please enter a valid website URL.' }));
+                    return;
+                }
+                try {
+                    const logoUrl = await fetchWebsiteLogo(websiteUrl);
+                    if (logoUrl) {
+                        elements.logoPreview.src = logoUrl;
+                        elements.logoPreview.style.display = 'block';
+                        elements.logoUrlInput.value = logoUrl;
+                    } else {
+                        alert(i18next.t('manage_funding.alert_no_logo', { defaultValue: 'Could not find a logo for this website.' }));
+                    }
+                } catch (error) {
+                    console.error('Error fetching logo:', error);
+                    showErrorMessage('Error fetching logo. Please try again or enter a URL manually.');
+                }
+            });
+            elements.filterBtn.addEventListener('click', () => {
+                elements.filtersPanel.classList.toggle('hidden');
+            });
+            elements.searchInput.addEventListener('input', () => {
+                currentPage = 0;
+                filterFunding();
+            });
+            elements.tabs.forEach(tab => {
+                tab.removeEventListener('click', handleTabClick);
+                tab.addEventListener('click', handleTabClick);
+            });
+            function handleTabClick() {
+                elements.tabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                if (this.getAttribute('data-tab') === 'list') {
+                    elements.fundingList.classList.remove('hidden');
+                    elements.fundingGrid.classList.add('hidden');
+                } else {
+                    elements.fundingList.classList.add('hidden');
+                    elements.fundingGrid.classList.remove('hidden');
+                }
+                filterFunding();
+            }
+            elements.websiteInput.addEventListener('input', function() {
+                this.setCustomValidity('');
+            });
+            elements.addFundingBtn.addEventListener('click', () => {
+                if (!auth.currentUser) {
+                    alert(i18next.t('manage_funding.alert_not_authenticated', { defaultValue: 'You must be logged in to add funding opportunities.' }));
+                    return;
+                }
+                elements.fundingForm.reset();
+                elements.fundingForm.querySelector('#doc-id').value = '';
+                elements.logoPreview.style.display = 'none';
+                elements.modalTitle.setAttribute('data-i18n', 'manage_funding.add_modal_title');
+                elements.submitBtn.setAttribute('data-i18n', '[html]manage_funding.save_button');
+                document.querySelectorAll('.checkbox-item.selected').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                document.querySelectorAll('.checkbox-item input').forEach(input => {
+                    input.checked = false;
+                });
+                updateContent();
+                toggleModal();
+            });
+            elements.closeModalBtn.addEventListener('click', toggleModal);
+            elements.cancelBtn.addEventListener('click', toggleModal);
+            elements.logoutBtn.addEventListener('click', () => {
+                console.log('DEBUG: Logout button clicked');
+                resetAdminSession();
+            });
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                console.log('DOM fully loaded for manage_funding.html at', new Date().toLocaleString('en-ZA'));
+                if (!customElements.get('green-economy-header') || !customElements.get('green-economy-footer')) {
+                    console.warn('Custom elements not defined. Ensure MasterPage.js is loaded.');
+                    showErrorMessage('Custom components failed to load. Some features may be unavailable.');
+                }
+                setupEventListeners();
+            } catch (error) {
+                console.error('Error in DOMContentLoaded:', error);
+                showErrorMessage('Error loading page. Please try again.');
+                document.body.classList.remove('loading');
+                document.body.classList.add('loaded');
+                document.querySelector('.loading-overlay').style.display = 'none';
+            }
+        });
+
+        // Fallback timeout
+        setTimeout(() => {
+            if (document.body.classList.contains('loading')) {
+                console.warn('Loading timeout reached, forcing content display');
+                applyFallbackTranslations();
+                document.body.classList.remove('loading');
+                document.body.classList.add('loaded');
+                document.querySelector('.loading-overlay').style.display = 'none';
+                showErrorMessage('Page load timeout. Displaying default content.');
+            }
+        }, 10000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="translation.title">Translation Manager - Green Economy Toolkit</title>
+    <link rel="stylesheet" href="/Master%20Page(Header%20and%20Footer)/MasterPage.css">
+    <script type="module" src="/ADMIN/scripts/adminAuthCheck.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://unpkg.com/lunr@2.3.9/lunr.min.js"></script>
+    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
+    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
+    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
+    <script type="module" src="/Master%20Page(Header%20and%20Footer)/MasterPage.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --green-primary: #4eb5a6;
+            --green-dark: #005d6a;
+            --green-light: #b8e5e1;
+            --green-accent: #7cc8bc;
+            --light-bg: #f8fffe;
+            --background: #ffffff;
+            --foreground: #0f172a;
+            --card: #ffffff;
+            --card-foreground: #0f172a;
+            --border: #e2e8f0;
+            --muted-foreground: #64748b;
+            --primary: #1e293b;
+            --primary-foreground: #f8fafc;
+            --secondary: #f1f5f9;
+            --secondary-foreground: #1e293b;
+            --radius: 1rem;
+            --danger: #dc3545;
+            --danger-dark: #c82333;
+        }
+        body {
+            font-family: "Poppins", sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        body.loading {
+            visibility: hidden;
+            opacity: 0;
+        }
+        body.loaded {
+            visibility: visible;
+            opacity: 1;
+            transition: opacity 0.3s;
+        }
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--green-primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        .main {
+            padding-top: 5rem;
+            min-height: 100vh;
+            padding: 0 2rem;
+        }
+        .hero {
+            position: relative;
+            height: 400px;
+            background-image: linear-gradient(rgba(0, 93, 106, 0.7), rgba(78, 181, 166, 0.7)),
+                            url("https://images.pexels.com/photos/371917/pexels-photo-371917.jpeg");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 3rem;
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+        .hero-content {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem 3rem;
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 1rem;
+        }
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--green-dark);
+            margin-bottom: 1rem;
+        }
+        .form-container {
+            background: var(--card);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
+            margin-bottom: 3rem;
+        }
+        .btn-primary {
+            background: var(--green-primary);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 1rem;
+        }
+        .btn-primary:hover {
+            background: var(--green-dark);
+            transform: translateY(-2px);
+        }
+        .btn-primary:disabled {
+            background: var(--muted-foreground);
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 1rem;
+        }
+        .btn-danger:hover {
+            background: var(--danger-dark);
+            transform: translateY(-2px);
+        }
+        .progress-container {
+            background: var(--card);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
+            margin-bottom: 3rem;
+        }
+        .progress-bar-wrapper {
+            background: var(--secondary);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            height: 20px;
+            margin-top: 1rem;
+        }
+        .progress-bar {
+            background: var(--green-primary);
+            height: 100%;
+            width: 0;
+            transition: width 0.3s ease;
+        }
+        .progress-text {
+            margin-top: 1rem;
+            font-size: 1.1rem;
+            color: var(--card-foreground);
+        }
+        .log-container {
+            background: var(--card);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
+            margin-bottom: 3rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .log-container h3 {
+            font-size: 1.5rem;
+            color: var(--green-dark);
+            margin-bottom: 1rem;
+        }
+        .log-entry {
+            font-size: 0.9rem;
+            color: var(--muted-foreground);
+            margin-bottom: 0.5rem;
+        }
+        .log-entry.error {
+            color: var(--danger);
+        }
+        .log-entry.info {
+            color: var(--green-dark);
+        }
+        .alert-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1100;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .alert-modal.show {
+            display: flex;
+            opacity: 1;
+        }
+        .alert-modal-content {
+            background: var(--card);
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+        .alert-modal.show .alert-modal-content {
+            transform: scale(1);
+        }
+        .alert-modal.success .alert-modal-content {
+            border-left: 4px solid var(--green-primary);
+        }
+        .alert-modal.error .alert-modal-content {
+            border-left: 4px solid var(--danger);
+        }
+        .alert-modal-content p {
+            font-size: 1.1rem;
+            color: var(--card-foreground);
+            margin-bottom: 1.5rem;
+        }
+        .alert-modal-btn {
+            background: var(--green-primary);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+        .alert-modal.error .alert-modal-btn {
+            background: var(--danger);
+        }
+        .alert-modal-btn:hover {
+            background: var(--green-dark);
+            transform: translateY(-2px);
+        }
+        .alert-modal.error .alert-modal-btn:hover {
+            background: var(--danger-dark);
+        }
+        .alert-modal-close {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--muted-foreground);
+            transition: color 0.2s ease;
+        }
+        .alert-modal-close:hover {
+            color: var(--green-primary);
+        }
+        .fallback-content {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            color: var(--muted-foreground);
+        }
+        .fallback-content.show {
+            display: block;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @media (max-width: 768px) {
+            .hero {
+                height: auto;
+                min-height: 200px;
+                border-radius: 0.5rem;
+            }
+            .hero-content {
+                padding: 1rem;
+                max-width: 100%;
+            }
+            .form-container,
+            .progress-container,
+            .log-container {
+                padding: 1rem;
+            }
+            .alert-modal-content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="loading">
+    <div class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+    <header class="fallback-header" style="display: none;">
+        <div style="text-align: center; padding: 1rem; background: var(--green-primary); color: white;">
+            <h1>Green Economy Toolkit</h1>
+        </div>
+    </header>
+    <green-economy-header></green-economy-header>
+    <section class="hero">
+        <div class="hero-content">
+            <h1 data-i18n="translation.title">Translation Manager</h1>
+        </div>
+    </section>
+    <section class="main">
+        <div class="form-container">
+            <button class="btn-primary" id="run-translation-btn" data-i18n="translation.run_button">Run Translation</button>
+            <button class="btn-primary" id="back-to-dashboard" data-i18n="translation.back_button">Back to Dashboard</button>
+            <button class="btn-danger" id="logout-btn" data-i18n="translation.logout_button">Logout</button>
+        </div>
+        <div class="progress-container">
+            <h3 data-i18n="translation.progress_title">Translation Progress</h3>
+            <div class="progress-bar-wrapper">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <p class="progress-text" id="progress-text" data-i18n="translation.starting">Starting...</p>
+        </div>
+        <div class="log-container">
+            <h3 data-i18n="translation.logs_title">Translation Logs</h3>
+            <div id="log-entries"></div>
+        </div>
+        <div class="fallback-content">
+            <h2>Translation Manager</h2>
+            <p>Unable to load translations or content. Please ensure the backend server is running and try again.</p>
+            <button class="btn-primary" onclick="window.location.reload()">Retry</button>
+        </div>
+    </section>
+    <section class="partners">
+        <div class="partners-content">
+            <img src="/Images/giz-logo_2024-11-11-133203_nara.jpg" alt="Partner Logo 1" class="partner-logo" data-i18n="[alt]translation.partner_logo1">
+            <img src="/Images/SECO-Logo.jpg" alt="Partner Logo 2" class="partner-logo" data-i18n="[alt]translation.partner_logo2">
+            <img src="/Images/GDED-Logo.jpg" alt="Partner Logo 3" class="partner-logo" data-i18n="[alt]translation.partner_logo3">
+            <img src="/Images/LMS-Platform-Logo.png" alt="Partner Logo 4" class="partner-logo" data-i18n="[alt]translation.partner_logo4">
+            <img src="/Images/NBI-Logo.jpg" alt="Partner Logo 5" class="partner-logo" data-i18n="[alt]translation.partner_logo5">
+            <img src="/Images/new-partner-logo.png" alt="New Partner Logo" class="partner-logo" data-i18n="[alt]translation.partner_logo6">
+        </div>
+    </section>
+    <footer class="fallback-footer" style="display: none;">
+        <div style="text-align: center; padding: 1rem; background: var(--green-dark); color: white;">
+            <p data-i18n="footer.copyright">© 2025 Green Economy Network. All rights reserved.</p>
+        </div>
+    </footer>
+    <green-economy-footer></green-economy-footer>
+    <script type="module">
+import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
+import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+import { resetAdminSession } from '/ADMIN/scripts/adminAuthCheck.js';
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCfa827mvCLf1ETts6B_DmCfb7owTohBxk",
+    authDomain: "nbi-green-economy.firebaseapp.com",
+    projectId: "nbi-green-economy",
+    storageBucket: "nbi-green-economy.appspot.com",
+    messagingSenderId: "53732340059",
+    appId: "1:53732340059:web:3fb3f086c6662e1e9baa7e",
+    measurementId: "G-37VRZ5CGE4"
+};
+
+// Initialize Firebase
+let app, db, auth;
+if (!getApps().length) {
+    app = initializeApp(firebaseConfig);
+} else {
+    app = getApp();
+}
+db = getFirestore(app);
+auth = getAuth(app);
+
+const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const SERVER_URL = isLocalhost ? 'http://localhost:10000' : 'https://nbi-green-economy-j3c3.onrender.com';
+
+// Initialize i18next
+i18next
+    .use(i18nextHttpBackend)
+    .use(i18nextBrowserLanguageDetector)
+    .init({
+        fallbackLng: 'en',
+        supportedLngs: ['en', 'zu', 'tn'],
+        backend: {
+            loadPath: isLocalhost ? '/locales/{{lng}}.json?v=' + new Date().getTime() : `${SERVER_URL}/locales/{{lng}}.json?v=${new Date().getTime()}`
+        },
+        detection: {
+            order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
+            caches: ['localStorage', 'cookie']
+        }
+    }, (err) => {
+        if (err) {
+            console.error('i18next initialization error:', err);
+            applyFallbackTranslations();
+            finalizePageLoad();
+            return;
+        }
+        console.log('i18next initialized at', new Date().toLocaleString('en-ZA'), 'language:', i18next.language);
+        finalizePageLoad();
+    });
+
+function applyFallbackTranslations() {
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        try {
+            if (key.startsWith('[alt]')) {
+                const altKey = key.replace('[alt]', '');
+                element.setAttribute('alt', element.getAttribute('alt') || 'Content not available');
+            } else if (key.startsWith('[placeholder]')) {
+                const placeholderKey = key.replace('[placeholder]', '');
+                element.setAttribute('placeholder', element.getAttribute('placeholder') || '');
+            } else {
+                element.textContent = element.textContent || 'Content not available';
+            }
+        } catch (error) {
+            console.error(`Error applying fallback for key ${key}:`, error);
+        }
+    });
+    console.warn('Applied fallback translations');
+}
+
+function updateContent() {
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        try {
+            if (key.startsWith('[alt]')) {
+                const altKey = key.replace('[alt]', '');
+                element.setAttribute('alt', i18next.t(altKey, { defaultValue: element.getAttribute('alt') || 'Image' }));
+            } else if (key.startsWith('[placeholder]')) {
+                const placeholderKey = key.replace('[placeholder]', '');
+                element.setAttribute('placeholder', i18next.t(placeholderKey, { defaultValue: element.getAttribute('placeholder') || '' }));
+            } else {
+                element.textContent = i18next.t(key, { defaultValue: element.textContent || 'Content not available' });
+            }
+        } catch (error) {
+            console.error(`Error translating key ${key}:`, error);
+        }
+    });
+}
+
+function showAlertModal(message, type = 'success') {
+    const existingModal = document.getElementById('alert-modal');
+    if (existingModal) existingModal.remove();
+    const modal = document.createElement('div');
+    modal.id = 'alert-modal';
+    modal.className = `alert-modal ${type}`;
+    modal.innerHTML = `
+        <div class="alert-modal-content">
+            <span class="alert-modal-close">&times;</span>
+            <p>${message}</p>
+            <button class="alert-modal-btn">${i18next.t('alerts.ok', { defaultValue: 'OK' })}</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    const closeBtn = modal.querySelector('.alert-modal-close');
+    const okBtn = modal.querySelector('.alert-modal-btn');
+    const closeAlert = () => {
+        modal.classList.remove('show');
+        setTimeout(() => modal.remove(), 300);
+    };
+    closeBtn.addEventListener('click', closeAlert);
+    okBtn.addEventListener('click', closeAlert);
+    modal.style.display = 'flex';
+    setTimeout(() => modal.classList.add('show'), 10);
+}
+
+async function fetchProgress() {
+    try {
+        if (isLocalhost) {
+            const response = await fetch('/translation_progress.json?v=' + new Date().getTime());
+            if (!response.ok) throw new Error(`Failed to fetch progress: ${response.status}`);
+            return await response.json();
+        } else {
+            const response = await fetch(`${SERVER_URL}/translation-progress`, { mode: 'cors' });
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            return await response.json();
+        }
+    } catch (error) {
+        console.error('Error fetching progress:', error);
+        showAlertModal(i18next.t('translation.error', { message: error.message, defaultValue: `Failed to fetch progress: ${error.message}` }), 'error');
+        return { progress: 0, logs: [], status: 'error', message: error.message };
+    }
+}
+
+async function runTranslation() {
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-text');
+    const logContainer = document.getElementById('log-entries');
+    const runButton = document.getElementById('run-translation-btn');
+    runButton.disabled = true;
+    runButton.textContent = i18next.t('translation.running', { defaultValue: 'Running...' });
+    progressBar.style.width = '0%';
+    progressText.textContent = i18next.t('translation.starting', { defaultValue: 'Starting...' });
+    logContainer.innerHTML = '';
+
+    try {
+        if (isLocalhost) {
+            console.log('Running translation locally');
+            // Simulate VSCode task for local development
+            window.location.href = 'vscode://run-task/Run%20Translation';
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        } else {
+            console.log('Sending translation request to server:', `${SERVER_URL}/run-translation`);
+            const optionsResponse = await fetch(`${SERVER_URL}/ping`, { method: 'OPTIONS', mode: 'cors' });
+            if (!optionsResponse.ok) throw new Error(`CORS preflight request failed: ${optionsResponse.status}`);
+            const pingResponse = await fetch(`${SERVER_URL}/ping`, { mode: 'cors' });
+            if (!pingResponse.ok) throw new Error(`Server is not reachable: ${pingResponse.statusText}`);
+            const response = await fetch(`${SERVER_URL}/run-translation`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                mode: 'cors'
+            });
+            const data = await response.json();
+            if (!response.ok || data.status === 'error') {
+                throw new Error(data.message || 'Failed to start translation');
+            }
+        }
+
+        let lastLogLength = 0;
+        const pollInterval = setInterval(async () => {
+            const { progress, logs, status, message } = await fetchProgress();
+            progressBar.style.width = `${progress}%`;
+            progressText.textContent = status === 'running' 
+                ? i18next.t('translation.progress', { progress, defaultValue: `Translating... (${progress}%)` })
+                : i18next.t(`translation.${status}`, { defaultValue: status, message });
+
+            if (logs.length > lastLogLength) {
+                const newLogs = logs.slice(lastLogLength);
+                newLogs.forEach(log => {
+                    const logEntry = document.createElement('div');
+                    logEntry.className = `log-entry ${log.level.toLowerCase()}`;
+                    logEntry.textContent = `[${log.timestamp}] ${log.message}`;
+                    logContainer.appendChild(logEntry);
+                    logContainer.scrollTop = logContainer.scrollHeight;
+                });
+                lastLogLength = logs.length;
+            }
+
+            if (status !== 'running') {
+                clearInterval(pollInterval);
+                runButton.disabled = false;
+                runButton.textContent = i18next.t('translation.run_button', { defaultValue: 'Run Translation' });
+                if (status === 'success') {
+                    showAlertModal(i18next.t('translation.success', { defaultValue: 'Translations generated successfully' }));
+                    i18next.loadResources((err) => {
+                        if (!err) updateContent();
+                    });
+                } else {
+                    showAlertModal(i18next.t('translation.error', { message: message || 'Unknown error', defaultValue: `Translation failed: ${message || 'Unknown error'}` }), 'error');
+                }
+            }
+        }, 1000);
+    } catch (error) {
+        console.error('Error running translation:', error);
+        progressBar.style.width = '100%';
+        progressText.textContent = i18next.t('translation.error', { message: error.message, defaultValue: `Translation failed: ${error.message}` });
+        let errorMessage;
+        if (error.message.includes('Failed to fetch') || error.message.includes('CORS')) {
+            errorMessage = isLocalhost
+                ? i18next.t('translation.error_local', { defaultValue: 'Translation process failed. Please ensure Python is installed and the backend server is running at http://localhost:10000.' })
+                : i18next.t('translation.error_server', { message: error.message, defaultValue: `Failed to connect to the translation server: ${error.message}. Please check if the backend is running at ${SERVER_URL} and CORS is configured correctly.` });
+        } else {
+            errorMessage = i18next.t('translation.error', { message: error.message, defaultValue: `Translation failed: ${error.message}` });
+        }
+        showAlertModal(errorMessage, 'error');
+        runButton.disabled = false;
+        runButton.textContent = i18next.t('translation.run_button', { defaultValue: 'Run Translation' });
+    }
+}
+
+function finalizePageLoad() {
+    try {
+        i18next.loadResources(() => {
+            updateContent();
+            document.body.classList.remove('loading');
+            document.body.classList.add('loaded');
+            document.querySelector('.loading-overlay').style.display = 'none';
+            console.log('Content displayed, loading overlay hidden');
+        });
+    } catch (error) {
+        console.error('Error loading translations:', error);
+        applyFallbackTranslations();
+        document.body.classList.remove('loading');
+        document.body.classList.add('loaded');
+        document.querySelector('.loading-overlay').style.display = 'none';
+        showAlertModal(i18next.t('alerts.translation_load_error', { defaultValue: 'Failed to load translations. Displaying default content.' }), 'error');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('DEBUG: DOM fully loaded for TranslationManager.html at', new Date().toLocaleString('en-ZA'));
+    console.log('DEBUG: Initial sessionStorage state - verified:', sessionStorage.getItem('verified'), 'sessionStart:', sessionStorage.getItem('sessionStart'));
+
+    const timeout = setTimeout(() => {
+        console.warn('Initialization timed out');
+        applyFallbackTranslations();
+        document.body.classList.remove('loading');
+        document.body.classList.add('loaded');
+        document.querySelector('.loading-overlay').style.display = 'none';
+        document.querySelector('.fallback-content').classList.add('show');
+        showAlertModal(i18next.t('alerts.timeout', { defaultValue: 'Page load timeout. Displaying default content.' }), 'error');
+    }, 10000);
+
+    try {
+       
+        // Wait for Firebase Auth state
+        onAuthStateChanged(auth, async (user) => {
+            console.log('DEBUG: Firebase auth state checked, user:', user ? user.email : 'null');
+            if (!user) {
+                console.log('DEBUG: No user signed in, redirecting to VerifyCode.html');
+                clearTimeout(timeout);
+                showAlertModal(i18next.t('alerts.not_authenticated', { defaultValue: 'You must be logged in to access this page.' }), 'error');
+                setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
+                return;
+            }
+
+            // Load initial content if session is verified
+            const isVerified = sessionStorage.getItem('verified') === 'true';
+            if (isVerified) {
+                clearTimeout(timeout);
+                finalizePageLoad();
+            } else {
+                console.log('DEBUG: No valid session, redirecting to VerifyCode.html');
+                clearTimeout(timeout);
+                showAlertModal(i18next.t('alerts.not_authenticated', { defaultValue: 'Session not verified. Please log in again.' }), 'error');
+                setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
+                return;
+            }
+
+            // Button event listeners
+            const runButton = document.getElementById('run-translation-btn');
+            if (runButton) {
+                runButton.addEventListener('click', () => {
+                    console.log('DEBUG: Run Translation button clicked');
+                    runTranslation();
+                });
+            } else {
+                console.error('Run Translation button not found');
+                showAlertModal(i18next.t('alerts.button_not_found', { defaultValue: 'Run Translation button not found' }), 'error');
+            }
+
+            const backToDashboardBtn = document.getElementById('back-to-dashboard');
+            if (backToDashboardBtn) {
+                backToDashboardBtn.addEventListener('click', () => {
+                    console.log('DEBUG: Back to dashboard clicked, setting sessionStorage');
+                    sessionStorage.setItem('verified', 'true');
+                    sessionStorage.setItem('sessionStart', Date.now().toString());
+                    console.log('DEBUG: sessionStorage set, verified:', sessionStorage.getItem('verified'), 'sessionStart:', sessionStorage.getItem('sessionStart'));
+                    setTimeout(() => {
+                        console.log('DEBUG: Navigating to /ADMIN/admin-dashboard.html');
+                        window.location.assign('/ADMIN/admin-dashboard.html');
+                    }, 100);
+                });
+            } else {
+                console.error('Back to dashboard button not found');
+                showAlertModal(i18next.t('alerts.button_not_found', { defaultValue: 'Back to dashboard button not found' }), 'error');
+            }
+
+            const logoutButton = document.getElementById('logout-btn');
+            if (logoutButton) {
+                logoutButton.addEventListener('click', async () => {
+                    console.log('DEBUG: Logout button clicked');
+                    await signOut(auth);
+                    resetAdminSession();
+                });
+            } else {
+                console.error('Logout button not found');
+                showAlertModal(i18next.t('alerts.button_not_found', { defaultValue: 'Logout button not found' }), 'error');
+            }
+        });
+    } catch (error) {
+        console.error('Initialization error:', error);
+        clearTimeout(timeout);
+        applyFallbackTranslations();
+        document.body.classList.remove('loading');
+        document.body.classList.add('loaded');
+        document.querySelector('.loading-overlay').style.display = 'none';
+        document.querySelector('.fallback-content').classList.add('show');
+        showAlertModal(i18next.t('alerts.initialization_error', { message: error.message, defaultValue: `Initialization failed: ${error.message}` }), 'error');
+    }
+});
+    </script>
+</body>
+</html>

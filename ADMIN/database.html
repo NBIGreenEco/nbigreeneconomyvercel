@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="database_management.title">Database Management | NBI Green Economy</title>
+  <script type="module" src="/ADMIN/scripts/adminAuthCheck.js"></script>
+  <link rel="stylesheet" href="/Master%20Page(Header%20and%20Footer)/MasterPage.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
+  <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
+  <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
+  <script src="/Master%20Page(Header%20and%20Footer)/Trans.js"></script>
+  <style>
+    /* [Inline styles unchanged from original, included for completeness] */
+    :root {
+      --green-primary: #2b9589;
+      --green-dark: #005d6a;
+      --green-light: #b8e5e1;
+      --green-lighter: #e8f5f3;
+      --gray-light: #f8f9fa;
+      --gray-medium: #e9ecef;
+      --gray-border: #dee2e6;
+      --text-dark: #212529;
+      --text-medium: #495057;
+      --danger-light: #fff5f5;
+      --danger-medium: #ffd6d6;
+      --danger-dark: #dc3545;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #333;
+      background-color: var(--gray-light);
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    body.loading {
+      visibility: hidden;
+      opacity: 0;
+    }
+    body.loaded {
+      visibility: visible;
+      opacity: 1;
+      transition: opacity 0.3s;
+    }
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--gray-light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    .loading-spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid var(--green-primary);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .error-message {
+      text-align: center;
+      padding: 20px;
+      color: var(--danger-dark);
+      background-color: var(--danger-light);
+      border-radius: 8px;
+      margin: 20px auto;
+      max-width: 600px;
+    }
+    .container {
+      width: 95%;
+      max-width: 1800px;
+      margin: 0 auto;
+      padding: 0 15px;
+      opacity: 0;
+      animation: fadeIn 0.5s ease-in forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    header {
+      background-color: #fff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 15px 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo img {
+      height: 50px;
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: 1.5rem;
+    }
+    .dashboard {
+      padding: 30px 0;
+      flex: 1;
+    }
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .dashboard-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--green-primary);
+    }
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+    .btn {
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s;
+      border: none;
+    }
+    .btn-primary {
+      background-color: var(--green-primary);
+      color: white;
+    }
+    .btn-primary:hover {
+      background-color: #4ec3b0;
+    }
+    .btn-secondary {
+      background-color: #6c757d;
+      color: white;
+    }
+    .btn-secondary:hover {
+      background-color: #5a6268;
+    }
+    .btn-danger {
+      background-color: var(--danger-dark);
+      color: white;
+    }
+    .btn-danger:hover {
+      background-color: #c82333;
+    }
+    .search-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .search-input {
+      padding: 8px 12px;
+      border: 1px solid var(--gray-border);
+      border-radius: 4px;
+      font-size: 14px;
+      width: 200px;
+    }
+    .search-input:focus {
+      outline: none;
+      border-color: var(--green-primary);
+      box-shadow: 0 0 5px rgba(43, 149, 137, 0.3);
+    }
+    .category-selector {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+      border: 1px solid var(--gray-border);
+    }
+    .category-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .category-tab {
+      padding: 10px 20px;
+      background: var(--gray-medium);
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+    .category-tab:hover {
+      background: #e0e0e0;
+    }
+    .category-tab.active {
+      background: var(--green-primary);
+      color: white;
+    }
+    .data-table-container {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      overflow-x: auto;
+      border: 1px solid var(--green-primary);
+    }
+    .data-table {
+      width: 100%;
+      min-width: 2000px;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+    .data-table th,
+    .data-table td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid var(--gray-border);
+      border-right: 1px solid var(--gray-border);
+    }
+    .data-table th {
+      background-color: var(--green-lighter);
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      color: var(--text-dark);
+      border-bottom: 2px solid var(--green-primary);
+    }
+    .data-table th:last-child,
+    .data-table td:last-child {
+      border-right: none;
+    }
+    .data-table tr:hover {
+      background-color: rgba(43, 149, 137, 0.05);
+    }
+    .no-results {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-medium);
+    }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      gap: 5px;
+    }
+    .page-btn {
+      padding: 8px 12px;
+      border: 1px solid var(--gray-border);
+      background: white;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .page-btn.active {
+      background-color: var(--green-primary);
+      color: white;
+      border-color: var(--green-primary);
+    }
+    .page-btn:hover:not(.active) {
+      background-color: var(--gray-medium);
+    }
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0,0,0,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal-content {
+      background: white;
+      border-radius: 8px;
+      width: 95%;
+      max-width: 1200px;
+      max-height: 90vh;
+      padding: 20px;
+      position: relative;
+      transform: translateY(-20px);
+      transition: transform 0.3s;
+      overflow-y: auto;
+      border: 2px solid var(--green-primary);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+    .modal-overlay.active .modal-content {
+      transform: translateY(0);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--gray-border);
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 1;
+    }
+    .modal-title {
+      font-size: 1.5rem;
+      color: var(--text-dark);
+      margin: 0;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 28px;
+      cursor: pointer;
+      color: var(--text-medium);
+      transition: color 0.3s;
+    }
+    .modal-close:hover {
+      color: var(--green-primary);
+    }
+    .modal-body {
+      padding: 10px 0;
+    }
+    .detail-section {
+      margin-bottom: 20px;
+    }
+    .detail-section h3 {
+      color: var(--green-primary);
+      margin-bottom: 15px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid var(--gray-border);
+    }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 15px;
+    }
+    .detail-item {
+      margin-bottom: 10px;
+    }
+    .detail-label {
+      font-weight: 600;
+      color: var(--text-medium);
+      margin-bottom: 3px;
+    }
+    .detail-value {
+      padding: 5px;
+      background: var(--gray-light);
+      border-radius: 4px;
+    }
+    @media (max-width: 1200px) {
+      .data-table-container {
+        overflow-x: auto;
+      }
+      .data-table {
+        min-width: 2000px;
+      }
+    }
+    @media (max-width: 768px) {
+      .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .action-buttons {
+        width: 100%;
+        justify-content: flex-end;
+      }
+      .category-tabs {
+        overflow-x: auto;
+        padding-bottom: 10px;
+        flex-wrap: nowrap;
+      }
+      .modal-content {
+        width: 98%;
+        max-height: 85vh;
+      }
+    }
+    @media (max-width: 576px) {
+      .btn {
+        padding: 8px 12px;
+        font-size: 14px;
+      }
+      .modal-content {
+        width: 100%;
+        max-height: 80vh;
+        padding: 15px;
+      }
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+      .search-input {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body class="loading">
+  <div class="loading-overlay">
+    <div class="loading-spinner"></div>
+  </div>
+  <green-economy-header></green-economy-header>
+  <section class="dashboard">
+    <div class="container">
+      <div id="errorMessage" class="error-message d-none"></div>
+      <div class="dashboard-header">
+        <h1 class="dashboard-title" data-i18n="database_management.title">Project Database Management</h1>
+        <div class="action-buttons">
+          <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" data-i18n="[placeholder]database_management.search_placeholder" placeholder="Search projects...">
+          </div>
+          <button id="exportBtn" class="btn btn-primary" data-i18n="[html]database_management.export_button">
+            <i class="bi bi-download"></i> <span data-i18n="database_management.export_button_text">Export Data</span>
+          </button>
+          <button id="refreshBtn" class="btn btn-secondary" data-i18n="[html]database_management.refresh_button">
+            <i class="bi bi-arrow-clockwise"></i> <span data-i18n="database_management.refresh_button_text">Refresh</span>
+          </button>
+          <button id="logoutBtn" class="btn btn-danger" data-i18n="database_management.logout_button">
+            <i class="bi bi-box-arrow-right"></i> <span>Logout</span>
+          </button>
+        </div>
+      </div>
+      <div class="category-selector">
+        <h3 data-i18n="database_management.category_selector_title">Select Data Categories to Display</h3>
+        <div class="category-tabs" id="categoryTabs"></div>
+      </div>
+      <div class="data-table-container">
+        <table class="data-table">
+          <thead id="tableHeader"></thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+        <div id="noResults" class="no-results" style="display: none;" data-i18n="database_management.no_results">No projects found matching your criteria.</div>
+      </div>
+      <div class="pagination" id="pagination"></div>
+    </div>
+  </section>
+  <div class="modal-overlay" id="projectModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" data-i18n="database_management.modal_title">Project Details</h2>
+        <button class="modal-close" id="closeModal">&times;</button>
+      </div>
+      <div class="modal-body" id="projectDetails"></div>
+    </div>
+  </div>
+  <green-economy-footer></green-economy-footer>
+  <script type="module" src="/Master%20Page(Header%20and%20Footer)/MasterPage.js"></script>
+  <script type="module">
+    import { resetAdminSession } from '/ADMIN/scripts/adminAuthCheck.js';
+
+    // Initialize i18next
+    i18next
+      .use(i18nextHttpBackend)
+      .use(i18nextBrowserLanguageDetector)
+      .init({
+        fallbackLng: 'en',
+        supportedLngs: ['en', 'zu', 'tn'],
+        backend: {
+          loadPath: '/locales/{{lng}}.json?v=' + new Date().getTime()
+        },
+        detection: {
+          order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
+          caches: ['localStorage', 'cookie']
+        }
+      }, (err, t) => {
+        if (err) {
+          console.error('i18next initialization error:', err);
+          applyFallbackTranslations();
+          finalizeLoading();
+          return;
+        }
+        console.log('i18next initialized for database.html at', new Date().toLocaleString('en-ZA'), ':', i18next.language);
+        finalizeLoading();
+      });
+
+    function applyFallbackTranslations() {
+      document.querySelectorAll('[data-i18n]').forEach(elem => {
+        const key = elem.getAttribute('data-i18n');
+        if (key.startsWith('[')) {
+          const match = key.match(/\[(\w+)\](.+)/);
+          if (match) {
+            const [, attr, i18nKey] = match;
+            const fallback = elem.getAttribute(attr) || 'Content not available';
+            elem.setAttribute(attr, fallback);
+          }
+        } else {
+          const fallback = elem.textContent.trim() || 'Content not available';
+          elem.textContent = fallback;
+        }
+      });
+      console.warn('Applied fallback translations due to loading failure');
+    }
+
+    function updateContent() {
+      const missingKeys = [];
+      document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        try {
+          if (key.startsWith('[')) {
+            const match = key.match(/\[(\w+)\](.+)/);
+            if (match) {
+              const [, attr, translationKey] = match;
+              const translation = i18next.t(translationKey, { defaultValue: element.getAttribute(attr) || 'Content not available' });
+              if (translation === translationKey) {
+                missingKeys.push(translationKey);
+              }
+              element.setAttribute(attr, translation);
+            }
+          } else {
+            const translation = i18next.t(key, { defaultValue: element.textContent.trim() || 'Content not available' });
+            if (translation === key) {
+              missingKeys.push(key);
+            }
+            element.textContent = translation;
+          }
+        } catch (error) {
+          console.error(`Error translating key ${key}:`, error);
+        }
+      });
+      if (missingKeys.length > 0) {
+        console.warn('Missing translations:', missingKeys);
+      }
+    }
+
+    function finalizeLoading() {
+      try {
+        i18next.loadResources(() => {
+          updateContent();
+          document.body.classList.remove('loading');
+          document.body.classList.add('loaded');
+          document.querySelector('.loading-overlay').style.display = 'none';
+          console.log('Translations loaded, content displayed');
+          initializeDashboard();
+        });
+      } catch (error) {
+        console.error('Error loading translations:', error);
+        applyFallbackTranslations();
+        document.body.classList.remove('loading');
+        document.body.classList.add('loaded');
+        document.querySelector('.loading-overlay').style.display = 'none';
+        showErrorMessage(i18next.t('database_management.alert_load_error', { defaultValue: 'Failed to load translations. Displaying default content.' }));
+        initializeDashboard();
+      }
+    }
+
+    function showErrorMessage(message) {
+      const errorDiv = document.getElementById('errorMessage');
+      if (errorDiv) {
+        errorDiv.textContent = message;
+        errorDiv.classList.remove('d-none');
+      }
+    }
+
+    i18next.on('languageChanged', () => {
+      console.log('Language changed to:', i18next.language);
+      updateContent();
+    });
+
+    i18next.on('loaded', () => {
+      updateContent();
+    });
+
+    // Column categories
+    const columnCategories = {
+      "Project Information": [
+        "Project Code", "Project Name", "Programme Start", "Programme End",
+        "TVET College", "Project Status", "GIZ Enrollment Number",
+        "GIZ Enrollment Date", "Type of support / programme"
+      ],
+      "Beneficiary Details": [
+        "Identity / Passport Number", "First Name/s:", "Surname", "Date of Birth",
+        "Age", "Gender", "Ethnicity", "Nationality", "Disability", "Disability Type"
+      ],
+      "Contact Information": [
+        "Residential Address", "Township/Rural Location", "Province",
+        "Local Municipality", "District Municipality", "Postal code",
+        "Cell Number", "WhatsApp Number (if applicable)", "Email Address",
+        "Preferred contact method", "IRM Platform Notifications"
+      ],
+      "Education & Employment": [
+        "Education Level", "Highest educational qualification attained.",
+        "Name of Highest educational qualification attained", "Year Obtained",
+        "Employment Status", "Position in Company/ Job Title"
+      ],
+      "Business Ownership": [
+        "Business Ownership Interest", "Number of Other Business Owners",
+        "Secondary Business Contact  First Name/s:", "Secondary Business Contact  Surname",
+        "Secondary Business Contact Cell Number"
+      ],
+      "Business Details": [
+        "Business Name", "Business Operating Start Date", "Years in Business",
+        "Legal Type of business entity", "Business Core Products and Services",
+        "Business Registration status", "Business Registration number",
+        "Business date of registration", "Business Financial Year-End",
+        "Copy of CIPC registration certificate"
+      ],
+      "Tax & Compliance": [
+        "Business Tax Registration Status", "Business Income Tax reference number",
+        "Tax compliance PIN expiry date", "Copy of Tax clearance certificate)",
+        "Business Website Address"
+      ],
+      "Business Location": [
+        "Business Address", "Type of Business Premises", "Township/Rural Location",
+        "Province", "Local Municipality", "Ward Number", "District Municipality",
+        "Postal code", "TVET College nearest to the business location:"
+      ],
+      "Financial & BBBEE": [
+        "Business Annual Revenue (Last Financial Year-End)", "BBBEE Classification",
+        "BBBEE Level of Contribution", "Copy of BBBEE certificate / Affidavit",
+        "BBBEE certificate / Affidavit expiry date", "Black Ownership and Management Control",
+        "Black Female Ownership", "Black Youth Ownership", "Disabled Ownership"
+      ],
+      "Market & Workforce": [
+        "Main Market/Revenue Source", "Type of Main Market/Revenue Source",
+        "Market Geographic Reach", "Total Number of Employees",
+        "Total Number of Female Employees", "Total Number of Youth Employees",
+        "Total Number of Black Employees"
+      ],
+      "Training & Development": [
+        "Does the business have a history of Hosting Learners/Apprentices",
+        "Name of the last Organization that provided the Learners/Apprentices?",
+        "Total number of Learners/Apprentices hosted", "Hosting period",
+        "Does the business have an interest and capacity to Host Learners/Apprentices?",
+        "Total number of Learners/Apprentices the business wants to host",
+        "Hosting period"
+      ],
+      "Enterprise Development": [
+        "Does the business have a history of Enterprise Development",
+        "Name of the last Organization that provided Enterprise Development",
+        "Enterprise Development period", "Received Enterprise Development Support",
+        "Type of Access to Finance Received", "Name of the Organization that Provided the Finance",
+        "Value of Finance Received"
+      ]
+    };
+
+    // DOM Elements
+    const categoryTabs = document.getElementById('categoryTabs');
+    const tableHeader = document.getElementById('tableHeader');
+    const tableBody = document.getElementById('tableBody');
+    const noResults = document.getElementById('noResults');
+    const pagination = document.getElementById('pagination');
+    const projectModal = document.getElementById('projectModal');
+    const closeModal = document.getElementById('closeModal');
+    const projectDetails = document.getElementById('projectDetails');
+    const exportBtn = document.getElementById('exportBtn');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const searchInput = document.getElementById('searchInput');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    // Global variables
+    let currentColumns = ["Project Code", "Project Name", "TVET College", "Project Status"];
+    let currentPage = 1;
+    const projectsPerPage = 10;
+    let allProjects = [];
+    let filteredProjects = [];
+
+    // Initialize dashboard
+    async function initializeDashboard() {
+      try {
+        const response = await fetch('../projects.json');
+        if (!response.ok) throw new Error(i18next.t('database_management.error_loading_projects', { defaultValue: 'Failed to load projects.json' }));
+        allProjects = await response.json();
+        filteredProjects = [...allProjects];
+        console.log('Projects loaded:', filteredProjects.length);
+        initCategoryTabs();
+        displayProjects();
+      } catch (error) {
+        console.error('Error loading projects:', error);
+        showErrorMessage(i18next.t('database_management.error_loading_projects', { defaultValue: 'Error loading projects: ' + error.message }));
+      }
+    }
+
+    // Initialize category tabs
+    function initCategoryTabs() {
+      console.log('Initializing category tabs');
+      categoryTabs.innerHTML = '';
+      for (const category in columnCategories) {
+        const tab = document.createElement('div');
+        tab.className = 'category-tab';
+        if (category === "Project Information") tab.classList.add('active');
+        tab.setAttribute('data-i18n', `database_management.category_${category.toLowerCase().replace(/\s+/g, '_')}`);
+        tab.textContent = category; // Fallback text
+        tab.dataset.category = category;
+        tab.addEventListener('click', toggleCategory);
+        categoryTabs.appendChild(tab);
+      }
+      updateContent();
+    }
+
+    // Toggle category visibility
+    function toggleCategory(e) {
+      console.log('Toggling category:', e.target.dataset.category);
+      const category = e.target.dataset.category;
+      e.target.classList.toggle('active');
+      if (e.target.classList.contains('active')) {
+        columnCategories[category].forEach(col => {
+          if (!currentColumns.includes(col)) currentColumns.push(col);
+        });
+      } else {
+        currentColumns = currentColumns.filter(col => !columnCategories[category].includes(col));
+      }
+      if (!currentColumns.includes("Project Code")) currentColumns.unshift("Project Code");
+      displayProjects();
+    }
+
+    // Refresh data
+    function refreshData() {
+      console.log('Refreshing data');
+      tableBody.innerHTML = '';
+      searchInput.value = '';
+      initializeDashboard();
+    }
+
+    // Display projects in the table
+    function displayProjects() {
+      console.log('Displaying projects:', filteredProjects.length);
+      updateTableHeader();
+      tableBody.innerHTML = '';
+      if (filteredProjects.length === 0) {
+        console.log('No projects to display');
+        noResults.style.display = 'block';
+        pagination.innerHTML = '';
+        return;
+      }
+      noResults.style.display = 'none';
+      const totalPages = Math.ceil(filteredProjects.length / projectsPerPage);
+      const startIndex = (currentPage - 1) * projectsPerPage;
+      const endIndex = Math.min(startIndex + projectsPerPage, filteredProjects.length);
+      const paginatedProjects = filteredProjects.slice(startIndex, endIndex);
+      paginatedProjects.forEach(project => {
+        const row = document.createElement('tr');
+        currentColumns.forEach(column => {
+          const cell = document.createElement('td');
+          cell.textContent = project[column] || '-';
+          row.appendChild(cell);
+        });
+        const actionCell = document.createElement('td');
+        const viewBtn = document.createElement('button');
+        viewBtn.className = 'btn btn-primary';
+        viewBtn.style.padding = '5px 10px';
+        viewBtn.innerHTML = '<i class="bi bi-eye"></i> <span data-i18n="database_management.view_button">View</span>';
+        viewBtn.addEventListener('click', () => viewProjectDetails(project["Project Code"] || project["New project name"] || project["Oroginal Project name"]));
+        actionCell.appendChild(viewBtn);
+        row.appendChild(actionCell);
+        tableBody.appendChild(row);
+      });
+      updateContent();
+      generatePagination(totalPages);
+    }
+
+    // Update table header
+    function updateTableHeader() {
+      console.log('Updating table header with columns:', currentColumns);
+      tableHeader.innerHTML = '';
+      const headerRow = document.createElement('tr');
+      currentColumns.forEach(column => {
+        const th = document.createElement('th');
+        th.textContent = column;
+        headerRow.appendChild(th);
+      });
+      const actionTh = document.createElement('th');
+      actionTh.setAttribute('data-i18n', 'database_management.table_actions');
+      actionTh.textContent = 'Actions'; // Fallback
+      headerRow.appendChild(actionTh);
+      tableHeader.appendChild(headerRow);
+      updateContent();
+    }
+
+    // View project details in modal
+    function viewProjectDetails(projectCode) {
+      console.log('Viewing project details for:', projectCode);
+      const project = filteredProjects.find(p =>
+        p["Project Code"] === projectCode ||
+        p["New project name"] === projectCode ||
+        p["Oroginal Project name"] === projectCode
+      );
+      if (!project) {
+        console.log('Project not found:', projectCode);
+        return;
+      }
+      let detailsHTML = '';
+      for (const category in columnCategories) {
+        const categoryColumns = columnCategories[category];
+        let hasData = false;
+        for (const col of categoryColumns) {
+          if (project[col]) {
+            hasData = true;
+            break;
+          }
+        }
+        if (!hasData) continue;
+        detailsHTML += `
+          <div class="detail-section">
+            <h3 data-i18n="database_management.category_${category.toLowerCase().replace(/\s+/g, '_')}">${category}</h3>
+            <div class="detail-grid">
+        `;
+        categoryColumns.forEach(col => {
+          if (project[col]) {
+            detailsHTML += `
+              <div class="detail-item">
+                <div class="detail-label">${col}</div>
+                <div class="detail-value">${project[col]}</div>
+              </div>
+            `;
+          }
+        });
+        detailsHTML += `</div></div>`;
+      }
+      projectDetails.innerHTML = detailsHTML;
+      projectModal.classList.add('active');
+      updateContent();
+    }
+
+    // Generate pagination controls
+    function generatePagination(totalPages) {
+      console.log('Generating pagination for', totalPages, 'pages');
+      pagination.innerHTML = '';
+      if (totalPages <= 1) return;
+      const prevBtn = document.createElement('button');
+      prevBtn.className = 'page-btn';
+      prevBtn.innerHTML = '&laquo;';
+      prevBtn.disabled = currentPage === 1;
+      prevBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+          currentPage--;
+          displayProjects();
+        }
+      });
+      pagination.appendChild(prevBtn);
+      const maxVisiblePages = 5;
+      let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+      let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+      if (endPage - startPage + 1 < maxVisiblePages) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+      }
+      if (startPage > 1) {
+        const firstPageBtn = document.createElement('button');
+        firstPageBtn.className = 'page-btn';
+        firstPageBtn.textContent = '1';
+        firstPageBtn.addEventListener('click', () => {
+          currentPage = 1;
+          displayProjects();
+        });
+        pagination.appendChild(firstPageBtn);
+        if (startPage > 2) {
+          const ellipsis = document.createElement('span');
+          ellipsis.textContent = '...';
+          ellipsis.style.padding = '8px 12px';
+          pagination.appendChild(ellipsis);
+        }
+      }
+      for (let i = startPage; i <= endPage; i++) {
+        const pageBtn = document.createElement('button');
+        pageBtn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+        pageBtn.textContent = i;
+        pageBtn.addEventListener('click', () => {
+          currentPage = i;
+          displayProjects();
+        });
+        pagination.appendChild(pageBtn);
+      }
+      if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+          const ellipsis = document.createElement('span');
+          ellipsis.textContent = '...';
+          ellipsis.style.padding = '8px 12px';
+          pagination.appendChild(ellipsis);
+        }
+        const lastPageBtn = document.createElement('button');
+        lastPageBtn.className = 'page-btn';
+        lastPageBtn.textContent = totalPages;
+        lastPageBtn.addEventListener('click', () => {
+          currentPage = totalPages;
+          displayProjects();
+        });
+        pagination.appendChild(lastPageBtn);
+      }
+      const nextBtn = document.createElement('button');
+      nextBtn.className = 'page-btn';
+      nextBtn.innerHTML = '&raquo;';
+      nextBtn.disabled = currentPage === totalPages;
+      nextBtn.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+          currentPage++;
+          displayProjects();
+        }
+      });
+      pagination.appendChild(nextBtn);
+    }
+
+    // Export data to CSV
+    function exportData() {
+      console.log('Exporting data');
+      if (filteredProjects.length === 0) {
+        alert(i18next.t('database_management.alert_no_data', { defaultValue: 'No data to export' }));
+        return;
+      }
+      let csvContent = currentColumns.join(',') + `,${i18next.t('database_management.table_actions', { defaultValue: 'Actions' })}\n`;
+      filteredProjects.forEach(project => {
+        const row = currentColumns.map(col => {
+          let value = project[col] || '';
+          if (typeof value === 'string' && value.includes(',')) {
+            return `"${value.replace(/"/g, '""')}"`;
+          }
+          return value;
+        });
+        csvContent += row.join(',') + '\n';
+      });
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `nbi_projects_${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // Handle search input
+    function handleSearch() {
+      const query = searchInput.value.toLowerCase().trim();
+      console.log('Searching for:', query);
+      if (query === '') {
+        filteredProjects = [...allProjects];
+      } else {
+        filteredProjects = allProjects.filter(project => {
+          return (
+            (project["Project Code"] && project["Project Code"].toLowerCase().includes(query)) ||
+            (project["Project Name"] && project["Project Name"].toLowerCase().includes(query)) ||
+            (project["TVET College"] && project["TVET College"].toLowerCase().includes(query)) ||
+            (project["Project Status"] && project["Project Status"].toLowerCase().includes(query)) ||
+            (project["First Name/s:"] && project["First Name/s:"].toLowerCase().includes(query)) ||
+            (project["Surname"] && project["Surname"].toLowerCase().includes(query))
+          );
+        });
+      }
+      currentPage = 1;
+      displayProjects();
+    }
+
+    // Event listeners
+    function setupEventListeners() {
+      closeModal.addEventListener('click', () => projectModal.classList.remove('active'));
+      exportBtn.addEventListener('click', exportData);
+      refreshBtn.addEventListener('click', refreshData);
+      searchInput.addEventListener('input', handleSearch);
+      projectModal.addEventListener('click', (e) => {
+        if (e.target === projectModal) projectModal.classList.remove('active');
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && projectModal.classList.contains('active')) {
+          projectModal.classList.remove('active');
+        }
+      });
+      logoutBtn.addEventListener('click', () => {
+        console.log('DEBUG: Logout button clicked');
+        resetAdminSession();
+      });
+    }
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('DOM fully loaded for database.html at', new Date().toLocaleString('en-ZA'));
+      if (customElements.get('green-economy-header') && customElements.get('green-economy-footer')) {
+        console.log('Custom elements defined');
+      } else {
+        console.warn('Custom elements not defined. Ensure MasterPage.js is loaded correctly.');
+      }
+    });
+
+    // Fallback timeout
+    setTimeout(() => {
+      if (document.body.classList.contains('loading')) {
+        console.warn('Loading timeout reached, forcing content display');
+        applyFallbackTranslations();
+        document.body.classList.remove('loading');
+        document.body.classList.add('loaded');
+        document.querySelector('.loading-overlay').style.display = 'none';
+        showErrorMessage(i18next.t('database_management.alert_timeout', { defaultValue: 'Page load timeout. Displaying default content.' }));
+        initializeDashboard();
+      }
+    }, 10000);
+
+    // Initialize
+    setupEventListeners();
+  </script>
+</body>
+</html>

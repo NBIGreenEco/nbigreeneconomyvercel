@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-37VRZ5CGE4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-37VRZ5CGE4');
+  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Economy Toolkit - API Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../Master Page(Header and Footer)/MasterPage.css">
+    <script src="../../Master Page(Header and Footer)/MasterPage.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="../../Master Page(Header and Footer)/translation.js"></script>
+    <link rel="stylesheet" href="../signup&signin.css">
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="../scripts/enhancedsearch.js"></script>
+    <style>
+        .api-management-section {
+            background: var(--card);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin: 0 1.5rem 3rem 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
+        }
+        .api-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .api-card {
+            background: var(--light-bg);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        .api-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 12px -3px rgba(0, 0, 0, 0.1);
+        }
+        .api-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--green-dark);
+            margin-bottom: 0.5rem;
+        }
+        .api-description {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+            margin-bottom: 1rem;
+        }
+        .api-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .api-toggle-label {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+        .api-toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+        .api-toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .api-toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--border);
+            transition: 0.3s;
+            border-radius: 20px;
+        }
+        .api-toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+        input:checked + .api-toggle-slider {
+            background: var(--green-primary);
+        }
+        input:checked + .api-toggle-slider:before {
+            transform: translateX(20px);
+        }
+        .api-key-input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+        .api-key-input:focus {
+            outline: none;
+            border-color: var(--green-primary);
+            box-shadow: 0 0 0 3px rgba(78, 181, 166, 0.1);
+        }
+        .export-logs-btn {
+            margin-top: 1rem;
+            background: var(--green-primary);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+        }
+        .export-logs-btn:hover {
+            background: var(--green-dark);
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+    <div class="loader-overlay" id="loader-overlay"></div>
+    <div class="loader" id="loader"></div>
+    <green-economy-header></green-economy-header>
+    <main class="main">
+        <div class="container-full">
+            <section class="hero">
+                <div class="hero-content">
+                    <h1 data-translate="api-management-title">API Management</h1>
+                    <p data-translate="api-management-subtitle">Manage and configure API integrations for the Green Economy Toolkit.</p>
+                </div>
+            </section>
+            <section class="api-management-section">
+                <h2 class="section-title" data-translate="api-management-section-title">API Configurations</h2>
+                <div class="api-grid" id="apiGrid"></div>
+                <div class="text-center">
+                    <button id="exportLogs" class="export-logs-btn" data-translate="export-logs">Export Interaction Logs</button>
+                </div>
+            </section>
+        </div>
+    </main>
+    <green-economy-footer></green-economy-footer>
+    <script src="../scripts/api-management.js"></script>
+</body>
+</html>

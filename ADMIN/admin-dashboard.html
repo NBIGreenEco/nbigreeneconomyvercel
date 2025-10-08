@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-i18n="admin_dashboard.title">Admin Dashboard - Green Economy Toolkit</title>
+    <script type="module" src="/ADMIN/scripts/adminAuthCheck.js"></script>
+<link rel="stylesheet" href="/Master%20Page(Header%20and%20Footer)/MasterPage.css">
+    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
+    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
+    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
+    <script src="/Master Page(Header and Footer)/Trans.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/Master Page(Header and Footer)/MasterPage.css">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --green-primary: #4eb5a6;
+        --green-dark: #005d6a;
+        --green-light: #b8e5e1;
+        --green-accent: #7cc8bc;
+        --light-bg: #f8fffe;
+        --background: #ffffff;
+        --foreground: #0f172a;
+        --card: #ffffff;
+        --card-foreground: #0f172a;
+        --border: #e2e8f0;
+        --muted-foreground: #64748b;
+        --primary: #1e293b;
+        --primary-foreground: #f8fafc;
+        --secondary: #f1f5f9;
+        --secondary-foreground: #1e293b;
+        --radius: 1rem;
+      }
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: var(--background);
+        color: var(--foreground);
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+      .main {
+        padding-top: 5rem;
+        min-height: 100vh;
+      }
+      .hero {
+        position: relative;
+        height: 400px;
+        background-image: linear-gradient(rgba(0, 93, 106, 0.7), rgba(78, 181, 166, 0.7)),
+                        url("https://images.pexels.com/photos/371917/pexels-photo-371917.jpeg");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 3rem;
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+      .hero-content {
+        text-align: center;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 2rem 3rem;
+        border-radius: var(--radius);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        margin: 0 1rem;
+      }
+      .hero h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--green-dark);
+        margin-bottom: 1rem;
+      }
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+        padding: 0 2rem;
+      }
+      .dashboard-card {
+        background: var(--card);
+        padding: 2rem;
+        border-radius: var(--radius);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border);
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+        position: relative;
+        z-index: 1;
+      }
+      .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      }
+      .card-icon {
+        width: 3rem;
+        height: 3rem;
+        color: var(--green-dark);
+        margin: 0 auto 1rem;
+      }
+      .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--card-foreground);
+      }
+      .card-description {
+        color: var(--muted-foreground);
+      }
+      .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #f8f9fa;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
+      .loading-spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #4eb5a6;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      body.loading {
+        visibility: hidden;
+        opacity: 0;
+      }
+      body.loaded {
+        visibility: visible;
+        opacity: 1;
+        transition: opacity 0.3s;
+      }
+      .logout-btn {
+        background-color: #dc3545;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius);
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        margin: 1rem auto;
+        display: block;
+        max-width: 200px;
+        text-align: center;
+      }
+      .logout-btn:hover {
+        background-color: #c82333;
+        transform: translateY(-2px);
+      }
+      @media (max-width: 768px) {
+        .dashboard-grid {
+          grid-template-columns: 1fr;
+        }
+        .hero {
+          height: auto;
+          min-height: 200px;
+          border-radius: 0.5rem;
+        }
+        .hero-content {
+          padding: 1rem;
+          max-width: 100%;
+        }
+      }
+    </style>
+</head>
+<body class="loading">
+    <div class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+        <green-economy-header></green-economy-header>
+    <section class="hero">
+      <div class="hero-content">
+        <h1 data-i18n="admin_dashboard.hero_title">Admin Dashboard</h1>
+        <button class="logout-btn" id="logoutBtn" data-i18n="admin_dashboard.logout_button">Logout</button>
+      </div>
+    </section>
+    <section class="dashboard-grid">
+      <div class="dashboard-card" id="manage-events">
+        <i class="fas fa-calendar-alt card-icon"></i>
+        <h3 class="card-title" data-i18n="admin_dashboard.events_title">Manage Events</h3>
+        <p class="card-description" data-i18n="admin_dashboard.events_desc">Add or edit events for the index page.</p>
+      </div>
+      <div class="dashboard-card" id="manage-news">
+        <i class="fas fa-newspaper card-icon"></i>
+        <h3 class="card-title" data-i18n="admin_dashboard.news_title">Manage News</h3>
+        <p class="card-description" data-i18n="admin_dashboard.news_desc">Update the news section on the index page.</p>
+      </div>
+      <div class="dashboard-card" id="manage-database">
+        <i class="fas fa-database card-icon"></i>
+        <h3 class="card-title" data-i18n="admin_dashboard.database_title">Manage Database</h3>
+        <p class="card-description" data-i18n="admin_dashboard.database_desc">Access and manage the database.</p>
+      </div>
+      <div class="dashboard-card" id="manage-funding">
+        <i class="fas fa-money-check-alt card-icon"></i>
+        <h3 class="card-title" data-i18n="admin_dashboard.funding_title">Manage Funding</h3>
+        <p class="card-description" data-i18n="admin_dashboard.funding_desc">Add or update funding opportunities.</p>
+      </div>
+      <div class="dashboard-card" id="manage-opportunities">
+        <i class="fas fa-briefcase card-icon"></i>
+        <h3 class="card-title" data-i18n="admin_dashboard.opportunities_title">Manage Opportunities</h3>
+        <p class="card-description" data-i18n="admin_dashboard.opportunities_desc">Add or update opportunities for users.</p>
+      </div>
+      <div class="dashboard-card" id="manage-translations">
+        <i class="fas fa-language card-icon"></i>
+        <h3 class="card-title" data-i18n="admin_dashboard.translations_title">Manage Translations</h3>
+        <p class="card-description" data-i18n="admin_dashboard.translations_desc">Run translation scripts to update language files.</p>
+      </div>
+      <div class="dashboard-card" id="manage-analytics">
+        <i class="fas fa-chart-line card-icon"></i>
+        <h3 class="card-title" data-i18n="admin_dashboard.analytics_title">Manage Analytics</h3>
+        <p class="card-description" data-i18n="admin_dashboard.analytics_desc">View how users interact with the website.</p>
+      </div>
+    </section>
+        <green-economy-footer></green-economy-footer>
+    <script type="module">
+      import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
+      import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+      import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+      import { resetAdminSession } from '/ADMIN/scripts/adminAuthCheck.js';
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyCfa827mvCLf1ETts6B_DmCfb7owTohBxk",
+        authDomain: "nbi-green-economy.firebaseapp.com",
+        projectId: "nbi-green-economy",
+        storageBucket: "nbi-green-economy.appspot.com",
+        messagingSenderId: "53732340059",
+        appId: "1:53732340059:web:3fb3f086c6662e1e9baa7e",
+        measurementId: "G-37VRZ5CGE4"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      const auth = getAuth(app);
+
+      i18next
+        .use(i18nextHttpBackend)
+        .use(i18nextBrowserLanguageDetector)
+        .init({
+          fallbackLng: 'en',
+          supportedLngs: ['en', 'zu', 'tn'],
+          backend: {
+            loadPath: '/locales/{{lng}}.json?v=' + new Date().getTime()
+          },
+          detection: {
+            order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
+            caches: ['localStorage', 'cookie']
+          }
+        }, (err, t) => {
+          if (err) {
+            console.error('i18next initialization error:', err);
+            setTimeout(() => {
+              i18next.loadResources((loadErr) => {
+                if (loadErr) {
+                  console.error('Retry failed:', loadErr);
+                  applyFallbackTranslations();
+                } else {
+                  console.log('i18next retry successful, language:', i18next.language);
+                  finalizeLoading();
+                }
+              });
+            }, 2000);
+            return;
+          }
+          console.log('i18next initialized for admin-dashboard.html at', new Date().toLocaleString('en-ZA'), ':', i18next.language);
+          finalizeLoading();
+        });
+
+      function applyFallbackTranslations() {
+        document.querySelectorAll('[data-i18n]').forEach(elem => {
+          const key = elem.getAttribute('data-i18n');
+          if (key.startsWith('[')) {
+            const match = key.match(/\[(\w+)\](.+)/);
+            if (match) {
+              const [, attr, i18nKey] = match;
+              const fallback = elem.getAttribute(attr) || 'Content not available';
+              elem.setAttribute(attr, fallback);
+            }
+          } else {
+            const fallback = elem.textContent.trim() || 'Content not available';
+            elem.textContent = fallback;
+          }
+        });
+        console.warn('Applied fallback translations due to loading failure');
+        finalizeLoading();
+      }
+
+      function updateContent() {
+        const missingKeys = [];
+        document.querySelectorAll('[data-i18n]').forEach(element => {
+          const key = element.getAttribute('data-i18n');
+          try {
+            if (key.startsWith('[')) {
+              const match = key.match(/\[(\w+)\](.+)/);
+              if (match) {
+                const [, attr, translationKey] = match;
+                const translation = i18next.t(translationKey, { defaultValue: element.getAttribute(attr) || 'Content not available' });
+                if (translation === translationKey) {
+                  missingKeys.push(translationKey);
+                }
+                element.setAttribute(attr, translation);
+              }
+            } else {
+              const translation = i18next.t(key, { defaultValue: element.textContent.trim() || 'Content not available' });
+              if (translation === key) {
+                missingKeys.push(key);
+              }
+              element.innerHTML = translation;
+            }
+          } catch (error) {
+            console.error(`Error translating key ${key}:`, error);
+          }
+        });
+        if (missingKeys.length > 0) {
+          console.warn('Missing translations:', missingKeys);
+        }
+      }
+
+      function finalizeLoading() {
+        i18next.loadResources(() => {
+          updateContent();
+          document.body.classList.remove('loading');
+          document.body.classList.add('loaded');
+          document.querySelector('.loading-overlay').style.display = 'none';
+          console.log('Translations loaded, content displayed');
+        });
+      }
+
+      i18next.on('languageChanged', () => {
+        console.log('Language changed to:', i18next.language);
+        updateContent();
+      });
+
+      i18next.on('loaded', () => {
+        updateContent();
+      });
+
+      document.addEventListener('DOMContentLoaded', () => {
+        console.log('DEBUG: DOM fully loaded for admin-dashboard.html at', new Date().toLocaleString('en-ZA'));
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                console.log('DEBUG: No user signed in, redirecting to VerifyCode.html');
+                sessionStorage.removeItem('verified');
+                sessionStorage.removeItem('sessionStart');
+                window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html');
+                return;
+            }
+
+            // Initialize dashboard buttons with session persistence
+            const buttons = {
+                'manage-events': '/ADMIN/ManageEvents.html',
+                'manage-news': '/ADMIN/ManageNews.html',
+                'manage-database': '/ADMIN/database.html',
+                'manage-funding': '/ADMIN/ManageFunding.html',
+                'manage-opportunities': '/ADMIN/ManageOpprtunities.html',
+                'manage-translations': '/ADMIN/TranslationManager.html',
+                'manage-analytics': '/ADMIN/analytics.html'
+            };
+
+            Object.entries(buttons).forEach(([id, href]) => {
+                const button = document.getElementById(id);
+                if (button) {
+                    console.log(`DEBUG: Attaching click listener to ${id} for navigation to ${href}`);
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        console.log(`DEBUG: Button ${id} clicked, setting sessionStorage`);
+                        sessionStorage.setItem('verified', 'true');
+                        sessionStorage.setItem('sessionStart', Date.now().toString());
+                        console.log('DEBUG: sessionStorage set, verified:', sessionStorage.getItem('verified'), 'sessionStart:', sessionStorage.getItem('sessionStart'));
+                        // Add slight delay to ensure sessionStorage is written
+                        setTimeout(() => {
+                            console.log(`DEBUG: Navigating to ${href}`);
+                            window.location.assign(href);
+                        }, 100);
+                    });
+                } else {
+                    console.error(`DEBUG: Button with ID ${id} not found`);
+                }
+            });
+
+            // Logout button
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    console.log('DEBUG: Logout button clicked');
+                    resetAdminSession();
+                });
+            }
+
+            console.log('DEBUG: Admin dashboard initialized');
+        });
+      });
+    </script>
+</body>
+</html>

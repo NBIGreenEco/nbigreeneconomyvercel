@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="manage_opportunities.title">Manage Opportunities</title>
+        <script type="module" src="/ADMIN/scripts/adminAuthCheck.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/Master%20Page(Header%20and%20Footer)/MasterPage.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
+    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
+    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
+    <script src="/Master%20Page(Header%20and%20Footer)/Trans.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <style>
+        :root {
+            --green-primary: #2b9589;
+            --green-dark: #005d6a;
+            --green-light: #b8e5e1;
+            --green-lighter: #e8f5f3;
+            --gray-light: #f8f9fa;
+            --gray-medium: #e9ecef;
+            --gray-border: #dee2e6;
+            --text-dark: #212529;
+            --text-medium: #495057;
+            --danger-light: #fff5f5;
+            --danger-medium: #ffd6d6;
+            --danger-dark: #dc3545;
+        }
+        
+        body {
+            background-color: var(--gray-light);
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: var(--text-medium);
+            line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 30px 0 60px 0;
+        }
+        
+        .container-main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        .page-header {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px 24px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            border: 1px solid var(--gray-border);
+        }
+        
+        .page-title {
+            color: var(--green-dark);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            margin-bottom: 0;
+        }
+        
+        .page-title i {
+            color: var(--green-primary);
+            font-size: 1.1em;
+        }
+        
+        .btn {
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            transition: all 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+        }
+        
+        .btn-green {
+            background-color: var(--green-primary);
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .btn-green:hover {
+            background-color: var(--green-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .btn-outline-green {
+            border-color: var(--green-primary);
+            color: var(--green-primary);
+        }
+        
+        .btn-outline-green:hover {
+            background-color: var(--green-lighter);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+        
+        .action-buttons .btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            border: 1px solid transparent;
+        }
+        
+        .action-buttons .btn-sm {
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+        
+        .edit-btn {
+            background-color: white;
+            border-color: var(--gray-border);
+            color: var(--text-medium);
+        }
+        
+        .edit-btn:hover {
+            background-color: var(--gray-medium);
+            border-color: var(--gray-border);
+            color: var(--text-dark);
+        }
+        
+        .edit-btn i {
+            color: var(--green-primary);
+            font-size: 0.9em;
+        }
+        
+        .delete-btn {
+            background-color: var(--danger-light);
+            border-color: var(--danger-medium);
+            color: var(--danger-dark);
+        }
+        
+        .delete-btn:hover {
+            background-color: #ffecec;
+            border-color: #ffb8b8;
+            color: #c82333;
+        }
+        
+        .delete-btn i {
+            color: var(--danger-dark);
+            font-size: 0.9em;
+        }
+        
+        .filter-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+            border: 1px solid var(--gray-border);
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            font-size: 0.95rem;
+        }
+        
+        .search-input {
+            padding-left: 40px;
+            border-radius: 6px;
+            border: 1px solid var(--gray-border);
+            height: 40px;
+        }
+        
+        .table-container {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+            border: 1px solid var(--gray-border);
+            margin-bottom: 40px;
+        }
+        
+        .table {
+            margin-bottom: 0;
+            color: var(--text-medium);
+        }
+        
+        .table thead th {
+            background-color: var(--green-lighter);
+            color: var(--green-dark);
+            font-weight: 600;
+            border-bottom: 2px solid var(--green-light);
+            padding: 14px 16px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        
+        .table tbody tr {
+            transition: all 0.15s ease;
+        }
+        
+        .table tbody tr:hover {
+            background-color: rgba(184, 229, 225, 0.15);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .table td {
+            padding: 14px 16px;
+            vertical-align: middle;
+            border-top: 1px solid rgba(0,0,0,0.04);
+            font-size: 0.92rem;
+        }
+        
+        .badge-category {
+            background-color: var(--green-lighter);
+            color: var(--green-dark);
+            font-weight: 500;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            display: inline-block;
+            white-space: nowrap;
+        }
+        
+        .loading-container, .no-results-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 60px 40px;
+            text-align: center;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+            border: 1px solid var(--gray-border);
+            margin: 20px 0;
+        }
+        
+        .loading-container i {
+            color: var(--green-primary);
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            animation: spin 1s linear infinite;
+        }
+        
+        .no-results-container i {
+            color: #adb5bd;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+        
+        .no-results-container h4 {
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .modal-content {
+            border: none;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+        }
+        
+        .modal-header {
+            background-color: var(--green-lighter);
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+            padding: 18px 24px;
+        }
+        
+        .modal-title {
+            color: var(--green-dark);
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+        
+        .modal-body {
+            padding: 24px;
+        }
+        
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid rgba(0,0,0,0.08);
+            background-color: var(--gray-light);
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: var(--green-dark);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .form-control, .form-select {
+            border: 1px solid var(--gray-border);
+            border-radius: 6px;
+            padding: 8px 12px;
+            transition: all 0.2s;
+            font-size: 0.92rem;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--green-primary);
+            box-shadow: 0 0 0 0.25rem rgba(43, 149, 137, 0.15);
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2b9589;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        body.loading {
+            visibility: hidden;
+            opacity: 0;
+        }
+        
+        body.loaded {
+            visibility: visible;
+            opacity: 1;
+            transition: opacity 0.3s;
+        }
+        
+        .error-message {
+            text-align: center;
+            padding: 20px;
+            color: var(--danger-dark);
+            background-color: var(--danger-light);
+            border-radius: 8px;
+            margin: 20px auto;
+            max-width: 600px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .table-responsive {
+                border-radius: 8px;
+            }
+            
+            .table thead {
+                display: none;
+            }
+            
+            .table tr {
+                display: block;
+                margin-bottom: 15px;
+                border: 1px solid var(--gray-border);
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            }
+            
+            .table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-top: none;
+                border-bottom: 1px solid rgba(0,0,0,0.05);
+                padding: 12px 16px;
+            }
+            
+            .table td:before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: var(--green-dark);
+                margin-right: 15px;
+                font-size: 0.85rem;
+            }
+            
+            .action-buttons {
+                justify-content: flex-start;
+                margin-top: 10px;
+                padding-top: 10px;
+                border-top: 1px dashed rgba(0,0,0,0.1);
+            }
+            
+            .badge-category {
+                padding: 4px 10px;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .filter-section .col-md-4 {
+                margin-bottom: 15px;
+            }
+        }
+        
+        @media print {
+            .page-header, .filter-section, .action-buttons {
+                display: none !important;
+            }
+            
+            .table-container {
+                box-shadow: none;
+                border: none;
+            }
+            
+            .table thead th {
+                background-color: transparent !important;
+                color: black !important;
+            }
+        }
+    </style>
+</head>
+<body class="loading">
+    <div class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+    <green-economy-header></green-economy-header>
+    
+    <div class="main-content">
+        <div class="container container-main">
+            <div id="errorMessage" class="error-message d-none">
+                Failed to load content. Please check your connection or try again later.
+            </div>
+            <div class="page-header d-flex justify-content-between align-items-center">
+                <h1 class="page-title">
+                    <i class="bi bi-kanban-fill"></i>
+                    <span data-i18n="manage_opportunities.title">Manage Opportunities</span>
+                </h1>
+                <button class="btn btn-green" data-bs-toggle="modal" data-bs-target="#opportunityModal" id="addOpportunityBtn" data-i18n="[html]manage_opportunities.add_button">
+                    <i class="bi bi-plus-lg me-1"></i> Add New
+                </button>
+            </div>
+
+            <div class="filter-section">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <select class="form-select" id="categoryFilter">
+                            <option value="" data-i18n="manage_opportunities.filter_all_categories">All Categories</option>
+                            <option value="procurement" data-i18n="manage_opportunities.category_procurement">Procurement</option>
+                            <option value="market-access" data-i18n="manage_opportunities.category_market_access">Market Access</option>
+                            <option value="capacity-building" data-i18n="manage_opportunities.category_capacity_building">Capacity Building</option>
+                            <option value="training" data-i18n="manage_opportunities.category_training">Training</option>
+                            <option value="enterprise-development" data-i18n="manage_opportunities.category_enterprise_development">Enterprise Development</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="search-box">
+                            <i class="bi bi-search"></i>
+                            <input type="text" class="form-control search-input" id="searchInput" data-i18n="[placeholder]manage_opportunities.search_placeholder" placeholder="Search opportunities...">
+                        </div>
+                    </div>
+                    <div class="col-md-4 d-flex justify-content-end">
+                        <button class="btn btn-outline-secondary" id="resetFilters" data-i18n="[html]manage_opportunities.reset_button">
+                            <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th data-i18n="manage_opportunities.table_title">Title</th>
+                                <th data-i18n="manage_opportunities.table_category">Category</th>
+                                <th data-i18n="manage_opportunities.table_description">Description</th>
+                                <th data-i18n="manage_opportunities.table_link">Link</th>
+                                <th class="text-end" data-i18n="manage_opportunities.table_actions">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="opportunitiesTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="loadingIndicator" class="loading-container my-4">
+                <div class="spinner-border text-green" role="status">
+                    <span class="visually-hidden" data-i18n="manage_opportunities.loading">Loading...</span>
+                </div>
+                <p class="mt-3" data-i18n="manage_opportunities.loading">Loading opportunities...</p>
+            </div>
+
+            <div id="noResults" class="no-results-container d-none">
+                <i class="bi bi-search"></i>
+                <h4 class="mt-3" data-i18n="manage_opportunities.no_results_title">No opportunities found</h4>
+                <p class="text-muted" data-i18n="manage_opportunities.no_results_message">Try adjusting your search or filters</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="opportunityModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle" data-i18n="manage_opportunities.add_modal_title">Add New Opportunity</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="opportunityForm">
+                    <input type="hidden" id="opportunityId">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="opportunityTitle" class="form-label" data-i18n="manage_opportunities.title_label">Title*</label>
+                            <input type="text" class="form-control" id="opportunityTitle" required data-i18n="[placeholder]manage_opportunities.title_placeholder" placeholder="Enter opportunity title">
+                        </div>
+                        <div class="mb-3">
+                            <label for="opportunityCategory" class="form-label" data-i18n="manage_opportunities.category_label">Category*</label>
+                            <select class="form-select" id="opportunityCategory" required>
+                                <option value="" data-i18n="manage_opportunities.category_select">Select a category</option>
+                                <option value="procurement" data-i18n="manage_opportunities.category_procurement">Procurement</option>
+                                <option value="market-access" data-i18n="manage_opportunities.category_market_access">Market Access</option>
+                                <option value="capacity-building" data-i18n="manage_opportunities.category_capacity_building">Capacity Building</option>
+                                <option value="training" data-i18n="manage_opportunities.category_training">Training</option>
+                                <option value="enterprise-development" data-i18n="manage_opportunities.category_enterprise_development">Enterprise Development</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="opportunityDescription" class="form-label" data-i18n="manage_opportunities.description_label">Description*</label>
+                            <textarea class="form-control" id="opportunityDescription" rows="4" required data-i18n="[placeholder]manage_opportunities.description_placeholder" placeholder="Enter opportunity description"></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="opportunityLink" class="form-label" data-i18n="manage_opportunities.link_label">Link URL</label>
+                                <input type="url" class="form-control" id="opportunityLink" data-i18n="[placeholder]manage_opportunities.link_placeholder" placeholder="https://example.com">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="opportunityLinkText" class="form-label" data-i18n="manage_opportunities.link_text_label">Link Text</label>
+                                <input type="text" class="form-control" id="opportunityLinkText" data-i18n="[placeholder]manage_opportunities.link_text_placeholder" placeholder="e.g. 'View Details'">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-i18n="manage_opportunities.cancel_button">Cancel</button>
+                        <button type="submit" class="btn btn-green" data-i18n="[html]manage_opportunities.save_button">
+                            <span id="submitButtonText" data-i18n="manage_opportunities.save_button_text">Save Opportunity</span>
+                            <span id="submitSpinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-i18n="manage_opportunities.delete_modal_title">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p data-i18n="manage_opportunities.delete_confirm_message">Are you sure you want to delete this opportunity? This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-i18n="manage_opportunities.cancel_button">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete" data-i18n="[html]manage_opportunities.delete_button">
+                        <i class="bi bi-trash me-1"></i> Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <green-economy-footer></green-economy-footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module">
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCfa827mvCLf1ETts6B_DmCfb7owTohBxk",
+            authDomain: "nbi-green-economy.firebaseapp.com",
+            projectId: "nbi-green-economy",
+            storageBucket: "nbi-green-economy.appspot.com",
+            messagingSenderId: "53732340059",
+            appId: "1:53732340059:web:3fb3f086c6662e1e9baa7e",
+            measurementId: "G-37VRZ5CGE4"
+        };
+
+        // Initialize Firebase
+        let db, opportunitiesRef;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            opportunitiesRef = db.collection("opportunities");
+            console.log('Firebase initialized successfully');
+        } catch (error) {
+            console.error('Firebase initialization failed:', error);
+            showErrorMessage('Failed to initialize Firebase. Please check your configuration.');
+        }
+
+        // Initialize i18next
+        i18next
+            .use(i18nextHttpBackend)
+            .use(i18nextBrowserLanguageDetector)
+            .init({
+                fallbackLng: 'en',
+                supportedLngs: ['en', 'zu', 'tn'],
+                backend: {
+                    loadPath: '/locales/{{lng}}.json?v=' + new Date().getTime()
+                },
+                detection: {
+                    order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
+                    caches: ['localStorage', 'cookie']
+                }
+            }, (err, t) => {
+                if (err) {
+                    console.error('i18next initialization error:', err);
+                    applyFallbackTranslations();
+                    setTimeout(finalizeLoading, 3000);
+                    return;
+                }
+                console.log('i18next initialized for ManageOpportunities.html at 03:23 AM SAST, Aug 24, 2025:', i18next.language);
+                finalizeLoading();
+            });
+
+        function applyFallbackTranslations() {
+            document.querySelectorAll('[data-i18n]').forEach(elem => {
+                const key = elem.getAttribute('data-i18n');
+                if (key.startsWith('[')) {
+                    const match = key.match(/\[(\w+)\](.+)/);
+                    if (match) {
+                        const [, attr, i18nKey] = match;
+                        const fallback = elem.getAttribute(attr) || 'Content not available';
+                        elem.setAttribute(attr, fallback);
+                    }
+                } else {
+                    const fallback = elem.textContent.trim() || 'Content not available';
+                    elem.textContent = fallback;
+                }
+            });
+            console.warn('Applied fallback translations due to loading failure');
+        }
+
+        function updateContent() {
+            const missingKeys = [];
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                try {
+                    if (key.startsWith('[')) {
+                        const match = key.match(/\[(\w+)\](.+)/);
+                        if (match) {
+                            const [, attr, translationKey] = match;
+                            const translation = i18next.t(translationKey, { defaultValue: element.getAttribute(attr) || 'Content not available' });
+                            if (translation === translationKey) {
+                                missingKeys.push(translationKey);
+                            }
+                            element.setAttribute(attr, translation);
+                        }
+                    } else {
+                        const translation = i18next.t(key, { defaultValue: element.textContent.trim() || 'Content not available' });
+                        if (translation === key) {
+                            missingKeys.push(key);
+                        }
+                        element.textContent = translation;
+                    }
+                } catch (error) {
+                    console.error(`Error translating key ${key}:`, error);
+                }
+            });
+            if (missingKeys.length > 0) {
+                console.warn('Missing translations:', missingKeys);
+            }
+        }
+
+        function finalizeLoading() {
+            try {
+                i18next.loadResources(() => {
+                    updateContent();
+                    document.body.classList.remove('loading');
+                    document.body.classList.add('loaded');
+                    document.querySelector('.loading-overlay').style.display = 'none';
+                    console.log('Translations loaded, content displayed');
+                });
+            } catch (error) {
+                console.error('Error loading translations:', error);
+                applyFallbackTranslations();
+                document.body.classList.remove('loading');
+                document.body.classList.add('loaded');
+                document.querySelector('.loading-overlay').style.display = 'none';
+                showErrorMessage('Failed to load translations. Displaying default content.');
+            }
+        }
+
+        function showErrorMessage(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            if (errorDiv) {
+                errorDiv.textContent = message;
+                errorDiv.classList.remove('d-none');
+            }
+        }
+
+        i18next.on('languageChanged', () => {
+            console.log('Language changed to:', i18next.language);
+            updateContent();
+        });
+
+        i18next.on('loaded', () => {
+            updateContent();
+        });
+
+        // DOM Elements
+        const opportunitiesTableBody = document.getElementById('opportunitiesTableBody');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const noResults = document.getElementById('noResults');
+        const searchInput = document.getElementById('searchInput');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const resetFiltersBtn = document.getElementById('resetFilters');
+        const addOpportunityBtn = document.getElementById('addOpportunityBtn');
+        const opportunityModal = new bootstrap.Modal(document.getElementById('opportunityModal'), { backdrop: 'static' });
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'), { backdrop: 'static' });
+        const opportunityForm = document.getElementById('opportunityForm');
+        const modalTitle = document.getElementById('modalTitle');
+        const submitButtonText = document.getElementById('submitButtonText');
+        const submitSpinner = document.getElementById('submitSpinner');
+        
+        // State
+        let allOpportunities = [];
+        let currentOpportunityId = null;
+        let deleteOpportunityId = null;
+
+        // Load all opportunities
+        async function loadOpportunities() {
+            if (!opportunitiesRef) {
+                console.error('Firestore not initialized');
+                showErrorMessage('Database connection failed. Please try again later.');
+                return;
+            }
+            try {
+                console.log('Starting loadOpportunities...');
+                loadingIndicator.classList.remove('d-none');
+                opportunitiesTableBody.innerHTML = '';
+                noResults.classList.add('d-none');
+                
+                const querySnapshot = await opportunitiesRef.orderBy("createdAt", "desc").get();
+                allOpportunities = [];
+                querySnapshot.forEach((doc) => {
+                    allOpportunities.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+                renderOpportunities(allOpportunities);
+                loadingIndicator.classList.add('d-none');
+            } catch (error) {
+                console.error("Error getting opportunities: ", error);
+                loadingIndicator.classList.add('d-none');
+                showErrorMessage(i18next.t('manage_opportunities.alert_load_error', { defaultValue: 'Error loading opportunities. Please try again.' }));
+            }
+        }
+
+        // Render opportunities
+        function renderOpportunities(opportunities) {
+            if (!opportunitiesTableBody) {
+                console.error('opportunitiesTableBody element not found');
+                showErrorMessage('Page rendering error. Please refresh the page.');
+                return;
+            }
+            if (opportunities.length === 0) {
+                noResults.classList.remove('d-none');
+                opportunitiesTableBody.innerHTML = '';
+                return;
+            }
+            
+            noResults.classList.add('d-none');
+            
+            const isMobile = window.innerWidth < 768;
+            
+            opportunitiesTableBody.innerHTML = opportunities.map(opportunity => {
+                const description = opportunity.description && opportunity.description.length > 100 ? 
+                    `${opportunity.description.substring(0, 100)}...` : 
+                    (opportunity.description || 'No description');
+                
+                return `
+                    <tr>
+                        <td data-label="${i18next.t('manage_opportunities.table_title', { defaultValue: 'Title' })}" class="fw-semibold">${opportunity.name || 'Untitled'}</td>
+                        <td data-label="${i18next.t('manage_opportunities.table_category', { defaultValue: 'Category' })}"><span class="badge-category">${i18next.t(`manage_opportunities.category_${opportunity.category}`, { defaultValue: formatCategory(opportunity.category) })}</span></td>
+                        <td data-label="${i18next.t('manage_opportunities.table_description', { defaultValue: 'Description' })}" title="${opportunity.description || ''}">${description}</td>
+                        <td data-label="${i18next.t('manage_opportunities.table_link', { defaultValue: 'Link' })}">
+                            ${opportunity.link ? 
+                                `<a href="${opportunity.link}" target="_blank" class="text-decoration-none" data-i18n="manage_opportunities.view_link">
+                                    ${opportunity.linkText || i18next.t('manage_opportunities.view_link', { defaultValue: 'View' })}
+                                </a>` : 
+                                i18next.t('manage_opportunities.no_link', { defaultValue: 'N/A' })}
+                        </td>
+                        <td data-label="${i18next.t('manage_opportunities.table_actions', { defaultValue: 'Actions' })}" class="text-end action-buttons">
+                            <button class="btn btn-sm btn-outline-primary edit-btn" data-id="${opportunity.id}" title="${i18next.t('manage_opportunities.edit_button', { defaultValue: 'Edit' })}">
+                                <i class="bi bi-pencil"></i>
+                                ${isMobile ? ` ${i18next.t('manage_opportunities.edit_button', { defaultValue: 'Edit' })}` : ''}
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger delete-btn" data-id="${opportunity.id}" title="${i18next.t('manage_opportunities.delete_button', { defaultValue: 'Delete' })}">
+                                <i class="bi bi-trash"></i>
+                                ${isMobile ? ` ${i18next.t('manage_opportunities.delete_button', { defaultValue: 'Delete' })}` : ''}
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            
+            updateContent();
+            
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.currentTarget.getAttribute('data-id');
+                    editOpportunity(id);
+                });
+            });
+            
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.currentTarget.getAttribute('data-id');
+                    showDeleteModal(id);
+                });
+            });
+        }
+
+        // Format category
+        function formatCategory(category) {
+            const map = {
+                'procurement': 'Procurement',
+                'market-access': 'Market Access',
+                'capacity-building': 'Capacity Building',
+                'training': 'Training',
+                'enterprise-development': 'Enterprise Development'
+            };
+            return map[category] || (category || 'Unknown');
+        }
+
+        // Filter opportunities
+        function filterOpportunities() {
+            const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+            const category = categoryFilter ? categoryFilter.value : '';
+            
+            let filtered = [...allOpportunities];
+            
+            if (category) {
+                filtered = filtered.filter(opp => opp.category === category);
+            }
+            
+            if (searchTerm) {
+                filtered = filtered.filter(opp => 
+                    (opp.name && opp.name.toLowerCase().includes(searchTerm)) || 
+                    (opp.description && opp.description.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            renderOpportunities(filtered);
+        }
+
+        // Show add modal
+        function showAddModal() {
+            currentOpportunityId = null;
+            modalTitle.setAttribute('data-i18n', 'manage_opportunities.add_modal_title');
+            updateContent();
+            if (opportunityForm) opportunityForm.reset();
+            opportunityModal.show();
+        }
+
+        // Show edit modal
+        function editOpportunity(id) {
+            const opportunity = allOpportunities.find(opp => opp.id === id);
+            if (!opportunity) {
+                console.error('Opportunity not found:', id);
+                return;
+            }
+            
+            currentOpportunityId = id;
+            modalTitle.setAttribute('data-i18n', 'manage_opportunities.edit_modal_title');
+            updateContent();
+            
+            document.getElementById('opportunityId').value = id;
+            document.getElementById('opportunityTitle').value = opportunity.name || '';
+            document.getElementById('opportunityCategory').value = opportunity.category || '';
+            document.getElementById('opportunityDescription').value = opportunity.description || '';
+            document.getElementById('opportunityLink').value = opportunity.link || '';
+            document.getElementById('opportunityLinkText').value = opportunity.linkText || '';
+            
+            opportunityModal.show();
+        }
+
+        // Show delete modal
+        function showDeleteModal(id) {
+            deleteOpportunityId = id;
+            deleteModal.show();
+        }
+
+        // Handle form submission
+        opportunityForm?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const title = document.getElementById('opportunityTitle')?.value;
+            const category = document.getElementById('opportunityCategory')?.value;
+            const description = document.getElementById('opportunityDescription')?.value;
+            const link = document.getElementById('opportunityLink')?.value;
+            const linkText = document.getElementById('opportunityLinkText')?.value;
+            
+            if (!title || !category || !description) {
+                alert(i18next.t('manage_opportunities.alert_missing_fields', { defaultValue: 'Please fill in all required fields.' }));
+                return;
+            }
+            
+            submitButtonText.setAttribute('data-i18n', 'manage_opportunities.saving_button_text');
+            updateContent();
+            submitSpinner.classList.remove('d-none');
+            
+            try {
+                const opportunityData = {
+                    name: title,
+                    category: category,
+                    description: description,
+                    link: link || '',
+                    linkText: linkText || '',
+                    updatedAt: firebase.firestore.Timestamp.fromDate(new Date())
+                };
+                
+                if (!currentOpportunityId) {
+                    opportunityData.createdAt = firebase.firestore.Timestamp.fromDate(new Date());
+                    await opportunitiesRef.add(opportunityData);
+                    alert(i18next.t('manage_opportunities.alert_add_success', { defaultValue: 'Opportunity added successfully.' }));
+                } else {
+                    await opportunitiesRef.doc(currentOpportunityId).update(opportunityData);
+                    alert(i18next.t('manage_opportunities.alert_update_success', { defaultValue: 'Opportunity updated successfully.' }));
+                }
+                
+                opportunityModal.hide();
+                loadOpportunities();
+            } catch (error) {
+                console.error("Error saving opportunity: ", error);
+                alert(i18next.t('manage_opportunities.alert_save_error', { defaultValue: 'Error saving opportunity. Please try again.' }));
+            } finally {
+                submitButtonText.setAttribute('data-i18n', 'manage_opportunities.save_button_text');
+                updateContent();
+                submitSpinner.classList.add('d-none');
+            }
+        });
+
+        // Handle delete confirmation
+        document.getElementById('confirmDelete')?.addEventListener('click', async () => {
+            if (!deleteOpportunityId) return;
+            
+            try {
+                await opportunitiesRef.doc(deleteOpportunityId).delete();
+                deleteModal.hide();
+                loadOpportunities();
+                alert(i18next.t('manage_opportunities.alert_delete_success', { defaultValue: 'Opportunity deleted successfully.' }));
+            } catch (error) {
+                console.error("Error deleting opportunity: ", error);
+                alert(i18next.t('manage_opportunities.alert_delete_error', { defaultValue: 'Error deleting opportunity. Please try again.' }));
+            }
+        });
+
+        // Event listeners
+        searchInput?.addEventListener('input', filterOpportunities);
+        categoryFilter?.addEventListener('change', filterOpportunities);
+        resetFiltersBtn?.addEventListener('click', () => {
+            if (searchInput) searchInput.value = '';
+            if (categoryFilter) categoryFilter.value = '';
+            filterOpportunities();
+        });
+
+        addOpportunityBtn?.addEventListener('click', showAddModal);
+
+        window.addEventListener('resize', () => {
+            renderOpportunities(allOpportunities);
+        });
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                console.log('DOM fully loaded for ManageOpportunities.html at 03:23 AM SAST, Aug 24, 2025');
+                if (customElements.get('green-economy-header') && customElements.get('green-economy-footer')) {
+                    console.log('Custom elements defined');
+                } else {
+                    console.warn('Custom elements not defined. Ensure MasterPage.js is loaded correctly.');
+                }
+                await loadOpportunities();
+            } catch (error) {
+                console.error('Error in DOMContentLoaded:', error);
+                showErrorMessage(i18next.t('manage_opportunities.alert_load_error', { defaultValue: 'Error loading page. Please try again.' }));
+                document.body.classList.remove('loading');
+                document.body.classList.add('loaded');
+                document.querySelector('.loading-overlay').style.display = 'none';
+            }
+        });
+
+        // Fallback timeout
+        setTimeout(() => {
+            if (document.body.classList.contains('loading')) {
+                console.warn('Loading timeout reached, forcing content display');
+                applyFallbackTranslations();
+                document.body.classList.remove('loading');
+                document.body.classList.add('loaded');
+                document.querySelector('.loading-overlay').style.display = 'none';
+                showErrorMessage('Page load timeout. Displaying default content.');
+            }
+        }, 10000);
+    </script>
+    <script type="module" src="/Master%20Page(Header%20and%20Footer)/MasterPage.js"></script>
+</body>
+</html>
