@@ -1,0 +1,24 @@
+{
+    "name": "translation-trigger",
+    "displayName": "Translation Trigger",
+    "description": "Triggers translations for NBI Green Economy",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.60.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onStartupFinished"
+    ],
+    "main": "./extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "nbi-green-economy.runTranslation",
+                "title": "Run Translation"
+            }
+        ]
+    }
+}
