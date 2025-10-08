@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title data-i18n="title">Green Economy Toolkit - Questionnaire</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+    <script type="module" src="../Master Page(Header and Footer)/MasterPage.js"></script>
+    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
+    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
+    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
+    <script type="module" src="../Master Page(Header and Footer)/Trans.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"></script>
+    <script src="../scripts/enhancedsearch.js"></script>
+    <link rel="stylesheet" href="../Master Page(Header and Footer)/MasterPage.css">
+    <link rel="stylesheet" href="questionnaire.css">
+    <style>
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2b9589;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        body.loading {
+            visibility: hidden;
+            opacity: 0;
+        }
+        body.loaded {
+            visibility: visible;
+            opacity: 1;
+            transition: opacity 0.3s;
+        }
+        .error-message {
+            color: #ef4444;
+            text-align: center;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        .error-message.visible {
+            display: block;
+        }
+        .submit-btn {
+            background-color: #2b9589;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        .submit-btn:disabled {
+            background-color: #6b7280;
+            cursor: not-allowed;
+        }
+        .submit-btn:hover:not(:disabled) {
+            background-color: #247a6f;
+        }
+        .option-button {
+            padding: 0.5rem 1rem;
+            margin: 0.25rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            background-color: #fff;
+            transition: all 0.2s;
+        }
+        .option-button.selected {
+            background-color: #2b9589;
+            color: white;
+            border-color: #2b9589;
+        }
+        .option-button:hover {
+            background-color: #f3f4f6;
+        }
+        .form-select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            background-color: #fff;
+        }
+        .nav-item {
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.2s;
+        }
+        .nav-item.active {
+            background-color: #2b9589;
+            color: white;
+        }
+    </style>
+</head>
+<body class="loading">
+    <div class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+    <div class="bg-container">
+        <div class="bg-primary"></div>
+        <div class="bg-animated"></div>
+        <div class="bg-orb-1"></div>
+        <div class="bg-orb-2"></div>
+        <div class="bg-orb-3"></div>
+        <div class="bg-pattern"></div>
+    </div>
+    <green-economy-header></green-economy-header>
+    <div class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title" data-i18n="hero.title">Join the Green Economy Movement</h1>
+            <p class="hero-subtitle" data-i18n="hero.subtitle">Tell Us About Your Interests</p>
+            <div class="hero-decoration-1"></div>
+            <div class="hero-decoration-2"></div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="content-bg">
+            <div class="content-decoration-1"></div>
+            <div class="content-decoration-2"></div>
+        </div>
+        <div class="questionnaire-container">
+            <div class="question-nav">
+                <div class="nav-item" data-question="1"><span class="step-number">1</span> <span data-i18n="nav.whoAreYou">Who are you?</span></div>
+                <div class="nav-item" data-question="2"><span class="step-number">2</span> <span data-i18n="nav.yourInterests">Your Interests</span></div>
+                <div class="nav-item" data-question="3"><span class="step-number">3</span> <span data-i18n="nav.fundingTypes">Funding Types</span></div>
+                <div class="nav-item" data-question="4"><span class="step-number">4</span> <span data-i18n="nav.businessSectors">Business Sectors</span></div>
+                <div class="nav-item" data-question="5"><span class="step-number">5</span> <span data-i18n="nav.experienceLevel">Experience Level</span></div>
+                <div class="nav-item" data-question="6"><span class="step-number">6</span> <span data-i18n="nav.greenTools">Green Tools</span></div>
+                <div class="nav-item" data-question="7"><span class="step-number">7</span> <span data-i18n="nav.preferredLanguage">Preferred Language</span></div>
+            </div>
+            <div class="question-panel">
+                <form id="questionnaireForm">
+                    <div id="error-message" class="error-message"></div>
+                    <div class="question-content" data-question="1">
+                        <label class="form-label" data-i18n="form.whoAreYou">Who are you? (Select at least one)</label>
+                        <div class="button-group">
+                            <button type="button" class="option-button" data-value="township-irm" data-i18n="form.townshipIrm">Township IRM</button>
+                            <button type="button" class="option-button" data-value="youth-underrepresented" data-i18n="form.youthUnderrepresented">Youth Underrepresented</button>
+                            <button type="button" class="option-button" data-value="stakeholder-partner" data-i18n="form.stakeholderPartner">Stakeholder/Partner</button>
+                            <button type="button" class="option-button" data-value="local-community" data-i18n="form.localCommunity">Local Community</button>
+                            <button type="button" class="option-button" data-value="tvet-student-staff" data-i18n="form.tvetStudentStaff">TVET Student/Staff</button>
+                            <button type="button" class="option-button" data-value="entrepreneurial-hub" data-i18n="form.entrepreneurialHub">Entrepreneurial Hub</button>
+                        </div>
+                    </div>
+                    <div class="question-content" data-question="2">
+                        <label class="form-label" data-i18n="form.yourInterests">What are your interests? (Select at least one)</label>
+                        <div class="button-group">
+                            <button type="button" class="option-button" data-value="green-funding" data-i18n="form.greenFunding">Green Funding</button>
+                            <button type="button" class="option-button" data-value="smme-support" data-i18n="form.smmeSupport">SMME Support</button>
+                            <button type="button" class="option-button" data-value="green-education" data-i18n="form.greenEducation">Green Education</button>
+                            <button type="button" class="option-button" data-value="green-tools" data-i18n="form.greenTools">Green Tools</button>
+                            <button type="button" class="option-button" data-value="networking" data-i18n="form.networking">Networking</button>
+                        </div>
+                    </div>
+                    <div class="question-content" data-question="3">
+                        <label class="form-label" data-i18n="form.fundingTypes">What funding types? (Select at least one)</label>
+                        <div class="button-group">
+                            <button type="button" class="option-button" data-value="grants" data-i18n="form.grants">Grants</button>
+                            <button type="button" class="option-button" data-value="loans" data-i18n="form.loans">Loans</button>
+                            <button type="button" class="option-button" data-value="equity" data-i18n="form.equity">Equity</button>
+                            <button type="button" class="option-button" data-value="crowdfunding" data-i18n="form.crowdfunding">Crowdfunding</button>
+                            <button type="button" class="option-button" data-value="not-seeking" data-i18n="form.notSeeking">Not Seeking</button>
+                        </div>
+                    </div>
+                    <div class="question-content" data-question="4">
+                        <label class="form-label" data-i18n="form.businessSectors">What are your sectors? (Select at least one)</label>
+                        <div class="button-group">
+                            <button type="button" class="option-button" data-value="renewable-energy" data-i18n="form.renewableEnergy">Renewable Energy</button>
+                            <button type="button" class="option-button" data-value="waste-management" data-i18n="form.wasteManagement">Waste Management</button>
+                            <button type="button" class="option-button" data-value="sustainable-agriculture" data-i18n="form.sustainableAgriculture">Sustainable Agriculture</button>
+                            <button type="button" class="option-button" data-value="green-technology" data-i18n="form.greenTechnology">Green Technology</button>
+                            <button type="button" class="option-button" data-value="community-development" data-i18n="form.communityDevelopment">Community Development</button>
+                            <button type="button" class="option-button" data-value="education" data-i18n="form.education">Education</button>
+                            <button type="button" class="option-button" data-value="other" data-i18n="form.other">Other</button>
+                        </div>
+                    </div>
+                    <div class="question-content" data-question="5">
+                        <label for="experienceLevel" class="form-label" data-i18n="form.experienceLevel">Your experience level?</label>
+                        <select id="experienceLevel" name="experienceLevel" class="form-select" required>
+                            <option value="" data-i18n="form.selectExperience">Select experience</option>
+                            <option value="beginner" data-i18n="form.beginner">Beginner</option>
+                            <option value="intermediate" data-i18n="form.intermediate">Intermediate</option>
+                            <option value="advanced" data-i18n="form.advanced">Advanced</option>
+                        </select>
+                        <button type="button" class="submit-btn" id="nextBtn" style="display: none;" data-i18n="form.next">Next</button>
+                    </div>
+                    <div class="question-content" data-question="6">
+                        <label class="form-label" data-i18n="form.greenTools">Which green tools? (Select at least one)</label>
+                        <div class="button-group">
+                            <button type="button" class="option-button" data-value="carbon-calculator" data-i18n="form.carbonCalculator">Carbon Calculator</button>
+                            <button type="button" class="option-button" data-value="sustainability-assessment" data-i18n="form.sustainabilityAssessment">Sustainability Assessment</button>
+                            <button type="button" class="option-button" data-value="energy-audit" data-i18n="form.energyAudit">Energy Audit</button>
+                            <button type="button" class="option-button" data-value="supply-chain" data-i18n="form.greenSupplyChain">Green Supply Chain</button>
+                            <button type="button" class="option-button" data-value="none" data-i18n="form.none">None</button>
+                        </div>
+                    </div>
+                    <div class="question-content" data-question="7">
+                        <label for="preferredLanguage" class="form-label" data-i18n="form.preferredLanguage">Preferred Language</label>
+                        <select id="preferredLanguage" name="preferredLanguage" class="form-select" required>
+                            <option value="English" data-i18n="form.english">English</option>
+                            <option value="isiZulu" data-i18n="form.isiZulu">isiZulu</option>
+                            <option value="Setswana" data-i18n="form.setswana">Setswana</option>
+                        </select>
+                        <button type="submit" class="submit-btn" id="finishBtn" style="display: none;" data-i18n="form.finish">Finish</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <green-economy-footer></green-economy-footer>
+    <script type="module">
+        import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
+        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+        import { getFirestore, doc, getDoc, setDoc, addDoc, collection, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+
+        // Environment detection
+        const isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+        const baseUrl = isProduction ? 'https://nbi2.netlify.app' : 'http://127.0.0.1:5500';
+        console.log(`DEBUG: Environment: ${isProduction ? 'production' : 'development'}, Base URL: ${baseUrl}`);
+
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCfa827mvCLf1ETts6B_DmCfb7owTohBxk",
+            authDomain: "nbi-green-economy.firebaseapp.com",
+            projectId: "nbi-green-economy",
+            storageBucket: "nbi-green-economy.firebasestorage.app",
+            messagingSenderId: "53732340059",
+            appId: "1:53732340059:web:3fb3f086c6662e1e9baa7e",
+            measurementId: "G-37VRZ5CGE4"
+        };
+
+        const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Loader Functions
+        function showLoader() {
+            const loaderOverlay = document.querySelector('.loading-overlay');
+            if (loaderOverlay) {
+                loaderOverlay.style.display = 'flex';
+                console.log("DEBUG: Loader shown");
+            }
+        }
+
+        function hideLoader() {
+            const loaderOverlay = document.querySelector('.loading-overlay');
+            if (loaderOverlay) {
+                loaderOverlay.style.display = 'none';
+                console.log("DEBUG: Loader hidden");
+            }
+        }
+
+        // Error Display
+        function showError(message) {
+            const errorMessage = document.getElementById('error-message');
+            if (errorMessage) {
+                const finalMessage = i18next.t('form.error', { defaultValue: message });
+                errorMessage.textContent = finalMessage;
+                errorMessage.classList.add('visible');
+                setTimeout(() => errorMessage.classList.remove('visible'), 5000);
+            }
+        }
+
+        // Interaction Tracking
+        async function trackUserInteraction(userId, category, action, label = "") {
+            console.log(`DEBUG: Local log: userId=${userId || 'anonymous'}, category=${category}, action=${action}, label=${label}`);
+            try {
+                await addDoc(collection(db, 'interactions'), {
+                    userId: userId || `anonymous_${Date.now()}`,
+                    category,
+                    action,
+                    label,
+                    timestamp: serverTimestamp(),
+                    language: i18next.language || 'en',
+                    userAgent: navigator.userAgent
+                });
+                console.log("DEBUG: Interaction logged successfully to Firestore");
+            } catch (error) {
+                console.error("DEBUG: Error logging interaction:", error);
+            }
+        }
+
+        // Inactivity Timeout
+        let inactivityTimeout;
+        function resetInactivityTimer(userId) {
+            clearTimeout(inactivityTimeout);
+            inactivityTimeout = setTimeout(async () => {
+                try {
+                    await trackUserInteraction(userId, 'session', 'timeout', 'Redirected to index due to inactivity');
+                    window.location.href = `${baseUrl}/index.html`;
+                } catch (error) {
+                    console.error("DEBUG: Error handling inactivity:", error);
+                }
+            }, 4 * 60 * 1000); // 4 minutes
+        }
+
+        // Initialize i18next
+        i18next
+            .use(i18nextHttpBackend)
+            .use(i18nextBrowserLanguageDetector)
+            .init({
+                lng: 'en',
+                fallbackLng: 'en',
+                backend: {
+                    loadPath: '/locales/{{lng}}.json?v=' + new Date().getTime()
+                },
+                detection: {
+                    order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
+                    caches: ['localStorage', 'cookie']
+                }
+            }, (err, t) => {
+                if (err) {
+                    console.error('DEBUG: i18next initialization error:', err);
+                    setTimeout(() => {
+                        i18next.loadResources((loadErr) => {
+                            if (loadErr) {
+                                console.error('DEBUG: i18next retry failed:', loadErr);
+                                applyFallbackTranslations();
+                            } else {
+                                console.log('DEBUG: i18next retry successful, language:', i18next.language);
+                                finalizeLoading();
+                            }
+                        });
+                    }, 2000);
+                    return;
+                }
+                console.log('DEBUG: i18next initialized for questionnaire.html at', new Date().toLocaleString('en-ZA'), ':', i18next.language);
+                finalizeLoading();
+            });
+
+        function applyFallbackTranslations() {
+            document.querySelectorAll('[data-i18n]').forEach(elem => {
+                const key = elem.getAttribute('data-i18n');
+                if (key.startsWith('[')) {
+                    const match = key.match(/\[(\w+)\](.+)/);
+                    if (match) {
+                        const [, attr, i18nKey] = match;
+                        const fallback = elem.getAttribute(attr) || 'Content not available';
+                        elem.setAttribute(attr, fallback);
+                    }
+                } else {
+                    const fallback = elem.innerHTML.trim() || 'Content not available';
+                    elem.innerHTML = fallback;
+                }
+            });
+            console.warn('DEBUG: Applied fallback translations due to loading failure');
+            finalizeLoading();
+        }
+
+        function updateContent() {
+            const missingKeys = [];
+            document.querySelectorAll('[data-i18n]').forEach(elem => {
+                const key = elem.getAttribute('data-i18n');
+                if (key.startsWith('[')) {
+                    const match = key.match(/\[(\w+)\](.+)/);
+                    if (match) {
+                        const [, attr, i18nKey] = match;
+                        const translation = i18next.t(i18nKey, { defaultValue: elem.getAttribute(attr) || 'Content not available' });
+                        if (translation === i18nKey) missingKeys.push(i18nKey);
+                        elem.setAttribute(attr, translation);
+                    }
+                } else {
+                    const translation = i18next.t(key, { defaultValue: elem.innerHTML.trim() || 'Content not available' });
+                    if (translation === key) missingKeys.push(key);
+                    elem.innerHTML = translation;
+                }
+            });
+            if (missingKeys.length > 0) {
+                console.warn('DEBUG: Missing translations:', missingKeys);
+            }
+        }
+
+        function finalizeLoading() {
+            i18next.loadResources(() => {
+                updateContent();
+                document.body.classList.remove('loading');
+                document.body.classList.add('loaded');
+                document.querySelector('.loading-overlay').style.display = 'none';
+                console.log('DEBUG: Translations loaded, content displayed');
+            });
+        }
+
+        i18next.on('languageChanged', () => {
+            console.log('DEBUG: Language changed to:', i18next.language);
+            updateContent();
+        });
+
+        i18next.on('loaded', () => {
+            updateContent();
+        });
+
+        // Initialize Questionnaire
+        document.addEventListener("DOMContentLoaded", () => {
+            let userId = new URLSearchParams(window.location.search).get('userId');
+
+            // Check for authenticated user and questionnaire completion
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    userId = user.uid;
+                    showLoader();
+                    try {
+                        const userDoc = await getDoc(doc(db, 'users', userId));
+                        if (userDoc.exists() && userDoc.data().questionnaireCompleted && userDoc.data().questionnaireResponseId) {
+                            const responseDoc = await getDoc(doc(db, 'questionnaire_responses', userDoc.data().questionnaireResponseId));
+                            if (responseDoc.exists()) {
+                                console.log(`DEBUG: User ${userId} has completed questionnaire with response ID: ${userDoc.data().questionnaireResponseId}`);
+                                await trackUserInteraction(userId, 'page', 'redirect', 'Questionnaire completed, redirecting to dashboard');
+                                window.location.href = `${baseUrl}/Dashboard/dashboard.html?userId=${userId}&t=${Date.now()}`;
+                                return;
+                            } else {
+                                console.warn(`DEBUG: Questionnaire response ID ${userDoc.data().questionnaireResponseId} not found, resetting completion status`);
+                                await setDoc(doc(db, 'users', userId), { questionnaireCompleted: false, questionnaireResponseId: null }, { merge: true });
+                            }
+                        }
+                    } catch (error) {
+                        console.error("DEBUG: Error checking questionnaire completion:", error);
+                        await trackUserInteraction(userId, 'error', 'check_questionnaire', error.message);
+                        showError("Failed to check questionnaire status. Please try again.");
+                    }
+                    hideLoader();
+                } else {
+                    await trackUserInteraction(null, 'auth', 'unauthenticated', 'Redirecting to sign-in');
+                    window.location.href = `${baseUrl}/LandingPage/SignInAndSignUp/SignIn.html?t=${Date.now()}`;
+                    return;
+                }
+
+                let currentQuestion = 1;
+                const totalQuestions = document.querySelectorAll('.question-content').length;
+                const navItems = document.querySelectorAll('.nav-item');
+                const questionContents = document.querySelectorAll('.question-content');
+                const nextBtn = document.getElementById('nextBtn');
+                const finishBtn = document.getElementById('finishBtn');
+
+                function showQuestion(index) {
+                    navItems.forEach(item => item.classList.remove('active'));
+                    questionContents.forEach(content => {
+                        content.classList.remove('active');
+                        content.style.opacity = '0';
+                        content.style.transform = 'scale(0.9)';
+                    });
+
+                    setTimeout(() => {
+                        const activeNav = document.querySelector(`.nav-item[data-question="${index}"]`);
+                        const activeContent = document.querySelector(`.question-content[data-question="${index}"]`);
+                        if (activeNav && activeContent) {
+                            activeNav.classList.add('active');
+                            activeContent.classList.add('active');
+                            activeContent.style.opacity = '1';
+                            activeContent.style.transform = 'scale(1)';
+                        }
+
+                        nextBtn.style.display = index === 5 ? 'block' : 'none';
+                        finishBtn.style.display = index === 7 && isFormComplete() ? 'block' : 'none';
+                        updateContent();
+                    }, 400);
+                }
+
+                function isFormComplete() {
+                    const selections = {
+                        1: document.querySelectorAll('.question-content[data-question="1"] .option-button.selected').length > 0,
+                        2: document.querySelectorAll('.question-content[data-question="2"] .option-button.selected').length > 0,
+                        3: document.querySelectorAll('.question-content[data-question="3"] .option-button.selected').length > 0,
+                        4: document.querySelectorAll('.question-content[data-question="4"] .option-button.selected').length > 0,
+                        6: document.querySelectorAll('.question-content[data-question="6"] .option-button.selected').length > 0,
+                        5: document.getElementById('experienceLevel')?.value !== '',
+                        7: document.getElementById('preferredLanguage')?.value !== ''
+                    };
+                    return Object.values(selections).every(Boolean);
+                }
+
+                const preferredLanguageSelect = document.getElementById('preferredLanguage');
+                if (preferredLanguageSelect) {
+                    preferredLanguageSelect.addEventListener('change', () => {
+                        const selectedLang = preferredLanguageSelect.value === 'isiZulu' ? 'zu' : preferredLanguageSelect.value === 'Setswana' ? 'tn' : 'en';
+                        i18next.changeLanguage(selectedLang, async (err) => {
+                            if (err) {
+                                console.error('DEBUG: Error changing language:', err);
+                                showError("Failed to change language.");
+                                return;
+                            }
+                            updateContent();
+                            if (userId) {
+                                await trackUserInteraction(userId, 'language', 'change', selectedLang);
+                            }
+                        });
+                    });
+                }
+
+                showQuestion(currentQuestion);
+
+                navItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        const questionIndex = parseInt(item.getAttribute('data-question'));
+                        if (questionIndex !== currentQuestion) {
+                            currentQuestion = questionIndex;
+                            showQuestion(currentQuestion);
+                            trackUserInteraction(userId, 'navigation', 'question_change', `Question ${questionIndex}`);
+                        }
+                    });
+                });
+
+                nextBtn.addEventListener('click', () => {
+                    if (currentQuestion === 5 && document.getElementById('experienceLevel').value !== '') {
+                        currentQuestion = 6;
+                        showQuestion(currentQuestion);
+                        trackUserInteraction(userId, 'navigation', 'next', 'Experience level selected');
+                    } else {
+                        showError("Please select an experience level.");
+                    }
+                });
+
+                document.querySelectorAll('.option-button').forEach(button => {
+                    button.addEventListener('click', async () => {
+                        const questionIndex = parseInt(button.closest('.question-content').getAttribute('data-question'));
+                        button.classList.toggle('selected');
+                        if (userId) {
+                            await trackUserInteraction(userId, 'interaction', 'click', `${button.getAttribute('data-value')}: ${button.classList.contains('selected') ? 'selected' : 'deselected'}`);
+                        }
+                        resetInactivityTimer(userId);
+
+                        if ([1, 2, 3, 4, 6].includes(questionIndex) && button.classList.contains('selected')) {
+                            if (document.querySelectorAll(`.question-content[data-question="${questionIndex}"] .option-button.selected`).length === 1) {
+                                currentQuestion = Math.min(questionIndex + 1, totalQuestions);
+                                showQuestion(currentQuestion);
+                            }
+                        }
+                    });
+                });
+
+                const form = document.getElementById("questionnaireForm");
+                form.addEventListener("submit", async function (e) {
+                    e.preventDefault();
+                    if (!isFormComplete()) {
+                        showError("Please complete all required fields.");
+                        return;
+                    }
+
+                    finishBtn.disabled = true;
+                    finishBtn.innerHTML = `<span class="loading-spinner"></span> ${i18next.t('form.finishing', { defaultValue: 'Submitting...' })}`;
+                    showLoader();
+
+                    const selectedButtons = {
+                        role: Array.from(document.querySelectorAll('.question-content[data-question="1"] .option-button.selected')).map(btn => btn.getAttribute('data-value')),
+                        primaryInterest: Array.from(document.querySelectorAll('.question-content[data-question="2"] .option-button.selected')).map(btn => btn.getAttribute('data-value')),
+                        fundingType: Array.from(document.querySelectorAll('.question-content[data-question="3"] .option-button.selected')).map(btn => btn.getAttribute('data-value')),
+                        businessSector: Array.from(document.querySelectorAll('.question-content[data-question="4"] .option-button.selected')).map(btn => btn.getAttribute('data-value')),
+                        greenTools: Array.from(document.querySelectorAll('.question-content[data-question="6"] .option-button.selected')).map(btn => btn.getAttribute('data-value'))
+                    };
+
+                    try {
+                        const responseRef = doc(collection(db, 'questionnaire_responses'));
+                        const responseId = responseRef.id;
+
+                        const data = {
+                            responseId,
+                            experienceLevel: document.getElementById('experienceLevel').value,
+                            preferredLanguage: document.getElementById('preferredLanguage').value,
+                            role: selectedButtons.role,
+                            primaryInterest: selectedButtons.primaryInterest,
+                            fundingType: selectedButtons.fundingType,
+                            businessSector: selectedButtons.businessSector,
+                            greenTools: selectedButtons.greenTools,
+                            userId,
+                            timestamp: serverTimestamp()
+                        };
+
+                        await setDoc(responseRef, data);
+                        await setDoc(doc(db, 'users', userId), {
+                            questionnaireCompleted: true,
+                            questionnaireResponseId: responseId
+                        }, { merge: true });
+
+                        await trackUserInteraction(userId, 'form', 'submitted', JSON.stringify(data));
+                        form.reset();
+                        document.querySelectorAll('.option-button').forEach(btn => btn.classList.remove('selected'));
+
+                        const redirectUrl = (await getDoc(doc(db, 'users', userId))).data()?.isAdmin
+                            ? `${baseUrl}/interactions/interactions.html?userId=${userId}&t=${Date.now()}`
+                            : `${baseUrl}/Dashboard/dashboard.html?userId=${userId}&t=${Date.now()}`;
+                        window.location.href = redirectUrl;
+                    } catch (error) {
+                        console.error("DEBUG: Submission error:", error);
+                        showError("Failed to submit questionnaire. Please try again.");
+                        await trackUserInteraction(userId, 'form', 'error', error.message);
+                    } finally {
+                        finishBtn.disabled = false;
+                        finishBtn.innerHTML = i18next.t('form.finish', { defaultValue: 'Finish' });
+                        hideLoader();
+                    }
+                });
+
+                document.querySelectorAll(".nav-link").forEach((link) => {
+                    link.addEventListener("click", async (e) => {
+                        e.preventDefault();
+                        if (userId) {
+                            await trackUserInteraction(userId, 'navigation', 'click', link.href);
+                        }
+                    });
+                });
+
+                const formElements = document.querySelectorAll(".form-input, .form-select");
+                formElements.forEach((element) => {
+                    element.addEventListener("focus", function () {
+                        this.parentElement.style.transform = "scale(1.02)";
+                        this.parentElement.style.transition = "transform 0.2s ease";
+                    });
+                    element.addEventListener("blur", function () {
+                        this.parentElement.style.transform = "scale(1)";
+                    });
+                });
+
+                window.addEventListener("scroll", function () {
+                    const hero = document.querySelector(".hero");
+                    const scrolled = window.pageYOffset;
+                    const parallax = scrolled * 0.5;
+                    if (hero) {
+                        hero.style.transform = `translateY(${parallax}px)`;
+                    }
+                });
+
+                const observerOptions = {
+                    threshold: 0.1,
+                    rootMargin: "0px 0px -50px 0px",
+                };
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.style.opacity = "1";
+                            entry.target.style.transform = "translateY(0)";
+                        }
+                    });
+                }, observerOptions);
+
+                const questionnaireContainer = document.querySelector(".questionnaire-container");
+                if (questionnaireContainer) {
+                    questionnaireContainer.style.opacity = "0";
+                    questionnaireContainer.style.transform = "translateY(30px)";
+                    questionnaireContainer.style.transition = "opacity 0.6s ease, transform 0.6s ease";
+                    observer.observe(questionnaireContainer);
+                }
+
+                if (userId) {
+                    trackUserInteraction(userId, 'page', 'loaded', 'Questionnaire page');
+                    resetInactivityTimer(userId);
+
+                    document.addEventListener('click', async (e) => {
+                        const target = e.target.closest('button, select, input, a, .submit-btn, .nav-item, .option-button');
+                        if (target) {
+                            await trackUserInteraction(userId, 'interaction', 'click', target.id || target.className || target.tagName);
+                        }
+                        resetInactivityTimer(userId);
+                    });
+
+                    document.addEventListener('input', async (e) => {
+                        if (e.target.matches('input, select')) {
+                            await trackUserInteraction(userId, 'interaction', 'input', `${e.target.id}: ${e.target.value}`);
+                        }
+                        resetInactivityTimer(userId);
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1306 @@
+{
+  "timestamp": "2025-09-01T20:35:59.424Z",
+  "spaceId": "zerelkd70urg",
+  "environment": "master",
+  "contentTypes": {
+    "newsletterSection": {
+      "name": "Newsletter Section",
+      "fields": [
+        {
+          "id": "title",
+          "name": "Title",
+          "type": "Symbol",
+          "required": false,
+          "localized": false
+        },
+        {
+          "id": "emailPlaceholder",
+          "name": "Email Placeholder",
+          "type": "Symbol",
+          "required": false,
+          "localized": false
+        },
+        {
+          "id": "submitTitle",
+          "name": "Submit Button Title",
+          "type": "Symbol",
+          "required": false,
+          "localized": false
+        },
+        {
+          "id": "note",
+          "name": "Note Text",
+          "type": "Symbol",
+          "required": false,
+          "localized": false
+        }
+      ]
+    },
+    "partnerLogo": {
+      "name": "Partner Logo",
+      "fields": [
+        {
+          "id": "name",
+          "name": "Partner Name",
+          "type": "Symbol",
+          "required": false,
+          "localized": false
+        },
+        {
+          "id": "logoUrl",
+          "name": "Logo URL",
+          "type": "Symbol",
+          "required": false,
+          "localized": false
+        },
+        {
+          "id": "altText",
+          "name": "Alt Text",
+          "type": "Symbol",
+          "required": false,
+          "localized": false
+        },
+        {
+          "id": "order",
+          "name": "Display Order",
+          "type": "Integer",
+          "required": false,
+          "localized": false
+        }
+      ]
+    },
+    "climateResponse": {
+      "name": "Climate Response",
+      "fields": [
+        {
+          "id": "title",
+          "name": "Title",
+          "type": "Symbol",
+          "required": false,
+          "localized": false
+        },
+        {
+          "id": "description",
+          "name": "Description",
+          "type": "Text",
+          "required": false,
+          "localized": false
+        },
+        {
+          "id": "backgroundImageUrl",
+          "name": "Background Image URL",
+          "type": "Symbol",
+          "required": false,
+          "localized": false
+        },
+        {
+          "id": "backgroundColor",
+          "name": "Background Color",
+          "type": "Symbol",
+          "required": false,
+          "localized": false
+        },
+        {
+          "id": "order",
+          "name": "Display Order",
+          "type": "Integer",
+          "required": false,
+          "localized": false
+        }
+      ]
+    },
+    "climateRisk": {
+      "name": "Climate Risk",
+      "fields": [
+        {
+          "id": "title",
+          "name": "Title",
+          "type": "Symbol",
+          "required": false,
+          "localized": false
+        },
+        {
+          "id": "description",
+          "name": "Description",
+          "type": "Text",
+          "required": false,
+          "localized": false
+        },
+        {
+          "id": "icon",
+          "name": "Icon",
+          "type": "Symbol",
+          "required": false,
+          "localized": false
+        },
+        {
+          "id": "order",
+          "name": "Display Order",
+          "type": "Integer",
+          "required": false,
+          "localized": false
+        }
+      ]
+    },
+    "focusArea": {
+      "name": "Focus Area",
+      "fields": [
+        {
+          "id": "title",
+          "name": "Title",
+          "type": "Symbol",
+          "required": false,
+          "localized": false
+        },
+        {
+          "id": "slug",
+          "name": "Slug",
+          "type": "Symbol",
+          "required": false,
+          "localized": false
+        },
+        {
+          "id": "backgroundImageUrl",
+          "name": "Background Image URL",
+          "type": "Symbol",
+          "required": false,
+          "localized": false
+        },
+        {
+          "id": "order",
+          "name": "Display Order",
+          "type": "Integer",
+          "required": false,
+          "localized": false
+        }
+      ]
+    },
+    "heroSection": {
+      "name": "Hero Section",
+      "fields": [
+        {
+          "id": "title",
+          "name": "Title",
+          "type": "Symbol",
+          "required": false,
+          "localized": false
+        },
+        {
+          "id": "description",
+          "name": "Description",
+          "type": "Text",
+          "required": false,
+          "localized": false
+        },
+        {
+          "id": "imageAlt",
+          "name": "Image Alt Text",
+          "type": "Symbol",
+          "required": false,
+          "localized": false
+        }
+      ]
+    }
+  },
+  "entries": {
+    "newsletterSection": [
+      {
+        "id": "36YpqbGLc6qEKxCScEAOaF",
+        "createdAt": "2025-09-01T20:06:25.099Z",
+        "updatedAt": "2025-09-01T20:06:25.465Z",
+        "fields": {
+          "title": "Subscribe to our newsletter to get the latest information",
+          "emailPlaceholder": "Your email",
+          "submitTitle": "Submit",
+          "note": "*Only relevant information, no spam"
+        }
+      }
+    ],
+    "partnerLogo": [
+      {
+        "id": "4TGPWG77B81x7F4LVHcz2U",
+        "createdAt": "2025-09-01T20:06:24.113Z",
+        "updatedAt": "2025-09-01T20:06:24.495Z",
+        "fields": {
+          "name": "New Partner",
+          "logoUrl": "https://images.ctfassets.net/zerelkd70urg/1ZTqDOY47awcoyURx5Wyj0/dbca411dccbae3c3f3e9a2907caf916a/LMS-Platform-Logo.png",
+          "altText": "New Partner Logo",
+          "order": 6
+        }
+      },
+      {
+        "id": "7xizymSP5HCTvHkCcMm9Su",
+        "createdAt": "2025-09-01T20:06:23.079Z",
+        "updatedAt": "2025-09-01T20:06:23.468Z",
+        "fields": {
+          "name": "NBI",
+          "logoUrl": "https://images.ctfassets.net/zerelkd70urg/3YBdfXxUtCBg4xmeH17dgF/f9d6db164d0b77e06ecd90ab10d9ca64/NBI-Logo.jpg",
+          "altText": "NBI Partner Logo",
+          "order": 5
+        }
+      },
+      {
+        "id": "59p9YecYSxyLuNIY6X5P2O",
+        "createdAt": "2025-09-01T20:06:22.080Z",
+        "updatedAt": "2025-09-01T20:06:22.482Z",
+        "fields": {
+          "name": "LMS Platform",
+          "logoUrl": "https://images.ctfassets.net/zerelkd70urg/1ZTqDOY47awcoyURx5Wyj0/dbca411dccbae3c3f3e9a2907caf916a/LMS-Platform-Logo.png",
+          "altText": "LMS Platform Logo",
+          "order": 4
+        }
+      },
+      {
+        "id": "eLk2fdT5ktFHpgylUGnEq",
+        "createdAt": "2025-09-01T20:06:21.080Z",
+        "updatedAt": "2025-09-01T20:06:21.474Z",
+        "fields": {
+          "name": "GDED",
+          "logoUrl": "https://images.ctfassets.net/zerelkd70urg/CzrGQZGir0uRAfxuQYtB2/d203e88a4acbbd5d81a9d6367eab2dc3/GDED-Logo.jpg",
+          "altText": "GDED Partner Logo",
+          "order": 3
+        }
+      },
+      {
+        "id": "5kZwO8W9EJAC3YGvzW8DqQ",
+        "createdAt": "2025-09-01T20:06:19.892Z",
+        "updatedAt": "2025-09-01T20:06:20.449Z",
+        "fields": {
+          "name": "SECO",
+          "logoUrl": "https://images.ctfassets.net/zerelkd70urg/6Hy2lUewR8c1zygAgp3cPv/596ed9e891403d76aa7c9dae69e992e1/SECO-Logo.jpg",
+          "altText": "SECO Partner Logo",
+          "order": 2
+        }
+      },
+      {
+        "id": "6GmTgZFVDB7QZNTY6QmAsZ",
+        "createdAt": "2025-09-01T20:06:18.869Z",
+        "updatedAt": "2025-09-01T20:06:19.277Z",
+        "fields": {
+          "name": "GIZ",
+          "logoUrl": "https://images.ctfassets.net/zerelkd70urg/5sm6u6ExK75tNaOp0sXW4Q/5f3f6b1ecf0d02881c2d1f49c9859802/giz-logo_2024-11-11-133203_nara.jpg",
+          "altText": "GIZ Partner Logo",
+          "order": 1
+        }
+      }
+    ],
+    "climateResponse": [
+      {
+        "id": "2Oha0Cf2AKRHGEAWbsfO5y",
+        "createdAt": "2025-09-01T20:06:17.896Z",
+        "updatedAt": "2025-09-01T20:06:18.269Z",
+        "fields": {
+          "title": "Climate resilience",
+          "description": "Climate resilience means being strong and ready to handle the problems that are caused by climate change. It's about making sure communities and nature can \"bounce back\" after climate change effects such as floods or storms. An example in South Africa: in areas where there is not much water, people might learn ways to save water and grow drought-resistant crops. This helps them survive and do well even when there is less rain due to a changing climate.",
+          "backgroundImageUrl": "https://images.ctfassets.net/zerelkd70urg/4HnFg04g42FLR46xg8KndV/82093652af53d5d5172f6fc7970ac209/resilience.webp",
+          "backgroundColor": "#20b04f",
+          "order": 4
+        }
+      },
+      {
+        "id": "4mn9vT2IEAy0I4p2d0t6mO",
+        "createdAt": "2025-09-01T20:06:16.882Z",
+        "updatedAt": "2025-09-01T20:06:17.289Z",
+        "fields": {
+          "title": "Climate finance",
+          "description": "Climate finance refers to funds that help governments and organisations develop projects aimed at fighting climate change. These funds can be used to build and promote initiatives such as clean energy projects or to help communities prepare for climate impacts. An example: South Africa might get money from a global fund to build solar panels in a town. This contributes to clean energy and reduces the effects of climate change. Climate finance helps pay for such projects.",
+          "backgroundImageUrl": "https://images.ctfassets.net/zerelkd70urg/1B8gkyNUKWYUNmXZCpPpD5/1fe750cddb84eb12bb1a75911a6531fc/climate.webp",
+          "backgroundColor": "#009381",
+          "order": 3
+        }
+      },
+      {
+        "id": "6naUPHVYtR3a5SHgbYEaxL",
+        "createdAt": "2025-09-01T20:06:15.858Z",
+        "updatedAt": "2025-09-01T20:06:16.244Z",
+        "fields": {
+          "title": "Mitigation",
+          "description": "Mitigation means trying to stop or reduce activities that make climate change worse. This may include reducing gas emissions that come from burning coal or oil, which release large amounts of carbon dioxide into the atmosphere, in turn causing climate change through an increase in temperature by trapping heat in the atmosphere. An example: South Africa is building more wind and solar power plants to make electricity and generate alternative sources of energy without using as much coal, a fossil fuel. This aids in reducing the gases that cause climate change.",
+          "backgroundImageUrl": "https://images.ctfassets.net/zerelkd70urg/AwREdOrcwEBSTEc6I0xRU/d39ff6a1a6157eb6da21caa5bd41f18c/Mitigation.webp",
+          "backgroundColor": "#20b04f",
+          "order": 2
+        }
+      },
+      {
+        "id": "hGGAkl47cJiROMsWlKQuJ",
+        "createdAt": "2025-09-01T20:06:14.870Z",
+        "updatedAt": "2025-09-01T20:06:15.247Z",
+        "fields": {
+          "title": "Adaptation",
+          "description": "Adaptation means keeping abreast of and staying ready to adapt to changes caused by climate change. It's about making plans and changes to deal with events like droughts or floods that might happen more often because of climate change. An example: farmers in South Africa are changing the way in which they harvest and grow crops in order to use less water, due to a decrease in rainfall. This is an example of adapting to the changing climate.",
+          "backgroundImageUrl": "https://images.ctfassets.net/zerelkd70urg/2STh8vH2T37ZAHOgXIAJN6/18856a632f716a8b9f2a9bbc6b972b14/adaptation.webp",
+          "backgroundColor": "#009381",
+          "order": 1
+        }
+      }
+    ],
+    "climateRisk": [
+      {
+        "id": "3gmcwo7Kw20HD4jbxf68u6",
+        "createdAt": "2025-09-01T20:06:13.881Z",
+        "updatedAt": "2025-09-01T20:06:14.266Z",
+        "fields": {
+          "title": "Reputational risk",
+          "description": "Consumer awareness and stakeholder expectations around climate action continue to rise. Organizations face reputational damage if they fail to demonstrate meaningful environmental commitment, potentially affecting brand value, customer loyalty, and investment attractiveness in an increasingly climate-conscious market.",
+          "icon": "📋",
+          "order": 5
+        }
+      },
+      {
+        "id": "ZaWk8b6vtE5HSyh6iBjQa",
+        "createdAt": "2025-09-01T20:06:12.916Z",
+        "updatedAt": "2025-09-01T20:06:13.287Z",
+        "fields": {
+          "title": "Regulatory risk",
+          "description": "Evolving climate policies and regulations create compliance challenges and potential financial penalties. Organizations must navigate changing environmental standards, carbon pricing mechanisms, and disclosure requirements while adapting their operations to meet new regulatory frameworks.",
+          "icon": "⚖️",
+          "order": 4
+        }
+      },
+      {
+        "id": "3fbIfksQkLHxcwwDC5UOEu",
+        "createdAt": "2025-09-01T20:06:11.947Z",
+        "updatedAt": "2025-09-01T20:06:12.311Z",
+        "fields": {
+          "title": "Risk of supply chain disruptions",
+          "description": "Climate-related events can severely impact global and local supply chains, causing delays, shortages, and increased costs. Extreme weather, droughts, and floods disrupt transportation networks and production facilities, highlighting the need for resilient supply chain strategies.",
+          "icon": "⛔",
+          "order": 3
+        }
+      },
+      {
+        "id": "2QZDbCsOj07BU1TpVPCmjD",
+        "createdAt": "2025-09-01T20:06:10.906Z",
+        "updatedAt": "2025-09-01T20:06:11.352Z",
+        "fields": {
+          "title": "Risk of increased operating costs",
+          "description": "As climate impacts intensify, businesses face higher operational expenses through increased energy costs, supply chain disruptions, and the need for climate adaptation measures. These rising costs affect competitiveness and long-term sustainability of operations across all sectors.",
+          "icon": "📊",
+          "order": 2
+        }
+      },
+      {
+        "id": "3jLXUfHLiVHHpOPIrJHeC2",
+        "createdAt": "2025-09-01T20:06:09.896Z",
+        "updatedAt": "2025-09-01T20:06:10.279Z",
+        "fields": {
+          "title": "Risk of physical damage to structures",
+          "description": "Climate change poses significant threats to infrastructure through extreme weather events, rising sea levels, and temperature fluctuations. Buildings, roads, and critical facilities face increased vulnerability to flooding, storms, and heat stress, requiring adaptive design and resilient construction practices.",
+          "icon": "⚠️",
+          "order": 1
+        }
+      }
+    ],
+    "focusArea": [
+      {
+        "id": "4nFFaXKr45KYWza1t9dSXW",
+        "createdAt": "2025-09-01T20:06:08.914Z",
+        "updatedAt": "2025-09-01T20:06:09.289Z",
+        "fields": {
+          "title": "Sustainable production and consumption",
+          "slug": "production",
+          "backgroundImageUrl": "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=1600&h=900&fit=crop",
+          "order": 9
+        }
+      },
+      {
+        "id": "2FKlrN4rQxmuOaGjKo0cXM",
+        "createdAt": "2025-09-01T20:06:07.947Z",
+        "updatedAt": "2025-09-01T20:06:08.315Z",
+        "fields": {
+          "title": "Water management",
+          "slug": "water",
+          "backgroundImageUrl": "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1600&h=900&fit=crop",
+          "order": 8
+        }
+      },
+      {
+        "id": "3iOVFUn65rvg1cbS561po5",
+        "createdAt": "2025-09-01T20:06:06.925Z",
+        "updatedAt": "2025-09-01T20:06:07.305Z",
+        "fields": {
+          "title": "Sustainable waste management and recycling",
+          "slug": "waste",
+          "backgroundImageUrl": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&h=900&fit=crop",
+          "order": 7
+        }
+      },
+      {
+        "id": "2xjP0OEd9xDQKE57KZT8Of",
+        "createdAt": "2025-09-01T20:06:05.899Z",
+        "updatedAt": "2025-09-01T20:06:06.307Z",
+        "fields": {
+          "title": "Green buildings and the built environment",
+          "slug": "buildings",
+          "backgroundImageUrl": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=1600&h=900&fit=crop",
+          "order": 6
+        }
+      },
+      {
+        "id": "3Y8BEYlextjbj2s6MVdeSs",
+        "createdAt": "2025-09-01T20:06:04.839Z",
+        "updatedAt": "2025-09-01T20:06:05.264Z",
+        "fields": {
+          "title": "Environmental sustainability, including tourism education",
+          "slug": "environmental",
+          "backgroundImageUrl": "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=1600&h=900&fit=crop",
+          "order": 5
+        }
+      },
+      {
+        "id": "6QJ7KQfPDlqRBUWscstGU0",
+        "createdAt": "2025-09-01T20:06:03.808Z",
+        "updatedAt": "2025-09-01T20:06:04.191Z",
+        "fields": {
+          "title": "Sustainable transport and infrastructure",
+          "slug": "transport",
+          "backgroundImageUrl": "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1600&h=900&fit=crop",
+          "order": 4
+        }
+      },
+      {
+        "id": "2jTInsRCgnqs5D4XTreZgj",
+        "createdAt": "2025-09-01T20:06:02.778Z",
+        "updatedAt": "2025-09-01T20:06:03.166Z",
+        "fields": {
+          "title": "Natural resource conservation and management (including mining)",
+          "slug": "natural-resource",
+          "backgroundImageUrl": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=1600&h=900&fit=crop",
+          "order": 3
+        }
+      },
+      {
+        "id": "3jceqUlEh9GQvP1SzqpVr3",
+        "createdAt": "2025-09-01T20:06:01.584Z",
+        "updatedAt": "2025-09-01T20:06:02.100Z",
+        "fields": {
+          "title": "Energy (clean and efficient)",
+          "slug": "energy",
+          "backgroundImageUrl": "https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=1600&h=900&fit=crop",
+          "order": 2
+        }
+      },
+      {
+        "id": "4cTLIbRccPLFNTGYiGxvyo",
+        "createdAt": "2025-09-01T20:06:00.516Z",
+        "updatedAt": "2025-09-01T20:06:00.924Z",
+        "fields": {
+          "title": "Agriculture",
+          "slug": "agriculture",
+          "backgroundImageUrl": "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1600&h=900&fit=crop",
+          "order": 1
+        }
+      }
+    ],
+    "heroSection": [
+      {
+        "id": "5jCiUA99kvnog7crcmJoR2",
+        "createdAt": "2025-09-01T20:05:59.427Z",
+        "updatedAt": "2025-09-01T20:05:59.862Z",
+        "fields": {
+          "title": "ABOUT THE GREEN ECONOMY",
+          "description": "A green economy is one which is socially inclusive and environmentally sustainable. It improves human well-being and builds social equity while reducing environmental risks and ecological scarcities. In simple terms, we can think of a green economy as one which is low carbon, resource efficient and socially inclusive.",
+          "imageAlt": "Professional woman in safety vest"
+        }
+      }
+    ]
+  },
+  "assets": [
+    {
+      "id": "6Hy2lUewR8c1zygAgp3cPv",
+      "createdAt": "2025-09-01T19:38:21.753Z",
+      "updatedAt": "2025-09-01T19:39:03.806Z",
+      "title": "SECO-Logo",
+      "description": null,
+      "fileName": "SECO-Logo.jpg",
+      "url": "https://images.ctfassets.net/zerelkd70urg/6Hy2lUewR8c1zygAgp3cPv/596ed9e891403d76aa7c9dae69e992e1/SECO-Logo.jpg",
+      "contentType": "image/jpeg",
+      "details": {
+        "size": 10372,
+        "image": {
+          "width": 276,
+          "height": 137
+        }
+      }
+    },
+    {
+      "id": "AwREdOrcwEBSTEc6I0xRU",
+      "createdAt": "2025-09-01T19:38:19.809Z",
+      "updatedAt": "2025-09-01T19:38:52.163Z",
+      "title": "Mitigation",
+      "description": null,
+      "fileName": "Mitigation.webp",
+      "url": "https://images.ctfassets.net/zerelkd70urg/AwREdOrcwEBSTEc6I0xRU/d39ff6a1a6157eb6da21caa5bd41f18c/Mitigation.webp",
+      "contentType": "image/webp",
+      "details": {
+        "size": 21204,
+        "image": {
+          "width": 692,
+          "height": 461
+        }
+      }
+    },
+    {
+      "id": "5vtg7faCvzl8NodKkOQhEo",
+      "createdAt": "2025-09-01T19:38:19.807Z",
+      "updatedAt": "2025-09-01T19:38:52.160Z",
+      "title": "Knowledge-Hub 2023-10-04-145730 tkxt a91a4f7cf12b2095b100c24cf6024d38",
+      "description": null,
+      "fileName": "Knowledge-Hub_2023-10-04-145730_tkxt_a91a4f7cf12b2095b100c24cf6024d38.webp",
+      "url": "https://images.ctfassets.net/zerelkd70urg/5vtg7faCvzl8NodKkOQhEo/3102e5a67dfb35350a3f5e38c193a0ef/Knowledge-Hub_2023-10-04-145730_tkxt_a91a4f7cf12b2095b100c24cf6024d38.webp",
+      "contentType": "image/webp",
+      "details": {
+        "size": 55130,
+        "image": {
+          "width": 1920,
+          "height": 499
+        }
+      }
+    },
+    {
+      "id": "3YBdfXxUtCBg4xmeH17dgF",
+      "createdAt": "2025-09-01T19:38:19.794Z",
+      "updatedAt": "2025-09-01T19:38:52.158Z",
+      "title": "NBI-Logo",
+      "description": null,
+      "fileName": "NBI-Logo.jpg",
+      "url": "https://images.ctfassets.net/zerelkd70urg/3YBdfXxUtCBg4xmeH17dgF/f9d6db164d0b77e06ecd90ab10d9ca64/NBI-Logo.jpg",
+      "contentType": "image/jpeg",
+      "details": {
+        "size": 582367,
+        "image": {
+          "width": 4501,
+          "height": 2941
+        }
+      }
+    },
+    {
+      "id": "4KD04PEOP51YxcVetmrrDo",
+      "createdAt": "2025-09-01T19:38:19.786Z",
+      "updatedAt": "2025-09-01T19:38:52.154Z",
+      "title": "nbi",
+      "description": null,
+      "fileName": "nbi.jpg",
+      "url": "https://images.ctfassets.net/zerelkd70urg/4KD04PEOP51YxcVetmrrDo/f016ff0225bedaf8264514ef32d56f02/nbi.jpg",
+      "contentType": "image/jpeg",
+      "details": {
+        "size": 582367,
+        "image": {
+          "width": 4501,
+          "height": 2941
+        }
+      }
+    },
+    {
+      "id": "1ZTqDOY47awcoyURx5Wyj0",
+      "createdAt": "2025-09-01T19:38:19.824Z",
+      "updatedAt": "2025-09-01T19:38:52.152Z",
+      "title": "LMS-Platform-Logo",
+      "description": null,
+      "fileName": "LMS-Platform-Logo.png",
+      "url": "https://images.ctfassets.net/zerelkd70urg/1ZTqDOY47awcoyURx5Wyj0/dbca411dccbae3c3f3e9a2907caf916a/LMS-Platform-Logo.png",
+      "contentType": "image/png",
+      "details": {
+        "size": 387175,
+        "image": {
+          "width": 3367,
+          "height": 1497
+        }
+      }
+    },
+    {
+      "id": "5a4OcDd7MYBVpKsnS3NOCH",
+      "createdAt": "2025-09-01T19:38:20.771Z",
+      "updatedAt": "2025-09-01T19:38:52.150Z",
+      "title": "reputationrisk",
+      "description": null,
+      "fileName": "reputationrisk.png",
+      "url": "https://images.ctfassets.net/zerelkd70urg/5a4OcDd7MYBVpKsnS3NOCH/c5bf907d14d362c0772d4dd24ce81a3f/reputationrisk.png",
+      "contentType": "image/png",
+      "details": {
+        "size": 17567,
+        "image": {
+          "width": 401,
+          "height": 401
+        }
+      }
+    },
+    {
+      "id": "4WxESDfZ0jVFKzyK6OjB4K",
+      "createdAt": "2025-09-01T19:38:20.889Z",
+      "updatedAt": "2025-09-01T19:38:52.148Z",
+      "title": "riskofincreasedoperatingcosts",
+      "description": null,
+      "fileName": "riskofincreasedoperatingcosts.png",
+      "url": "https://images.ctfassets.net/zerelkd70urg/4WxESDfZ0jVFKzyK6OjB4K/18b123cc76b2bc5e737d516b7b7b1185/riskofincreasedoperatingcosts.png",
+      "contentType": "image/png",
+      "details": {
+        "size": 21329,
+        "image": {
+          "width": 401,
+          "height": 401
+        }
+      }
+    },
+    {
+      "id": "3NE1YxJo9bKin4CiMC0LUP",
+      "createdAt": "2025-09-01T19:38:20.784Z",
+      "updatedAt": "2025-09-01T19:38:52.146Z",
+      "title": "regulatoryrisk",
+      "description": null,
+      "fileName": "regulatoryrisk.png",
+      "url": "https://images.ctfassets.net/zerelkd70urg/3NE1YxJo9bKin4CiMC0LUP/55dafc10f991bd92321dd3a2a9b68f12/regulatoryrisk.png",
+      "contentType": "image/png",
+      "details": {
+        "size": 14063,
+        "image": {
+          "width": 401,
+          "height": 401
+        }
+      }
+    },
+    {
+      "id": "1RnW1nTnR3w7RLvPq4ftcr",
+      "createdAt": "2025-09-01T19:38:20.907Z",
+      "updatedAt": "2025-09-01T19:38:52.143Z",
+      "title": "riskofphysicaldamage",
+      "description": null,
+      "fileName": "riskofphysicaldamage.png",
+      "url": "https://images.ctfassets.net/zerelkd70urg/1RnW1nTnR3w7RLvPq4ftcr/39c3d11bf1a349b601bea223402f32b3/riskofphysicaldamage.png",
+      "contentType": "image/png",
+      "details": {
+        "size": 22163,
+        "image": {
+          "width": 401,
+          "height": 401
+        }
+      }
+    },
+    {
+      "id": "4HnFg04g42FLR46xg8KndV",
+      "createdAt": "2025-09-01T19:38:20.818Z",
+      "updatedAt": "2025-09-01T19:38:52.141Z",
+      "title": "resilience",
+      "description": null,
+      "fileName": "resilience.webp",
+      "url": "https://images.ctfassets.net/zerelkd70urg/4HnFg04g42FLR46xg8KndV/82093652af53d5d5172f6fc7970ac209/resilience.webp",
+      "contentType": "image/webp",
+      "details": {
+        "size": 55194,
+        "image": {
+          "width": 768,
+          "height": 396
+        }
+      }
+    },
+    {
+      "id": "3T1EUWEXKqpl285wpjs7vV",
+      "createdAt": "2025-09-01T19:38:21.773Z",
+      "updatedAt": "2025-09-01T19:38:52.139Z",
+      "title": "swiss",
+      "description": null,
+      "fileName": "swiss.jpg",
+      "url": "https://images.ctfassets.net/zerelkd70urg/3T1EUWEXKqpl285wpjs7vV/ee13062ae8f7a74d98454f3108b0f9a5/swiss.jpg",
+      "contentType": "image/jpeg",
+      "details": {
+        "size": 10372,
+        "image": {
+          "width": 276,
+          "height": 137
+        }
+      }
+    },
+    {
+      "id": "1KXQFQo7FfcEQbXaQzlTE4",
+      "createdAt": "2025-09-01T19:38:21.778Z",
+      "updatedAt": "2025-09-01T19:38:52.136Z",
+      "title": "riskofsupplychain",
+      "description": null,
+      "fileName": "riskofsupplychain.png",
+      "url": "https://images.ctfassets.net/zerelkd70urg/1KXQFQo7FfcEQbXaQzlTE4/c80aceb26303a1c798e547d426caf835/riskofsupplychain.png",
+      "contentType": "image/png",
+      "details": {
+        "size": 17344,
+        "image": {
+          "width": 401,
+          "height": 401
+        }
+      }
+    },
+    {
+      "id": "14KtjHZ9FZF4iWMlxr8kvd",
+      "createdAt": "2025-09-01T19:35:47.166Z",
+      "updatedAt": "2025-09-01T19:38:29.969Z",
+      "title": "Avatar",
+      "description": null,
+      "fileName": "Avatar.png",
+      "url": "https://images.ctfassets.net/zerelkd70urg/14KtjHZ9FZF4iWMlxr8kvd/291c2f2f2ecdfec92e6059377551652d/Avatar.png",
+      "contentType": "image/png",
+      "details": {
+        "size": 996600,
+        "image": {
+          "width": 1085,
+          "height": 801
+        }
+      }
+    },
+    {
+      "id": "46FON0gUEMVmUUin4nT8jg",
+      "createdAt": "2025-09-01T19:37:44.891Z",
+      "updatedAt": "2025-09-01T19:38:29.967Z",
+      "title": "german",
+      "description": null,
+      "fileName": "german.jpg",
+      "url": "https://images.ctfassets.net/zerelkd70urg/46FON0gUEMVmUUin4nT8jg/6b2d81235a5f54acef74ed15d1e2eae5/german.jpg",
+      "contentType": "image/jpeg",
+      "details": {
+        "size": 8534,
+        "image": {
+          "width": 312,
+          "height": 114
+        }
+      }
+    },
+    {
+      "id": "1B8gkyNUKWYUNmXZCpPpD5",
+      "createdAt": "2025-09-01T19:37:44.956Z",
+      "updatedAt": "2025-09-01T19:38:29.964Z",
+      "title": "climate",
+      "description": null,
+      "fileName": "climate.webp",
+      "url": "https://images.ctfassets.net/zerelkd70urg/1B8gkyNUKWYUNmXZCpPpD5/1fe750cddb84eb12bb1a75911a6531fc/climate.webp",
+      "contentType": "image/webp",
+      "details": {
+        "size": 43004,
+        "image": {
+          "width": 768,
+          "height": 431
+        }
+      }
+    },
+    {
+      "id": "2STh8vH2T37ZAHOgXIAJN6",
+      "createdAt": "2025-09-01T19:37:44.887Z",
+      "updatedAt": "2025-09-01T19:38:29.962Z",
+      "title": "adaptation",
+      "description": null,
+      "fileName": "adaptation.webp",
+      "url": "https://images.ctfassets.net/zerelkd70urg/2STh8vH2T37ZAHOgXIAJN6/18856a632f716a8b9f2a9bbc6b972b14/adaptation.webp",
+      "contentType": "image/webp",
+      "details": {
+        "size": 52460,
+        "image": {
+          "width": 692,
+          "height": 461
+        }
+      }
+    },
+    {
+      "id": "28MqYi0tNnpwR7Iqjx1Lvc",
+      "createdAt": "2025-09-01T19:37:44.869Z",
+      "updatedAt": "2025-09-01T19:38:29.959Z",
+      "title": "about",
+      "description": null,
+      "fileName": "about.JPG",
+      "url": "https://images.ctfassets.net/zerelkd70urg/28MqYi0tNnpwR7Iqjx1Lvc/751a05b8ac7ad31f14f521925641b13d/about.JPG",
+      "contentType": "image/jpeg",
+      "details": {
+        "size": 72472,
+        "image": {
+          "width": 1064,
+          "height": 671
+        }
+      }
+    },
+    {
+      "id": "CzrGQZGir0uRAfxuQYtB2",
+      "createdAt": "2025-09-01T19:37:44.903Z",
+      "updatedAt": "2025-09-01T19:38:29.957Z",
+      "title": "GDED-Logo",
+      "description": null,
+      "fileName": "GDED-Logo.jpg",
+      "url": "https://images.ctfassets.net/zerelkd70urg/CzrGQZGir0uRAfxuQYtB2/d203e88a4acbbd5d81a9d6367eab2dc3/GDED-Logo.jpg",
+      "contentType": "image/jpeg",
+      "details": {
+        "size": 1411339,
+        "image": {
+          "width": 5056,
+          "height": 1402
+        }
+      }
+    },
+    {
+      "id": "2Y85zE1oEJLP0YUqve7d3g",
+      "createdAt": "2025-09-01T19:37:44.943Z",
+      "updatedAt": "2025-09-01T19:38:29.954Z",
+      "title": "gauteng",
+      "description": null,
+      "fileName": "gauteng.jpg",
+      "url": "https://images.ctfassets.net/zerelkd70urg/2Y85zE1oEJLP0YUqve7d3g/5210e3cb068e5b18f9acc42e4bbd5f4f/gauteng.jpg",
+      "contentType": "image/jpeg",
+      "details": {
+        "size": 1411339,
+        "image": {
+          "width": 5056,
+          "height": 1402
+        }
+      }
+    },
+    {
+      "id": "2eFAnUQfslhvSXMYJXEY92",
+      "createdAt": "2025-09-01T19:37:45.867Z",
+      "updatedAt": "2025-09-01T19:38:29.951Z",
+      "title": "GET",
+      "description": null,
+      "fileName": "GET.png",
+      "url": "https://images.ctfassets.net/zerelkd70urg/2eFAnUQfslhvSXMYJXEY92/9b38939094f181f954cfc673dbd1c509/GET.png",
+      "contentType": "image/png",
+      "details": {
+        "size": 58009,
+        "image": {
+          "width": 1632,
+          "height": 486
+        }
+      }
+    },
+    {
+      "id": "5eQnGmBwm82ExsZbvwOBEA",
+      "createdAt": "2025-09-01T19:37:45.872Z",
+      "updatedAt": "2025-09-01T19:38:29.947Z",
+      "title": "GETBG",
+      "description": null,
+      "fileName": "GETBG.webp",
+      "url": "https://images.ctfassets.net/zerelkd70urg/5eQnGmBwm82ExsZbvwOBEA/e59eb30caab96e95bf1eac8fe6394c7b/GETBG.webp",
+      "contentType": "image/webp",
+      "details": {
+        "size": 41428,
+        "image": {
+          "width": 1280,
+          "height": 382
+        }
+      }
+    },
+    {
+      "id": "4d0xsLgaAig8AKIrkfSOWC",
+      "createdAt": "2025-09-01T19:37:45.861Z",
+      "updatedAt": "2025-09-01T19:38:29.945Z",
+      "title": "image",
+      "description": null,
+      "fileName": "image.png",
+      "url": "https://images.ctfassets.net/zerelkd70urg/4d0xsLgaAig8AKIrkfSOWC/b28b89f26caa840dfafd734670fbce24/image.png",
+      "contentType": "image/png",
+      "details": {
+        "size": 19354,
+        "image": {
+          "width": 383,
+          "height": 99
+        }
+      }
+    },
+    {
+      "id": "3HqN7Sfu5lMWyLEkpO96j5",
+      "createdAt": "2025-09-01T19:37:45.852Z",
+      "updatedAt": "2025-09-01T19:38:29.943Z",
+      "title": "Image Of A Bult With Green",
+      "description": null,
+      "fileName": "Image Of A Bult With Green.jpg",
+      "url": "https://images.ctfassets.net/zerelkd70urg/3HqN7Sfu5lMWyLEkpO96j5/b743d8169e48715e6ebe4297ff815a14/Image_Of_A_Bult_With_Green.jpg",
+      "contentType": "image/jpeg",
+      "details": {
+        "size": 101038,
+        "image": {
+          "width": 1470,
+          "height": 980
+        }
+      }
+    },
+    {
+      "id": "5sm6u6ExK75tNaOp0sXW4Q",
+      "createdAt": "2025-09-01T19:37:45.855Z",
+      "updatedAt": "2025-09-01T19:38:29.940Z",
+      "title": "giz-logo 2024-11-11-133203 nara",
+      "description": null,
+      "fileName": "giz-logo_2024-11-11-133203_nara.jpg",
+      "url": "https://images.ctfassets.net/zerelkd70urg/5sm6u6ExK75tNaOp0sXW4Q/5f3f6b1ecf0d02881c2d1f49c9859802/giz-logo_2024-11-11-133203_nara.jpg",
+      "contentType": "image/jpeg",
+      "details": {
+        "size": 8534,
+        "image": {
+          "width": 312,
+          "height": 114
+        }
+      }
+    },
+    {
+      "id": "2OgBOoMQNQMtep4hJpEJKj",
+      "createdAt": "2025-09-01T19:37:45.846Z",
+      "updatedAt": "2025-09-01T19:38:29.938Z",
+      "title": "irm",
+      "description": null,
+      "fileName": "irm.png",
+      "url": "https://images.ctfassets.net/zerelkd70urg/2OgBOoMQNQMtep4hJpEJKj/0306f3f7fe14c0c5f0785cb97d7455d9/irm.png",
+      "contentType": "image/png",
+      "details": {
+        "size": 387175,
+        "image": {
+          "width": 3367,
+          "height": 1497
+        }
+      }
+    },
+    {
+      "id": "6NwARMsJ2BWnkq9sbQFO01",
+      "createdAt": "2025-09-01T19:37:46.848Z",
+      "updatedAt": "2025-09-01T19:38:29.934Z",
+      "title": "istockphoto-1253106050-612x612",
+      "description": null,
+      "fileName": "istockphoto-1253106050-612x612.jpg",
+      "url": "https://images.ctfassets.net/zerelkd70urg/6NwARMsJ2BWnkq9sbQFO01/e041c2747a1b3aac4aa275b53a9299d0/istockphoto-1253106050-612x612.jpg",
+      "contentType": "image/jpeg",
+      "details": {
+        "size": 45497,
+        "image": {
+          "width": 612,
+          "height": 408
+        }
+      }
+    },
+    {
+      "id": "6IDqUqYT6ewFNHc0j4MYSU",
+      "createdAt": "2025-09-01T19:37:46.890Z",
+      "updatedAt": "2025-09-01T19:38:29.932Z",
+      "title": "IRMSector",
+      "description": null,
+      "fileName": "IRMSector.png",
+      "url": "https://images.ctfassets.net/zerelkd70urg/6IDqUqYT6ewFNHc0j4MYSU/c70cd82990995495af583464c8ea130e/IRMSector.png",
+      "contentType": "image/png",
+      "details": {
+        "size": 676563,
+        "image": {
+          "width": 789,
+          "height": 662
+        }
+      }
+    },
+    {
+      "id": "5LEibWFVSuY95aan547jwf",
+      "createdAt": "2025-09-01T19:38:20.793Z",
+      "updatedAt": "2025-09-01T19:38:23.738Z",
+      "title": "R",
+      "description": null,
+      "fileName": "R.jpg",
+      "url": "https://images.ctfassets.net/zerelkd70urg/5LEibWFVSuY95aan547jwf/213e3a4c2fa53e3051c2d99147c8e284/R.jpg",
+      "contentType": "image/jpeg",
+      "details": {
+        "size": 788910,
+        "image": {
+          "width": 1920,
+          "height": 1200
+        }
+      }
+    },
+    {
+      "id": "2NoX2rtYnYJqzCNONhxO3q",
+      "createdAt": "2025-09-01T19:38:19.796Z",
+      "updatedAt": "2025-09-01T19:38:22.672Z",
+      "title": "OInP",
+      "description": null,
+      "fileName": "OInP.png",
+      "url": "https://images.ctfassets.net/zerelkd70urg/2NoX2rtYnYJqzCNONhxO3q/fb4d992f0c7e5c5c6e6e3b90b5e65bcd/OInP.png",
+      "contentType": "image/webp",
+      "details": {
+        "size": 13150,
+        "image": {
+          "width": 474,
+          "height": 315
+        }
+      }
+    },
+    {
+      "id": "6szUhBq38w9fEAto9oF35D",
+      "createdAt": "2025-09-01T19:36:40.407Z",
+      "updatedAt": "2025-09-01T19:37:09.021Z",
+      "title": "IRMSector English",
+      "description": null,
+      "fileName": "IRMSector_English.mp4",
+      "url": "https://videos.ctfassets.net/zerelkd70urg/6szUhBq38w9fEAto9oF35D/d10ee8e05cc29eabe5bad128350ba794/IRMSector_English.mp4",
+      "contentType": "video/mp4",
+      "details": {
+        "size": 11777622
+      }
+    },
+    {
+      "id": "1bshySPqXjrzjbGcFZmDIC",
+      "createdAt": "2025-09-01T19:36:40.415Z",
+      "updatedAt": "2025-09-01T19:37:09.018Z",
+      "title": "knowledge-Hub English",
+      "description": null,
+      "fileName": "knowledge-Hub_English.mp4",
+      "url": "https://videos.ctfassets.net/zerelkd70urg/1bshySPqXjrzjbGcFZmDIC/072cdbb1b5364de724ca582626922e21/knowledge-Hub_English.mp4",
+      "contentType": "video/mp4",
+      "details": {
+        "size": 11250382
+      }
+    },
+    {
+      "id": "3RxRgrZiSItiENiuP7sme1",
+      "createdAt": "2025-09-01T19:36:40.440Z",
+      "updatedAt": "2025-09-01T19:37:09.015Z",
+      "title": "IRMSectorPage Tswana",
+      "description": null,
+      "fileName": "IRMSectorPage_Tswana.mp4",
+      "url": "https://videos.ctfassets.net/zerelkd70urg/3RxRgrZiSItiENiuP7sme1/9bec58dd02355e831c5e6f0ed20b2d56/IRMSectorPage_Tswana.mp4",
+      "contentType": "video/mp4",
+      "details": {
+        "size": 18907390
+      }
+    },
+    {
+      "id": "uny9zCcXPsD5wgBw1h7EN",
+      "createdAt": "2025-09-01T19:36:40.431Z",
+      "updatedAt": "2025-09-01T19:37:09.012Z",
+      "title": "IRMSector Zulu",
+      "description": null,
+      "fileName": "IRMSector_Zulu.mp4",
+      "url": "https://videos.ctfassets.net/zerelkd70urg/uny9zCcXPsD5wgBw1h7EN/28bcfac32b6d21798e935168a74f27f2/IRMSector_Zulu.mp4",
+      "contentType": "video/mp4",
+      "details": {
+        "size": 15864785
+      }
+    },
+    {
+      "id": "4MxrtMY6JHPtlbPSupeqLw",
+      "createdAt": "2025-09-01T19:36:40.427Z",
+      "updatedAt": "2025-09-01T19:37:08.995Z",
+      "title": "knowledge-Hub Zulu",
+      "description": null,
+      "fileName": "knowledge-Hub_Zulu.mp4",
+      "url": "https://videos.ctfassets.net/zerelkd70urg/4MxrtMY6JHPtlbPSupeqLw/00963a0e539ef36eb4a19cf3053c32d3/knowledge-Hub_Zulu.mp4",
+      "contentType": "video/mp4",
+      "details": {
+        "size": 16175837
+      }
+    },
+    {
+      "id": "5iVvxbS4lKkuiwTEUchqFk",
+      "createdAt": "2025-09-01T19:36:40.416Z",
+      "updatedAt": "2025-09-01T19:37:08.992Z",
+      "title": "knowledge-Hub Tswana",
+      "description": null,
+      "fileName": "knowledge-Hub_Tswana.mp4",
+      "url": "https://videos.ctfassets.net/zerelkd70urg/5iVvxbS4lKkuiwTEUchqFk/c88857da27a942c38eb6e63c62ea0e12/knowledge-Hub_Tswana.mp4",
+      "contentType": "video/mp4",
+      "details": {
+        "size": 18254368
+      }
+    },
+    {
+      "id": "7H4gooj6W4BOXaQC1Cktv2",
+      "createdAt": "2025-09-01T19:36:41.404Z",
+      "updatedAt": "2025-09-01T19:37:08.988Z",
+      "title": "opportunities English",
+      "description": null,
+      "fileName": "opportunities_English.mp4",
+      "url": "https://videos.ctfassets.net/zerelkd70urg/7H4gooj6W4BOXaQC1Cktv2/bf9716d162b74fbb234009dfd428507c/opportunities_English.mp4",
+      "contentType": "video/mp4",
+      "details": {
+        "size": 11596917
+      }
+    },
+    {
+      "id": "6YJIDeDIPA73y3JaYp8dR0",
+      "createdAt": "2025-09-01T19:36:41.441Z",
+      "updatedAt": "2025-09-01T19:37:08.983Z",
+      "title": "opportunities Zulu",
+      "description": null,
+      "fileName": "opportunities_Zulu.mp4",
+      "url": "https://videos.ctfassets.net/zerelkd70urg/6YJIDeDIPA73y3JaYp8dR0/aa94dd80965b12a1896a82933f9990e7/opportunities_Zulu.mp4",
+      "contentType": "video/mp4",
+      "details": {
+        "size": 14808680
+      }
+    },
+    {
+      "id": "RLRKJ9Z0LPTwyEt5mwRRg",
+      "createdAt": "2025-09-01T19:36:41.406Z",
+      "updatedAt": "2025-09-01T19:37:08.977Z",
+      "title": "opportunities Tswana",
+      "description": null,
+      "fileName": "opportunities_Tswana.mp4",
+      "url": "https://videos.ctfassets.net/zerelkd70urg/RLRKJ9Z0LPTwyEt5mwRRg/58f4f1642314b9df0e3ec6655c3d27d6/opportunities_Tswana.mp4",
+      "contentType": "video/mp4",
+      "details": {
+        "size": 16730982
+      }
+    },
+    {
+      "id": "6N4RYJEFioVhhlylsBeqnt",
+      "createdAt": "2025-09-01T19:35:47.153Z",
+      "updatedAt": "2025-09-01T19:36:51.044Z",
+      "title": "about English",
+      "description": null,
+      "fileName": "about_English.mp4",
+      "url": "https://videos.ctfassets.net/zerelkd70urg/6N4RYJEFioVhhlylsBeqnt/7b5a45a6c20417b1ed8da56858e9d1d9/about_English.mp4",
+      "contentType": "video/mp4",
+      "details": {
+        "size": 13149411
+      }
+    },
+    {
+      "id": "2EENldC5ZcsZqCWf4CRahP",
+      "createdAt": "2025-09-01T19:35:47.208Z",
+      "updatedAt": "2025-09-01T19:36:51.042Z",
+      "title": "dashboard English",
+      "description": null,
+      "fileName": "dashboard_English.mp4",
+      "url": "https://videos.ctfassets.net/zerelkd70urg/2EENldC5ZcsZqCWf4CRahP/d668ecacfadcf748b575751bff2bf250/dashboard_English.mp4",
+      "contentType": "video/mp4",
+      "details": {
+        "size": 14111679
+      }
+    },
+    {
+      "id": "1UO2wZsqbO1rIUO0wVVDnT",
+      "createdAt": "2025-09-01T19:35:47.185Z",
+      "updatedAt": "2025-09-01T19:36:51.040Z",
+      "title": "about Tswana",
+      "description": null,
+      "fileName": "about_Tswana.mp4",
+      "url": "https://videos.ctfassets.net/zerelkd70urg/1UO2wZsqbO1rIUO0wVVDnT/024fb338a6ea08cf75988f274d85ffaf/about_Tswana.mp4",
+      "contentType": "video/mp4",
+      "details": {
+        "size": 20536884
+      }
+    },
+    {
+      "id": "3Qxdgiuphibs0mLkqOyX06",
+      "createdAt": "2025-09-01T19:35:48.192Z",
+      "updatedAt": "2025-09-01T19:36:51.038Z",
+      "title": "idle",
+      "description": null,
+      "fileName": "idle.mp4",
+      "url": "https://videos.ctfassets.net/zerelkd70urg/3Qxdgiuphibs0mLkqOyX06/9a11631da8cce154d7dd227c723a195b/idle.mp4",
+      "contentType": "video/mp4",
+      "details": {
+        "size": 2938807
+      }
+    },
+    {
+      "id": "6REPEF9xAXE9neBtGJaz2c",
+      "createdAt": "2025-09-01T19:35:47.177Z",
+      "updatedAt": "2025-09-01T19:36:51.034Z",
+      "title": "About Zulu",
+      "description": null,
+      "fileName": "About_Zulu.mp4",
+      "url": "https://videos.ctfassets.net/zerelkd70urg/6REPEF9xAXE9neBtGJaz2c/32f51585cb26b473a9216be5f13e630f/About_Zulu.mp4",
+      "contentType": "video/mp4",
+      "details": {
+        "size": 18420325
+      }
+    },
+    {
+      "id": "1Cx2a54KpQcl4Eb7QncdQe",
+      "createdAt": "2025-09-01T19:35:48.166Z",
+      "updatedAt": "2025-09-01T19:36:51.032Z",
+      "title": "index English",
+      "description": null,
+      "fileName": "index_English.mp4",
+      "url": "https://videos.ctfassets.net/zerelkd70urg/1Cx2a54KpQcl4Eb7QncdQe/49467ba79774b7620eb7edbe0a72a6da/index_English.mp4",
+      "contentType": "video/mp4",
+      "details": {
+        "size": 11959463
+      }
+    },
+    {
+      "id": "361wwAyF8fNtnGWBaf8so8",
+      "createdAt": "2025-09-01T19:35:47.221Z",
+      "updatedAt": "2025-09-01T19:36:51.030Z",
+      "title": "dashboard Tswana",
+      "description": null,
+      "fileName": "dashboard_Tswana.mp4",
+      "url": "https://videos.ctfassets.net/zerelkd70urg/361wwAyF8fNtnGWBaf8so8/285ec6426fd380424df84a10aeae87ad/dashboard_Tswana.mp4",
+      "contentType": "video/mp4",
+      "details": {
+        "size": 22138313
+      }
+    },
+    {
+      "id": "2vAnpIbn4ww5HtMglBYlZa",
+      "createdAt": "2025-09-01T19:35:48.154Z",
+      "updatedAt": "2025-09-01T19:36:51.028Z",
+      "title": "Funding-Hub English",
+      "description": null,
+      "fileName": "Funding-Hub_English.mp4",
+      "url": "https://videos.ctfassets.net/zerelkd70urg/2vAnpIbn4ww5HtMglBYlZa/70117293778443f1b82da1024c022d2c/Funding-Hub_English.mp4",
+      "contentType": "video/mp4",
+      "details": {
+        "size": 12936534
+      }
+    },
+    {
+      "id": "soD1pa9kn3tXL6ckQA98b",
+      "createdAt": "2025-09-01T19:35:48.161Z",
+      "updatedAt": "2025-09-01T19:36:51.024Z",
+      "title": "Funding-Hub Zulu",
+      "description": null,
+      "fileName": "Funding-Hub_Zulu.mp4",
+      "url": "https://videos.ctfassets.net/zerelkd70urg/soD1pa9kn3tXL6ckQA98b/0163de1496fc4cf9bf2667dd446376bc/Funding-Hub_Zulu.mp4",
+      "contentType": "video/mp4",
+      "details": {
+        "size": 17360784
+      }
+    },
+    {
+      "id": "1O5q8VI87IDa3nMlGQ6fyf",
+      "createdAt": "2025-09-01T19:35:48.139Z",
+      "updatedAt": "2025-09-01T19:36:51.022Z",
+      "title": "Funding-Hub Tswana",
+      "description": null,
+      "fileName": "Funding-Hub_Tswana.mp4",
+      "url": "https://videos.ctfassets.net/zerelkd70urg/1O5q8VI87IDa3nMlGQ6fyf/03656ce6b360b01ca0f7f40b81a3c0b4/Funding-Hub_Tswana.mp4",
+      "contentType": "video/mp4",
+      "details": {
+        "size": 19995805
+      }
+    },
+    {
+      "id": "c8WjTX0S95Re1iqriLbiH",
+      "createdAt": "2025-09-01T19:35:48.174Z",
+      "updatedAt": "2025-09-01T19:36:51.020Z",
+      "title": "dashboard Zulu",
+      "description": null,
+      "fileName": "dashboard_Zulu.mp4",
+      "url": "https://videos.ctfassets.net/zerelkd70urg/c8WjTX0S95Re1iqriLbiH/5f95bc386e6aeaac450f0b5dc5b61051/dashboard_Zulu.mp4",
+      "contentType": "video/mp4",
+      "details": {
+        "size": 18516825
+      }
+    },
+    {
+      "id": "4hxzTQHptPC0xplmGyQ9mL",
+      "createdAt": "2025-09-01T19:35:49.162Z",
+      "updatedAt": "2025-09-01T19:36:51.018Z",
+      "title": "index Zulu",
+      "description": null,
+      "fileName": "index_Zulu.mp4",
+      "url": "https://videos.ctfassets.net/zerelkd70urg/4hxzTQHptPC0xplmGyQ9mL/f05c00ddc2ad8c4f9e85c1edece4c816/index_Zulu.mp4",
+      "contentType": "video/mp4",
+      "details": {
+        "size": 16423061
+      }
+    },
+    {
+      "id": "3R3tpUAhRJMp0gUljPLRGO",
+      "createdAt": "2025-09-01T19:35:49.153Z",
+      "updatedAt": "2025-09-01T19:36:51.015Z",
+      "title": "index Tswana",
+      "description": null,
+      "fileName": "index_Tswana.mp4",
+      "url": "https://videos.ctfassets.net/zerelkd70urg/3R3tpUAhRJMp0gUljPLRGO/24e1356c0b39642c3b9a23a1edee2776/index_Tswana.mp4",
+      "contentType": "video/mp4",
+      "details": {
+        "size": 18733692
+      }
+    }
+  ]
+}
