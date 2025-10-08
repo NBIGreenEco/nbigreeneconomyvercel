@@ -1,0 +1,641 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-i18n="title">Green Economy Toolkit</title>
+    <!-- Load i18next as global scripts -->
+    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
+    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
+    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
+    <!-- Load Trans.js as module, ensure it uses global i18next -->
+    <script type="module" src="/Trans.js"></script>
+    <script type="module" src="Master Page(Header and Footer)/MasterPage.js"></script>
+    <script src="scripts/video-controls.js" defer></script>
+    <script src="scripts/navigation.js" defer></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="Master Page(Header and Footer)/MasterPage.css">
+    <link rel="stylesheet" href="index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
+    <script type="module" src="scripts/enhancedsearch.js" defer></script>
+    <style>
+      .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #f8f9fa;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
+      .loading-spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #2b9589;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      body.loading {
+        visibility: hidden;
+        opacity: 0;
+      }
+      body.loaded {
+        visibility: visible;
+        opacity: 1;
+        transition: opacity 0.3s;
+      }
+    </style>
+    <script type="module">
+      import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
+      import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+      import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+      import { updateContent } from './Trans.js';
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyCfa827mvCLf1ETts6B_DmCfb7owTohBxk",
+        authDomain: "nbi-green-economy.firebaseapp.com",
+        projectId: "nbi-green-economy",
+        storageBucket: "nbi-green-economy.firebasestorage.app",
+        messagingSenderId: "53732340059",
+        appId: "1:53732340059:web:3fb3f086c6662e1e9baa7e",
+        measurementId: "G-37VRZ5CGE4"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      const auth = getAuth(app);
+
+      async function loadNews() {
+        try {
+          const newsGrid = document.querySelector('.news-grid');
+          if (!newsGrid) {
+            console.error('News grid element not found');
+            return;
+          }
+          newsGrid.innerHTML = '';
+          const newsSnapshot = await getDocs(collection(db, 'news'));
+          if (newsSnapshot.empty) {
+            console.warn('No news items found in Firestore');
+            newsGrid.innerHTML = '<p data-i18n="news.noNews">No news available.</p>';
+            i18next.addResourceBundle(i18next.language, 'translation', {
+              'news.noNews': 'No news available.'
+            }, true, true);
+            updateContent();
+            return;
+          }
+          newsSnapshot.forEach((doc, index) => {
+            const news = doc.data();
+            const newsItem = document.createElement('div');
+            newsItem.className = 'news-item';
+            newsItem.innerHTML = `
+              <div class="news-date" data-i18n="news.date${index}">${news.date || 'Date not available'}</div>
+              <h3 data-i18n="news.title${index}">${news.title || 'Untitled News'}</h3>
+              <p data-i18n="news.description${index}">${news.description || 'No description available'}</p>
+            `;
+            newsGrid.appendChild(newsItem);
+            i18next.addResourceBundle(i18next.language, 'translation', {
+              [`news.date${index}`]: news.date || 'Date not available',
+              [`news.title${index}`]: news.title || 'Untitled News',
+              [`news.description${index}`]: news.description || 'No description available'
+            }, true, true);
+            updateContent();
+          });
+        } catch (error) {
+          console.error('Error loading news:', error);
+          if (error.code === 'permission-denied') {
+            console.warn('Permission denied accessing news collection');
+          }
+          const newsGrid = document.querySelector('.news-grid');
+          if (newsGrid) {
+            newsGrid.innerHTML = '<p data-i18n="news.error">Failed to load news. Please try again later.</p>';
+            i18next.addResourceBundle(i18next.language, 'translation', {
+              'news.error': 'Failed to load news. Please try again later.'
+            }, true, true);
+            updateContent();
+          }
+        }
+      }
+
+      async function loadEvents() {
+        try {
+          const upcomingEventsContent = document.querySelector('.event-card:nth-child(1) .event-content');
+          const pastEventsContent = document.querySelector('.event-card:nth-child(2) .event-content');
+          if (!upcomingEventsContent || !pastEventsContent) {
+            console.error('Event content elements not found');
+            return;
+          }
+          upcomingEventsContent.innerHTML = '';
+          pastEventsContent.innerHTML = '';
+          const eventsSnapshot = await getDocs(collection(db, 'events'));
+          if (eventsSnapshot.empty) {
+            console.warn('No events found in Firestore');
+            upcomingEventsContent.innerHTML = '<p data-i18n="events.noUpcoming">No upcoming events available.</p>';
+            pastEventsContent.innerHTML = '<p data-i18n="events.noPast">No past events available.</p>';
+            i18next.addResourceBundle(i18next.language, 'translation', {
+              'events.noUpcoming': 'No upcoming events available.',
+              'events.noPast': 'No past events available.'
+            }, true, true);
+            updateContent();
+            return;
+          }
+          const currentDate = new Date();
+          eventsSnapshot.forEach((doc, index) => {
+            const event = doc.data();
+            let eventDate;
+            try {
+              eventDate = new Date(event.date);
+              if (isNaN(eventDate)) {
+                console.warn(`Invalid date format for event ${event.title}: ${event.date}`);
+                return;
+              }
+            } catch (e) {
+              console.warn(`Error parsing date for event ${event.title}: ${e.message}`);
+              return;
+            }
+            const eventItem = document.createElement('div');
+            eventItem.className = 'event-item';
+            eventItem.innerHTML = `
+              <div class="event-date">
+                <span class="dot">●</span>
+                <span data-i18n="events.date${index}">${event.date || 'Date not available'}</span>
+              </div>
+              <div class="event-details">
+                <h4 data-i18n="events.title${index}">${event.title || 'Untitled Event'}</h4>
+                <p data-i18n="events.details${index}">${event.details || 'No details available'}</p>
+              </div>
+            `;
+            if (eventDate >= currentDate) {
+              upcomingEventsContent.appendChild(eventItem);
+            } else {
+              pastEventsContent.appendChild(eventItem);
+            }
+            i18next.addResourceBundle(i18next.language, 'translation', {
+              [`events.date${index}`]: event.date || 'Date not available',
+              [`events.title${index}`]: event.title || 'Untitled Event',
+              [`events.details${index}`]: event.details || 'No details available'
+            }, true, true);
+            updateContent();
+          });
+        } catch (error) {
+          console.error('Error loading events:', error);
+          if (error.code === 'permission-denied') {
+            console.warn('Permission denied accessing events collection');
+          }
+          const upcomingEventsContent = document.querySelector('.event-card:nth-child(1) .event-content');
+          const pastEventsContent = document.querySelector('.event-card:nth-child(2) .event-content');
+          if (upcomingEventsContent) {
+            upcomingEventsContent.innerHTML = '<p data-i18n="events.errorUpcoming">Failed to load upcoming events.</p>';
+            i18next.addResourceBundle(i18next.language, 'translation', {
+              'events.errorUpcoming': 'Failed to load upcoming events.'
+            }, true, true);
+            updateContent();
+          }
+          if (pastEventsContent) {
+            pastEventsContent.innerHTML = '<p data-i18n="events.errorPast">Failed to load past events.</p>';
+            i18next.addResourceBundle(i18next.language, 'translation', {
+              'events.errorPast': 'Failed to load past events.'
+            }, true, true);
+            updateContent();
+          }
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        console.log('DOM loaded for index.html at', new Date().toLocaleString('en-ZA'));
+        document.body.classList.add('loading');
+        const loadingOverlay = document.querySelector('.loading-overlay');
+
+        const finalizePageLoad = () => {
+          document.body.classList.remove('loading');
+          document.body.classList.add('loaded');
+          if (loadingOverlay) {
+            loadingOverlay.style.display = 'none';
+          }
+          console.log('Content displayed, loading overlay hidden');
+        };
+
+        // Fallback if i18next fails to initialize
+        const timeout = setTimeout(() => {
+          console.warn('i18next initialization timed out');
+          finalizePageLoad();
+        }, 5000);
+
+        if (i18next.isInitialized) {
+          i18next.loadResources(() => {
+            try {
+              loadNews();
+              loadEvents();
+              updateContent();
+              clearTimeout(timeout);
+              finalizePageLoad();
+            } catch (e) {
+              console.error('Error during content loading:', e);
+              clearTimeout(timeout);
+              finalizePageLoad();
+            }
+          });
+        } else {
+          i18next.on('initialized', () => {
+            i18next.loadResources(() => {
+              try {
+                loadNews();
+                loadEvents();
+                updateContent();
+                clearTimeout(timeout);
+                finalizePageLoad();
+              } catch (e) {
+                console.error('Error during content loading:', e);
+                clearTimeout(timeout);
+                finalizePageLoad();
+              }
+            });
+          });
+          i18next.on('failedLoading', (lng, ns, msg) => {
+            console.error(`Failed to load ${lng}.json: ${msg}`);
+            clearTimeout(timeout);
+            finalizePageLoad();
+          });
+        }
+
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            console.log('User authenticated:', user.uid, user.email || 'Anonymous');
+          } else {
+            console.log('No user authenticated. Some features may require login.');
+            const loginButton = document.querySelector('.hero-button[data-i18n="buttons.login"]');
+            if (loginButton) {
+              loginButton.addEventListener('click', () => {
+                console.log('Login button clicked, redirecting to SignIn.html');
+                window.location.href = 'LandingPage/SignInAndSignUp/SignIn.html';
+              });
+            }
+          }
+        });
+      });
+    </script>
+
+    
+  </head>
+  <body>
+    <div class="loading-overlay">
+      <div class="loading-spinner"></div>
+    </div>
+    <green-economy-header></green-economy-header>
+    <section class="hero">
+      <div class="hero-content">
+        <div class="hero-image-section">
+          <div class="hero-image">
+            <video
+              src="https://www.greeneconomytoolkit.com/uploads/files/Videos/Introduction-to-the-Green-Economy.mp4"
+              data-i18n="[alt]hero.videoAlt"
+              alt="Introduction to the Green Economy"
+              muted
+              loop
+              playsinline
+              controls
+              class="hero-video"
+              autoplay
+            ></video>
+          </div>
+          <div class="hero-buttons">
+            <button class="hero-button" data-i18n="buttons.getFunding">Get Funding</button>
+            <button class="hero-button" data-i18n="buttons.opportunities">Opportunities</button>
+            <button class="hero-button" data-i18n="buttons.rmcsHub">Training</button>
+            <button class="hero-button" data-i18n="buttons.login">Log In</button>
+          </div>
+        </div>
+        <div class="hero-text">
+          <h1 data-i18n="hero.title">A GREEN ECONOMY TOOLKIT</h1>
+          <p data-i18n="hero.paragraph1">
+            South Africa and the world are switching to green economy, and that
+            is creating a lot of opportunities for businesses in the renewable,
+            repair and remanufacturing sectors.
+          </p>
+          <p data-i18n="hero.paragraph2">
+            We want to share these opportunities with you, so we help people who
+            are entrepreneurs grow their economy fund 10 x faster. The Green
+            Economy Toolkit helps governments and institutions to plan their
+            green economy transition. From insights, green business bank you
+            will find green information, support and development to transition
+            their conventional business models into green economy
+          </p>
+          <p data-i18n="hero.paragraph3">
+            We help you together a step-by-step guide on how to access the
+            benefits of a green economy and position your business to operate in
+            a greener global
+          </p>
+        </div>
+      </div>
+    </section>
+    <section class="focus-areas">
+      <div class="focus-title">
+        <h2 data-i18n="focus.title">Nine priority focus areas for the green economy in South Africa</h2>
+        <p data-i18n="focus.subtitle">(Green Economy Summit, 2010)</p>
+      </div>
+      <div class="focus-grid">
+        <a href="LandingPage/Focus-Area/focus-area.html" class="focus-item" style="background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&h=300&fit=crop');">
+          <div class="focus-content">
+            <h3 data-i18n="focus.agriculture">Agriculture</h3>
+          </div>
+        </a>
+        <a href="LandingPage/Focus-Area/focus-area.html" class="focus-item" style="background-image: url('https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=400&h=300&fit=crop');">
+          <div class="focus-content">
+            <h3 data-i18n="focus.energy">Energy (clean and efficient)</h3>
+          </div>
+        </a>
+        <a href="LandingPage/Focus-Area/focus-area.html" class="focus-item" style="background-image: url('https://static.vecteezy.com/system/resources/previews/006/037/285/large_2x/close-up-hand-holding-young-green-tree-sprout-and-planting-in-soil-free-photo.JPG');">
+          <div class="focus-content">
+            <h3 data-i18n="focus.naturalResource">Natural resource conservation and management (including mining)</h3>
+          </div>
+        </a>
+        <a href="LandingPage/Focus-Area/focus-area.html" class="focus-item" style="background-image: url('https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400&h=300&fit=crop');">
+          <div class="focus-content">
+            <h3 data-i18n="focus.transport">Sustainable transport and infrastructure</h3>
+          </div>
+        </a>
+        <a href="LandingPage/Focus-Area/focus-area.html" class="focus-item" style="background-image: url('https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=400&h=300&fit=crop');">
+          <div class="focus-content">
+            <h3 data-i18n="focus.environmental">Environmental sustainability, including tourism education</h3>
+          </div>
+        </a>
+        <a href="LandingPage/Focus-Area/focus-area.html" class="focus-item" style="background-image: url('https://d1v1e13ebw3o15.cloudfront.net/data/42690/pool_and_spa_master/..jpg');">
+          <div class="focus-content">
+            <h3 data-i18n="focus.buildings">Green buildings and the built environment</h3>
+          </div>
+        </a>
+        <a href="LandingPage/Focus-Area/focus-area.html" class="focus-item" style="background-image: url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop');">
+          <div class="focus-content">
+            <h3 data-i18n="focus.waste">Sustainable waste management and recycling</h3>
+          </div>
+        </a>
+        <a href="LandingPage/Focus-Area/focus-area.html"class="focus-item" style="background-image: url('https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&h=300&fit=crop');">
+          <div class="focus-content">
+            <h3 data-i18n="focus.water">Water management</h3>
+          </div>
+        </a>
+        <a href="LandingPage/Focus-Area/focus-area.html" class="focus-item" style="background-image: url('https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=400&h=300&fit=crop');">
+          <div class="focus-content">
+            <h3 data-i18n="focus.production">Sustainable production and consumption</h3>
+          </div>
+        </a>
+      </div>
+    </section>
+    <section class="business-prep">
+      <div class="business-title">
+        <h2 data-i18n="business.title">Preparing your business for the green economy</h2>
+      </div>
+      <div class="business-cards">
+        <div class="business-card green-card">
+          <div
+            class="business-card-image"
+            style="background-image: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=200&fit=crop');"
+          ></div>
+          <div class="business-card-content">
+            <h3 data-i18n="business.card1.title">For your business</h3>
+            <p data-i18n="business.card1.paragraph1">
+              The world is moving towards a green economy, and South Africa must
+              do so too if it is to continue trading internationally. Our
+              existing buildings and new projects must be designed, built,
+              operated, maintained, and owned and operated more sustainably, and
+              new infrastructure must be built according to green principles, so
+              it does not use too much energy and water, and the country's
+              quality of work needs to be done.
+            </p>
+            <p data-i18n="business.card1.paragraph2">
+              This is where you come in. But how do you make sure you can get
+              some of this work?
+            </p>
+          </div>
+          
+          <a href="LandingPage/Opportunities/opportunities.html" class="business-card-button blue-button" data-i18n="buttons.findOutMore"    style="text-decoration: none;">
+           Discover More
+          </a>
+
+        </div>
+        <div class="business-card blue-card">
+          <div
+            class="business-card-image"
+            style="background-image: url('https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=400&h=200&fit=crop');"
+          ></div>
+          <div class="business-card-content">
+            <h3 data-i18n="business.card2.title">For your future</h3>
+            <p data-i18n="business.card2.paragraph1">
+              The South African government has chosen nine areas to focus on in
+              the switch to a green economy: agriculture, energy (clean and
+              efficient), natural resource conservation and management
+              (including mining), sustainable transport and infrastructure,
+              environmental sustainability (including tourism education), green
+              buildings and the built environment, sustainable waste management
+              and recycling, water management, and sustainable production and
+              consumption.
+            </p>
+            <p data-i18n="business.card2.paragraph2">Find out about green economy opportunities in the IRM sector.</p>
+          </div>
+          
+          <a href="LandingPage/IRM-Sector/IRMSector.html" class="business-card-button green-button" data-i18n="buttons.findOutMore"    style="text-decoration: none;">
+            Discover More
+          </a>
+        </div>
+      </div>
+    </section>
+    <section class="info-section" id="network">
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-icon">
+            <div></div>
+          </div>
+          <h3 data-i18n="info.joinNetwork.title">Join the SAGE Green Economy Network</h3>
+          <p data-i18n="info.joinNetwork.description">
+            Access opportunities for entrepreneurship within the green economy
+            value chains, to help connect entrepreneurs to each other and to
+            markets, as well as to finance, business training
+          </p>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">
+            <div></div>
+          </div>
+          <h3 data-i18n="info.opportunities.title">Opportunities</h3>
+          <p data-i18n="info.opportunities.description">
+            Find out the latest job opportunities as they become available
+            within the green economy space – from research and innovation to
+            production and services
+          </p>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">
+            <div></div>
+          </div>
+          <h3 data-i18n="info.events.title">Live Events Calendar</h3>
+          <p data-i18n="info.events.description">
+            View the live events calendar and network with entrepreneurs and
+            experts within the green economy space via our events platform
+          </p>
+        </div>
+      </div>
+    </section>
+    <section class="news-section" id="news">
+      <div class="news-header">
+        <h2 data-i18n="news.title">Green economy news and updates</h2>
+      </div>
+      <div class="news-grid">
+        <!-- News items will be dynamically loaded here -->
+      </div>
+    </section>
+    <section class="events-section" id="events">
+      <div class="events-content">
+        <div class="events-title">
+          <h2 data-i18n="events.title">Events calendar</h2>
+          <p data-i18n="events.description">
+            View our live events calendar and network with entrepreneurs and
+            experts within the green economy space via our events platform
+          </p>
+        </div>
+        <div class="events-grid">
+          <div class="event-card">
+            <div class="event-header">
+              <h3 data-i18n="events.upcoming">Upcoming Event</h3>
+            </div>
+            <div class="event-content">
+              <!-- Upcoming events will be dynamically loaded here -->
+            </div>
+            <button class="event-button" data-i18n="buttons.viewMore">View more</button>
+          </div>
+          <div class="event-card">
+            <div class="event-header">
+              <h3 data-i18n="events.past">Past Events</h3>
+            </div>
+            <div class="event-content">
+              <!-- Past events will be dynamically loaded here -->
+            </div>
+            <button class="event-button outline" data-i18n="buttons.viewMore">View more</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="partners">
+      <div class="partners-content">
+        <img src="Images/giz-logo_2024-11-11-133203_nara.jpg" data-i18n="[alt]partners.giz" alt="GIZ Logo" class="partner-logo">
+        <img src="Images/SECO-Logo.jpg" data-i18n="[alt]partners.seco" alt="SECO Logo" class="partner-logo">
+        <img src="Images/GDED-Logo.jpg" data-i18n="[alt]partners.gded" alt="GDED Logo" class="partner-logo">
+        <img src="Images/LMS-Platform-Logo.png" data-i18n="[alt]partners.lms" alt="LMS Platform Logo" class="partner-logo">
+        <img src="Images/NBI-Logo.jpg" data-i18n="[alt]partners.nbi" alt="NBI Logo" class="partner-logo">
+      </div>
+    </section>
+    <section class="login-section">
+      <div style="position: relative; max-width: 700px; margin: 0 auto;">
+        <h2 style="color: white; font-size: 20px; margin-bottom: 25px; max-width: 600px; margin-left: auto; margin-right: auto;" data-i18n="login.subscribe">
+          Subscribe to our newsletter to get the latest information
+        </h2>
+        <form style="position: relative; padding-bottom: 20px;">
+          <input 
+            type="email" 
+            placeholder="Your email" 
+            data-i18n="[placeholder]login.emailPlaceholder"
+            style="width: 100%; padding: 18px 50px 18px 25px; border: none; border-radius: 4px; font-size: 16px; color: #333; background: white;"
+          >
+          <button 
+            type="submit" 
+            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 22px; color: #009381; cursor: pointer;"
+          >
+            →
+          </button>
+        </form>
+      </div>
+     
+    </section>
+    <!-- Digital Human Widget -->
+    <div class="video-overlay" id="videoOverlay">
+      <div class="video-container">
+        <span class="close-video">&times;</span>
+        <div class="language-toggles">
+          <button class="lang-btn active" data-lang="eng">English</button>
+          <button class="lang-btn" data-lang="zulu">Zulu</button>
+          <button class="lang-btn" data-lang="tswana">Tswana</button>
+        </div>
+        <video
+          id="floatingVideo"
+          playsinline
+          loop
+          disablepictureinpicture
+          controlslist="nodownload nofullscreen noremoteplayback"
+        ></video>
+      </div>
+    </div>
+    <div class="pulsing-icon" id="pulsingIcon">
+      <video autoplay muted loop playsinline>
+        <source src="/Videos/idle.mp4" type="video/mp4" />
+      </video>
+    </div>
+    <link rel="stylesheet" href="/digital_human/digital-human.css" />
+    <script src="/digital_human/digital-human.js" defer></script>
+    <!-- Digital Human Widget End -->
+    <script src="scripts/chatbot.js"></script>
+    <green-economy-chatbot></green-economy-chatbot>
+    <green-economy-footer></green-economy-footer>
+    <script type="text/javascript">
+      (function(c,l,a,r,i,t,y){
+          c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+          t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+          y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+      })(window, document, "clarity", "script", "s9a5dtbonc");
+    </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const video = document.querySelector('.hero-video');
+        const playButton = document.querySelector('.play-pause-button .play-icon');
+        const pauseButton = document.querySelector('.play-pause-button .pause-icon');
+        
+        if (video && playButton && pauseButton) {
+          playButton.style.display = 'block';
+          pauseButton.style.display = 'none';
+          
+          video.addEventListener('click', function() {
+            if (video.paused) {
+              video.play().catch(e => console.log('Play failed:', e));
+            } else {
+              video.pause();
+            }
+          });
+          
+          playButton.parentElement.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (video.paused) {
+              video.play().catch(e => console.log('Play failed:', e));
+            } else {
+              video.pause();
+            }
+          });
+          
+          video.addEventListener('play', function() {
+            playButton.style.display = 'none';
+            pauseButton.style.display = 'block';
+          });
+          
+          video.addEventListener('pause', function() {
+            pauseButton.style.display = 'none';
+            playButton.style.display = 'block';
+          });
+        } else {
+          console.error('Video or button elements not found for video controls');
+        }
+      });
+    </script>
+    <script>
+      function navigateToFocusArea(area) {
+        window.location.href = 'LandingPage/Focus-Area/focus-area.html?area=' + encodeURIComponent(area);
+      }
+    </script>
+  </body>
+</html>

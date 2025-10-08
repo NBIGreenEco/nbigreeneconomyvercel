@@ -1,0 +1,12 @@
+{
+  "progress": 0,
+  "logs": [
+    {
+      "timestamp": "2025-09-01 22:56:39 South Africa Standard Time",
+      "level": "INFO",
+      "message": "Loaded 606 English translations from locales/en.json"
+    }
+  ],
+  "status": "running",
+  "message": "Loading English translations"
+}

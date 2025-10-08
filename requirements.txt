@@ -1,0 +1,5 @@
+flask==2.3.3
+flask-cors==4.0.1
+deep-translator==1.11.4
+aiohttp==3.10.10
+deep-translator[async]==1.11.4
