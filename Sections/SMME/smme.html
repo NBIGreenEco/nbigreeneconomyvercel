@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+  <head>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-37VRZ5CGE4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-37VRZ5CGE4');
+  </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SMME Directory - Green Economy Toolkit</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../Master Page(Header and Footer)/MasterPage.css">
+    <script src="../Master Page(Header and Footer)/MasterPage.js"></script>
+    <link rel="stylesheet" href="smme.css">
+    <style>
+      .hero {
+        position: relative;
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.pexels.com/photos/414837/pexels-photo-414837.jpeg') no-repeat center center/cover;
+        padding: 4rem 2rem;
+      }
+      .hero-content {
+        position: relative;
+        z-index: 1;
+        color: white;
+        text-align: center;
+      }
+      .loading::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+      }
+      .loading .loader {
+        display: block;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border: 8px solid #f3f3f3;
+        border-top: 8px solid #2e7d32;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        z-index: 1001;
+      }
+      @keyframes spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+      .category-card, .business-card, .btn, .suggestion-chip {
+        cursor: pointer;
+        pointer-events: auto;
+        position: relative;
+        z-index: 1;
+      }
+      .error-message {
+        color: red;
+        text-align: center;
+        padding: 1rem;
+        font-weight: 500;
+      }
+    </style>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <!-- Transformers.js local -->
+    <script type="module" src="transformers.min.js"></script>
+    <script src="smme.js"></script>
+  </head>
+  <body>
+    <green-economy-header></green-economy-header>
+
+    <main class="main">
+      <section class="hero">
+        <div class="hero-content">
+          <h1 data-translate="hero-title">Green Business Directory</h1>
+          <p data-translate="hero-subtitle">Connect with verified businesses that prioritize sustainability and environmental responsibility.</p>
+        </div>
+      </section>
+
+      <section class="search-section">
+        <h3 data-translate="search-title" style="margin-bottom: 1rem; color: var(--green-dark)">AI-Enhanced Business Discovery</h3>
+        <div class="search-container">
+          <svg class="search-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+          <input type="text" class="search-input" id="businessSearch" data-translate-placeholder="search-placeholder" placeholder="Search green businesses by name, service, or certification..." />
+        </div>
+        <div class="filters-grid">
+          <select class="filter-select" id="certificationFilter">
+            <option value="">All Certifications</option>
+            <option value="iso14001">ISO 14001</option>
+            <option value="bbbee">B-BBEE Certified</option>
+            <option value="green-certified">Green Certified</option>
+            <option value="fair-trade">Fair Trade</option>
+          </select>
+          <select class="filter-select" id="locationFilter">
+            <option value="">All Provinces</option>
+            <option value="western-cape">Western Cape</option>
+            <option value="gauteng">Gauteng</option>
+            <option value="kzn">KwaZulu-Natal</option>
+            <option value="eastern-cape">Eastern Cape</option>
+            <option value="mpumalanga">Mpumalanga</option>
+            <option value="limpopo">Limpopo</option>
+            <option value="north-west">North West</option>
+            <option value="northern-cape">Northern Cape</option>
+            <option value="free-state">Free State</option>
+          </select>
+          <select class="filter-select" id="programFilter">
+            <option value="">Program Completion</option>
+            <option value="beginner">0-25% Complete</option>
+            <option value="intermediate">26-50% Complete</option>
+            <option value="advanced">51-75% Complete</option>
+            <option value="expert">76-100% Complete</option>
+          </select>
+          <select class="filter-select" id="personaFilter">
+            <option value="">All User Types</option>
+            <option value="township-irm">Township IRM</option>
+            <option value="youth">Youth Enterprises</option>
+            <option value="tvet">TVET College Partners</option>
+            <option value="community">Community Businesses</option>
+            <option value="entrepreneurial">Entrepreneur Hubs</option>
+          </select>
+          <select class="filter-select" id="languageFilter">
+            <option value="en">English</option>
+            <option value="zu">isiZulu</option>
+            <option value="tn">Tswana</option>
+          </select>
+        </div>
+        <div class="ai-suggestions" id="aiSuggestions">
+          <h4 data-translate="ai-suggestions-title">🤖 AI Recommendations Based on Your Search:</h4>
+          <div class="suggestion-chips"></div>
+        </div>
+      </section>
+
+      <section class="categories-section">
+        <h2 class="section-title" data-translate="categories-title">Business Categories</h2>
+        <div class="categories-grid" id="categoriesGrid">
+          <div class="category-card" data-category="solar-energy">
+            <h3 class="category-title">Solar Energy</h3>
+            <div class="category-count">34 businesses</div>
+          </div>
+          <div class="category-card" data-category="recycling">
+            <h3 class="category-title">Recycling</h3>
+            <div class="category-count">28 businesses</div>
+          </div>
+          <div class="category-card" data-category="organic-farming">
+            <h3 class="category-title">Organic Farming</h3>
+            <div class="category-count">42 businesses</div>
+          </div>
+          <div class="category-card" data-category="green-construction">
+            <h3 class="category-title">Green Construction</h3>
+            <div class="category-count">19 businesses</div>
+          </div>
+          <div class="category-card" data-category="water-management">
+            <h3 class="category-title">Water Management</h3>
+            <div class="category-count">15 businesses</div>
+          </div>
+          <div class="category-card" data-category="eco-tourism">
+            <h3 class="category-title">Eco Tourism</h3>
+            <div class="category-count">23 businesses</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="businesses-section">
+        <h2 class="section-title" data-translate="businesses-title">Featured Green Businesses</h2>
+        <div class="businesses-grid" id="businessesGrid"></div>
+        <div class="text-center" style="margin-top: 2rem">
+          <button id="loadMoreBusinesses" class="btn btn-primary">Load More Businesses</button>
+        </div>
+      </section>
+    </main>
+
+    <green-economy-footer></green-economy-footer>
+
+    <div class="ai-assistant-btn" id="aiAssistantBtn">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 1.5rem; height: 1.5rem">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+      </svg>
+    </div>
+
+    <div id="aiModal" class="modal">
+      <div class="modal-content">
+        <span class="modal-close" id="modalClose">×</span>
+        <div class="chat-container">
+          <h3 data-translate="ai-assistant-title">AI Business Finder</h3>
+          <div class="chat-messages" id="chatMessages">
+            <div class="message ai"><div class="message-content" data-translate="ai-welcome">Hello! I can help you find green businesses in your area. What type of sustainable business are you looking for?</div></div>
+          </div>
+          <div class="chat-input-container">
+            <input type="text" id="chatInput" class="chat-input" data-translate-placeholder="ai-input-placeholder" placeholder="Ask about green businesses..." />
+            <button class="chat-send" id="chatSend">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="loader-overlay" id="loader-overlay"></div>
+    <div class="loader" id="loader"></div>
+  </body>
+</html>
+
+   <xaiArtifact artifact_id="9ffdbe10-a068-4f21-b232-f99ca800564c" artifact_version_id="2bed9133-c7cf-4fd7-b90d-2dc08f37c278" title="smme.js" contentType="text/javascript">
+  
+</body>
+</html>
