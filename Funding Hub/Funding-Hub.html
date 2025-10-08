@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title data-i18n="fundingHub.title">Green Economy Toolkit - Funding Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="../Master Page(Header and Footer)/MasterPage.css">
+    <link rel="stylesheet" href="Funding-Hub.css">
+    <link rel="stylesheet" href="../digital_human/digital-human.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
+    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
+    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
+    <script type="module" src="../Trans.js"></script>
+    <script type="module" src="../Master Page(Header and Footer)/MasterPage.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"></script>
+    <script src="https://unpkg.com/lunr@2/lunr.min.js"></script>
+    <style>
+        div > h3 {
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+            color: white;
+        }
+        .filter-group {
+            border: 1px solid white;
+            border-radius: 8px;
+            padding: 10px;
+            background-color: #fafafa;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+        }
+        .filter-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 10px;
+            margin: 5px 0;
+            border: 1px solid #2b9589;
+            border-radius: 6px;
+            background-color: #2b9589;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .filter-option:hover {
+            background-color: #2e7d32;
+            border-color: #ccc;
+        }
+        .filter-option.selected {
+            border-color: #2e7d32;
+            background-color: #2e7d32;
+        }
+        .check-indicator::before {
+            content: "✔";
+            color: #2e7d32;
+            visibility: hidden;
+        }
+        .filter-option.selected .check-indicator::before {
+            visibility: visible;
+        }
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2b9589;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        body.loading {
+            visibility: hidden;
+            opacity: 0;
+        }
+        body.loaded {
+            visibility: visible;
+            opacity: 1;
+            transition: opacity 0.3s;
+        }
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+        .error-message {
+            color: red;
+            text-align: center;
+            padding: 1rem;
+            font-weight: 500;
+        }
+    </style>
+    <script type="module">
+        import { updateContent } from '../Trans.js';
+        import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
+        import { getAuth, onAuthStateChanged, setPersistence, browserSessionPersistence } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+        import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCfa827mvCLf1ETts6B_DmCfb7owTohBxk",
+            authDomain: "nbi-green-economy.firebaseapp.com",
+            projectId: "nbi-green-economy",
+            storageBucket: "nbi-green-economy.appspot.com",
+            messagingSenderId: "53732340059",
+            appId: "1:53732340059:web:3fb3f086c6662e1e9baa7e",
+            measurementId: "G-37VRZ5CGE4"
+        };
+
+        // Initialize Firebase only if not already initialized
+        let app;
+        if (!getApps().length) {
+            app = initializeApp(firebaseConfig);
+        } else {
+            app = getApp();
+        }
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Set auth persistence to session-only to prevent caching
+        setPersistence(auth, browserSessionPersistence)
+            .then(() => {
+                console.log("Auth persistence set to session-only");
+            })
+            .catch(error => {
+                console.error("Error setting auth persistence:", error);
+            });
+
+        // Field mappings for filters
+        const fieldMappings = {
+            sector: {
+                energy: 'Energy',
+                agriculture: 'Agriculture',
+                building: 'Climate Finance',
+                waste: 'Waste',
+                water: 'Water and Sanitation'
+            },
+            type: {
+                grant: 'Grant',
+                loan: 'Debt',
+                equity: 'Equity',
+                'working capital': 'Working Capital'
+            },
+            target: {
+                smme: 'SMMEs',
+                'non-smme': 'SMMEs'
+            }
+        };
+
+        // Utility functions
+        function normalizeURL(url) {
+            if (!url) return "";
+            url = url.trim();
+            if (url.startsWith("www.")) return "https://" + url;
+            if (!url.startsWith("http://") && !url.startsWith("https://")) {
+                return "https://" + url;
+            }
+            return url;
+        }
+
+        function getDomain(url) {
+            try {
+                return new URL(normalizeURL(url)).hostname.replace(/^www\./, '');
+            } catch {
+                return '';
+            }
+        }
+
+        function isValidFieldValue(value) {
+            if (!value) return false;
+            const trimmed = value.trim();
+            return trimmed !== '' && trimmed.toLowerCase() !== 'no';
+        }
+
+        // Display error message
+        function displayErrorMessage(message) {
+            const container = document.getElementById("funding-results") || document.querySelector(".funding-hub-form");
+            if (!container) {
+                console.error("No container found for error message");
+                return;
+            }
+            const errorDiv = document.createElement("div");
+            errorDiv.className = "error-message";
+            errorDiv.textContent = message;
+            container.prepend(errorDiv);
+            setTimeout(() => errorDiv.remove(), 5000);
+        }
+
+        // Pagination variables
+        let currentPage = 0;
+        const cardsPerPage = 20;
+        let allFundingCards = [];
+        let filteredFundingCards = [];
+
+        // Reset filters function
+        function resetFilters() {
+            document.querySelectorAll('.filter-option.selected').forEach(option => {
+                option.classList.remove('selected');
+                option.querySelector('.check-indicator').textContent = '';
+            });
+            filteredFundingCards = [...allFundingCards];
+            currentPage = 0;
+            displayFundingCards(currentPage);
+            trackUserInteraction(auth.currentUser?.uid || 'anonymous', 'filter', 'reset');
+        }
+
+        // Get selected filters
+        function getSelectedFilters() {
+            const selected = { sector: [], type: [], target: [] };
+            document.querySelectorAll('.filter-option.selected').forEach(option => {
+                const category = option.dataset.category;
+                const value = option.dataset.value;
+                if (category && value && selected[category]) {
+                    selected[category].push(value);
+                }
+            });
+            return selected;
+        }
+
+        // Apply filters function
+        function applyFilters() {
+            const selectedFilters = getSelectedFilters();
+            if (Object.values(selectedFilters).every(arr => arr.length === 0)) {
+                filteredFundingCards = [...allFundingCards];
+                displayFundingCards(0);
+                trackUserInteraction(auth.currentUser?.uid || 'anonymous', 'filter', 'apply', 'No filters');
+                return;
+            }
+
+            filteredFundingCards = allFundingCards.filter(card => {
+                const data = JSON.parse(card.dataset.fundingData);
+                if (selectedFilters.sector.length > 0) {
+                    const sectorValid = selectedFilters.sector.some(sector => {
+                        const fieldName = fieldMappings.sector[sector];
+                        return isValidFieldValue(data[fieldName]);
+                    });
+                    if (!sectorValid) return false;
+                }
+                if (selectedFilters.type.length > 0) {
+                    const typeValid = selectedFilters.type.some(type => {
+                        const fieldName = fieldMappings.type[type];
+                        return isValidFieldValue(data[fieldName]);
+                    });
+                    if (!typeValid) return false;
+                }
+                if (selectedFilters.target.length > 0) {
+                    const targetValid = selectedFilters.target.some(target => {
+                        const fieldName = fieldMappings.target[target];
+                        if (target === 'non-smme') {
+                            return !isValidFieldValue(data[fieldName]);
+                        }
+                        return isValidFieldValue(data[fieldName]);
+                    });
+                    if (!targetValid) return false;
+                }
+                return true;
+            });
+
+            currentPage = 0;
+            displayFundingCards(currentPage);
+            trackUserInteraction(auth.currentUser?.uid || 'anonymous', 'filter', 'apply', JSON.stringify(selectedFilters));
+        }
+
+        // Display funding cards with pagination
+        function displayFundingCards(page) {
+            const container = document.getElementById('funding-results');
+            container.innerHTML = '';
+
+            const startIdx = page * cardsPerPage;
+            const endIdx = startIdx + cardsPerPage;
+            const cardsToDisplay = filteredFundingCards.slice(startIdx, endIdx);
+
+            if (cardsToDisplay.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666;">No funding opportunities available. The Funding Hub API may be disabled or no results match the selected filters.</p>';
+                return;
+            }
+
+            cardsToDisplay.forEach(card => {
+                container.appendChild(card.cloneNode(true));
+            });
+
+            const totalPages = Math.ceil(filteredFundingCards.length / cardsPerPage);
+            if (totalPages > 1) {
+                const paginationDiv = document.createElement('div');
+                paginationDiv.className = 'col-span-full flex justify-center items-center mt-8 gap-4';
+                
+                if (currentPage > 0) {
+                    const prevButton = document.createElement('button');
+                    prevButton.className = 'px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700';
+                    prevButton.textContent = 'Previous';
+                    prevButton.addEventListener('click', () => {
+                        currentPage--;
+                        displayFundingCards(currentPage);
+                        trackUserInteraction(auth.currentUser?.uid || 'anonymous', 'pagination', 'previous', `Page ${currentPage + 1}`);
+                    });
+                    paginationDiv.appendChild(prevButton);
+                }
+
+                const pageInfo = document.createElement('span');
+                pageInfo.className = 'text-white-700';
+                pageInfo.textContent = `Page ${currentPage + 1} of ${totalPages}`;
+                paginationDiv.appendChild(pageInfo);
+
+                if (currentPage < totalPages - 1) {
+                    const nextButton = document.createElement('button');
+                    nextButton.className = 'px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700';
+                    nextButton.textContent = 'Next';
+                    nextButton.addEventListener('click', () => {
+                        currentPage++;
+                        displayFundingCards(currentPage);
+                        trackUserInteraction(auth.currentUser?.uid || 'anonymous', 'pagination', 'next', `Page ${currentPage + 1}`);
+                    });
+                    paginationDiv.appendChild(nextButton);
+                }
+
+                container.appendChild(paginationDiv);
+            }
+        }
+
+        // Load funding cards from Firestore
+        async function loadFundingCards() {
+            try {
+                const snapshot = await getDocs(collection(db, "funding"));
+                allFundingCards = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const name = data["Name of disbursment channel"];
+                    if (!name || name.trim().toLowerCase() === "no" || name.trim() === "") return;
+                    const type = data["Type of Disbursement Channel"] || "Unspecified";
+                    const website = normalizeURL(data["Website"]);
+                    const domain = getDomain(website);
+                    const logo = domain ? `https://logo.clearbit.com/${domain}` : "https://via.placeholder.com/64";
+                    const card = document.createElement("div");
+                    card.className = "bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:border-teal-600 transition-colors";
+                    card.innerHTML = `
+                        <div class="flex items-start">
+                            <img src="${logo}" alt="Logo" class="w-12 h-12 rounded-md object-contain mr-4" onerror="this.src='https://via.placeholder.com/64'" />
+                            <div class="flex-1">
+                                <h3 class="text-lg font-medium text-gray-900">${name}</h3>
+                                <p class="text-sm text-gray-500 mt-1">${type}</p>
+                                ${website ? `
+                                <div class="mt-4">
+                                    <a href="${website}" target="_blank" class="inline-flex items-center text-sm font-medium text-teal-600 hover:text-teal-800">
+                                        <i class="bi bi-box-arrow-up-right mr-1"></i> Visit Website
+                                    </a>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                    card.dataset.fundingData = JSON.stringify(data);
+                    allFundingCards.push(card);
+                });
+                filteredFundingCards = [...allFundingCards];
+                displayFundingCards(currentPage);
+                trackUserInteraction(auth.currentUser?.uid || 'anonymous', 'funding', 'load_cards', `Loaded ${allFundingCards.length} cards`);
+            } catch (error) {
+                console.error("Error loading funding cards:", error);
+                allFundingCards = [];
+                filteredFundingCards = [];
+                displayErrorMessage("Failed to load funding opportunities: " + error.message);
+                displayFundingCards(currentPage);
+            }
+        }
+
+        // Search initialization
+        function initializeSearch() {
+            const searchInput = document.getElementById("smartSearch");
+            if (!searchInput) {
+                console.warn("Search input not found");
+                return;
+            }
+            let searchTimeout;
+
+            searchInput.addEventListener("input", function (e) {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    performSearch(e.target.value);
+                }, 300);
+            });
+
+            searchInput.addEventListener("keypress", function (e) {
+                if (e.key === "Enter") {
+                    performSearch(e.target.value);
+                }
+            });
+        }
+
+        function performSearch(query) {
+            if (query.length < 2) return;
+            trackUserInteraction(auth.currentUser?.uid || 'anonymous', "search", "query", query);
+        }
+
+        // Interaction Tracking Function
+        function trackUserInteraction(userId, category, action, label = "") {
+            if (db) {
+                getDocs(collection(db, 'interactions')).then(() => {
+                    return db.collection('interactions').add({
+                        userId: userId,
+                        category: category,
+                        action: action,
+                        label: label,
+                        timestamp: new Date(),
+                        userAgent: navigator.userAgent
+                    });
+                }).catch(error => {
+                    console.error("Error logging interaction:", error);
+                    console.log(`Local log: userId=${userId}, category=${category}, action=${action}, label=${label}`);
+                });
+            } else {
+                console.log(`Local log: userId=${userId}, category=${category}, action=${action}, label=${label}`);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM loaded for Funding-Hub.html at', new Date().toLocaleString('en-ZA'));
+            document.body.classList.add('loading');
+            const loadingOverlay = document.querySelector('.loading-overlay');
+
+            // Redirect unauthenticated users to SignIn page
+            onAuthStateChanged(auth, (user) => {
+                if (!user) {
+                    console.log('No user authenticated, redirecting to SignIn.html');
+                    window.location.href = '../LandingPage/SignInAndSignUp/SignIn.html';
+                    return;
+                }
+                console.log('User authenticated:', user.uid, user.email || 'Anonymous');
+                if (!user.emailVerified) {
+                    console.log('Email not verified, redirecting to VerifyEmail.html');
+                    window.location.href = '../LandingPage/SignInAndSignUp/VerifyEmail.html';
+                    return;
+                }
+                initializePage();
+            });
+
+            function initializePage() {
+                // Initialize i18next
+                if (!i18next.isInitialized) {
+                    i18next
+                        .use(i18nextHttpBackend)
+                        .use(i18nextBrowserLanguageDetector)
+                        .init({
+                            fallbackLng: 'en',
+                            supportedLngs: ['en', 'zu', 'tn'],
+                            backend: { 
+                                loadPath: '/locales/{{lng}}.json?v=' + new Date().getTime()
+                            },
+                            detection: {
+                                order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
+                                caches: ['localStorage', 'cookie']
+                            }
+                        }, (err) => {
+                            if (err) {
+                                console.error('i18next initialization error:', err);
+                                finalizePageLoad();
+                                return;
+                            }
+                            console.log('i18next initialized for Funding-Hub.html at', new Date().toLocaleString('en-ZA'), 'language:', i18next.language);
+                            finalizePageLoad();
+                        });
+                } else {
+                    finalizePageLoad();
+                }
+
+                // Fallback if i18next initialization takes too long
+                const timeout = setTimeout(() => {
+                    console.warn('i18next initialization timed out');
+                    finalizePageLoad();
+                }, 5000);
+
+                i18next.on('failedLoading', (lng, ns, msg) => {
+                    console.error(`Failed to load ${lng}.json: ${msg}`);
+                    clearTimeout(timeout);
+                    finalizePageLoad();
+                });
+
+                // Set up filter option click handlers
+                document.querySelectorAll('.filter-option').forEach(option => {
+                    option.addEventListener('click', function() {
+                        this.classList.toggle('selected');
+                        const indicator = this.querySelector('.check-indicator');
+                        indicator.textContent = this.classList.contains('selected') ? '✓' : '';
+                        trackUserInteraction(auth.currentUser?.uid || 'anonymous', 'filter', 'select', this.dataset.value);
+                    });
+                });
+
+                // Initialize search
+                initializeSearch();
+
+                // Load initial data
+                loadFundingCards();
+            }
+
+            function finalizePageLoad() {
+                try {
+                    i18next.loadResources(() => {
+                        updateContent();
+                        document.body.classList.remove('loading');
+                        document.body.classList.add('loaded');
+                        if (loadingOverlay) {
+                            loadingOverlay.style.display = 'none';
+                        }
+                        console.log('Content displayed, loading overlay hidden');
+                    });
+                } catch (error) {
+                    console.error('Error loading translations:', error);
+                    document.body.classList.remove('loading');
+                    document.body.classList.add('loaded');
+                    if (loadingOverlay) {
+                        loadingOverlay.style.display = 'none';
+                    }
+                }
+            }
+
+            // Digital Human Video Handling
+            const pulsingIcon = document.querySelector('.pulsing-icon');
+            const videoOverlay = document.querySelector('.video-overlay');
+            const closeVideo = document.querySelector('.close-video');
+            const floatingVideo = document.getElementById('floatingVideo');
+            const langButtons = document.querySelectorAll('.lang-btn');
+            const videoSources = {
+                'eng': '/Videos/FundingHub_Eng.mp4',
+                'zulu': '/Videos/FundingHub_Zulu.mp4',
+                'tswana': '/Videos/FundingHub_Tswana.mp4'
+            };
+            let currentLang = 'eng';
+
+            if (pulsingIcon) {
+                pulsingIcon.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    videoOverlay.classList.toggle('active');
+                    if (videoOverlay.classList.contains('active')) {
+                        playCurrentVideo();
+                        pulsingIcon.style.opacity = '0.7';
+                    } else {
+                        floatingVideo.pause();
+                        pulsingIcon.style.opacity = '1';
+                    }
+                });
+            }
+
+            if (closeVideo) {
+                closeVideo.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    closeVideoPlayer();
+                });
+            }
+
+            if (videoOverlay) {
+                videoOverlay.addEventListener('click', function(e) {
+                    if (e.target === videoOverlay) {
+                        closeVideoPlayer();
+                    }
+                });
+            }
+
+            langButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const lang = this.getAttribute('data-lang');
+                    if (lang !== currentLang) {
+                        langButtons.forEach(btn => btn.classList.remove('active'));
+                        this.classList.add('active');
+                        currentLang = lang;
+                        playCurrentVideo();
+                    }
+                });
+            });
+
+            if (floatingVideo) {
+                floatingVideo.addEventListener('ended', function() {
+                    closeVideoPlayer();
+                });
+            }
+
+            function playCurrentVideo() {
+                const source = videoSources[currentLang];
+                if (source && floatingVideo) {
+                    const currentTime = floatingVideo.currentTime;
+                    floatingVideo.src = source;
+                    floatingVideo.load();
+                    floatingVideo.currentTime = currentTime;
+                    floatingVideo.play().catch(e => console.log('Video play failed:', e));
+                    floatingVideo.addEventListener('canplaythrough', function onCanPlay() {
+                        floatingVideo.play().catch(e => console.log('Video auto-play failed:', e));
+                        floatingVideo.removeEventListener('canplaythrough', onCanPlay);
+                    });
+                }
+            }
+
+            function closeVideoPlayer() {
+                if (videoOverlay && floatingVideo && pulsingIcon) {
+                    videoOverlay.classList.remove('active');
+                    floatingVideo.pause();
+                    pulsingIcon.style.opacity = '1';
+                }
+            }
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && videoOverlay && videoOverlay.classList.contains('active')) {
+                    closeVideoPlayer();
+                }
+            });
+        });
+    </script>
+</head>
+<body class="loading">
+    <div class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+    <div id="root">
+        <green-economy-header></green-economy-header>
+        <main>
+            <section class="relative min-h-[400px] flex items-center">
+                <div class="absolute inset-0">
+                    <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40" alt="Financial documents" class="w-full h-full object-cover" data-i18n="[alt]fundingHub.hero_image">
+                    <div class="absolute inset-0 bg-black/20"></div>
+                </div>
+                <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <div class="funding-hub-gradient p-8 lg:p-12 rounded-lg text-white animate-fade-in max-w-4xl mx-auto">
+                        <h1 class="text-3xl lg:text-4xl font-bold mb-6 leading-tight" data-i18n="fundingHub.hero_title">FUNDING HUB</h1>
+                        <p class="text-lg lg:text-xl mb-8 leading-relaxed opacity-95" data-i18n="fundingHub.hero_description">
+                            Discover the latest green funding opportunities tailored to your needs. Our dynamic repository provides real-time updates on grants, loans, and investment programs to support your transition to a sustainable economy.
+                        </p>
+                    </div>
+                </div>
+            </section>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+                <button class="back-btn flex items-center" onclick="window.location.href='/Dashboard/dashboard.html'" data-i18n="fundingHub.back_to_dashboard">
+                    <i class="bi bi-arrow-left mr-2"></i>
+                    Back to Dashboard
+                </button>
+            </div>
+            <section class="py-16">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="funding-hub-form">
+                        <div class="flex items-center mb-6 gap-4 flex-wrap">
+                            <h2 class="flex items-center text-white text-xl font-semibold" data-i18n="fundingHub.search_title">
+                                <i class="bi bi-search mr-3"></i>
+                                Find Funding Opportunities
+                            </h2>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                            <div>
+                                <h3 data-i18n="fundingHub.sector_filter">Sector</h3>
+                                <div class="filter-group">
+                                    <div class="filter-option" data-category="sector" data-value="energy">
+                                        <span data-i18n="fundingHub.sector_energy">Energy</span>
+                                        <span class="check-indicator"></span>
+                                    </div>
+                                    <div class="filter-option" data-category="sector" data-value="agriculture">
+                                        <span data-i18n="fundingHub.sector_agriculture">Agriculture</span>
+                                        <span class="check-indicator"></span>
+                                    </div>
+                                    <div class="filter-option" data-category="sector" data-value="building">
+                                        <span data-i18n="fundingHub.sector_climate_finance">Climate Finance</span>
+                                        <span class="check-indicator"></span>
+                                    </div>
+                                    <div class="filter-option" data-category="sector" data-value="waste">
+                                        <span data-i18n="fundingHub.sector_waste">Waste</span>
+                                        <span class="check-indicator"></span>
+                                    </div>
+                                    <div class="filter-option" data-category="sector" data-value="water">
+                                        <span data-i18n="fundingHub.sector_water">Water & Sanitation</span>
+                                        <span class="check-indicator"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 data-i18n="fundingHub.funding_type_filter">Funding Type</h3>
+                                <div class="filter-group">
+                                    <div class="filter-option" data-category="type" data-value="grant">
+                                        <span data-i18n="fundingHub.type_grant">Grants</span>
+                                        <span class="check-indicator"></span>
+                                    </div>
+                                    <div class="filter-option" data-category="type" data-value="loan">
+                                        <span data-i18n="fundingHub.type_debt">Debt</span>
+                                        <span class="check-indicator"></span>
+                                    </div>
+                                    <div class="filter-option" data-category="type" data-value="equity">
+                                        <span data-i18n="fundingHub.type_equity">Equity</span>
+                                        <span class="check-indicator"></span>
+                                    </div>
+                                    <div class="filter-option" data-category="type" data-value="working capital">
+                                        <span data-i18n="fundingHub.type_working_capital">Working Capital</span>
+                                        <span class="check-indicator"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 data-i18n="fundingHub.target_filter">Target</h3>
+                                <div class="filter-group">
+                                    <div class="filter-option" data-category="target" data-value="smme">
+                                        <span data-i18n="fundingHub.target_smme">SMME's</span>
+                                        <span class="check-indicator"></span>
+                                    </div>
+                                    <div class="filter-option" data-category="target" data-value="non-smme">
+                                        <span data-i18n="fundingHub.target_non_smme">Non-SMME's</span>
+                                        <span class="check-indicator"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center pt-4 border-t border-white/20 mt-6">
+                            <button onclick="applyFilters()" class="apply-btn flex items-center" data-i18n="fundingHub.apply_filters">
+                                <i class="bi bi-funnel mr-2"></i>
+                                Apply Filters
+                            </button>
+                            <button onclick="resetFilters()" class="reset-btn flex items-center" data-i18n="fundingHub.reset_filters">
+                                <i class="bi bi-arrow-counterclockwise mr-1"></i>
+                                Reset Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="py-16">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="funding-hub-form">
+                        <div class="flex justify-between items-center mb-8">
+                            <h2 class="text-2xl font-bold text-white" data-i18n="fundingHub.results_title">Available Funding Opportunities</h2>
+                        </div>
+                        <div id="funding-results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="py-16 bg-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="funding-hub-form">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-12 text-center" style="color: white;" data-i18n="fundingHub.apply_title">How to Apply for Funding</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div class="text-center">
+                                <div class="w-16 h-16 bg-teal-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <span class="text-teal-700 text-2xl font-bold">1</span>
+                                </div>
+                                <h3 class="text-xl font-bold mb-2 text-gray-900" style="color: white;" data-i18n="fundingHub.apply_step1_title">Find Suitable Opportunities</h3>
+                                <p class="text-gray-600" style="color: white;" data-i18n="fundingHub.apply_step1_description">Use our filters to identify funding programs that match your project type, sector, and financial needs.</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-16 h-16 bg-teal-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <span class="text-teal-700 text-2xl font-bold">2</span>
+                                </div>
+                                <h3 class="text-xl font-bold mb-2 text-gray-900" style="color: white;" data-i18n="fundingHub.apply_step2_title">Review Requirements</h3>
+                                <p class="text-gray-600" style="color: white;" data-i18n="fundingHub.apply_step2_description">Carefully read the eligibility criteria and application requirements for each funding opportunity.</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-16 h-16 bg-teal-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <span class="text-teal-700 text-2xl font-bold">3</span>
+                                </div>
+                                <h3 class="text-xl font-bold mb-2 text-gray-900" style="color: white;" data-i18n="fundingHub.apply_step3_title">Prepare & Submit</h3>
+                                <p class="text-gray-600" style="color: white;" data-i18n="fundingHub.apply_step3_description">Gather necessary documents and submit your application before the deadline.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="video-overlay" id="videoOverlay">
+                <div class="video-container">
+                    <span class="close-video">&times;</span>
+                    <div class="language-toggles">
+                        <button class="lang-btn active" data-lang="eng">English</button>
+                        <button class="lang-btn" data-lang="zulu">Zulu</button>
+                        <button class="lang-btn" data-lang="tswana">Tswana</button>
+                    </div>
+                    <video
+                        id="floatingVideo"
+                        playsinline
+                        loop
+                        disablepictureinpicture
+                        controlslist="nodownload nofullscreen noremoteplayback"
+                    ></video>
+                </div>
+            </div>
+            <div class="pulsing-icon" id="pulsingIcon">
+                <video autoplay muted loop playsinline>
+                    <source src="/Videos/idle.mp4" type="video/mp4" />
+                </video>
+            </div>
+        </main>
+        <green-economy-chatbot></green-economy-chatbot>
+        <green-economy-footer></green-economy-footer>
+    </div>
+    <script type="module" src="../digital_human/digital-human.js"></script>
+    <script type="module" src="../scripts/chatbot.js"></script>
+</body>
+</html>

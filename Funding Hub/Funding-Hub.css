@@ -1,0 +1,191 @@
+.funding-hub-gradient {
+    background: linear-gradient(135deg,  #2b9589 0%,  #2b9589 50%, #007d8a 100%);
+}
+
+.funding-hub-form {
+    background-color: #2b9589;
+    border-radius: 12px;
+    padding: 2rem;
+    color: white;
+}
+
+.funding-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.funding-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.view-details {
+    color:#2b9589;
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+.view-details:hover {
+    color:#2b9589;
+    text-decoration: underline;
+}
+
+.newsletter-section {
+    background: linear-gradient(135deg, #003d44 0%, #003d44 100%);
+    color: white;
+}
+
+.newsletter-input {
+    flex-grow: 1;
+    padding: 0.75rem 1rem;
+    border-top-left-radius: 0.375rem;
+    border-bottom-left-radius: 0.375rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.newsletter-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.newsletter-btn {
+    background-color:#2b9589;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-top-right-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-left: none;
+}
+
+.newsletter-btn:hover {
+    background-color:#2b9589;
+}
+
+.apply-btn {
+    background-color:#2b9589;
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.apply-btn:hover {
+    background-color:#2b9589;
+}
+
+.reset-btn {
+    background-color: transparent;
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.reset-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+select {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+h4 {
+    color: white;
+}
+
+select option {
+    background-color:#2b9589;
+    color: white;
+}
+
+.select-icon {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Back to Dashboard Button */
+.back-btn {
+    background-color:#2b9589;
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+}
+
+.back-btn:hover {
+    background-color:#2b9589;
+}
+
+.back-btn i {
+    font-size: 1rem;
+}
+
+/* Mobile responsiveness improvements */
+@media (max-width: 768px) {
+    .funding-hub-form {
+        padding: 1rem;
+        border-radius: 8px;
+    }
+    .funding-card {
+        margin-bottom: 1rem;
+        padding: 1rem;
+    }
+    .newsletter-section {
+        flex-direction: column;
+        padding: 1rem;
+    }
+    .newsletter-input, .newsletter-btn {
+        width: 100%;
+        border-radius: 0.375rem;
+        margin-bottom: 0.5rem;
+    }
+    .back-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .funding-hub-form {
+        padding: 0.5rem;
+    }
+    .funding-card {
+        padding: 0.5rem;
+    }
+    h1, h2, h3, h4 {
+        font-size: 1rem !important;
+    }
+    .back-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.75rem;
+    }
+}
