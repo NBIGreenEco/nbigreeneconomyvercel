@@ -1,0 +1,28 @@
+<!-- Digital Human Widget -->
+<div class="video-overlay" id="videoOverlay">
+  <div class="video-container">
+    <span class="close-video">&times;</span>
+    <div class="language-toggles">
+      <button class="lang-btn active" data-lang="eng">English</button>
+      <button class="lang-btn" data-lang="zulu">Zulu</button>
+      <button class="lang-btn" data-lang="tswana">Tswana</button>
+    </div>
+    <video
+      id="floatingVideo"
+      playsinline
+      loop
+      disablepictureinpicture
+      controlslist="nodownload nofullscreen noremoteplayback"
+    ></video>
+  </div>
+</div>
+
+<div class="pulsing-icon" id="pulsingIcon">
+  <video autoplay muted loop playsinline>
+    <source src="Videos/idle.mp4" type="video/mp4" />
+  </video>
+</div>
+
+<link rel="stylesheet" href="digital_human/digital-human.css" />
+<script src="digital_human/digital-human.js" defer></script>
+<!-- Digital Human Widget End -->

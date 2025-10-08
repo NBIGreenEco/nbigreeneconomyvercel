@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title data-i18n="title">My Website</title>
+</head>
+<body>
+  <h1 data-i18n="greeting">Hello!</h1>
+  <p data-i18n="description">Welcome to the site.</p>
+
+  <button onclick="changeLanguage('en')">English</button>
+  <button onclick="changeLanguage('fr')">Français</button>
+  <button onclick="changeLanguage('afr')">Afrikaans</button>
+
+  <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
+  <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
+  <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
