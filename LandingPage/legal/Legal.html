@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title data-i18n="legal.title">Legal & Policies - Green Economy Toolkit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/Master Page(Header and Footer)/MasterPage.css">
+    <script src="https://unpkg.com/lunr@2/lunr.min.js" onerror="this.src='/scripts/lunr.min.js'"></script>
+    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
+    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
+    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
+    <script type="module" src="/Trans.js"></script>
+    <script type="module" src="/Master Page(Header and Footer)/MasterPage.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --green-primary: #4eb5a6;
+            --green-dark: #005d6a;
+            --green-light: #b8e5e1;
+            --green-accent: #7cc8bc;
+            --light-bg: #f8fffe;
+            --background: #ffffff;
+            --foreground: #0f172a;
+            --card: #ffffff;
+            --card-foreground: #0f172a;
+            --border: #e2e8f0;
+            --muted-foreground: #64748b;
+            --primary: #1e293b;
+            --primary-foreground: #f8fafc;
+            --secondary: #f1f5f9;
+            --secondary-foreground: #1e293b;
+            --radius: 0.5rem;
+        }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            margin: 0;
+            padding: 0 1.5rem;
+        }
+
+        .main {
+            padding-top: 5rem;
+            min-height: 100vh;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--green-dark), var(--green-primary));
+            color: white;
+            padding: 4rem 0;
+            margin-bottom: 3rem;
+        }
+
+        .hero-content {
+            text-align: center;
+            padding: 0 1.5rem;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+        }
+
+        .quick-access-section {
+            margin: 0 1.5rem 3rem 1.5rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--green-dark);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .quick-access-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .access-card {
+            background: var(--card);
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .access-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .access-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--green-primary);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .access-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--green-dark);
+            margin-bottom: 0.75rem;
+        }
+
+        .access-description {
+            color: var(--muted-foreground);
+            margin-bottom: 1rem;
+        }
+
+        .access-link {
+            color: var(--green-primary);
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .access-link:hover {
+            color: var(--green-dark);
+        }
+
+        .regulations-section {
+            margin: 0 1.5rem 3rem 1.5rem;
+        }
+
+        .regulation-card {
+            background: var(--card);
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .regulation-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .regulation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .regulation-content {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .regulation-category {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--green-light);
+            color: var(--green-dark);
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+        }
+
+        .regulation-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--green-dark);
+            margin-bottom: 0.75rem;
+        }
+
+        .regulation-description {
+            color: var(--muted-foreground);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .read-more-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--green-primary);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .read-more-btn:hover {
+            background: var(--green-dark);
+            transform: translateY(-1px);
+        }
+
+        .compliance-section {
+            margin: 0 1.5rem 3rem 1.5rem;
+        }
+
+        .compliance-card {
+            background: var(--card);
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: var(--light-bg);
+            border-radius: 0.5rem;
+            margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .checklist-item:hover {
+            background: var(--green-light);
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--green-primary);
+            border-radius: 0.25rem;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox.checked {
+            background: var(--green-primary);
+            color: white;
+        }
+
+        .checklist-text {
+            color: var(--card-foreground);
+            font-weight: 500;
+        }
+
+        .download-guide-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--green-primary);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1.5rem;
+        }
+
+        .download-guide-btn:hover {
+            background: var(--green-dark);
+            transform: translateY(-1px);
+        }
+
+        .contact-section {
+            margin: 0 1.5rem 3rem 1.5rem;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .contact-card {
+            background: var(--card);
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--green-dark);
+            margin-bottom: 1rem;
+        }
+
+        .contact-description {
+            color: var(--muted-foreground);
+            margin-bottom: 1rem;
+        }
+
+        .contact-info {
+            font-size: 0.875rem;
+            line-height: 1.8;
+        }
+
+        .contact-info strong {
+            color: var(--green-dark);
+        }
+
+        .subscribe-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--green-primary);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .subscribe-btn:hover {
+            background: var(--green-dark);
+            transform: translateY(-1px);
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2b9589;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        body.loading {
+            visibility: hidden;
+            opacity: 0;
+        }
+
+        body.loaded {
+            visibility: visible;
+            opacity: 1;
+            transition: opacity 0.3s;
+        }
+
+        .error-message {
+            color: red;
+            text-align: center;
+            padding: 1rem;
+            font-weight: 500;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--card);
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--green-dark);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--green-dark);
+            margin-bottom: 1rem;
+        }
+
+        .modal-description {
+            color: var(--muted-foreground);
+            margin-bottom: 1rem;
+        }
+
+        .modal-link {
+            color: var(--green-primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .modal-link:hover {
+            color: var(--green-dark);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .regulation-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--green-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--green-dark);
+            transform: translateY(-1px);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+    </style>
+    <script type="module">
+        import { updateContent } from '/Trans.js';
+        import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
+        import { getAuth, onAuthStateChanged, setPersistence, browserSessionPersistence } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+        import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+
+        console.log("DEBUG: LegalAndPolicies.js loaded at", new Date().toLocaleString('en-ZA'));
+
+        // Firebase Initialization
+        const firebaseConfig = {
+            apiKey: "AIzaSyCfa827mvCLf1ETts6B_DmCfb7owTohBxk",
+            authDomain: "nbi-green-economy.firebaseapp.com",
+            projectId: "nbi-green-economy",
+            storageBucket: "nbi-green-economy.appspot.com",
+            messagingSenderId: "53732340059",
+            appId: "1:53732340059:web:3fb3f086c6662e1e9baa7e",
+            measurementId: "G-37VRZ5CGE4"
+        };
+
+        let app;
+        if (!getApps().length) {
+            app = initializeApp(firebaseConfig);
+        } else {
+            app = getApp();
+        }
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Set auth persistence
+        setPersistence(auth, browserSessionPersistence)
+            .then(() => console.log("DEBUG: Auth persistence set to session-only"))
+            .catch(error => {
+                console.error("DEBUG: Error setting auth persistence:", error);
+                displayErrorMessage(i18next.t('legal.error_message', { defaultValue: "Failed to initialize session: " + error.message }));
+            });
+
+        // Temporary User ID
+        let tempUserId = new URLSearchParams(window.location.search).get('tempUserId') || 
+            'guest_' + Math.random().toString(36).substr(2, 9);
+        console.log("DEBUG: Using tempUserId:", tempUserId);
+
+        // Loader Functions
+        function showLoader() {
+            const loader = document.querySelector('.loading-spinner');
+            const overlay = document.querySelector('.loading-overlay');
+            if (loader && overlay) {
+                loader.style.display = 'block';
+                overlay.style.display = 'flex';
+                console.log("DEBUG: Loader shown");
+            } else {
+                console.warn("DEBUG: Loader elements not found");
+            }
+        }
+
+        function hideLoader() {
+            const loader = document.querySelector('.loading-spinner');
+            const overlay = document.querySelector('.loading-overlay');
+            if (loader && overlay) {
+                loader.style.display = 'none';
+                overlay.style.display = 'none';
+                console.log("DEBUG: Loader hidden");
+            } else {
+                console.warn("DEBUG: Loader elements not found");
+            }
+        }
+
+        // Error Message Display
+        function displayErrorMessage(message) {
+            const container = document.querySelector(".quick-access-section") || document.querySelector(".container") || document.body;
+            const errorDiv = document.createElement("div");
+            errorDiv.className = "error-message";
+            errorDiv.textContent = message;
+            container.prepend(errorDiv);
+            setTimeout(() => errorDiv.remove(), 5000);
+            console.log("DEBUG: Error message displayed:", message);
+        }
+
+        // Track User Interaction
+        async function trackUserInteraction(tempUserId, category, action, label = "") {
+            try {
+                await addDoc(collection(db, 'interactions'), {
+                    tempUserId,
+                    category,
+                    action,
+                    label,
+                    timestamp: serverTimestamp(),
+                    language: i18next.language || 'en',
+                    userAgent: navigator.userAgent
+                });
+                console.log("DEBUG: Interaction tracked:", { tempUserId, category, action, label });
+            } catch (error) {
+                console.error("DEBUG: Error logging interaction:", error);
+                console.log(`DEBUG: Local log: tempUserId=${tempUserId}, category=${category}, action=${action}, label=${label}`);
+            }
+        }
+
+        // Document Download
+        function viewDocument(docType) {
+            showLoader();
+            const docPaths = {
+                'terms-of-service': '/documents/TermsOfService.pdf',
+                'privacy-policy': '/documents/PrivacyPolicy.pdf',
+                'compliance-guide': '/documents/ComplianceGuide.pdf'
+            };
+            const docPath = docPaths[docType];
+            if (docPath) {
+                console.log("DEBUG: Initiating download for:", docType);
+                trackUserInteraction(tempUserId, "document", "download", docType);
+                const link = document.createElement('a');
+                link.href = docPath;
+                link.download = `${docType}.pdf`;
+                link.onerror = () => {
+                    console.error("DEBUG: Download failed for:", docType);
+                    displayErrorMessage(i18next.t('legal.error_document', { defaultValue: 'Document not available.' }));
+                    hideLoader();
+                };
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                hideLoader();
+            } else {
+                console.error("DEBUG: Invalid document type:", docType);
+                displayErrorMessage(i18next.t('legal.error_document', { defaultValue: 'Document not available.' }));
+                hideLoader();
+            }
+        }
+
+        // Regulation Details
+        const regulationDetails = {
+            'eia-requirements': {
+                titleKey: 'legal.eia_title',
+                title: 'Environmental Impact Assessment (EIA) Requirements',
+                descKey: 'legal.eia_details',
+                description: 'This regulation mandates environmental impact assessments for all major development projects in South Africa. It includes requirements for public consultation, environmental management plans, and mitigation strategies to minimize ecological harm. Businesses must submit detailed reports to the Department of Environmental Affairs.',
+                link: '/documents/EIA_Guidelines.pdf'
+            },
+            'carbon-standards': {
+                titleKey: 'legal.carbon_title',
+                title: 'Carbon Emission Standards and Reporting',
+                descKey: 'legal.carbon_details',
+                description: 'Businesses are required to monitor and report greenhouse gas emissions under the National Climate Change Response Policy. This includes annual submissions to the national registry, compliance with carbon budgets, and participation in carbon credit markets where applicable.',
+                link: '/documents/Carbon_Standards.pdf'
+            },
+            'waste-legislation': {
+                titleKey: 'legal.waste_title',
+                title: 'Waste Management and Recycling Legislation',
+                descKey: 'legal.waste_details',
+                description: 'The National Environmental Management: Waste Act regulates waste disposal, recycling, and extended producer responsibility. Businesses must obtain permits for waste handling, adhere to recycling targets, and implement waste minimization strategies.',
+                link: '/documents/Waste_Management.pdf'
+            },
+            'renewable-incentives': {
+                titleKey: 'legal.energy_title',
+                title: 'Renewable Energy Incentives and Requirements',
+                descKey: 'legal.energy_details',
+                description: 'South Africa’s Renewable Energy Independent Power Producer Procurement Programme (REIPPPP) offers incentives for renewable energy adoption. Businesses must comply with feed-in tariffs, net metering, and renewable energy quotas as outlined in the Integrated Resource Plan.',
+                link: '/documents/Renewable_Energy.pdf'
+            }
+        };
+
+        // Show Regulation Modal
+        function readMore(regulationId) {
+            console.log("DEBUG: Showing modal for:", regulationId);
+            trackUserInteraction(tempUserId, "regulation", "read_more", regulationId);
+            const modal = document.getElementById('regulationModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalDescription = document.getElementById('modalDescription');
+            const modalLink = document.getElementById('modalLink');
+            
+            const details = regulationDetails[regulationId];
+            if (details && modal && modalTitle && modalDescription && modalLink) {
+                modalTitle.textContent = i18next.t(details.titleKey, { defaultValue: details.title });
+                modalDescription.textContent = i18next.t(details.descKey, { defaultValue: details.description });
+                modalLink.href = details.link;
+                modalLink.download = `${regulationId}.pdf`;
+                modalLink.textContent = i18next.t('legal.view_full_document', { defaultValue: 'View Full Document' });
+                modal.style.display = 'flex';
+                console.log("DEBUG: Modal displayed for:", regulationId);
+            } else {
+                console.error("DEBUG: Regulation details or modal elements not found for:", regulationId);
+                displayErrorMessage(i18next.t('legal.error_regulation', { defaultValue: 'Regulation details not available.' }));
+            }
+        }
+
+        // Close Modal
+        function closeModal() {
+            const modal = document.getElementById('regulationModal');
+            if (modal) {
+                modal.style.display = 'none';
+                console.log("DEBUG: Modal closed");
+            }
+        }
+
+        // Toggle Checklist Item
+        function toggleCheck(event) {
+            const item = event.currentTarget;
+            const checkbox = item.querySelector(".checkbox");
+            if (checkbox) {
+                checkbox.classList.toggle("checked");
+                checkbox.innerHTML = checkbox.classList.contains("checked") ? "✓" : "";
+                const checklistText = item.querySelector(".checklist-text")?.textContent || "Unknown";
+                console.log("DEBUG: Checklist toggled:", checklistText);
+                trackUserInteraction(tempUserId, "checklist", "toggle", checklistText);
+            }
+        }
+
+        // Download Compliance Guide
+        function downloadComplianceGuide() {
+            console.log("DEBUG: Downloading compliance guide");
+            trackUserInteraction(tempUserId, "compliance", "download_guide");
+            const link = document.createElement('a');
+            link.href = '/documents/ComplianceGuide.pdf';
+            link.download = 'ComplianceGuide.pdf';
+            link.onerror = () => {
+                console.error("DEBUG: Download failed for ComplianceGuide.pdf");
+                displayErrorMessage(i18next.t('legal.error_document', { defaultValue: 'Compliance guide not available.' }));
+            };
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Subscribe to Updates
+        function subscribeToUpdates() {
+            console.log("DEBUG: Subscribing to legal updates");
+            trackUserInteraction(tempUserId, "subscription", "subscribe");
+            window.location.href = `/subscribe.html?tempUserId=${encodeURIComponent(tempUserId)}`;
+        }
+
+        // Initialize Page
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DEBUG: DOM loaded for LegalAndPolicies.html at', new Date().toLocaleString('en-ZA'));
+            showLoader();
+            trackUserInteraction(tempUserId, 'page', 'loaded', 'Legal & Policies page');
+
+            // Event Delegation for Buttons
+            document.body.addEventListener('click', (event) => {
+                const target = event.target.closest('button, .access-card, .checklist-item');
+                if (!target) return;
+
+                if (target.classList.contains('access-card')) {
+                    const docType = target.querySelector('.access-title')?.dataset.i18n.split('.').pop();
+                    if (docType) viewDocument(docType);
+                } else if (target.classList.contains('read-more-btn')) {
+                    const regulationId = target.getAttribute('data-regulation-id');
+                    if (regulationId) readMore(regulationId);
+                } else if (target.classList.contains('download-guide-btn')) {
+                    downloadComplianceGuide();
+                } else if (target.classList.contains('subscribe-btn')) {
+                    subscribeToUpdates();
+                } else if (target.classList.contains('checklist-item')) {
+                    toggleCheck(event);
+                } else if (target.classList.contains('modal-close')) {
+                    closeModal();
+                }
+            });
+
+            // Close Modal on Outside Click
+            const modal = document.getElementById('regulationModal');
+            if (modal) {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) closeModal();
+                });
+            }
+
+            // Authentication Check
+            onAuthStateChanged(auth, (user) => {
+                console.log('DEBUG: onAuthStateChanged:', user ? { uid: user.uid, email: user.email, verified: user.emailVerified } : 'No user');
+                if (!user) {
+                    console.log('DEBUG: No user authenticated, redirecting to SignIn.html');
+                    window.location.href = `/LandingPage/SignInAndSignUp/SignIn.html?tempUserId=${encodeURIComponent(tempUserId)}`;
+                    return;
+                }
+                if (!user.emailVerified) {
+                    console.log('DEBUG: Email not verified, redirecting to VerifyEmail.html');
+                    window.location.href = `/LandingPage/SignInAndSignUp/VerifyEmail.html?tempUserId=${encodeURIComponent(tempUserId)}`;
+                    return;
+                }
+                initializePage();
+            });
+
+            function initializePage() {
+                if (!i18next.isInitialized) {
+                    i18next
+                        .use(i18nextHttpBackend)
+                        .use(i18nextBrowserLanguageDetector)
+                        .init({
+                            fallbackLng: 'en',
+                            supportedLngs: ['en', 'zu', 'tn'],
+                            backend: { loadPath: '/locales/{{lng}}.json?v=' + new Date().getTime() },
+                            detection: {
+                                order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
+                                caches: ['localStorage', 'cookie']
+                            }
+                        }, (err) => {
+                            if (err) {
+                                console.error('DEBUG: i18next initialization error:', err);
+                                displayErrorMessage(i18next.t('legal.error_message', { defaultValue: 'Failed to load translations.' }));
+                                finalizePageLoad();
+                                return;
+                            }
+                            console.log('DEBUG: i18next initialized at', new Date().toLocaleString('en-ZA'), 'language:', i18next.language);
+                            finalizePageLoad();
+                        });
+                } else {
+                    finalizePageLoad();
+                }
+
+                const timeout = setTimeout(() => {
+                    console.warn('DEBUG: i18next initialization timed out');
+                    finalizePageLoad();
+                }, 5000);
+
+                i18next.on('failedLoading', (lng, ns, msg) => {
+                    console.error(`DEBUG: Failed to load ${lng}.json: ${msg}`);
+                    displayErrorMessage(i18next.t('legal.error_message', { defaultValue: `Failed to load ${lng} translations.` }));
+                    clearTimeout(timeout);
+                    finalizePageLoad();
+                });
+            }
+
+            function finalizePageLoad() {
+                try {
+                    i18next.loadResources(() => {
+                        updateContent();
+                        document.body.classList.remove('loading');
+                        document.body.classList.add('loaded');
+                        hideLoader();
+                        console.log('DEBUG: Content displayed, loading overlay hidden');
+                    });
+                } catch (error) {
+                    console.error('DEBUG: Error loading translations:', error);
+                    document.body.classList.remove('loading');
+                    document.body.classList.add('loaded');
+                    hideLoader();
+                    displayErrorMessage(i18next.t('legal.error_message', { defaultValue: 'Failed to load translations.' }));
+                }
+            }
+        });
+    </script>
+</head>
+<body class="loading">
+    <div class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+    <div id="root">
+        <green-economy-header></green-economy-header>
+        <main class="main">
+            <section class="hero">
+                <div class="hero-content">
+                    <h1 data-i18n="legal.hero_title">Legal Framework & Policies</h1>
+                    <p data-i18n="legal.hero_description">
+                        Understand the legal requirements, policies, and regulations
+                        governing green economy initiatives and sustainable business
+                        practices.
+                    </p>
+                </div>
+            </section>
+            <section class="quick-access-section">
+                <h2 class="section-title" data-i18n="legal.quick_access_title">Quick Access</h2>
+                <div class="quick-access-grid">
+                    <div class="access-card">
+                        <div class="access-icon">📄</div>
+                        <h3 class="access-title" data-i18n="legal.terms_title">Terms of Service</h3>
+                        <p class="access-description" data-i18n="legal.terms_description">
+                            Read our platform terms and conditions, user rights, and service
+                            limitations.
+                        </p>
+                        <a href="#" class="access-link" data-i18n="legal.view_document">View Document →</a>
+                    </div>
+                    <div class="access-card">
+                        <div class="access-icon">🛡️</div>
+                        <h3 class="access-title" data-i18n="legal.privacy_title">Privacy Policy</h3>
+                        <p class="access-description" data-i18n="legal.privacy_description">
+                            How we collect, use, and protect your personal data and business
+                            information.
+                        </p>
+                        <a href="#" class="access-link" data-i18n="legal.view_document">View Document →</a>
+                    </div>
+                    <div class="access-card">
+                        <div class="access-icon">ℹ️</div>
+                        <h3 class="access-title" data-i18n="legal.compliance_title">Compliance Guide</h3>
+                        <p class="access-description" data-i18n="legal.compliance_description">
+                            Environmental and business compliance requirements for green
+                            economy participation.
+                        </p>
+                        <a href="#" class="access-link" data-i18n="legal.view_document">View Document →</a>
+                    </div>
+                </div>
+            </section>
+            <section class="regulations-section">
+                <h2 class="section-title" data-i18n="legal.regulations_title">Environmental Regulations</h2>
+                <div class="regulation-card">
+                    <div class="regulation-header">
+                        <div class="regulation-content">
+                            <div class="regulation-category" data-i18n="legal.eia_category">Environmental Law</div>
+                            <h3 class="regulation-title" data-i18n="legal.eia_title">Environmental Impact Assessment (EIA) Requirements</h3>
+                            <p class="regulation-description" data-i18n="legal.eia_description">
+                                Guidelines for conducting environmental assessments for business
+                                projects. This comprehensive framework outlines the mandatory
+                                processes for evaluating environmental impacts, stakeholder
+                                consultation requirements, and mitigation measures for
+                                sustainable development projects.
+                            </p>
+                        </div>
+                        <button class="read-more-btn" data-regulation-id="eia-requirements" data-i18n="legal.read_more">Read More</button>
+                    </div>
+                </div>
+                <div class="regulation-card">
+                    <div class="regulation-header">
+                        <div class="regulation-content">
+                            <div class="regulation-category" data-i18n="legal.carbon_category">Climate Regulation</div>
+                            <h3 class="regulation-title" data-i18n="legal.carbon_title">Carbon Emission Standards and Reporting</h3>
+                            <p class="regulation-description" data-i18n="legal.carbon_description">
+                                Mandatory reporting requirements for carbon emissions and
+                                reduction targets. Includes guidelines for measuring, reporting,
+                                and verifying greenhouse gas emissions, carbon credit trading,
+                                and compliance with national climate commitments.
+                            </p>
+                        </div>
+                        <button class="read-more-btn" data-regulation-id="carbon-standards" data-i18n="legal.read_more">Read More</button>
+                    </div>
+                </div>
+                <div class="regulation-card">
+                    <div class="regulation-header">
+                        <div class="regulation-content">
+                            <div class="regulation-category" data-i18n="legal.waste_category">Waste Law</div>
+                            <h3 class="regulation-title" data-i18n="legal.waste_title">Waste Management and Recycling Legislation</h3>
+                            <p class="regulation-description" data-i18n="legal.waste_description">
+                                Legal framework for waste disposal, recycling, and circular
+                                economy practices. Covers waste classification, disposal
+                                permits, recycling obligations, and extended producer
+                                responsibility requirements for various industries.
+                            </p>
+                        </div>
+                        <button class="read-more-btn" data-regulation-id="waste-legislation" data-i18n="legal.read_more">Read More</button>
+                    </div>
+                </div>
+                <div class="regulation-card">
+                    <div class="regulation-header">
+                        <div class="regulation-content">
+                            <div class="regulation-category" data-i18n="legal.energy_category">Energy Policy</div>
+                            <h3 class="regulation-title" data-i18n="legal.energy_title">Renewable Energy Incentives and Requirements</h3>
+                            <p class="regulation-description" data-i18n="legal.energy_description">
+                                Legal incentives and mandatory renewable energy adoption
+                                policies. Details government incentives, feed-in tariffs, net
+                                metering regulations, and renewable energy procurement
+                                requirements for public and private sector entities.
+                            </p>
+                        </div>
+                        <button class="read-more-btn" data-regulation-id="renewable-incentives" data-i18n="legal.read_more">Read More</button>
+                    </div>
+                </div>
+            </section>
+            <section class="compliance-section">
+                <h2 class="section-title" data-i18n="legal.compliance_checklist_title">Business Compliance Checklist</h2>
+                <div class="compliance-card">
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <span class="checklist-text" data-i18n="legal.checklist_ems">Environmental Management System (EMS) Implementation</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <span class="checklist-text" data-i18n="legal.checklist_certification">Green Certification and Accreditation</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <span class="checklist-text" data-i18n="legal.checklist_reporting">Sustainability Reporting Requirements</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <span class="checklist-text" data-i18n="legal.checklist_safety">Worker Safety in Green Operations</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <span class="checklist-text" data-i18n="legal.checklist_supply_chain">Supply Chain Environmental Standards</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <span class="checklist-text" data-i18n="legal.checklist_community">Community Engagement and Social Impact</span>
+                    </div>
+                    <button class="download-guide-btn" data-i18n="legal.download_guide">Download Complete Compliance Guide</button>
+                </div>
+            </section>
+            <section class="contact-section">
+                <h2 class="section-title" data-i18n="legal.contact_title">Legal Support & Contact</h2>
+                <div class="contact-grid">
+                    <div class="contact-card">
+                        <h3 class="contact-title" data-i18n="legal.legal_questions_title">Legal Questions?</h3>
+                        <p class="contact-description" data-i18n="legal.legal_questions_description">
+                            For questions about legal compliance, regulations, or policy
+                            interpretation, contact our legal support team.
+                        </p>
+                        <div class="contact-info">
+                            <strong data-i18n="legal.email_label">Email:</strong> legal@greeneconomytoolkit.com<br />
+                            <strong data-i18n="legal.phone_label">Phone:</strong> +27 (0) 11 123 4567<br />
+                            <strong data-i18n="legal.hours_label">Hours:</strong> Monday - Friday, 8:00 AM - 5:00 PM SAST
+                        </div>
+                    </div>
+                    <div class="contact-card">
+                        <h3 class="contact-title" data-i18n="legal.updates_title">Document Updates</h3>
+                        <p class="contact-description" data-i18n="legal.updates_description">
+                            Stay informed about changes to legal documents and regulations.
+                            Subscribe to our legal updates newsletter.
+                        </p>
+                        <button class="subscribe-btn" data-i18n="legal.subscribe_button">Subscribe to Updates</button>
+                    </div>
+                </div>
+            </section>
+            <div id="regulationModal" class="modal">
+                <div class="modal-content">
+                    <button class="modal-close">&times;</button>
+                    <h3 id="modalTitle" class="modal-title"></h3>
+                    <p id="modalDescription" class="modal-description"></p>
+                    <a id="modalLink" class="modal-link" href="#" download></a>
+                </div>
+            </div>
+        </main>
+        <green-economy-chatbot></green-economy-chatbot>
+        <green-economy-footer></green-economy-footer>
+    </div>
+    <script type="module" src="/scripts/chatbot.js"></script>
+    <script type="module" src="/scripts/aienhancedsearch.js"></script>
+</body>
+</html>

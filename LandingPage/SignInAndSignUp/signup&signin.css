@@ -1,0 +1,127 @@
+/*========================================= Sign Up css*=============================================================================================*/
+.sign-in-btn:disabled,
+.sign-up-btn:disabled,
+.google-btn:disabled {
+  background-color: #9CA3AF !important; /* Tailwind gray-400 */
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.hidden {
+  display: none;
+}
+
+.sign-in-btn, .sign-up-btn, .google-btn {
+  background-color: #000000; /* green-primary */
+  color: white;
+}
+.sign-in-btn:hover, .sign-up-btn:hover, .google-btn:hover {
+  background-color: #9CA3AF;
+}
+.hidden {
+  display: none;
+}
+
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        #root {
+            flex: 1 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+        footer {
+            flex-shrink: 0;
+        }
+        .blurry-bg {
+            background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb');
+            background-size: cover;
+            background-position: center;
+            filter: blur(8px);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--radius);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: hsl(var(--foreground));
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .google-btn:hover {
+            background-color: hsl(var(--secondary));
+            transform: scale(1.05);
+        }
+        .google-btn img {
+            width: 1.5rem;
+            height: 1.5rem;
+            margin-right: 0.5rem;
+        }
+        .sign-up-btn {
+            background-color: #000000;
+            color: #ffffff;
+        }
+        
+        .sign-up-btn:hover {
+            background-color: #1a1a1a;
+            transform: scale(1.05);
+        }
+
+
+.error-message {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    text-align: center;
+}
+
+/* --- Mobile responsiveness improvements --- */
+@media (max-width: 768px) {
+  .signup-form, .signin-form {
+    padding: 1rem;
+    border-radius: 8px;
+  }
+  .signup-card, .signin-card {
+    margin-bottom: 1rem;
+    padding: 1rem;
+  }
+  .signup-header, .signin-header {
+    font-size: 1.2rem;
+  }
+}
+@media (max-width: 480px) {
+  .signup-form, .signin-form {
+    padding: 0.5rem;
+  }
+  .signup-card, .signin-card {
+    padding: 0.5rem;
+  }
+  .signup-header, .signin-header {
+    font-size: 1rem;
+  }
+  .signup-btn, .signin-btn {
+    width: 100%;
+    font-size: 1rem;
+    padding: 10px 0;
+  }
+}

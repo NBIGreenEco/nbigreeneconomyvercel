@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-i18n="verifyemail.title">Email Verification - Green Economy Toolkit</title>
+  <link rel="stylesheet" href="/styles/output.css">
+  <link rel="stylesheet" href="/Master Page(Header and Footer)/MasterPage.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
+  <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
+  <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
+  <script src="/Trans.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js" type="module"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js" type="module"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js" type="module"></script>
+  <script type="module" src="/Master Page(Header and Footer)/MasterPage.js"></script>
+  <style>
+    :root {
+      --green-primary: #4eb5a6;
+      --green-dark: #005d6a;
+      --green-light: #b8e5e1;
+      --green-accent: #7cc8bc;
+      --light-bg: #f8fffe;
+      --background: #ffffff;
+      --foreground: #0f172a;
+      --card: #ffffff;
+      --card-foreground: #0f172a;
+      --border: #e2e8f0;
+      --muted-foreground: #64748b;
+    }
+    body {
+      font-family: "Poppins", sans-serif;
+      background-color: var(--light-bg);
+      color: var(--foreground);
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      text-align: center;
+      background: var(--card);
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      margin: 1rem;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .container h1 {
+      font-size: 1.8rem;
+      color: var(--green-dark);
+      margin-bottom: 1rem;
+    }
+    .container p {
+      font-size: 1.1rem;
+      color: var(--card-foreground);
+      margin-bottom: 1.5rem;
+    }
+    .error-message {
+      color: #dc3545;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      display: none;
+      transition: opacity 0.3s ease;
+    }
+    .success-message {
+      color: var(--green-primary);
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      display: none;
+      transition: opacity 0.3s ease;
+    }
+    .resend-button {
+      background-color: var(--green-primary);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    .resend-button:hover {
+      background-color: var(--green-dark);
+      transform: translateY(-2px);
+    }
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #f8f9fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.3s ease;
+    }
+    .loading-spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid var(--green-primary);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    body.loading {
+      visibility: hidden;
+      opacity: 0;
+    }
+    body.loaded {
+      visibility: visible;
+      opacity: 1;
+      transition: opacity 0.3s ease;
+    }
+  </style>
+  <script>
+    i18next
+      .use(i18nextHttpBackend)
+      .use(i18nextBrowserLanguageDetector)
+      .init({
+        fallbackLng: 'en',
+        supportedLngs: ['en', 'zu', 'tn'],
+        backend: {
+          loadPath: '/locales/{{lng}}.json?v=' + new Date().getTime()
+        },
+        detection: {
+          order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
+          caches: ['localStorage', 'cookie']
+        }
+      }, (err, t) => {
+        if (err) {
+          console.error('i18next initialization error:', err);
+          setTimeout(() => {
+            i18next.loadResources((loadErr) => {
+              if (loadErr) {
+                console.error('Retry failed:', loadErr);
+                applyFallbackTranslations();
+              } else {
+                console.log('i18next retry successful, language:', i18next.language);
+                finalizeLoading();
+              }
+            });
+          }, 2000);
+          return;
+        }
+        console.log('i18next initialized for VerifyEmail.html at 3:58 PM SAST, Sep 1, 2025:', i18next.language);
+        finalizeLoading();
+      });
+
+    function applyFallbackTranslations() {
+      document.querySelectorAll('[data-i18n]').forEach(elem => {
+        const key = elem.getAttribute('data-i18n');
+        if (key.startsWith('[')) {
+          const match = key.match(/\[(\w+)\](.+)/);
+          if (match) {
+            const [, attr, i18nKey] = match;
+            const fallback = elem.getAttribute(attr) || 'Content not available';
+            elem.setAttribute(attr, fallback);
+          }
+        } else {
+          const fallback = elem.textContent.trim() || 'Content not available';
+          elem.textContent = fallback;
+        }
+      });
+      console.warn('Applied fallback translations due to loading failure');
+      finalizeLoading();
+    }
+
+    function updateContent() {
+      const missingKeys = [];
+      document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        if (key.startsWith('[')) {
+          const match = key.match(/\[(\w+)\](.+)/);
+          if (match) {
+            const [, attr, translationKey] = match;
+            const translation = i18next.t(translationKey, { defaultValue: element.getAttribute(attr) || 'Content not available' });
+            if (translation === translationKey) {
+              missingKeys.push(translationKey);
+            }
+            element.setAttribute(attr, translation);
+          }
+        } else {
+          const translation = i18next.t(key, { defaultValue: element.textContent.trim() || 'Content not available' });
+          if (translation === key) {
+            missingKeys.push(key);
+          }
+          element.textContent = translation;
+        }
+      });
+      if (missingKeys.length > 0) {
+        console.warn('Missing translations:', missingKeys);
+      }
+    }
+
+    function finalizeLoading() {
+      i18next.loadResources(() => {
+        updateContent();
+        document.body.classList.remove('loading');
+        document.body.classList.add('loaded');
+        document.querySelector('.loading-overlay').style.display = 'none';
+        console.log('Translations loaded, content displayed');
+        verifyEmailLink();
+      });
+    }
+
+    i18next.on('languageChanged', () => {
+      console.log('Language changed to:', i18next.language);
+      updateContent();
+    });
+
+    i18next.on('loaded', () => {
+      updateContent();
+    });
+  </script>
+</head>
+<body class="loading">
+  <div class="loading-overlay">
+    <div class="loading-spinner"></div>
+  </div>
+  <div class="container">
+    <h1 data-i18n="verifyemail.header">Email Verification</h1>
+    <p id="message" data-i18n="verifyemail.message">Processing your email verification...</p>
+    <div id="success-message" class="success-message" data-i18n="verifyemail.success_message"></div>
+    <div id="error-message" class="error-message" data-i18n="verifyemail.error_message"></div>
+    <button id="resend-button" class="resend-button" style="display: none;" data-i18n="verifyemail.resend_button">Resend Verification Email</button>
+  </div>
+  <script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
+import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, applyActionCode } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+import { getFirestore, doc, getDoc, setDoc, addDoc, collection, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCfa827mvCLf1ETts6B_DmCfb7owTohBxk",
+  authDomain: "nbi-green-economy.firebaseapp.com",
+  projectId: "nbi-green-economy",
+  storageBucket: "nbi-green-economy.firebasestorage.app",
+  messagingSenderId: "53732340059",
+  appId: "1:53732340059:web:3fb3f086c6662e1e9baa7e",
+  measurementId: "G-37VRZ5CGE4"
+};
+
+console.log('Initializing Firebase for VerifyEmail.html at 6:05 PM SAST, Sep 1, 2025');
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const HARDCODED_CODE = 'K7mP!qR9@wT#xY';
+const NETLIFY_BASE_URL = 'https://nbi2.netlify.app'; // Hardcoded Netlify URL
+
+setPersistence(auth, browserLocalPersistence)
+  .then(() => {
+    console.log('Persistence set to LOCAL in VerifyEmail.html');
+  })
+  .catch(error => {
+    console.error('Error setting persistence:', error);
+    const errorMessage = document.getElementById('error-message');
+    if (errorMessage) {
+      errorMessage.textContent = i18next.t('verifyemail.error_message', { defaultValue: `Failed to initialize session: ${error.message}` });
+      errorMessage.style.display = 'block';
+    }
+  });
+
+async function trackInteraction(userId, category, action, label = "") {
+  try {
+    await addDoc(collection(db, 'interactions'), {
+      userId: userId || `anonymous_${Date.now()}`,
+      category: category,
+      action: action,
+      label: label,
+      timestamp: serverTimestamp(),
+      language: document.documentElement.lang || 'en',
+      userAgent: navigator.userAgent
+    });
+    console.log('Interaction tracked:', { userId, category, action, label });
+  } catch (error) {
+    console.error('Error logging interaction:', error);
+  }
+}
+
+async function verifyEmailLink() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const oobCode = urlParams.get('oobCode'); // Firebase's verification code
+  const email = urlParams.get('email') || 'nbigreeneconomy@gmail.com';
+  const message = document.getElementById('message');
+  const successMessage = document.getElementById('success-message');
+  const errorMessage = document.getElementById('error-message');
+  const resendButton = document.getElementById('resend-button');
+
+  console.log('verifyEmailLink started at 6:05 PM SAST, Sep 1, 2025', { oobCode, email, url: window.location.href });
+  await trackInteraction(null, 'email_verification', 'link_clicked', `Email: ${email}, oobCode: ${oobCode}, URL: ${window.location.href}`);
+
+  if (!message || !successMessage || !errorMessage || !resendButton) {
+    console.error('DOM elements missing:', { message: !!message, successMessage: !!successMessage, errorMessage: !!errorMessage, resendButton: !!resendButton });
+    await trackInteraction(null, 'email_verification', 'dom_error', 'Missing DOM elements');
+    return;
+  }
+
+  if (!oobCode) {
+    console.error('No oobCode provided in URL');
+    message.textContent = i18next.t('verifyemail.message_invalid', { defaultValue: 'Invalid verification link.' });
+    errorMessage.textContent = i18next.t('verifyemail.error_missing_token', { defaultValue: 'Verification code is missing.' });
+    errorMessage.style.display = 'block';
+    resendButton.style.display = 'block';
+    await trackInteraction(null, 'email_verification', 'invalid_link', `Missing oobCode`);
+    return;
+  }
+
+  try {
+    let user = auth.currentUser;
+    console.log('Checking auth state:', user ? { email: user.email, uid: user.uid } : 'No user signed in');
+    if (!user) {
+      console.log('Attempting to sign in with email:', email);
+      const userCredential = await signInWithEmailAndPassword(auth, email, HARDCODED_CODE);
+      user = userCredential.user;
+      console.log('User signed in successfully:', { email: user.email, uid: user.uid });
+    } else {
+      console.log('User already signed in:', { email: user.email, uid: user.uid });
+    }
+
+    // Verify the email using Firebase's applyActionCode
+    await applyActionCode(auth, oobCode);
+    console.log('Email verification successful using oobCode');
+
+    // Update Firestore to mark email as verified (for consistency with your existing flow)
+    const emailVerificationRef = doc(db, 'email_verifications', email);
+    await setDoc(emailVerificationRef, {
+      isVerified: true,
+      verifiedAt: new Date()
+    }, { merge: true });
+    console.log('Email verification recorded in Firestore');
+
+    await trackInteraction(user.uid, 'email_verification', 'success', `Email: ${email}, oobCode: ${oobCode}`);
+
+    message.textContent = i18next.t('verifyemail.message_success', { defaultValue: 'Email verified successfully!' });
+    successMessage.textContent = i18next.t('verifyemail.success_redirect', { defaultValue: 'Redirecting to code verification...' });
+    successMessage.style.display = 'block';
+
+    console.log('Preparing to redirect to VerifyCode.html');
+    setTimeout(() => {
+      const redirectUrl = `${NETLIFY_BASE_URL}/LandingPage/SignInAndSignUp/VerifyCode.html?email=${encodeURIComponent(email)}&enableButton=true`;
+      console.log('Redirecting to:', redirectUrl);
+      window.location.href = redirectUrl;
+    }, 2000);
+  } catch (error) {
+    console.error('Error verifying email:', error, { code: error.code, message: error.message });
+    message.textContent = i18next.t('verifyemail.message_failed', { defaultValue: 'Verification failed.' });
+    errorMessage.textContent = i18next.t('verifyemail.error_failed', { defaultValue: `Failed to verify email: ${error.message}` });
+    errorMessage.style.display = 'block';
+    resendButton.style.display = 'block';
+    await trackInteraction(null, 'email_verification', 'failure', `Error: ${error.message}`);
+  }
+
+  resendButton.addEventListener('click', async () => {
+    try {
+      let user = auth.currentUser;
+      if (!user) {
+        console.log('Attempting to sign in for resend:', email);
+        const userCredential = await signInWithEmailAndPassword(auth, email, HARDCODED_CODE);
+        user = userCredential.user;
+      }
+
+      const actionCodeSettings = {
+        url: `${NETLIFY_BASE_URL}/LandingPage/SignInAndSignUp/VerifyEmail.html`,
+        handleCodeInApp: true
+      };
+      await sendEmailVerification(user, actionCodeSettings);
+      console.log('Verification email resent:', actionCodeSettings.url);
+
+      // Update Firestore with a new token (for consistency with your existing flow)
+      const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
+      await setDoc(doc(db, 'email_verifications', email), {
+        token: token,
+        isVerified: false,
+        createdAt: serverTimestamp(),
+        expiresAt: new Date(Date.now() + 10 * 60 * 1000)
+      }, { merge: true });
+      console.log('Email verification token updated in Firestore');
+
+      await trackInteraction(user.uid, 'email_verification', 'resend', `Email: ${email}, URL: ${actionCodeSettings.url}`);
+      message.textContent = i18next.t('verifyemail.message_resent', { defaultValue: 'Verification email resent.' });
+      successMessage.textContent = i18next.t('verifyemail.success_resent', { defaultValue: 'A new verification email has been sent.' });
+      successMessage.style.display = 'block';
+      errorMessage.style.display = 'none';
+      resendButton.style.display = 'none';
+    } catch (error) {
+      console.error('Error resending verification email:', error);
+      errorMessage.textContent = i18next.t('verifyemail.error_resend', { defaultValue: `Failed to resend verification email: ${error.message}` });
+      errorMessage.style.display = 'block';
+      await trackInteraction(null, 'email_verification', 'resend_failed', error.message);
+    }
+  });
+}
+
+verifyEmailLink();
+  </script>
+</body>
+</html>

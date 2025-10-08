@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title data-i18n="signup.title">Green Economy Toolkit - Sign Up</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lunr@2/lunr.min.js"></script>
+    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
+    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
+    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
+    <script type="module" src="../../Trans.js"></script>
+    <script type="module" src="../../Master Page(Header and Footer)/MasterPage.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="../../Master Page(Header and Footer)/MasterPage.css">
+    <link rel="stylesheet" href="signup&signin.css">
+    <script src="../../../scripts/enhancedsearch.js"></script>
+    <style>
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2b9589;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        body.loading {
+            visibility: hidden;
+            opacity: 0;
+        }
+        body.loaded {
+            visibility: visible;
+            opacity: 1;
+            transition: opacity 0.3s;
+        }
+        #loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        #loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2b9589;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+        #verification-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1001;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+        #verification-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        #verification-modal button {
+            background-color: #10b981;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        #verification-modal button:hover {
+            background-color: #059669;
+        }
+    </style>
+    <script type="module">
+        import { updateContent } from '../../Trans.js';
+        import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
+        import { getAuth, onAuthStateChanged, setPersistence, browserSessionPersistence } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+        import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCfa827mvCLf1ETts6B_DmCfb7owTohBxk",
+            authDomain: "nbi-green-economy.firebaseapp.com",
+            projectId: "nbi-green-economy",
+            storageBucket: "nbi-green-economy.firebasestorage.app",
+            messagingSenderId: "53732340059",
+            appId: "1:53732340059:web:3fb3f086c6662e1e9baa7e",
+            measurementId: "G-37VRZ5CGE4"
+        };
+
+        let app;
+        if (!getApps().length) {
+            app = initializeApp(firebaseConfig);
+        } else {
+            app = getApp();
+        }
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Set auth persistence to session-only
+        setPersistence(auth, browserSessionPersistence)
+            .then(() => {
+                console.log("Auth persistence set to session-only");
+            })
+            .catch(error => {
+                console.error("Error setting auth persistence:", error);
+                const errorMessage = document.getElementById('error-message');
+                if (errorMessage) {
+                    errorMessage.textContent = i18next.t('signup.error_message', { defaultValue: "Failed to initialize session: " + error.message });
+                    errorMessage.classList.remove('hidden');
+                    setTimeout(() => errorMessage.classList.add('hidden'), 5000);
+                }
+            });
+
+        // Get or generate temporary user ID
+        let tempUserId = new URLSearchParams(window.location.search).get('tempUserId');
+        if (!tempUserId) {
+            tempUserId = 'guest_' + Math.random().toString(36).substr(2, 9);
+            console.log("Generated guest tempUserId:", tempUserId);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM loaded for SignUp.html at', new Date().toLocaleString('en-ZA'));
+            document.body.classList.add('loading');
+            const loadingOverlay = document.querySelector('.loading-overlay');
+
+            // Track page load (this is before auth, so if needed, handle via local log or update rules)
+            async function trackInteraction(category, action, label = "") {
+                try {
+                    await db.collection('interactions').add({
+                        tempUserId: tempUserId,
+                        category: category,
+                        action: action,
+                        label: label,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                        language: i18next.language || 'en',
+                        userAgent: navigator.userAgent
+                    });
+                    console.log("Interaction tracked:", { tempUserId, category, action, label });
+                } catch (error) {
+                    console.error("Error logging interaction:", error);
+                    console.log(`Local log: tempUserId=${tempUserId}, category=${category}, action=${action}, label=${label}`);
+                }
+            }
+            trackInteraction('page', 'loaded', 'SignUp page');
+
+            const finalizePageLoad = () => {
+                document.body.classList.remove('loading');
+                document.body.classList.add('loaded');
+                if (loadingOverlay) {
+                    loadingOverlay.style.display = 'none';
+                }
+                console.log('Content displayed, loading overlay hidden');
+            };
+
+            const timeout = setTimeout(() => {
+                console.warn('i18next initialization timed out');
+                finalizePageLoad();
+            }, 5000);
+
+            if (i18next.isInitialized) {
+                i18next.loadResources(() => {
+                    try {
+                        updateContent();
+                        clearTimeout(timeout);
+                        finalizePageLoad();
+                    } catch (e) {
+                        console.error('Error during content loading:', e);
+                        clearTimeout(timeout);
+                        finalizePageLoad();
+                    }
+                });
+            } else {
+                i18next.on('initialized', () => {
+                    i18next.loadResources(() => {
+                        try {
+                            updateContent();
+                            clearTimeout(timeout);
+                            finalizePageLoad();
+                        } catch (e) {
+                            console.error('Error during content loading:', e);
+                            clearTimeout(timeout);
+                            finalizePageLoad();
+                        }
+                    });
+                });
+                i18next.on('failedLoading', (lng, ns, msg) => {
+                    console.error(`Failed to load ${lng}.json: ${msg}`);
+                    clearTimeout(timeout);
+                    finalizePageLoad();
+                });
+            }
+
+            // Modified onAuthStateChanged to prevent redirect to VerifyEmail.html
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    console.log('User authenticated:', user.uid, user.email || 'Anonymous');
+                    if (user.emailVerified) {
+                        console.log('Email verified, redirecting to dashboard');
+                        window.location.href = `../../Dashboard/dashboard.html?tempUserId=${tempUserId}`;
+                    } else {
+                        console.log('Email not verified, staying on signup page');
+                        // Do nothing, let signup.js handle the flow
+                    }
+                } else {
+                    console.log('No user authenticated');
+                }
+            });
+        });
+    </script>
+</head>
+<body class="loading">
+    <div class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+    <div id="loader-overlay">
+        <div id="loader"></div>
+    </div>
+    <div id="root">
+        <green-economy-header></green-economy-header>
+        <main class="flex-grow flex items-center justify-center py-16 relative">
+            <div class="blurry-bg"></div>
+            <div class="form-container max-w-md w-full mx-4 p-8">
+                <div class="flex justify-center mb-4">
+                    <i class="fas fa-user-plus text-4xl text-green-primary"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center" data-i18n="signup.header">Create Admin Account</h2>
+                <div class="space-y-6">
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700" data-i18n="signup.email_label">Email Address</label>
+                        <input id="email" type="email" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-primary focus:border-green-primary" placeholder="you@example.com" data-i18n="[placeholder]signup.email_placeholder">
+                    </div>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700" data-i18n="signup.password_label">Password</label>
+                        <input id="password" type="password" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-primary focus:border-green-primary" placeholder="••••••••" data-i18n="[placeholder]signup.password_placeholder">
+                    </div>
+                    <div>
+                        <label for="confirm-password" class="block text-sm font-medium text-gray-700" data-i18n="signup.confirm_password_label">Confirm Password</label>
+                        <input id="confirm-password" type="password" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-primary focus:border-green-primary" placeholder="••••••••" data-i18n="[placeholder]signup.confirm_password_placeholder">
+                    </div>
+                    <div id="error-message" class="error-message hidden"></div>
+                    <button id="sign-up-btn" class="w-full sign-up-btn font-semibold py-2 px-4 rounded-md transition-all duration-300" data-i18n="signup.sign_up_button">Sign Up</button>
+                    <div class="relative">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-300"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-2 bg-white text-gray-500" data-i18n="signup.or_continue">Or continue with</span>
+                        </div>
+                    </div>
+                    <!-- <button id="google-sign-up-btn" class="google-btn" data-i18n="signup.google_button">
+                        <img src="https://www.google.com/favicon.ico" alt="Google logo">
+                        Sign up with Google
+                    </button> -->
+                </div>
+                <p class="mt-6 text-center text-sm text-gray-600">
+                    <span data-i18n="signup.have_account">Already have an account?</span> <a href="SignIn.html" class="text-green-primary hover:underline inline-link" data-i18n="signup.sign_in_link">Sign In</a>
+                </p>
+            </div>
+            <div id="verification-modal-overlay" class="hidden"></div>
+            <div id="verification-modal" class="hidden">
+                <p class="text-lg font-medium text-gray-900 mb-4" data-i18n="signup.verification_message">You Have Been Sent Link On Email For Verification</p>
+                <button id="modal-ok-btn" data-i18n="signup.ok_button">Okay</button>
+            </div>
+        </main>
+        <green-economy-footer></green-economy-footer>
+    </div>
+    <script type="module" src="../../scripts/signup.js"></script>
+</body>
+</html>

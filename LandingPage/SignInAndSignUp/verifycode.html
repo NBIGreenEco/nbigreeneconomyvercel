@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-37VRZ5CGE4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-37VRZ5CGE4');
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-i18n="verifycode.title">Verify Admin Code - Green Economy Toolkit</title>
+  <link rel="stylesheet" href="/Master Page(Header and Footer)/MasterPage.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <script src="https://unpkg.com/lunr@2.3.9/lunr.js"></script>
+  <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
+  <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
+  <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
+  <script src="/Master Page(Header and Footer)/Trans.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"></script>
+  <script type="module" src="/Master Page(Header and Footer)/MasterPage.js"></script>
+  <style>
+    :root {
+      --green-primary: #4eb5a6;
+      --green-dark: #005d6a;
+      --green-light: #b8e5e1;
+      --green-accent: #7cc8bc;
+      --light-bg: #f8fffe;
+      --background: #ffffff;
+      --foreground: #0f172a;
+      --card: #ffffff;
+      --card-foreground: #0f172a;
+      --border: #e2e8f0;
+      --muted-foreground: #64748b;
+      --primary: #1e293b;
+      --primary-foreground: #f8fafc;
+      --secondary: #f1f5f9;
+      --secondary-foreground: #1e293b;
+    }
+    body {
+      font-family: "Poppins", sans-serif;
+      background-color: var(--background);
+      color: var(--foreground);
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+    .hero {
+      position: relative;
+      height: 400px;
+      background-image: linear-gradient(rgba(0, 93, 106, 0.7), rgba(78, 181, 166, 0.7)),
+                      url("https://images.pexels.com/photos/371917/pexels-photo-371917.jpeg");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2rem;
+      border-radius: 1rem;
+    }
+    .hero-content {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 2rem 3rem;
+      border-radius: 1rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      margin: 0 1rem;
+    }
+    .hero h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--green-dark);
+      margin-bottom: 1rem;
+    }
+    .form-container {
+      background: var(--card);
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      border: 1px solid var(--border);
+      max-width: 500px;
+      margin: 0 auto 3rem;
+    }
+    .form-container form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .form-container label {
+      font-weight: 500;
+      color: var(--card-foreground);
+      font-size: 1.1rem;
+    }
+    .form-container input {
+      padding: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .form-container input:focus {
+      outline: none;
+      border-color: var(--green-primary);
+      box-shadow: 0 0 0 3px rgba(78, 181, 166, 0.1);
+    }
+    .btn-primary {
+      background: var(--green-primary);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+      background: var(--green-dark);
+      transform: translateY(-2px);
+    }
+    .btn-primary:disabled {
+      background: #d1d5db;
+      color: #6b7280;
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+    .alert-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 1100;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .alert-modal.show {
+      display: flex;
+      opacity: 1;
+    }
+    .alert-modal-content {
+      background: var(--card);
+      padding: 2rem;
+      max-width: 400px;
+      width: 90%;
+      border-radius: 0.75rem;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      transform: scale(0.8);
+      transition: transform 0.3s ease;
+    }
+    .alert-modal.show .alert-modal-content {
+      transform: scale(1);
+    }
+    .alert-modal.success .alert-modal-content {
+      border-left: 4px solid var(--green-primary);
+    }
+    .alert-modal.error .alert-modal-content {
+      border-left: 4px solid #dc3545;
+    }
+    .alert-modal-content p {
+      font-size: 1.1rem;
+      color: var(--card-foreground);
+      margin-bottom: 1.5rem;
+    }
+    .alert-modal-btn {
+      background: var(--green-primary);
+      color: white;
+      padding: 0.5rem 1.5rem;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+    .alert-modal.error .alert-modal-btn {
+      background: #dc3545;
+    }
+    .alert-modal-btn:hover {
+      background: var(--green-dark);
+      transform: translateY(-2px);
+    }
+    .alert-modal.error .alert-modal-btn:hover {
+      background: #c82333;
+    }
+    .alert-modal-close {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: var(--muted-foreground);
+      transition: color 0.2s ease;
+    }
+    .alert-modal-close:hover {
+      color: var(--green-primary);
+    }
+    .loader {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px;
+      height: 80px;
+      border: 8px solid #e5e7eb;
+      border-top: 8px solid #10b981;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      z-index: 1000;
+    }
+    .loader-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+    @keyframes spin {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    .error-message {
+      color: #dc3545;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      display: none;
+    }
+    .error-message.hidden {
+      display: none;
+    }
+    .success-message {
+      color: var(--green-primary);
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      display: none;
+    }
+    .success-message.hidden {
+      display: none;
+    }
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #f8f9fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    .loading-spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #2b9589;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+    body.loading {
+      visibility: hidden;
+      opacity: 0;
+    }
+    body.loaded {
+      visibility: visible;
+      opacity: 1;
+      transition: opacity 0.3s;
+    }
+    @media (max-width: 768px) {
+      .hero {
+        height: auto;
+        min-height: 200px;
+        border-radius: 0.5rem;
+      }
+      .hero-content {
+        padding: 1rem;
+        max-width: 100%;
+      }
+      .form-container {
+        padding: 1rem;
+        margin: 0 1rem 2rem;
+      }
+    }
+  </style>
+  <script>
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const SERVER_URL = isLocalhost ? '' : 'https://nbi-green-economy-j3c3.onrender.com';
+
+    i18next
+      .use(i18nextHttpBackend)
+      .use(i18nextBrowserLanguageDetector)
+      .init({
+        fallbackLng: 'en',
+        supportedLngs: ['en', 'zu', 'tn'],
+        backend: {
+          loadPath: isLocalhost ? '/locales/{{lng}}.json?v=' + new Date().getTime() : `${SERVER_URL}/locales/{{lng}}.json?v=${new Date().getTime()}`
+        },
+        detection: {
+          order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
+          caches: ['localStorage', 'cookie']
+        }
+      }, (err, t) => {
+        if (err) {
+          console.error('i18next initialization error:', err);
+          setTimeout(() => {
+            i18next.loadResources((loadErr) => {
+              if (loadErr) {
+                console.error('Retry failed:', loadErr);
+                applyFallbackTranslations();
+              } else {
+                console.log('i18next retry successful, language:', i18next.language);
+                finalizeLoading();
+              }
+            });
+          }, 2000);
+          return;
+        }
+        console.log('i18next initialized for VerifyCode.html at', new Date().toLocaleString('en-ZA'), ':', i18next.language);
+        finalizeLoading();
+      });
+
+    function applyFallbackTranslations() {
+      document.querySelectorAll('[data-i18n]').forEach(elem => {
+        const key = elem.getAttribute('data-i18n');
+        if (key.startsWith('[')) {
+          const match = key.match(/\[(\w+)\](.+)/);
+          if (match) {
+            const [, attr, i18nKey] = match;
+            const fallback = elem.getAttribute(attr) || 'Content not available';
+            elem.setAttribute(attr, fallback);
+          }
+        } else {
+          const fallback = elem.textContent.trim() || 'Content not available';
+          elem.textContent = fallback;
+        }
+      });
+      console.warn('Applied fallback translations due to loading failure');
+      finalizeLoading();
+    }
+
+    function updateContent() {
+      const missingKeys = [];
+      document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        try {
+          if (key.startsWith('[')) {
+            const match = key.match(/\[(\w+)\](.+)/);
+            if (match) {
+              const [, attr, translationKey] = match;
+              const translation = i18next.t(translationKey, { defaultValue: element.getAttribute(attr) || 'Content not available' });
+              if (translation === translationKey) {
+                missingKeys.push(translationKey);
+              }
+              element.setAttribute(attr, translation);
+            }
+          } else {
+            const translation = i18next.t(key, { defaultValue: element.textContent.trim() || 'Content not available' });
+            if (translation === key) {
+              missingKeys.push(key);
+            }
+            element.textContent = translation;
+          }
+        } catch (error) {
+          console.error(`Error translating key ${key}:`, error);
+        }
+      });
+      if (missingKeys.length > 0) {
+        console.warn('Missing translations:', missingKeys);
+      }
+    }
+
+    function finalizeLoading() {
+      try {
+        i18next.loadResources(() => {
+          updateContent();
+          document.body.classList.remove('loading');
+          document.body.classList.add('loaded');
+          document.querySelector('.loading-overlay').style.display = 'none';
+          console.log('Translations loaded, content displayed');
+        });
+      } catch (error) {
+        console.error('Error loading translations:', error);
+        document.body.classList.remove('loading');
+        document.body.classList.add('loaded');
+        document.querySelector('.loading-overlay').style.display = 'none';
+      }
+    }
+  </script>
+</head>
+<body class="loading">
+  <div class="loading-overlay">
+    <div class="loading-spinner"></div>
+  </div>
+  <green-economy-header></green-economy-header>
+  <section class="hero">
+    <div class="hero-content">
+      <h1 data-i18n="verifycode.header">Verify Admin Access</h1>
+    </div>
+  </section>
+  <section class="form-container">
+    <form id="verify-code-form">
+      <label for="verification-code" data-i18n="verifycode.label">Enter Admin Code:</label>
+      <input type="password" id="verification-code" required placeholder="Enter admin code" data-i18n="[placeholder]verifycode.placeholder">
+      <button type="submit" class="btn-primary" id="verify-btn" data-i18n="verifycode.button">Verify Code</button>
+      <div id="verification-message" class="success-message hidden" data-i18n="verifycode.success_message"></div>
+      <div id="error-message" class="error-message hidden" data-i18n="verifycode.error_message"></div>
+    </form>
+  </section>
+  <div class="loader-overlay" id="loader-overlay"></div>
+  <div class="loader" id="loader"></div>
+  <green-economy-footer></green-economy-footer>
+  <script type="module" src="/scripts/verifyCode.js"></script>
+</body>
+</html>

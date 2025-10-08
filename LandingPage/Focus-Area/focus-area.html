@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-i18n="title">Focus Areas - Green Economy Toolkit</title>
+    <!-- Load i18next scripts -->
+    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
+    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
+    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
+    <!-- Load other scripts -->
+    <script type="module" src="../../Master Page(Header and Footer)/MasterPage.js"></script>
+    <script type="module" src="../../Master Page(Header and Footer)/translation.js"></script>
+    <script type="module" src="../../Trans.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
+    <script type="module" src="../../../scripts/enhancedsearch.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="../../Master Page(Header and Footer)/MasterPage.css">
+    <script type="module">
+      // Initialize Firebase
+      firebase.initializeApp({
+        apiKey: "AIzaSyCfa827mvCLf1ETts6B_DmCfb7owTohBxk",
+        authDomain: "nbi-green-economy.firebaseapp.com",
+        projectId: "nbi-green-economy",
+        storageBucket: "nbi-green-economy.firebasestorage.app",
+        messagingSenderId: "53732340059",
+        appId: "1:53732340059:web:3fb3f086c6662e1e9baa7e",
+        measurementId: "G-37VRZ5CGE4"
+      });
+    </script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+          "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        line-height: 1.6;
+        color: #333;
+        background-color: white;
+        overflow-x: hidden;
+      }
+      /* Hero Section */
+      .hero {
+        background: #dbeafe;
+        padding: 48px 0;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-content {
+        width: 100%;
+        padding: 0 24px;
+        display: flex;
+        align-items: center;
+      }
+
+      .hero-icon {
+        width: 48px;
+        height: 48px;
+        background: #1a8934;
+        border-radius: 8px;
+        margin-right: 16px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .hero-icon div {
+        width: 24px;
+        height: 24px;
+        background: white;
+        border-radius: 4px;
+      }
+
+      .hero-title {
+        font-size: 24px;
+        font-weight: 500;
+        color: #1a8934;
+      }
+
+      .decorative-shapes {
+        position: absolute;
+        top: 16px;
+        right: 32px;
+      }
+
+      .shape-1 {
+        width: 64px;
+        height: 64px;
+        background: #1a8934;
+        border-radius: 8px;
+        transform: rotate(0deg);
+        position: absolute;
+        animation: rotate 6s infinite linear;
+      }
+
+      .shape-2 {
+        width: 48px;
+        height: 48px;
+        background: #16a34a;
+        border-radius: 8px;
+        transform: rotate(0deg);
+        position: absolute;
+        top: 48px;
+        left: -16px;
+        animation: rotate 8s infinite reverse linear;
+      }
+
+      /* Focus Areas List */
+      .focus-areas {
+        padding: 48px 0;
+      }
+
+      .focus-content {
+        width: 100%;
+        padding: 0 24px;
+      }
+
+      .focus-list {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+      }
+
+      .focus-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 24px;
+        opacity: 0;
+        transition: opacity 0.6s ease, transform 0.6s ease;
+      }
+
+      .focus-icon {
+        width: 64px;
+        height: 64px;
+        border: 2px solid #1a8934;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .focus-icon svg {
+        width: 32px;
+        height: 32px;
+        color: #1a8934;
+        stroke-width: 1.5;
+      }
+
+      .focus-details h3 {
+        font-size: 20px;
+        font-weight: 500;
+        color: #1f2937;
+        margin-bottom: 12px;
+      }
+
+      .focus-details p {
+        color: #6b7280;
+        line-height: 1.6;
+      }
+
+      /* Back Link */
+      .back-section {
+        padding: 48px 0;
+        background: #f8fafc;
+      }
+
+      .back-content {
+        width: 100%;
+        padding: 0 24px;
+      }
+
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        color: #1a8934;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+
+      .back-link:hover {
+        color: #16a34a;
+      }
+
+      .back-link svg {
+        width: 16px;
+        height: 16px;
+        margin-right: 8px;
+      }
+
+      /* Partners */
+      .partners {
+        padding: 48px 0;
+        background: white;
+        border-top: 2px solid #1a8934;
+      }
+
+      .partners-content {
+        width: 100%;
+        padding: 0 24px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 48px;
+        flex-wrap: wrap;
+      }
+
+      .partner-item {
+        display: flex;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.6s ease, transform 0.6s ease;
+      }
+
+      .partner-icon {
+        margin-right: 8px;
+      }
+
+      .partner-icon.orange {
+        width: 64px;
+        height: 32px;
+        background: #f97316;
+        border-radius: 4px;
+      }
+
+      .partner-icon.red {
+        width: 32px;
+        height: 32px;
+        background: #ef4444;
+        border-radius: 50%;
+      }
+
+      .partner-icon.blue {
+        width: 12px;
+        height: 12px;
+        background: #2563eb;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 8px;
+      }
+
+      .partner-badge {
+        color: white;
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-weight: bold;
+        font-size: 18px;
+      }
+
+      .partner-badge.green {
+        background: #1a8934;
+      }
+
+      .partner-badge.blue {
+        background: #1e40af;
+      }
+
+      .partner-text {
+        font-size: 12px;
+        color: #6b7280;
+      }
+
+      .partner-text .title {
+        font-weight: 500;
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      @keyframes slideInLeft {
+        from { transform: translateX(-50px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+
+      @keyframes slideInRight {
+        from { transform: translateX(50px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+
+      @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
+      @keyframes parallax {
+        from { transform: translateY(0); }
+        to { transform: translateY(-50px); }
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .focus-item {
+          flex-direction: column;
+          text-align: left;
+        }
+
+        .focus-icon {
+          align-self: flex-start;
+        }
+
+        .hero-content {
+          flex-direction: column;
+          text-align: left;
+        }
+
+        .hero-icon {
+          margin-right: 0;
+          margin-bottom: 16px;
+        }
+
+        .decorative-shapes {
+          display: none;
+        }
+
+        .partners-content {
+          justify-content: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <green-economy-header></green-economy-header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-content">
+        <div class="hero-icon">
+          <div></div>
+        </div>
+        <h1 class="hero-title">
+          Nine priority focus areas for the green economy in South Africa (Green
+          Economy Summit, 2010)
+        </h1>
+      </div>
+      <div class="decorative-shapes">
+        <div class="shape-1"></div>
+        <div class="shape-2"></div>
+      </div>
+    </section>
+
+    <!-- Focus Areas List -->
+    <section class="focus-areas">
+      <div class="focus-content">
+        <div class="focus-list">
+          <!-- Agriculture -->
+          <div class="focus-item" id="agriculture">
+            <div class="focus-icon">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707"
+                />
+              </svg>
+            </div>
+            <div class="focus-details">
+              <h3 data-i18n="focus.agriculture">Agriculture</h3>
+              <p data-i18n="focus.agriculture.description">
+                Green agriculture means farming in a way that doesn't harm the
+                environment. It includes using fewer chemicals, saving water and
+                protecting wildlife while growing our food.
+              </p>
+            </div>
+          </div>
+
+          <!-- Energy -->
+          <div class="focus-item" id="energy">
+            <div class="focus-icon">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                />
+              </svg>
+            </div>
+            <div class="focus-details">
+              <h3 data-i18n="focus.energy">Energy (clean and efficient)</h3>
+              <p data-i18n="focus.energy.description">
+                Clean and efficient energy means using power sources like the
+                sun and wind, which don't cause pollution. It also means using
+                less energy by making our machines and buildings work better.
+              </p>
+            </div>
+          </div>
+
+          <!-- Natural Resource -->
+          <div class="focus-item" id="natural-resource">
+            <div class="focus-icon">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+                />
+              </svg>
+            </div>
+            <div class="focus-details">
+              <h3 data-i18n="focus.naturalResource">
+                Natural resource conservation and management (including mining)
+              </h3>
+              <p data-i18n="focus.naturalResource.description">
+                Natural resource conservation and management is about being
+                careful with our land and other natural resources. When we mine,
+                we should do it in a way that minimizes damage to nature, and we
+                should use resources wisely so they last a long time.
+              </p>
+            </div>
+          </div>
+
+          <!-- Transport -->
+          <div class="focus-item" id="transport">
+            <div class="focus-icon">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+                />
+              </svg>
+            </div>
+            <div class="focus-details">
+              <h3 data-i18n="focus.transport">Sustainable transport and infrastructure</h3>
+              <p data-i18n="focus.transport.description">
+                Sustainable transport means using greener ways to get around,
+                such as electric cars and public transport. Sustainable
+                infrastructure means constructing roads and buildings that are
+                kinder to the environment.
+              </p>
+            </div>
+          </div>
+
+          <!-- Environmental -->
+          <div class="focus-item" id="environmental">
+            <div class="focus-icon">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <div class="focus-details">
+              <h3 data-i18n="focus.environmental">Environmental sustainability, including tourism education</h3>
+              <p data-i18n="focus.environmental.description">
+                We need to learn how to protect nature and teach others to do
+                the same, especially in the tourism industry. That way, we can
+                enjoy beautiful places without harming them.
+              </p>
+            </div>
+          </div>
+
+          <!-- Buildings -->
+          <div class="focus-item" id="buildings">
+            <div class="focus-icon">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                />
+              </svg>
+            </div>
+            <div class="focus-details">
+              <h3 data-i18n="focus.buildings">Green buildings and the built environment</h3>
+              <p data-i18n="focus.buildings.description">
+                Green buildings are designed to save energy and use eco-friendly
+                materials. The built environment refers to human-made
+                infrastructure and amenities. Ensuring a green built environment
+                is about building homes, offices and factories that do as little
+                harm as possible to Earth, and to the people who live and work
+                in them.
+              </p>
+            </div>
+          </div>
+
+          <!-- Waste -->
+          <div class="focus-item" id="waste">
+            <div class="focus-icon">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
+              </svg>
+            </div>
+            <div class="focus-details">
+              <h3 data-i18n="focus.waste">Sustainable waste management and recycling</h3>
+              <p data-i18n="focus.waste.description">
+                To protect our planet and humanity's future, we must responsibly
+                manage and recycle waste. Items we now throw away. Opportunities
+                include the installation of public recycling bins labelled
+                according to the waste collected in each bin (glass, paper,
+                plastic, etc.), and the rehabilitation of new, and the repair of
+                existing public signage promoting good recycling and waste
+                management behaviour.
+              </p>
+            </div>
+          </div>
+
+          <!-- Water -->
+          <div class="focus-item" id="water">
+            <div class="focus-icon">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M8 6l4-4 4 4M8 18l4 4 4-4M4 10h16M4 14h16"
+                />
+              </svg>
+            </div>
+            <div class="focus-details">
+              <h3 data-i18n="focus.water">Water management</h3>
+              <p data-i18n="focus.water.description">
+                Using water wisely and keeping it clean is important because
+                without potable water humanity will die. We also use water in
+                most industrial processes. This means that we should use water
+                carefully in farming and industry and make sure our rivers and
+                lakes stay clean.
+              </p>
+            </div>
+          </div>
+
+          <!-- Production -->
+          <div class="focus-item" id="production">
+            <div class="focus-icon">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+                />
+              </svg>
+            </div>
+            <div class="focus-details">
+              <h3 data-i18n="focus.production">Sustainable production and consumption</h3>
+              <p data-i18n="focus.production.description">
+                This involves making products and items that last longer and can
+                be used again. It also means buying only the things we really
+                need, thus reducing waste.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Back to home -->
+    <section class="back-section">
+      <div class="back-content">
+        <a href="../../index.html" class="back-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            />
+          </svg>
+          Back to all focus areas
+        </a>
+      </div>
+    </section>
+
+    <section style="width: 100%; background-color: #009381; padding: 80px 20px;">
+      <div style="max-width: 800px; margin: 0 auto; text-align: left;">
+        <!-- Title -->
+        <h2 style="color: white; font-size: 20px; margin-bottom: 25px; max-width: 600px; margin-left: auto; margin-right: auto;" data-i18n="login.subscribe">
+          Subscribe to our newsletter to get the latest information
+        </h2>
+        
+        <!-- Input Box -->
+        <div style="position: relative; max-width: 700px; margin: 0 auto;">
+          <input 
+            type="email" 
+            placeholder="Your email" 
+            data-i18n="[placeholder]login.emailPlaceholder"
+            style="width: 100%; padding: 18px 50px 18px 25px; border: none; border-radius: 4px; font-size: 16px; color: #333; background: white;"
+          >
+          <span style="position: absolute; right: 25px; top: 50%; transform: translateY(-50%); color: #009381; font-size: 22px; font-weight: bold;">→</span>
+        </div>
+        
+        <!-- Disclaimer Text -->
+        <p style="color: rgba(255,255,255,0.7); font-size: 14px; margin-top: 15px; max-width: 700px; margin-left: auto; margin-right: auto;" data-i18n="login.noSpam">
+          *Only relevant information, no spam
+        </p>
+      </div>
+    </section>
+
+    <!-- Digital Human Widget -->
+    <div class="video-overlay" id="videoOverlay">
+      <div class="video-container">
+        <span class="close-video">&times;</span>
+        <div class="language-toggles">
+          <button class="lang-btn active" data-lang="eng">English</button>
+          <button class="lang-btn" data-lang="zulu">Zulu</button>
+          <button class="lang-btn" data-lang="tswana">Tswana</button>
+        </div>
+        <video
+          id="floatingVideo"
+          playsinline
+          loop
+          disablepictureinpicture
+          controlslist="nodownload nofullscreen noremoteplayback"
+        ></video>
+      </div>
+    </div>
+
+    <div class="pulsing-icon" id="pulsingIcon">
+      <video autoplay muted loop playsinline>
+        <source src="/Videos/idle.mp4" type="video/mp4" />
+      </video>
+    </div>
+
+    <link rel="stylesheet" href="/digital_human/digital-human.css" />
+    <script src="/digital_human/digital-human.js" defer></script>
+    <!-- Digital Human Widget End -->
+
+    <!-- Footer -->
+    <green-economy-chatbot></green-economy-chatbot>
+    <script src="../../scripts/chatbot.js"></script>
+    <green-economy-footer></green-economy-footer>
+    <script src="../../scripts/focus-area.js"></script>
+  </body>
+</html>

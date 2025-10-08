@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-i18n="irmsector.title">Green Economy Toolkit</title>
+    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
+    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
+    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
+    <script type="module" src="/Trans.js"></script>
+    <script type="module" src="/Master Page(Header and Footer)/MasterPage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/Master Page(Header and Footer)/MasterPage.css">
+    <link rel="stylesheet" href="/digital_human/digital-human.css">
+    <link rel="stylesheet" href="IRMSector.css">
+    <script src="../../../scripts/enhancedsearch.js"></script>
+    <style>
+        .loader {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            border: 8px solid #e5e7eb;
+            border-top: 8px solid #10b981;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 1000;
+        }
+        .loader-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        #verification-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1001;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+        #verification-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        #verification-modal button {
+            background-color: #10b981;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        #verification-modal button:hover {
+            background-color: #059669;
+        }
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2b9589;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        body.loading {
+            visibility: hidden;
+            opacity: 0;
+        }
+        body.loaded {
+            visibility: visible;
+            opacity: 1;
+            transition: opacity 0.3s;
+        }
+    </style>
+    <script type="module">
+        import { updateContent } from '/Trans.js';
+
+        // Initialize i18next
+        i18next
+            .use(i18nextHttpBackend)
+            .use(i18nextBrowserLanguageDetector)
+            .init({
+                fallbackLng: 'en',
+                supportedLngs: ['en', 'zu', 'tn'],
+                backend: {
+                    loadPath: '/locales/{{lng}}.json?v=' + new Date().getTime()
+                },
+                detection: {
+                    order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
+                    caches: ['localStorage', 'cookie']
+                }
+            }, (err, t) => {
+                if (err) {
+                    console.error('i18next initialization error:', err);
+                    setTimeout(() => {
+                        i18next.loadResources((loadErr) => {
+                            if (loadErr) {
+                                console.error('Retry failed:', loadErr);
+                                applyFallbackTranslations();
+                            } else {
+                                console.log('i18next retry successful, language:', i18next.language);
+                                finalizeLoading();
+                            }
+                        });
+                    }, 2000);
+                    return;
+                }
+                console.log('i18next initialized for irmsector.html at', new Date().toLocaleString('en-ZA'), 'language:', i18next.language);
+                finalizeLoading();
+            });
+
+        function applyFallbackTranslations() {
+            document.querySelectorAll('[data-i18n]').forEach(elem => {
+                const key = elem.getAttribute('data-i18n');
+                try {
+                    if (key.startsWith('[')) {
+                        const match = key.match(/\[(\w+)\](.+)/);
+                        if (match) {
+                            const [, attr, i18nKey] = match;
+                            const fallback = elem.getAttribute(attr) || 'Content not available';
+                            elem.setAttribute(attr, fallback);
+                            console.warn(`Fallback applied for attribute ${attr} with key ${i18nKey}: ${fallback}`);
+                        } else {
+                            console.error(`Invalid data-i18n format for key: ${key}`);
+                        }
+                    } else {
+                        const fallback = elem.textContent.trim() || 'Content not available';
+                        elem.textContent = fallback;
+                        console.warn(`Fallback applied for text with key ${key}: ${fallback}`);
+                    }
+                } catch (error) {
+                    console.error(`Error applying fallback for key ${key}:`, error);
+                }
+            });
+            console.warn('Applied fallback translations due to loading failure');
+            finalizeLoading();
+        }
+
+        function finalizeLoading() {
+            try {
+                i18next.loadResources(() => {
+                    updateContent();
+                    document.body.classList.remove('loading');
+                    document.body.classList.add('loaded');
+                    document.querySelector('.loading-overlay').style.display = 'none';
+                    console.log('Translations loaded, content displayed');
+                });
+            } catch (error) {
+                console.error('Error loading translations:', error);
+                applyFallbackTranslations();
+            }
+        }
+
+        i18next.on('languageChanged', () => {
+            console.log('Language changed to:', i18next.language);
+            updateContent();
+        });
+
+        i18next.on('loaded', () => {
+            console.log('Resources loaded for:', i18next.language);
+            updateContent();
+        });
+
+        i18next.on('failedLoading', (lng, ns, msg) => {
+            console.error(`Failed to load ${lng}.json: ${msg}`);
+            applyFallbackTranslations();
+        });
+
+        // Firebase initialization
+        const firebaseConfig = {
+            apiKey: "AIzaSyCfa827mvCLf1ETts6B_DmCfb7owTohBxk",
+            authDomain: "nbi-green-economy.firebaseapp.com",
+            projectId: "nbi-green-economy",
+            storageBucket: "nbi-green-economy.appspot.com",
+            messagingSenderId: "53732340059",
+            appId: "1:53732340059:web:3fb3f086c6662e1e9baa7e",
+            measurementId: "G-37VRZ5CGE4"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        // Digital human widget interaction
+        document.addEventListener('DOMContentLoaded', function () {
+            const pulsingIcon = document.querySelector('.pulsing-icon');
+            const videoOverlay = document.querySelector('.video-overlay');
+            const closeVideo = document.querySelector('.close-video');
+            const floatingVideo = document.getElementById('floatingVideo');
+            const langButtons = document.querySelectorAll('.lang-btn');
+            const videoSources = {
+                'eng': '/Videos/IRMSector_Eng.mp4',
+                'zulu': '/Videos/IRMSector_Zulu.mp4',
+                'tswana': '/Videos/IRMSector_Tswana.mp4'
+            };
+            let currentLang = 'eng';
+
+            if (pulsingIcon) {
+                pulsingIcon.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    videoOverlay.classList.toggle('active');
+                    if (videoOverlay.classList.contains('active')) {
+                        playCurrentVideo();
+                        pulsingIcon.style.opacity = '0.7';
+                    } else {
+                        floatingVideo.pause();
+                        pulsingIcon.style.opacity = '1';
+                    }
+                });
+            }
+
+            if (closeVideo) {
+                closeVideo.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    closeVideoPlayer();
+                });
+            }
+
+            if (videoOverlay) {
+                videoOverlay.addEventListener('click', function (e) {
+                    if (e.target === videoOverlay) {
+                        closeVideoPlayer();
+                    }
+                });
+            }
+
+            langButtons.forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    const lang = this.getAttribute('data-lang');
+                    if (lang !== currentLang) {
+                        langButtons.forEach(btn => btn.classList.remove('active'));
+                        this.classList.add('active');
+                        currentLang = lang;
+                        playCurrentVideo();
+                    }
+                });
+            });
+
+            if (floatingVideo) {
+                floatingVideo.addEventListener('ended', function () {
+                    closeVideoPlayer();
+                });
+            }
+
+            function playCurrentVideo() {
+                const source = videoSources[currentLang];
+                if (source && floatingVideo) {
+                    const currentTime = floatingVideo.currentTime;
+                    floatingVideo.src = source;
+                    floatingVideo.load();
+                    floatingVideo.currentTime = currentTime;
+                    floatingVideo.play().catch(e => console.log('Video play failed:', e));
+                    floatingVideo.addEventListener('canplaythrough', function onCanPlay() {
+                        floatingVideo.play().catch(e => console.log('Video auto-play failed:', e));
+                        floatingVideo.removeEventListener('canplaythrough', onCanPlay);
+                    });
+                }
+            }
+
+            function closeVideoPlayer() {
+                if (videoOverlay && floatingVideo && pulsingIcon) {
+                    videoOverlay.classList.remove('active');
+                    floatingVideo.pause();
+                    pulsingIcon.style.opacity = '1';
+                }
+            }
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && videoOverlay && videoOverlay.classList.contains('active')) {
+                    closeVideoPlayer();
+                }
+            });
+        });
+
+        // Fallback timeout
+        setTimeout(() => {
+            if (document.body.classList.contains('loading')) {
+                console.warn('Loading timeout reached, forcing content display');
+                applyFallbackTranslations();
+                document.body.classList.remove('loading');
+                document.body.classList.add('loaded');
+                document.querySelector('.loading-overlay').style.display = 'none';
+                alert(i18next.t('opportunities.alert-timeout', { defaultValue: 'Page load timeout. Displaying default content.' }));
+            }
+        }, 10000);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM fully loaded for irmsector.html at', new Date().toLocaleString('en-ZA'));
+            if (customElements.get('green-economy-header') && customElements.get('green-economy-footer')) {
+                console.log('Custom elements defined');
+            } else {
+                console.warn('Custom elements not defined. Ensure MasterPage.js is loaded correctly.');
+            }
+        });
+    </script>
+</head>
+<body class="loading">
+    <div class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+    <green-economy-header></green-economy-header>
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-image-section">
+                <img src="/Images/IRMSector.png" alt="Hero Image" class="hero-img" data-i18n="[alt]irmsector.hero_image" />
+            </div>
+            <div class="hero-text">
+                <h1 data-i18n="irmsector.hero_title">Installation, repair and maintenance sector</h1>
+                <p data-i18n="irmsector.hero_description1">
+                    Since 2019, the National Business Initiative has been spearheading multifaceted and multisector partnerships focused on growing pathways for young people to access installation, repair and maintenance (IRM) occupations.
+                </p>
+                <p data-i18n="irmsector.hero_description2">
+                    Artisanal skills can be useful in supporting the journey and transition to a green economy. Through various industry and sector opportunities, tradespeople and small, micro and medium enterprises (SMMEs) in the IRM space can take advantage of this move to a green economy. There are opportunities to support the below focus areas outlined by the South African government.
+                </p>
+                <a href="https://www.nbi.org.za/focus-areas/economic-inclusion/installation-repair-and-maintenance-irm-initiative/" class="getInvolved-button" target="_blank" rel="noopener noreferrer" style="display: inline-block; text-decoration: none; text-align: center; line-height: 26px;" data-i18n="irmsector.get_involved_button">Get Involved</a>
+            </div>
+        </div>
+    </section>
+    <section class="first-section" style="background: #2b9589;">
+        <h2 data-i18n="irmsector.agriculture_title">Agriculture</h2>
+        <div class="first-section-flex">
+            <div class="news-rect-box">
+                <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.agriculture_fit_title">Where do I fit in?</div>
+                <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.agriculture_fit_description">
+                    In sustainable agriculture, you can play a crucial role by providing installation, repair and maintenance services for energy-efficient and environmentally friendly farming equipment such as electric tractors, solar-powered irrigation systems and precision farming technology. In addition, you can educate farmers about the benefits of eco-friendly practices and equipment.
+                </div>
+            </div>
+            <div class="news-rect-box">
+                <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.agriculture_involved_title">How do I get involved?</div>
+                <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.agriculture_involved_description">
+                    To get involved, consider attending workshops and training programmes that are focused on green agricultural equipment installation, repair and maintenance. Collaborate with agricultural organisations and eco-conscious farmers to understand their specific needs and offer customised installation, repair and maintenance solutions. Promote your services through channels that reach the farming community, emphasising their environmental benefits.
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="news-header">
+        <h2 data-i18n="irmsector.energy_title">Energy (clean and efficient)</h2>
+        <div class="news-header-flex">
+            <div class="news-rect-box">
+                <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.energy_fit_title">Where do I fit in?</div>
+                <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.energy_fit_description">
+                    You can specialise in the installation, repair and maintenance of clean energy infrastructure, such as solar panels, wind turbines and energy-efficient heating, ventilation and air-conditioning (HVAC) systems. By ensuring these systems operate optimally, you contribute to the broader goal of clean energy adoption.
+                </div>
+            </div>
+            <div class="news-rect-box">
+                <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.energy_involved_title">How do I get involved?</div>
+                <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.energy_involved_description">
+                    Seek certification or training in clean energy technology installation, repair and maintenance. Partner with renewable energy installation companies to provide ongoing maintenance services. Stay updated on the latest advancements in clean energy technologies to offer cutting-edge repair solutions.
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section3" style="background: #2b9589;">
+        <h2 data-i18n="irmsector.resource_conservation_title">Natural resource conservation and management (including mining)</h2>
+        <div class="section3-flex">
+            <div class="news-rect-box">
+                <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.resource_fit_title">Where do I fit in?</div>
+                <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.resource_fit_description">
+                    Your role can involve advocating for and implementing sustainable installation, repair and maintenance practices in the mining industry. Focus on equipment used in responsible mining, such as energy-efficient conveyor systems and environmentally friendly drilling equipment.
+                </div>
+            </div>
+            <div class="news-rect-box">
+                <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.resource_involved_title">How do I get involved?</div>
+                <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.resource_involved_description">
+                    Collaborate with mining companies committed to sustainable practices and learn about their specific needs. Stay informed about industry guidelines for eco-friendly mining equipment maintenance. Consider joining or partnering with organisations dedicated to responsible resource management.
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="news-header4">
+        <h2 data-i18n="irmsector.transport_title">Sustainable transport and infrastructure</h2>
+        <div class="news-header-flex">
+            <div class="news-rect-box">
+                <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.transport_fit_title">Where do I fit in?</div>
+                <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.transport_fit_description">
+                    You can specialise in the installation, repair and maintenance of eco-friendly transportation infrastructure, such as electric vehicle (EV) charging stations, bike-sharing systems or public transport transit systems that are powered by clean energy.
+                </div>
+            </div>
+            <div class="news-rect-box">
+                <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.transport_involved_title">How do I get involved?</div>
+                <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.transport_involved_description">
+                    Acquire training and certifications for EV charging station installation, repair and maintenance. Collaborate with local governments and transportation authorities to maintain sustainable transportation infrastructure. Offer your expertise to businesses and municipalities interested in expanding their eco-friendly transport options.
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section3" style="background: #2b9589;">
+        <h2 data-i18n="irmsector.sustainability_title">Environmental sustainability, including tourism education</h2>
+        <div class="section3-flex">
+            <div class="news-rect-box">
+                <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.sustainability_fit_title">Where do I fit in?</div>
+                <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.sustainability_fit_description">
+                    Your role can involve installing, maintaining and repairing eco-friendly tourism facilities, such as eco-lodges, nature reserves, and sustainable tourism attractions. Additionally, you can offer training programmes on eco-conscious installation, repair and maintenance techniques.
+                </div>
+            </div>
+            <div class="news-rect-box">
+                <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.sustainability_involved_title">How do I get involved?</div>
+                <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.sustainability_involved_description">
+                    Partner with eco-conscious tourism businesses to provide installation, repair and maintenance services for their facilities. Develop educational materials and workshops on responsible tourism and eco-friendly installation, repair and maintenance practices. Collaborate with environmental NGOs to promote sustainable tourism in your region.
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="news-header6">
+        <h2 data-i18n="irmsector.green_building_title">Green building and the built environment</h2>
+        <div class="news-header-flex">
+            <div class="news-rect-box">
+                <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.green_building_fit_title">Where do I fit in?</div>
+                <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.green_building_fit_description">
+                    Focus on installing, repairing and maintaining energy-efficient systems within green buildings, such as solar panels, energy-efficient heating, ventilation and air-conditioning (HVAC) systems, and smart building technologies.
+                </div>
+            </div>
+            <div class="news-rect-box">
+                <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.green_building_involved_title">How do I get involved?</div>
+                <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.green_building_involved_description">
+                    Seek certifications in green building equipment installation, repair and maintenance. Collaborate with environmentally conscious green building construction firms to offer post-construction repair and maintenance services. Stay informed about the latest green building standards and technologies.
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section3" style="background: #2b9589;">
+        <h2 data-i18n="irmsector.waste_management_title">Sustainable waste management and recycling</h2>
+        <div class="section3-flex">
+            <div class="news-rect-box">
+                <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.waste_management_fit_title">Where do I fit in?</div>
+                <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.waste_management_fit_description">
+                    Specialise in installing, repairing and maintaining recycling machinery and equipment to support waste reduction and recycling efforts.
+                </div>
+            </div>
+            <div class="news-rect-box">
+                <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.waste_management_involved_title">How do I get involved?</div>
+                <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.waste_management_involved_description">
+                    Collaborate with recycling facilities and waste management companies to offer repair and maintenance services for their equipment, and to install new equipment. Stay updated on recycling industry trends and any regulations related to eco-friendly equipment maintenance.
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="news-header8">
+        <h2 data-i18n="irmsector.water_management_title">Water management</h2>
+        <div class="news-header-flex">
+            <div class="news-rect-box">
+                <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.water_management_fit_title">Where do I fit in?</div>
+                <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.water_management_fit_description">
+                    Focus on installing, repairing and maintaining water-saving technologies, such as efficient irrigation systems and water purification equipment.
+                </div>
+            </div>
+            <div class="news-rect-box">
+                <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.water_management_involved_title">How do I get involved?</div>
+                <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.water_management_involved_description">
+                    Seek certifications or training programmes for water management equipment installation, repair and maintenance. Partner with water treatment facilities and businesses involved in water conservation to provide your services. Stay informed about water quality regulations and conservation techniques.
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section3" style="background: #2b9589;">
+        <h2 data-i18n="irmsector.production_title">Sustainable production and consumption</h2>
+        <div class="section3-flex">
+            <div class="news-rect-box">
+                <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.production_fit_title">Where do I fit in?</div>
+                <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.production_fit_description">
+                    Advocate for the repair and refurbishment of electronics and appliances to promote sustainable consumption. Encourage clients to choose repair over replacement.
+                </div>
+            </div>
+            <div class="news-rect-box">
+                <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.production_involved_title">How do I get involved?</div>
+                <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.production_involved_description">
+                    Collaborate with eco-conscious manufacturers and retailers to provide repair and maintenance services for their products. Educate consumers about the benefits of repairing and maintaining their belongings instead of throwing them away and buying new ones. Participate in local sustainability initiatives to raise awareness about sustainable consumption practices.
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="partners">
+        <div class="partners-content">
+            <img src="/Images/giz-logo_2024-11-11-133203_nara.jpg" alt="Partner Logo 1" class="partner-logo" data-i18n="[alt]irmsector.partner_logo1">
+            <img src="/Images/SECO-Logo.jpg" alt="Partner Logo 2" class="partner-logo" data-i18n="[alt]irmsector.partner_logo2">
+            <img src="/Images/GDED-Logo.jpg" alt="Partner Logo 3" class="partner-logo" data-i18n="[alt]irmsector.partner_logo3">
+            <img src="/Images/LMS-Platform-Logo.png" alt="Partner Logo 4" class="partner-logo" data-i18n="[alt]irmsector.partner_logo4">
+            <img src="/Images/NBI-Logo.jpg" alt="Partner Logo 5" class="partner-logo" data-i18n="[alt]irmsector.partner_logo5">
+          
+        </div>
+    </section>
+    <section class="login-section">
+        <div style="position: relative; max-width: 700px; margin: 0 auto;">
+            <h2 style="color: white; font-size: 20px; margin-bottom: 25px; max-width: 600px; margin-left: auto; margin-right: auto;" data-i18n="irmsector.newsletter_title">
+                Subscribe to our newsletter to get the latest information
+            </h2>
+            <form style="position: relative; padding-bottom: 20px;">
+                <input
+                    type="email"
+                    placeholder="Your email"
+                    style="width: 100%; padding: 18px 50px 18px 25px; border: none; border-radius: 4px; font-size: 16px; color: #333; background: white;"
+                    data-i18n="[placeholder]irmsector.newsletter_email"
+                >
+                <button
+                    type="submit"
+                    style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 22px; color: #009381; cursor: pointer;"
+                    data-i18n="[title]irmsector.newsletter_submit"
+                    title="Submit"
+                >
+                    →
+                </button>
+            </form>
+        </div>
+        
+    </section>
+    <!-- Digital Human Widget -->
+    <div class="video-overlay" id="videoOverlay">
+        <div class="video-container">
+            <span class="close-video">&times;</span>
+            <div class="language-toggles">
+                <button class="lang-btn active" data-lang="eng">English</button>
+                <button class="lang-btn" data-lang="zulu">Zulu</button>
+                <button class="lang-btn" data-lang="tswana">Tswana</button>
+            </div>
+            <video
+                id="floatingVideo"
+                playsinline
+                loop
+                disablepictureinpicture
+                controlslist="nodownload nofullscreen noremoteplayback"
+            ></video>
+        </div>
+    </div>
+    <div class="pulsing-icon" id="pulsingIcon">
+        <video autoplay muted loop playsinline>
+            <source src="/Videos/idle.mp4" type="video/mp4" />
+        </video>
+    </div>
+    <link rel="stylesheet" href="/digital_human/digital-human.css" />
+    <script src="/digital_human/digital-human.js" defer></script>
+    <!-- Digital Human Widget End -->
+    <green-economy-chatbot></green-economy-chatbot>
+    <script src="/scripts/chatbot.js"></script>
+    <script src="/scripts/aienhancedsearch.js" defer></script>
+    <green-economy-footer></green-economy-footer>
+</body>
+</html>

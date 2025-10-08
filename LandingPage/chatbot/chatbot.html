@@ -1,0 +1,19 @@
+<div id="aiModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="modal-close" onclick="closeAIAssistant()">&times;</span>
+    <h3 data-translate="ai-assistant-title">AI Assistant</h3>
+    <p data-translate="ai-welcome">
+      Sawubona! Hello! Dumelang! 🌱 I'm your Green Economy AI Assistant. I can
+      help you in isiZulu, English, or Tswana. How can I assist you with green
+      economy opportunities today?
+    </p>
+    <div id="chatMessages" class="chat-messages"></div>
+    <input
+      type="text"
+      id="chatInput"
+      data-translate-placeholder="ai-input-placeholder"
+      placeholder="Ask me about green economy opportunities..."
+    />
+    <button onclick="sendMessage()">Send</button>
+  </div>
+</div>

@@ -1,0 +1,146 @@
+{
+  "title": "Ithuluzi Lomnotho Oluhlaza",
+  "hero": {
+    "title": "ITHULUZI LOMNOTHO OLUHLAZA",
+    "paragraph1": "INingizimu Afrika kanye nomhlaba wonke bayashintsha baye emnothweni oluhlaza, futhi lokho kwakha amathuba amaningi amabhizinisi emikhakheni yezokuvuselela, ukulungisa kanye nokukhiqiza kabusha.",
+    "paragraph2": "Sifuna ukwabelana ngala mathuba nawe, ngakho sisiza abantu abangosomabhizinisi ukuthi bakhulise umnotho wabo kakhulu ngokuphindwe kayishumi. Ithuluzi Lomnotho Oluhlaza lisiza ohulumeni nezikhungo ukuthi zihlele ukushintsha kwazo ziye emnothweni oluhlaza. Kusukela emibonweni, ibhange lamabhizinisi aluhlaza uzothola ulwazi oluhlaza, ukusekelwa kanye nentuthuko yokushintsha izinhlobo zabo zamabhizinisi ajwayelekile zibe umnotho oluhlaza.",
+    "paragraph3": "Sikusiza ukuhlanganisa umhlahlandlela wesinyathelo ngesinyathelo wokuthi ungawathola kanjani amanzuzo omnotho oluhlaza futhi ubeke ibhizinisi lakho ukuze lisebenze ngendlela eluhlaza yomhlaba.",
+    "videoAlt": "Isethulo Somnotho Oluhlaza"
+  },
+  "buttons": {
+    "getFunding": "Thola Uxhaso",
+    "opportunities": "Amathuba",
+    "rmcsHub": "Umkhakha we-IRM",
+    "logins": "Ukuqeqeshwa",
+    "findOutMore": "Thola Ulwazi Olwengeziwe",
+    "viewMore": "Buka Okwengeziwe",
+    "login": "Ngena Kudeshbhodi"
+  },
+  "focus": {
+    "title": "Izindawo eziyisishiyagalolunye ezibalulekile zomnotho oluhlaza eNingizimu Afrika",
+    "subtitle": "(Ingqungquthela Yomnotho Oluhlaza, 2010)",
+    "agriculture": "Ezolimo",
+    "energy": "Amandla (ahlanzekile futhi asebenzayo)",
+    "naturalResource": "Ukugcinwa kwezinsiza zemvelo nokuphathwa (okuhlanganisa nezimayini)",
+    "transport": "Ukuthutha okusimeme kanye nengqalasizinda",
+    "environmental": "Ukusimama kwemvelo, okuhlanganisa imfundo yezokuvakasha",
+    "buildings": "Izakhiwo eziluhlaza kanye nendawo eyakhiwe",
+    "waste": "Ukuphathwa kwemfucuza okusimeme kanye nokugaywa kabusha",
+    "water": "Ukuphathwa kwamanzi",
+    "production": "Ukukhiqiza nokusetshenziswa okusimeme"
+  },
+  "business": {
+    "title": "Ukuzilungiselela ibhizinisi lakho emnothweni oluhlaza",
+    "card1": {
+      "title": "Ngebhizinisi lakho",
+      "paragraph1": "Umhlaba uya emnothweni oluhlaza, futhi iNingizimu Afrika kumele yenze njalo uma izoqhubeka nokuhweba emhlabeni jikelele. Izakhiwo zethu ezikhona kanye nemiklamo emisha kumele yakhiwe, isetshenziswe, igcinwe, futhi ibe ngabanikazi ngendlela esimeme, kanye nengqalasizinda entsha kumele yakhiwe ngokwezinqubo eziluhlaza, ukuze ingasebenzisi amandla namanzi amaningi, futhi umsebenzi waseNingizimu Afrika kumele wenziwe kahle.",
+      "paragraph2": "Yilapho wena ungena khona. Kodwa uqinisekisa kanjani ukuthi ungawathola amanye ala masebenzi?"
+    },
+    "card2": {
+      "title": "Ngekusasa lakho",
+      "paragraph1": "Uhulumeni waseNingizimu Afrika ukhethe izindawo eziyisishiyagalolunye okumele zigxile kuzo ekushintsheni kumnotho oluhlaza: ezolimo, amandla (ahlanzekile futhi asebenzayo), ukugcinwa kwezinsiza zemvelo nokuphathwa (okuhlanganisa nezimayini), ukuthutha okusimeme kanye nengqalasizinda, ukusimama kwemvelo (okuhlanganisa imfundo yezokuvakasha), izakhiwo eziluhlaza kanye nendawo eyakhiwe, ukuphathwa kwemfucuza okusimeme kanye nokugaywa kabusha, ukuphathwa kwamanzi, kanye nokukhiqiza nokusetshenziswa okusimeme.",
+      "paragraph2": "Thola ngamathuba omnotho oluhlaza emkhakheni we-IRM."
+    }
+  },
+  "info": {
+    "joinNetwork": {
+      "title": "Joyina Inethiwekhi Yomnotho Oluhlaza ye-SAGE",
+      "description": "Thola amathuba osomabhizinisi ngaphakathi kwezinhlelo zomnotho oluhlaza, ukusiza ukuxhuma osomabhizinisi komunye nomunye kanye nezimakethe, kanye nokuqeqeshwa kwezimali nebhizinisi."
+    },
+    "opportunities": {
+      "title": "Amathuba",
+      "description": "Thola amathuba emisebenzi yakamuva njengoba etholakala ngaphakathi kwesikhala somnotho oluhlaza – kusukela ocwaningweni kanye nezinto ezintsha kuya ekukhiqizeni nasezinsizeni."
+    },
+    "events": {
+      "title": "Ikhalenda Yemicimbi",
+      "description": "Buka ikhalenda yemicimbi ephilayo futhi uxhumane nosomabhizinisi kanye nochwepheshe ngaphakathi kwesikhala somnotho oluhlaza ngeplathifomu yethu yemicimbi."
+    },
+    "title": "Thola ngamathuba okuthengwa kwezimpahla, ukufinyelela ezimakethe, ukuqeqeshwa, kanye nokusekelwa kwentuthuko yamabhizinisi endaweni yakho.",
+    "description": "Leli khasi liyisizinda sakho sokuthola lonke ulwazi oludingayo, olutholakala kalula. Sebenzisa isihlungi ukukhetha izinsiza ezilungiselelwe isigaba sakho sokuthakasela."
+  },
+  "news": {
+    "title": "Izindaba kanye nezibuyekezo zomnotho oluhlaza",
+    "item1": {
+      "title": "Uhlelo Lokusekela Amabhizinisi e-Indalopreneur Climate-smart Cleantech",
+      "description": "Ukufinyelela kuxhaso lwezimali lwamabhizinisi amancane kanye nosomabhizinisi abasafufusa ukusiza ukukhulisa amabhizinisi abo."
+    },
+    "item2": {
+      "title": "I-South African Pavilion e-COP29",
+      "description": "Izibuyekezo mayelana nesinxephezelo sezinhlekelele zokulimala emsebenzini kanye nezifo emkhakheni womnotho oluhlaza."
+    },
+    "item3": {
+      "title": "Isikhwama Soxhaso lwe-JET sizoqeda iwindi lokuqala lezicelo ngoDisemba 15",
+      "description": "Usuku lokugcina olubalulekile lwezicelo zoxhaso lomnotho oluhlaza luyasondela."
+    }
+  },
+  "events": {
+    "title": "Ikhalenda yemicimbi",
+    "description": "Buka ikhalenda yethu yemicimbi ephilayo futhi uxhumane nosomabhizinisi kanye nochwepheshe ngaphakathi kwesikhala somnotho oluhlaza ngeplathifomu yemicimbi yethu.",
+    "upcoming": "Umcimbi Ozayo",
+    "past": "Imicimbi Edlule",
+    "event1": {
+      "title": "Ingqungquthela kanye Nomboniso we-ESG (Environmental Social Governance) Afrika 2025",
+      "details": "Imininingwane Yomcimbi: 17 Okthoba - 17 Okthoba 2025<br />08:00 kuya ku-16:00 (SAST)"
+    },
+    "event2": {
+      "title": "Ingqungquthela Yezakhiwo Eziluhlaza 2025",
+      "details": "Imininingwane Yomcimbi: 11 Novemba-13 Novemba 2025<br />Ingqungquthela yosuku lonke (SAST)"
+    },
+    "event3": {
+      "title": "Ikusasa Lokusimama",
+      "details": "Imininingwane Yomcimbi: 25 Mashi-27 Mashi 2025<br />09:00 kuya ku-16:00 (SAST)"
+    },
+    "pastEvent1": {
+      "title": "Ingqungquthela Yezakhiwo Eziluhlaza 2025",
+      "details": "Imininingwane Yomcimbi: 11 Novemba-13 Novemba 2025<br />Ingqungquthela yosuku lonke (SAST)"
+    }
+  },
+  "partners": {
+    "giz": "Ilogo ye-GIZ",
+    "seco": "Ilogo ye-SECO",
+    "gded": "Ilogo ye-GDED",
+    "lms": "Ilogo ye-LMS Platform",
+    "nbi": "Ilogo ye-NBI"
+  },
+  "login": {
+    "title": "Finyelela Kudeshbhodi Yakho Yomnotho Oluhlaza",
+    "subtitle": "Ngena ukuze ulandelele inqubekela yakho, ufinyelele amathuba oxhaso olwenzelwe wena, futhi uxhumane nenethiwekhi yomnotho oluhlaza."
+  },
+  "filter": {
+    "default": "Hlunga Ngesigaba",
+    "procurement": "Ukuthengwa Kwezimpahla",
+    "marketAccess": "Ukufinyelela Ezimakethe",
+    "capacityBuilding": "Ukuqeqeshwa",
+    "training": "Ukuqeqeshwa",
+    "enterpriseDevelopment": "Intuthuko Yamabhizinisi",
+    "searchPlaceholder": "Sesha...",
+    "reset": "Qala Kabusha"
+  },
+  "pagination": {
+    "label": "Ukupheja kwamathuba"
+  },
+  "header": {
+    "funding": "Mayelana Nomnotho Oluhlaza",
+    "opportunities": "Amathuba",
+    "find_a_job": "Umkhakha we-IRM",
+    "training": "Isizinda Solwazi",
+    "select": "Khetha"
+  },
+  "footer": {
+    "about_us": "MAYELANA NATHI",
+    "about_green_economy": "Mayelana nomnotho oluhlaza",
+    "irm_sector": "Umkhakha we-IRM",
+    "opportunities": "Amathuba",
+    "knowledge_hub": "Isizinda solwazi",
+    "services": "IZINSIZA",
+    "green_economy_network": "Inethiwekhi yomnotho oluhlaza",
+    "live_events_calendar": "Ikhalenda yemicimbi ephilayo",
+    "green_opportunities": "Amathuba aluhlaza",
+    "news_updates": "Izindaba nezibuyekezo",
+    "quick_links": "IZIXHUMANISI EZISHEHAYO",
+    "news_events": "Izindaba nemicimbi",
+    "contact_us": "Xhumana nathi",
+    "terms_reference": "Imigomo yokubhekisela",
+    "copyright": "© ${new Date().getFullYear()} Inethiwekhi Yomnotho Oluhlaza. Wonke amalungelo agodliwe."
+  }
+}

@@ -1,0 +1,146 @@
+{
+  "title": "Sethlankana sa Metšhomo e Tala",
+  "hero": {
+    "title": "SETHLANKANA SA METŠHOMO E TALA",
+    "paragraph1": "Aforika Borwa le lefatshe ka bophara di fetogela go metšhomo e tala, mme seo se bula menyetla e mentsi ya dikgwebo mo mafapheng a tsa tsholofetso, go lokisa le go dira botlhaswa.",
+    "paragraph2": "Re batla go arolelana menyetla eno le wena, ka gona re thusa batho ba ba nang le dikgwebo go godisa metšhomo ya bona ka kapele ka makgetlo a lesome. Sethlankana sa Metšhomo e Tala se thusa dipuso le ditheo go rala phetošo ya bona ya go ya metšhomong e tala. Go tswa mo ditsiwaneng, banka ya dikgwebo e tala o tla bona tshedimosetso e tala, tshegetso le tswelopeleng ya go fetola mekgwa ya bona ya kgwebo ya setso go ya metšhomong e tala.",
+    "paragraph3": "Re go thusa go bokella tataiso ya go tsaya kgato ka kgato ya gore o ka nna le meputso ya metšhomo e tala jang le go baya kgwebo ya gago mo boemong ba go dira ka tsela e tala ya lefatshe.",
+    "videoAlt": "Tshimologo ya Metšhomo e Tala"
+  },
+  "buttons": {
+    "getFunding": "Bona Tshegetso",
+    "opportunities": "Menyetla",
+    "rmcsHub": "Lephata la IRM",
+    "logins": "Kwetliso",
+    "findOutMore": "Tshoma Tshedimosetso e e Oketsegileng",
+    "viewMore": "Leba tse di Oketsegileng",
+    "login": "Tsena mo Deshbodeng"
+  },
+  "focus": {
+    "title": "Mafapha a robongwe a bohlokwa a metšhomo e tala mo Aforika Borwa",
+    "subtitle": "(Kgotlhang ya Metšhomo e Tala, 2010)",
+    "agriculture": "Temo",
+    "energy": "Matla (a a phepa le a a dirang sentle)",
+    "naturalResource": "Pabalelo le tsamaiso ya metšhaba ya tlhago (go akaretsa meepo)",
+    "transport": "Dipalangwa tse di simameng le metšhaba",
+    "environmental": "Tshireletso ya tikologo, go akaretsa thuto ya bohahlaudi",
+    "buildings": "Meago e tala le tikologo e e agilweng",
+    "waste": "Tsamaiso ya ditshila e e simameng le go dira botlhaswa",
+    "water": "Tsamaiso ya metsi",
+    "production": "Tlhakiso le tshomelo e e simameng"
+  },
+  "business": {
+    "title": "Go itukisetsa kgwebo ya gago ya metšhomo e tala",
+    "card1": {
+      "title": "Bakeng sa kgwebo ya gago",
+      "paragraph1": "Lefatshe le ya metšhomong e tala, mme Aforika Borwa le yone e tshwanetse go dira jalo fa e batla go tswelela ka go kgweba mo mafatsheng ka bophara. Meago ya rona e e leng teng le diporojeke tse disha di tshwanetse go agiwa, go diriwa, go bolokiwa, le go nna le beng ka tsela e e simameng, mme metšhaba e mesha e tshwanetse go agiwa go ya ka melao ya tala, gore e se ka ya dirisa matla le metsi a mantsi, mme boleng jwa tiro ya Aforika Borwa bo tshwanetse go dirwa ka tsela e e siameng.",
+      "paragraph2": "Ke moo o tsenang teng. Fela o ka netefatsa jang gore o ka nna le tiro eno?"
+    },
+    "card2": {
+      "title": "Bakeng sa bokamoso jwa gago",
+      "paragraph1": "Puso ya Aforika Borwa e kgethile mafapha a robongwe a e tshwanetseng go lebisisa mo go ona mo phetošong ya metšhomo e tala: temo, matla (a a phepa le a a dirang sentle), pabalelo le tsamaiso ya metšhaba ya tlhago (go akaretsa meepo), dipalangwa tse di simameng le metšhaba, tshireletso ya tikologo (go akaretsa thuto ya bohahlaudi), meago e tala le tikologo e e agilweng, tsamaiso ya ditshila e e simameng le go dira botlhaswa, tsamaiso ya metsi, le tlhakiso le tshomelo e e simameng.",
+      "paragraph2": "Tshoma ka menyetla ya metšhomo e tala mo lepheng la IRM."
+    }
+  },
+  "info": {
+    "joinNetwork": {
+      "title": "Tsena mo Sethlopha sa SAGE sa Metšhomo e Tala",
+      "description": "Bona menyetla ya bokgwebo mo mekgweng ya metšhomo e tala, go thusa go kgokaganya bagwebi le ba bangwe le dimakete, mmogo le tshegetso ya ditšhelete le kwetliso ya kgwebo."
+    },
+    "opportunities": {
+      "title": "Menyetla",
+      "description": "Tshoma menyetla ya ditiro e e sa tswang go nna teng mo sekgweng sa metšhomo e tala – go tswa mo patlisisong le tse disha go ya tlhakiso le ditirelo."
+    },
+    "events": {
+      "title": "Khalendara ya Ditiragalo",
+      "description": "Leba khalendara ya ditiragalo tse di phelang mme o nne le kgokagano le bagwebi le badiredi mo sekgweng sa metšhomo e tala ka sethala sa rona sa ditiragalo."
+    },
+    "title": "Tshoma ka menyetla ya go reka didiriswa, go bona dimakete, kwetliso, le tshegetso ya tswelopeleng ya dikgwebo mo lefelong la gago.",
+    "description": "Letlakala le ke setlhopha sa gago sa go bona tshedimosetso yotlhe e o e tlhokang, e e bonalang ka bonako. Dirisa sefatlhegelo go kgetha metšhaba e e lebeleditsweng go isagalo ya gago."
+  },
+  "news": {
+    "title": "Ditaba le dintshofatso tsa metšhomo e tala",
+    "item1": {
+      "title": "Lenaneo la Tshegetso ya Dikgwebo tsa Indalopreneur Climate-smart Cleantech",
+      "description": "Go bona tshegetso ya ditšhelete bakeng sa dikgwebo tse dinnye le bagwebi ba ba sa tswang go simolola go godisa dikgwebo tsa bona."
+    },
+    "item2": {
+      "title": "Pavilion ya Aforika Borwa mo COP29",
+      "description": "Dintshofatso ka ga pusetso ya dikgobalo tsa ditiragalo tsa mo tirong le malwetse mo lepheng la metšhomo e tala."
+    },
+    "item3": {
+      "title": "Sethala sa Tshegetso ya JET se tla tswala fensetere ya ntlha ya dikopo ka Tshitwe 15",
+      "description": "Letsatsi la bohlokwa la go tswala dikopo tsa tshegetso ya metšhomo e tala le atamela."
+    }
+  },
+  "events": {
+    "title": "Khalendara ya ditiragalo",
+    "description": "Leba khalendara ya rona ya ditiragalo tse di phelang mme o nne le kgokagano le bagwebi le badiredi mo sekgweng sa metšhomo e tala ka sethala sa rona sa ditiragalo.",
+    "upcoming": "Tiragalo e e Tlang",
+    "past": "Ditiragalo tse di Fetileng",
+    "event1": {
+      "title": "Kgotlhang ya ESG (Environmental Social Governance) Afrika 2025",
+      "details": "Dintlha tsa Tiragalo: 17 Mphalane - 17 Mphalane 2025<br />08:00 go fitlha 16:00 (SAST)"
+    },
+    "event2": {
+      "title": "Kgotlhang ya Meago e Tala 2025",
+      "details": "Dintlha tsa Tiragalo: 11 Nuwemere-13 Nuwemere 2025<br />Kgotlhang ya letsatsi lotlhe (SAST)"
+    },
+    "event3": {
+      "title": "Bokamoso jwa Tshireletso",
+      "details": "Dintlha tsa Tiragalo: 25 Mopitlo-27 Mopitlo 2025<br />09:00 go fitlha 16:00 (SAST)"
+    },
+    "pastEvent1": {
+      "title": "Kgotlhang ya Meago e Tala 2025",
+      "details": "Dintlha tsa Tiragalo: 11 Nuwemere-13 Nuwemere 2025<br />Kgotlhang ya letsatsi lotlhe (SAST)"
+    }
+  },
+  "partners": {
+    "giz": "Letshwao la GIZ",
+    "seco": "Letshwao la SECO",
+    "gded": "Letshwao la GDED",
+    "lms": "Letshwao la Sethala sa LMS",
+    "nbi": "Letshwao la NBI"
+  },
+  "login": {
+    "title": "Bona Deshbode ya Gago ya Metšhomo e Tala",
+    "subtitle": "Tsena go lebelela tswelopeleng ya gago, go bona menyetla ya tshegetso e e lebeleditsweng wena, le go kgokagana le sethlophana sa metšhomo e tala."
+  },
+  "filter": {
+    "default": "Fatlhegela ka Legoro",
+    "procurement": "Go Reka Didiriswa",
+    "marketAccess": "Go Bona Dimakete",
+    "capacityBuilding": "Kwetliso",
+    "training": "Kwetliso",
+    "enterpriseDevelopment": "Tswelopeleng ya Dikgwebo",
+    "searchPlaceholder": "Tshoma...",
+    "reset": "Simolola sešwa"
+  },
+  "pagination": {
+    "label": "Phejang ya menyetla"
+  },
+  "header": {
+    "funding": "Ka ga Metšhomo e Tala",
+    "opportunities": "Menyetla",
+    "find_a_job": "Lephata la IRM",
+    "training": "Setlhopha sa Tsebo",
+    "select": "Kgetha"
+  },
+  "footer": {
+    "about_us": "KA GA RONA",
+    "about_green_economy": "Ka ga metšhomo e tala",
+    "irm_sector": "Lephata la IRM",
+    "opportunities": "Menyetla",
+    "knowledge_hub": "Setlhopha sa tsebo",
+    "services": "DITIRELO",
+    "green_economy_network": "Sethlophana sa metšhomo e tala",
+    "live_events_calendar": "Khalendara ya ditiragalo tse di phelang",
+    "green_opportunities": "Menyetla e tala",
+    "news_updates": "Ditaba le dintshofatso",
+    "quick_links": "DIKGOKAGANO TSE DI KHUTSHWANE",
+    "news_events": "Ditaba le ditiragalo",
+    "contact_us": "Ikgokaganye le rona",
+    "terms_reference": "Melao ya tshupiso",
+    "copyright": "© ${new Date().getFullYear()} Sethlophana sa Metšhomo e Tala. Ditokelo tsotlhe di bolokilwe."
+  }
+}

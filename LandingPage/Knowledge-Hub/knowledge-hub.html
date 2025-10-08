@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-37VRZ5CGE4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-37VRZ5CGE4');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="knowledgehub.title">Green Economy Toolkit</title>
+  <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
+  <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
+  <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/contentful@latest/dist/contentful.browser.min.js"></script>
+  <script type="module" src="/Trans.js"></script>
+  <script type="module" src="/Master Page(Header and Footer)/MasterPage.js"></script>
+  <script src="https://unpkg.com/lunr@2/lunr.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="/Master Page(Header and Footer)/MasterPage.css">
+  <link rel="stylesheet" href="knowledge-hub.css">
+  <link rel="stylesheet" href="/digital_human/digital-human.css">
+  <script src="../../../scripts/enhancedsearch.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+      .loader {
+          display: none;
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 80px;
+          height: 80px;
+          border: 8px solid #e5e7eb;
+          border-top: 8px solid #10b981;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+          z-index: 1000;
+      }
+      .loader-overlay {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 999;
+      }
+      @keyframes spin {
+          0% { transform: translate(-50%, -50%) rotate(0deg); }
+          100% { transform: translate(-50%, -50%) rotate(360deg); }
+      }
+      #verification-modal {
+          display: none;
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: white;
+          padding: 24px;
+          border-radius: 8px;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          z-index: 1001;
+          text-align: center;
+          max-width: 400px;
+          width: 90%;
+      }
+      #verification-modal-overlay {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 1000;
+      }
+      #verification-modal button {
+          background-color: #10b981;
+          color: white;
+          padding: 8px 16px;
+          border-radius: 4px;
+          font-weight: 600;
+          transition: background-color 0.3s;
+      }
+      #verification-modal button:hover {
+          background-color: #059669;
+      }
+      * {
+          font-family: 'Poppins', sans-serif;
+      }
+      .loading-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: #f8f9fa;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 9999;
+      }
+      .loading-spinner {
+          border: 4px solid #f3f3f3;
+          border-top: 4px solid #2b9589;
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          animation: spin 1s linear infinite;
+      }
+      body.loading {
+          visibility: hidden;
+          opacity: 0;
+      }
+      body.loaded {
+          visibility: visible;
+          opacity: 1;
+          transition: opacity 0.3s;
+      }
+      
+      /* Partner logo fallback styling */
+      .partner-logo {
+          max-width: 150px;
+          max-height: 80px;
+          object-fit: contain;
+          margin: 10px 20px;
+      }
+      .partners-content {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          align-items: center;
+          gap: 20px;
+          padding: 20px;
+      }
+  </style>
+  <script>
+      // Contentful configuration
+      const CONTENTFUL_CONFIG = {
+          space: 'zerelkd70urg',
+          accessToken: '5YmyLiRoDo7XRXolU5C-UVgMRnf9I5FF_6zaN3iAjFs',
+          environment: 'master'
+      };
+
+      // Initialize Contentful client
+      const contentfulClient = contentful.createClient({
+          space: CONTENTFUL_CONFIG.space,
+          accessToken: CONTENTFUL_CONFIG.accessToken,
+          environment: CONTENTFUL_CONFIG.environment
+      });
+
+      // Contentful service functions
+      window.contentfulService = {
+          getKnowledgeHubHero: async function() {
+              try {
+                  const entries = await contentfulClient.getEntries({
+                      content_type: 'knowledgeHubHero',
+                      limit: 1
+                  });
+                  return entries.items[0] || null;
+              } catch (error) {
+                  console.error('Error fetching knowledge hub hero:', error);
+                  return null;
+              }
+          },
+
+          getKnowledgeHubSections: async function() {
+              try {
+                  const entries = await contentfulClient.getEntries({
+                      content_type: 'knowledgeHubSection',
+                      order: 'fields.order',
+                      limit: 10
+                  });
+                  return entries.items || [];
+              } catch (error) {
+                  console.error('Error fetching knowledge hub sections:', error);
+                  return [];
+              }
+          },
+
+          getKnowledgeHubPartners: async function() {
+              try {
+                  const entries = await contentfulClient.getEntries({
+                      content_type: 'knowledgeHubPartner',
+                      order: 'fields.order',
+                      limit: 10
+                  });
+                  return entries.items || [];
+              } catch (error) {
+                  console.error('Error fetching knowledge hub partners:', error);
+                  return [];
+              }
+          },
+
+          getKnowledgeHubNewsletter: async function() {
+              try {
+                  const entries = await contentfulClient.getEntries({
+                      content_type: 'knowledgeHubNewsletter',
+                      limit: 1
+                  });
+                  return entries.items[0] || null;
+              } catch (error) {
+                  console.error('Error fetching knowledge hub newsletter:', error);
+                  return null;
+              }
+          }
+      };
+
+      // SINGLE Contentful content loading and rendering function
+      async function loadKnowledgeHubContent() {
+          try {
+              console.log('Starting to load Knowledge Hub content...');
+              
+              // Wait for Contentful service to be ready
+              if (!window.contentfulService) {
+                  console.error('Contentful service not available');
+                  setTimeout(loadKnowledgeHubContent, 100);
+                  return;
+              }
+
+              // Load all content in parallel
+              const [
+                  heroSection,
+                  hubSections,
+                  hubPartners,
+                  hubNewsletter
+              ] = await Promise.all([
+                  window.contentfulService.getKnowledgeHubHero(),
+                  window.contentfulService.getKnowledgeHubSections(),
+                  window.contentfulService.getKnowledgeHubPartners(),
+                  window.contentfulService.getKnowledgeHubNewsletter()
+              ]);
+
+              console.log('Knowledge Hub data loaded successfully');
+              
+              // Render the content
+              renderKnowledgeHubHero(heroSection);
+              renderKnowledgeHubSections(hubSections);
+              renderKnowledgeHubPartners(hubPartners);
+              renderKnowledgeHubNewsletter(hubNewsletter);
+
+          } catch (error) {
+              console.error('Error loading Knowledge Hub content:', error);
+              // Fallback to static content
+              renderKnowledgeHubStaticContent();
+          }
+      }
+
+      function renderKnowledgeHubHero(heroData) {
+          console.log('Rendering knowledge hub hero with data:', heroData);
+          
+          if (!heroData || !heroData.fields) {
+              console.log('No hero section data found');
+              return;
+          }
+          
+          const heroTitle = document.querySelector('.hero-text h1');
+          const heroImage = document.querySelector('.hero-img');
+
+          if (heroTitle && heroData.fields.title) {
+              heroTitle.textContent = heroData.fields.title;
+          }
+          
+          if (heroImage && heroData.fields.imageUrl) {
+              heroImage.src = heroData.fields.imageUrl;
+              heroImage.alt = heroData.fields.imageAlt || 'Knowledge Hub Hero Image';
+          }
+      }
+
+      function renderKnowledgeHubSections(sections) {
+          console.log('Rendering knowledge hub sections with data:', sections);
+          
+          if (!sections || sections.length === 0) {
+              console.log('No sections data found');
+              return;
+          }
+
+          // Render each section based on its type
+          sections.forEach((section, index) => {
+              const sectionType = section.fields.sectionType || '';
+              let container;
+              
+              switch(sectionType) {
+                  case 'learning':
+                      container = document.querySelector('.first-section');
+                      break;
+                  case 'business':
+                      container = document.querySelector('.news-header');
+                      break;
+                  case 'market':
+                      container = document.querySelector('.section3');
+                      break;
+                  default:
+                      console.log('Unknown section type:', sectionType);
+                      return;
+              }
+
+              if (!container) {
+                  console.error(`Container for section type ${sectionType} not found`);
+                  return;
+              }
+
+              // Update section content
+              const title = container.querySelector('h2');
+              const description = container.querySelector('.rect-text');
+              const button = container.querySelector('.reg-button, .rect-button');
+
+              if (title && section.fields.title) {
+                  title.textContent = section.fields.title;
+              }
+              
+              if (description && section.fields.description) {
+                  description.textContent = section.fields.description;
+              }
+              
+              if (button && section.fields.buttonText) {
+                  button.textContent = section.fields.buttonText;
+                  if (section.fields.buttonLink) {
+                      button.onclick = () => window.location.href = section.fields.buttonLink;
+                  }
+              }
+
+              // Update background color if specified
+              if (section.fields.backgroundColor) {
+                  container.style.backgroundColor = section.fields.backgroundColor;
+              }
+          });
+      }
+
+      function renderKnowledgeHubPartners(partners) {
+          console.log('Rendering knowledge hub partners with data:', partners);
+          
+          if (!partners || partners.length === 0) {
+              console.log('No partners data found');
+              // Add fallback partner logos or message
+              const container = document.querySelector('.partners-content');
+              if (container) {
+                  container.innerHTML = '<p>Partners information coming soon</p>';
+              }
+              return;
+          }
+
+          const container = document.querySelector('.partners-content');
+          if (!container) {
+              console.error('Partners container not found');
+              return;
+          }
+
+          container.innerHTML = '';
+
+          partners.forEach(partner => {
+              const img = document.createElement('img');
+              img.src = partner.fields.logoUrl;
+              img.alt = partner.fields.altText || partner.fields.name || 'Partner logo';
+              img.className = 'partner-logo';
+              // Add error handling for missing images
+              img.onerror = function() {
+                  console.warn('Failed to load partner logo:', this.src);
+                  this.style.display = 'none';
+              };
+              container.appendChild(img);
+          });
+      }
+
+      function renderKnowledgeHubNewsletter(newsletterData) {
+          console.log('Rendering knowledge hub newsletter with data:', newsletterData);
+          
+          if (!newsletterData || !newsletterData.fields) {
+              console.log('No newsletter data found');
+              return;
+          }
+
+          const title = document.querySelector('.login-section h2');
+          const emailInput = document.querySelector('.login-section input[type="email"]');
+          const submitButton = document.querySelector('.login-section button[type="submit"]');
+          const note = document.querySelector('.login-section p');
+
+          if (title && newsletterData.fields.title) {
+              title.textContent = newsletterData.fields.title;
+          }
+          
+          if (emailInput && newsletterData.fields.emailPlaceholder) {
+              emailInput.placeholder = newsletterData.fields.emailPlaceholder;
+          }
+          
+          if (submitButton && newsletterData.fields.submitTitle) {
+              submitButton.title = newsletterData.fields.submitTitle;
+          }
+          
+          if (note && newsletterData.fields.note) {
+              note.textContent = newsletterData.fields.note;
+          }
+      }
+
+      function renderKnowledgeHubStaticContent() {
+          console.log('Rendering static knowledge hub content as fallback');
+          // You can add static fallback content here if needed
+      }
+  </script>
+  <script type="module">
+      import { updateContent } from '/Trans.js';
+
+      // Initialize i18next
+      i18next
+          .use(i18nextHttpBackend)
+          .use(i18nextBrowserLanguageDetector)
+          .init({
+              fallbackLng: 'en',
+              supportedLngs: ['en', 'zu', 'tn'],
+              backend: { 
+                  loadPath: '/locales/{{lng}}.json?v=' + new Date().getTime()
+              },
+              detection: {
+                  order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
+                  caches: ['localStorage', 'cookie']
+              }
+          }, (err, t) => {
+              if (err) {
+                  console.error('i18next initialization error:', err);
+                  applyFallbackTranslations();
+                  return;
+              }
+              console.log('i18next initialized for knowledgehub.html at', new Date().toLocaleString('en-ZA'), 'language:', i18next.language);
+              finalizeLoading();
+          });
+
+      function applyFallbackTranslations() {
+          document.querySelectorAll('[data-i18n]').forEach(elem => {
+              const key = elem.getAttribute('data-i18n');
+              try {
+                  if (key.startsWith('[')) {
+                      const match = key.match(/\[(\w+)\](.+)/);
+                      if (match) {
+                          const [, attr, i18nKey] = match;
+                          const fallback = elem.getAttribute(attr) || 'Content not available';
+                          elem.setAttribute(attr, fallback);
+                          console.warn(`Fallback applied for attribute ${attr} with key ${i18nKey}: ${fallback}`);
+                      } else {
+                          console.error(`Invalid data-i18n format for key: ${key}`);
+                      }
+                  } else {
+                      const fallback = elem.textContent.trim() || 'Content not available';
+                      elem.textContent = fallback;
+                      console.warn(`Fallback applied for text with key ${key}: ${fallback}`);
+                  }
+              } catch (error) {
+                  console.error(`Error applying fallback for key ${key}:`, error);
+              }
+          });
+          finalizeLoading();
+      }
+
+      function finalizeLoading() {
+          try {
+              i18next.loadResources(() => {
+                  updateContent();
+                  document.body.classList.remove('loading');
+                  document.body.classList.add('loaded');
+                  document.querySelector('.loading-overlay').style.display = 'none';
+                  console.log('Translations loaded, content displayed');
+                  
+                  // Load Contentful content after translations are loaded
+                  setTimeout(loadKnowledgeHubContent, 500);
+              });
+          } catch (error) {
+              console.error('Error loading translations:', error);
+              applyFallbackTranslations();
+          }
+      }
+
+      i18next.on('languageChanged', () => {
+          console.log('Language changed to:', i18next.language);
+          updateContent();
+      });
+
+      i18next.on('loaded', () => {
+          console.log('Resources loaded for:', i18next.language);
+          updateContent();
+      });
+
+      i18next.on('failedLoading', (lng, ns, msg) => {
+          console.error(`Failed to load ${lng}.json: ${msg}`);
+          applyFallbackTranslations();
+      });
+
+      document.addEventListener('DOMContentLoaded', () => {
+          console.log('DOM fully loaded for knowledgehub.html at', new Date().toLocaleString('en-ZA'));
+          if (customElements.get('green-economy-header') && customElements.get('green-economy-footer') && customElements.get('green-economy-chatbot')) {
+              console.log('Custom elements defined');
+          } else {
+              console.warn('Custom elements not defined. Displaying fallback content.');
+              document.querySelector('#root').innerHTML += `
+                  <header>Fallback Header</header>
+                  <footer>Fallback Footer</footer>
+                  <div>Fallback Chatbot</div>
+              `;
+              finalizeLoading();
+          }
+
+          // Fallback timeout
+          setTimeout(() => {
+              if (document.body.classList.contains('loading')) {
+                  console.warn('Loading timeout reached, forcing content display');
+                  applyFallbackTranslations();
+                  document.body.classList.remove('loading');
+                  document.body.classList.add('loaded');
+                  document.querySelector('.loading-overlay').style.display = 'none';
+                  alert(i18next.t('opportunities.alert-timeout', { defaultValue: 'Page load timeout. Displaying default content.' }));
+              }
+          }, 5000);
+
+          // Digital Human Widget Logic
+          const pulsingIcon = document.querySelector('.pulsing-icon');
+          const videoOverlay = document.querySelector('.video-overlay');
+          const closeVideo = document.querySelector('.close-video');
+          const floatingVideo = document.getElementById('floatingVideo');
+          const langButtons = document.querySelectorAll('.lang-btn');
+          const videoSources = {
+              'eng': '/Videos/KnowledgeHub_Eng.mp4',
+              'zulu': '/Videos/KnowledgeHub_Zulu.mp4',
+              'tswana': '/Videos/KnowledgeHub_Tswana.mp4'
+          };
+          let currentLang = 'eng';
+
+          if (pulsingIcon) {
+              pulsingIcon.addEventListener('click', function(e) {
+                  e.preventDefault();
+                  videoOverlay.classList.toggle('active');
+                  if (videoOverlay.classList.contains('active')) {
+                      playCurrentVideo();
+                      pulsingIcon.style.opacity = '0.7';
+                  } else {
+                      floatingVideo.pause();
+                      pulsingIcon.style.opacity = '1';
+                  }
+              });
+          }
+
+          if (closeVideo) {
+              closeVideo.addEventListener('click', function(e) {
+                  e.stopPropagation();
+                  closeVideoPlayer();
+              });
+          }
+
+          if (videoOverlay) {
+              videoOverlay.addEventListener('click', function(e) {
+                  if (e.target === videoOverlay) {
+                      closeVideoPlayer();
+                  }
+              });
+          }
+
+          langButtons.forEach(button => {
+              button.addEventListener('click', function(e) {
+                  e.stopPropagation();
+                  const lang = this.getAttribute('data-lang');
+                  if (lang !== currentLang) {
+                      langButtons.forEach(btn => btn.classList.remove('active'));
+                      this.classList.add('active');
+                      currentLang = lang;
+                      playCurrentVideo();
+                  }
+              });
+          });
+
+          if (floatingVideo) {
+              floatingVideo.addEventListener('ended', function() {
+                  closeVideoPlayer();
+              });
+          }
+
+          function playCurrentVideo() {
+              const source = videoSources[currentLang];
+              if (source && floatingVideo) {
+                  const currentTime = floatingVideo.currentTime;
+                  floatingVideo.src = source;
+                  floatingVideo.load();
+                  floatingVideo.currentTime = currentTime;
+                  floatingVideo.play().catch(e => console.log('Video play failed:', e));
+                  floatingVideo.addEventListener('canplaythrough', function onCanPlay() {
+                      floatingVideo.play().catch(e => console.log('Video auto-play failed:', e));
+                      floatingVideo.removeEventListener('canplaythrough', onCanPlay);
+                  });
+              }
+          }
+
+          function closeVideoPlayer() {
+              if (videoOverlay && floatingVideo && pulsingIcon) {
+                  videoOverlay.classList.remove('active');
+                  floatingVideo.pause();
+                  pulsingIcon.style.opacity = '1';
+              }
+          }
+
+          document.addEventListener('keydown', function(e) {
+              if (e.key === 'Escape' && videoOverlay && videoOverlay.classList.contains('active')) {
+                  closeVideoPlayer();
+              }
+          });
+      });
+  </script>
+</head>
+<body class="loading">
+    <div class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+    <div id="root">
+        <green-economy-header></green-economy-header>
+        <main>
+            <section class="hero">
+                <div class="hero-content">
+                    <div class="hero-image-section">
+                        <img src="" alt="Hero Image" class="hero-img" data-i18n="[alt]knowledgehub.hero_image">
+                    </div>
+                    <div class="hero-text">
+                        <h1 data-i18n="knowledgehub.hero_title">WELCOME TO OUR KNOWLEDGE HUB</h1>
+                    </div>
+                </div>
+            </section>
+            <section class="first-section" style="background: #2b9589;">
+                <h2 data-i18n="knowledgehub.learning_opportunities">Access to learning opportunities</h2>
+                <div class="first-section-flex">
+                    <div class="news-rect-box">
+                        <div class="rect-text" style="color: #2b9589;" data-i18n="knowledgehub.learning_description">
+                            The National Business Initiative (NBI) has created an online application to improve the learning experience for technical and business-related topics.
+                            <br><br>
+                            Key features of the app include offline access to content; the ability to download and complete content activities with outcomes logged on the learning management system when connected; interactive engagement; self-paced self-learning; the option to register and manage your profile; and tracking of learning progress.
+                            <br><br>
+                            This app is part of the Installation, Repair and Maintenance (IRM) Initiative, which aims to unlock demand for jobs and create opportunities for youth to access those jobs. The Initiative is a collaboration between the NBI, the government and the private sector, offering demand-led skills training, workplace-based learning, and enterprise development with technology integration for a more dynamic learning process.
+                        </div>
+                        <div class="button-container">
+                            <a href="https://apps.apple.com/za/app/irm-learning/id1631527849" target="_blank" class="rect-button" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">
+                                <img src="https://th.bing.com/th/id/OIP.KzOFPzLnbMPTb4zlzxi8PgHaHa?w=170&h=180&c=7&r=0&a=7&dpr=1.4&pid=1.7&rm=3" alt="App Store Icon" data-i18n="[alt]knowledgehub.app_store_icon">
+                                App Store
+                            </a>
+                            <a href="https://play.google.com/store/apps/details?id=za.co.irmlearning.elpapp&hl=en_ZA" target="_blank" class="rect-button" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">
+                                <img src="https://th.bing.com/th/id/R.de4427dacc47b73d4011df21a6a87aa9?rik=RBSaO7eOfvnTrg&pid=ImgRaw&r=0" alt="Google Play Icon" data-i18n="[alt]knowledgehub.google_play_icon">
+                                Google Play
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="news-header">
+                <h2 data-i18n="knowledgehub.business_opportunities">Access to business opportunities</h2>
+                <div class="news-header-flex">
+                    <div class="news-rect-box">
+                        <div class="rect-text" style="color: #2b9589;" data-i18n="knowledgehub.business_description">
+                            The IRM Initiative hub is a platform that provides access to various opportunities including procurement, access to market, capacity building, training and enterprise development support.
+                            <br><br>
+                            To gain access to the various opportunities, click the link below, register and complete the application form, which will give you access to various opportunities under the "Opportunities" tab on the hub.
+                        </div>
+                        <div class="button-container">
+                            <button class="reg-button" data-i18n="knowledgehub.register_button">Register</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="section3" style="background: #2b9589;">
+                <h2 data-i18n="knowledgehub.market_opportunities">Access to market opportunities</h2>
+                <div class="section3-flex">
+                    <div class="news-rect-box">
+                        <div class="rect-text" style="color: #2b9589;" data-i18n="knowledgehub.market_description">
+                            Our business development support services are designed to help you thrive in today's competitive market. Through our hubs, we assist township-based SMMEs in identifying opportunities, and equipping them with the skills and tools to ensure that they adapt to market trends. We also help them create networks and partnerships.
+                        </div>
+                        <div class="button-container">
+                            <button class="reg-button" data-i18n="knowledgehub.register_button">Register</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="partners">
+                <div class="partners-content">
+                    <!-- Partner logos will be populated by Contentful -->
+                </div>
+            </section>
+            <section class="login-section">
+                <div style="position: relative; max-width: 700px; margin: 0 auto;">
+                    <h2 style="color: white; font-size: 20px; margin-bottom: 25px; max-width: 600px; margin-left: auto; margin-right: auto;" data-i18n="knowledgehub.newsletter_title">
+                        Subscribe to our newsletter to get the latest information
+                    </h2>
+                    <form style="position: relative; padding-bottom: 20px;">
+                        <input
+                            type="email"
+                            placeholder="Your email"
+                            style="width: 100%; padding: 18px 50px 18px 25px; border: none; border-radius: 4px; font-size: 16px; color: #333; background: white;"
+                            data-i18n="[placeholder]knowledgehub.newsletter_email"
+                        >
+                        <button
+                            type="submit"
+                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 22px; color: #009381; cursor: pointer;"
+                            data-i18n="[title]knowledgehub.newsletter_submit"
+                            title="Submit"
+                        >
+                            →
+                        </button>
+                    </form>
+                </div>
+            </section>
+            <!-- Digital Human Widget -->
+            <div class="video-overlay" id="videoOverlay">
+                <div class="video-container">
+                    <span class="close-video">&times;</span>
+                    <div class="language-toggles">
+                        <button class="lang-btn active" data-lang="eng" data-i18n="knowledgehub.lang_english">English</button>
+                        <button class="lang-btn" data-lang="zulu" data-i18n="knowledgehub.lang_zulu">Zulu</button>
+                        <button class="lang-btn" data-lang="tswana" data-i18n="knowledgehub.lang_tswana">Tswana</button>
+                    </div>
+                    <video
+                        id="floatingVideo"
+                        playsinline
+                        loop
+                        disablepictureinpicture
+                        controlslist="nodownload nofullscreen noremoteplayback"
+                    ></video>
+                </div>
+            </div>
+            <div class="pulsing-icon" id="pulsingIcon">
+                <video autoplay muted loop playsinline>
+                    <source src="/Videos/idle.mp4" type="video/mp4" />
+                </video>
+            </div>
+        </main>
+        <green-economy-chatbot></green-economy-chatbot>
+        <green-economy-footer></green-economy-footer>
+    </div>
+    <script type="module" src="/digital_human/digital-human.js"></script>
+    <script type="module" src="/scripts/chatbot.js"></script>
+</body>
+</html>

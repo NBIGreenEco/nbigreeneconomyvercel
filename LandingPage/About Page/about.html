@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="about.title">Green Economy Toolkit - About</title>
+    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
+    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
+    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
+    <script type="module" src="../../Trans.js"></script>
+    <script type="module" src="../../Master Page(Header and Footer)/MasterPage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="../../Master Page(Header and Footer)/MasterPage.css">
+    <link rel="stylesheet" href="about.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/digital_human/digital-human.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../../scripts/enhancedsearch.js"></script>
+    
+    <!-- Add Contentful service -->
+    <script src="../../scripts/contentful-service.js" defer></script>
+    
+    <style>
+        .loader {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            border: 8px solid #e5e7eb;
+            border-top: 8px solid #10b981;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 1000;
+        }
+        .loader-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        #verification-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1001;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+        #verification-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        #verification-modal button {
+            background-color: #10b981;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        #verification-modal button:hover {
+            background-color: #059669;
+        }
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+        .animate-fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .light-section {
+            background-color: #f8f9fa;
+        }
+        .focus-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            width: 100%;
+            gap: 0;
+        }
+        .focus-item {
+            position: relative;
+            height: 300px;
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .focus-item:hover {
+            transform: scale(1.02);
+            z-index: 1;
+        }
+        .focus-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        .focus-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+        }
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #10b981;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        body.loading {
+            visibility: hidden;
+            opacity: 0;
+        }
+        body.loaded {
+            visibility: visible;
+            opacity: 1;
+            transition: opacity 0.3s;
+        }
+        
+        /* Climate risks grid styling */
+        .climate-risks-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: 1fr 1fr;
+            gap: 0;
+            width: 100%;
+            height: 70vh;
+            margin: 0;
+            background-color: #009381;
+            border: 1px solid white;
+            border-collapse: collapse;
+        }
+        .climate-risk-item {
+            padding: 2% 3%;
+            color: white;
+            border-right: 1px solid white;
+            border-bottom: 1px solid white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .climate-risk-item:nth-child(3) {
+            border-right: none;
+        }
+        .climate-risk-item:nth-child(4),
+        .climate-risk-item:nth-child(5) {
+            border-bottom: none;
+        }
+        .climate-risk-item:nth-child(5) {
+            border-right: none;
+        }
+        .climate-risk-item:nth-child(4) {
+            grid-column: 1 / span 2;
+        }
+        
+        /* Climate responses styling */
+        .climate-responses-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .climate-response-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .climate-response-card {
+            background: #009381;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .climate-response-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+        .climate-response-content {
+            padding: 25px;
+            color: white;
+        }
+        
+        @media (max-width: 1024px) {
+            .hero-section {
+                flex-direction: column;
+                min-height: auto;
+            }
+            .hero-image,
+            .hero-text-container {
+                width: 100%;
+            }
+            .hero-image {
+                height: 300px;
+            }
+            .hero-text-content {
+                position: relative;
+                padding: 1.5rem;
+            }
+            .hero-text h1 {
+                font-size: 2.8rem;
+                margin-bottom: 40px;
+            }
+            .focus-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .climate-risks-grid {
+                height: auto;
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+            }
+            .climate-risk-item {
+                border-right: none;
+                border-bottom: 1px solid white;
+                min-height: 200px;
+            }
+            .climate-risk-item:nth-child(4) {
+                grid-column: 1;
+            }
+            .climate-risk-item:last-child {
+                border-bottom: none;
+            }
+        }
+        @media (max-width: 768px) {
+            .hero-text h1 {
+                font-size: 2.2rem;
+                margin-bottom: 30px;
+            }
+            .focus-grid {
+                grid-template-columns: 1fr;
+            }
+            .focus-item {
+                height: 250px;
+            }
+            .climate-response-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <script type="module">
+        import { updateContent } from '../../Trans.js';
+
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCfa827mvCLf1ETts6B_DmCfb7owTohBxk",
+            authDomain: "nbi-green-economy.firebaseapp.com",
+            projectId: "nbi-green-economy",
+            storageBucket: "nbi-green-economy.appspot.com",
+            messagingSenderId: "53732340059",
+            appId: "1:53732340059:web:3fb3f086c6662e1e9baa7e",
+            measurementId: "G-37VRZ5CGE4"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        // Initialize i18next
+        i18next
+            .use(i18nextHttpBackend)
+            .use(i18nextBrowserLanguageDetector)
+            .init({
+                fallbackLng: 'en',
+                supportedLngs: ['en', 'zu', 'tn'],
+                backend: { 
+                    loadPath: '/locales/{{lng}}.json?v=' + new Date().getTime()
+                },
+                detection: {
+                    order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
+                    caches: ['localStorage', 'cookie']
+                }
+            }, (err, t) => {
+                if (err) {
+                    console.error('i18next initialization error:', err);
+                    setTimeout(() => {
+                        i18next.loadResources((loadErr) => {
+                            if (loadErr) {
+                                console.error('Retry failed:', loadErr);
+                                applyFallbackTranslations();
+                            } else {
+                                console.log('i18next retry successful, language:', i18next.language);
+                                finalizeLoading();
+                            }
+                        });
+                    }, 2000);
+                    return;
+                }
+                console.log('i18next initialized for about.html at', new Date().toLocaleString('en-ZA'), 'language:', i18next.language);
+                finalizeLoading();
+            });
+
+        function applyFallbackTranslations() {
+            document.querySelectorAll('[data-i18n]').forEach(elem => {
+                const key = elem.getAttribute('data-i18n');
+                try {
+                    if (key.startsWith('[')) {
+                        const match = key.match(/\[(\w+)\](.+)/);
+                        if (match) {
+                            const [, attr, i18nKey] = match;
+                            const fallback = elem.getAttribute(attr) || 'Content not available';
+                            elem.setAttribute(attr, fallback);
+                            console.warn(`Fallback applied for attribute ${attr} with key ${i18nKey}: ${fallback}`);
+                        } else {
+                            console.error(`Invalid data-i18n format for key: ${key}`);
+                        }
+                    } else {
+                        const fallback = elem.textContent.trim() || 'Content not available';
+                        elem.textContent = fallback;
+                        console.warn(`Fallback applied for text with key ${key}: ${fallback}`);
+                    }
+                } catch (error) {
+                    console.error(`Error applying fallback for key ${key}:`, error);
+                }
+            });
+            console.warn('Applied fallback translations due to loading failure');
+            finalizeLoading();
+        }
+
+        function finalizeLoading() {
+            try {
+                i18next.loadResources(() => {
+                    updateContent();
+                    document.body.classList.remove('loading');
+                    document.body.classList.add('loaded');
+                    document.querySelector('.loading-overlay').style.display = 'none';
+                    console.log('Translations loaded, content displayed');
+                });
+            } catch (error) {
+                console.error('Error loading translations:', error);
+                applyFallbackTranslations();
+            }
+        }
+
+        i18next.on('languageChanged', () => {
+            console.log('Language changed to:', i18next.language);
+            updateContent();
+        });
+
+        i18next.on('loaded', () => {
+            console.log('Resources loaded for:', i18next.language);
+            updateContent();
+        });
+
+        i18next.on('failedLoading', (lng, ns, msg) => {
+            console.error(`Failed to load ${lng}.json: ${msg}`);
+            applyFallbackTranslations();
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM fully loaded for about.html at', new Date().toLocaleString('en-ZA'));
+            if (customElements.get('green-economy-header') && customElements.get('green-economy-footer') && customElements.get('green-economy-chatbot')) {
+                console.log('Custom elements defined');
+            } else {
+                console.warn('Custom elements not defined. Ensure MasterPage.js and chatbot.js are loaded correctly.');
+            }
+
+            // Fallback timeout
+            setTimeout(() => {
+                if (document.body.classList.contains('loading')) {
+                    console.warn('Loading timeout reached, forcing content display');
+                    applyFallbackTranslations();
+                    document.body.classList.remove('loading');
+                    document.body.classList.add('loaded');
+                    document.querySelector('.loading-overlay').style.display = 'none';
+                    alert(i18next.t('opportunities.alert-timeout', { defaultValue: 'Page load timeout. Displaying default content.' }));
+                }
+            }, 10000);
+
+            // Digital Human Widget Logic
+            const pulsingIcon = document.querySelector('.pulsing-icon');
+            const videoOverlay = document.querySelector('.video-overlay');
+            const closeVideo = document.querySelector('.close-video');
+            const floatingVideo = document.getElementById('floatingVideo');
+            const langButtons = document.querySelectorAll('.lang-btn');
+            const videoSources = {
+                'eng': '/Videos/About_Eng.mp4',
+                'zulu': '/Videos/About_Zulu.mp4',
+                'tswana': '/Videos/About_Tswana.mp4'
+            };
+            let currentLang = 'eng';
+
+            if (pulsingIcon) {
+                pulsingIcon.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    videoOverlay.classList.toggle('active');
+                    if (videoOverlay.classList.contains('active')) {
+                        playCurrentVideo();
+                        pulsingIcon.style.opacity = '0.7';
+                    } else {
+                        floatingVideo.pause();
+                        pulsingIcon.style.opacity = '1';
+                    }
+                });
+            }
+
+            if (closeVideo) {
+                closeVideo.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    closeVideoPlayer();
+                });
+            }
+
+            if (videoOverlay) {
+                videoOverlay.addEventListener('click', function(e) {
+                    if (e.target === videoOverlay) {
+                        closeVideoPlayer();
+                    }
+                });
+            }
+
+            langButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const lang = this.getAttribute('data-lang');
+                    if (lang !== currentLang) {
+                        langButtons.forEach(btn => btn.classList.remove('active'));
+                        this.classList.add('active');
+                        currentLang = lang;
+                        playCurrentVideo();
+                    }
+                });
+            });
+
+            if (floatingVideo) {
+                floatingVideo.addEventListener('ended', function() {
+                    closeVideoPlayer();
+                });
+            }
+
+            function playCurrentVideo() {
+                const source = videoSources[currentLang];
+                if (source && floatingVideo) {
+                    const currentTime = floatingVideo.currentTime;
+                    floatingVideo.src = source;
+                    floatingVideo.load();
+                    floatingVideo.currentTime = currentTime;
+                    floatingVideo.play().catch(e => console.log('Video play failed:', e));
+                    floatingVideo.addEventListener('canplaythrough', function onCanPlay() {
+                        floatingVideo.play().catch(e => console.log('Video auto-play failed:', e));
+                        floatingVideo.removeEventListener('canplaythrough', onCanPlay);
+                    });
+                }
+            }
+
+            function closeVideoPlayer() {
+                if (videoOverlay && floatingVideo && pulsingIcon) {
+                    videoOverlay.classList.remove('active');
+                    floatingVideo.pause();
+                    pulsingIcon.style.opacity = '1';
+                }
+            }
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && videoOverlay && videoOverlay.classList.contains('active')) {
+                    closeVideoPlayer();
+                }
+            });
+
+            // Existing navigation and button logic
+            function navigateToFocusArea(areaId) {
+                window.location.href = `focus-area.html`;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+                anchor.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute("href"));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: "smooth",
+                        });
+                    }
+                });
+            });
+
+            document.querySelectorAll(".hero-button").forEach((button) => {
+                button.addEventListener("click", function () {
+                    console.log("Button clicked:", this.textContent);
+                });
+            });
+
+            document.querySelectorAll(".business-card-button").forEach((button) => {
+                button.addEventListener("click", function () {
+                    console.log("Business card button clicked");
+                });
+            });
+
+            document.querySelectorAll(".event-button").forEach((button) => {
+                button.addEventListener("click", function () {
+                    console.log("Event button clicked");
+                });
+            });
+
+            const loginButton = document.querySelector(".login-button");
+            if (loginButton) {
+                loginButton.addEventListener("click", function () {
+                    console.log("Login button clicked");
+                });
+            }
+
+            const dashboardButton = document.querySelector(".dashboard-button");
+            if (dashboardButton) {
+                dashboardButton.addEventListener("click", function () {
+                    window.location.href = "questionnaire/questionnaire.html";
+                });
+            }
+
+            const playButton = document.querySelector(".play-button");
+            if (playButton) {
+                playButton.addEventListener("click", function () {
+                    const video = document.querySelector(".hero-video");
+                    if (video) {
+                        video.play();
+                        this.classList.add("hidden");
+                    }
+                });
+            }
+        });
+    </script>
+</head>
+<body class="loading">
+    <div class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+    <div id="root">
+        <green-economy-header></green-economy-header>
+        <main>
+            <section class="hero-section">
+                <div class="hero-image">
+                    <img src="../../Images/about.JPG"
+                         alt="Professional woman in safety vest"
+                         class="image-cover"
+                         data-i18n="[alt]about.hero_image">
+                </div>
+                <div class="hero-text-container">
+                    <div class="hero-text-content">
+                        <div class="hero-text" style="margin-left: 50px;">
+                            <h1 id="hero-title" data-i18n="about.hero_title">ABOUT THE GREEN ECONOMY</h1>
+                            <p id="hero-description" data-i18n="about.hero_description">
+                                A green economy is one which is socially inclusive and environmentally sustainable.
+                                It improves human well-being and builds social equity while reducing environmental
+                                risks and ecological scarcities. In simple terms, we can think of a green economy
+                                as one which is low carbon, resource efficient and socially inclusive.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+       <section class="py-16 light-section" style="color: #36aa51; text-align: center;">
+    <div class="w-full">
+        <div class="text-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 focus-title">
+             <h3 class="text-2xl lg:text-3xl font-semibold mb-4" data-i18n="about.priority_title">
+                Nine priority focus areas for the green economy in South Africa
+            </h3>
+            <p class="text-base font-semibold mb-12" data-i18n="about.priority_subtitle">
+                (Green Economy Summit, 2010)
+            </p>
+        </div>
+        <div class="focus-grid text-sm" id="about-priority-areas">
+            <!-- Content will be populated by JavaScript from Contentful -->
+        </div>
+    </div>
+</section>
+            <section class="py-16 bg-white" style="color: #009381;text-align: center;">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <h2 class="text-3xl lg:text-4xl font-bold mb-4" data-i18n="about.climate_risks_title">Climate risks</h2>
+                    <p class="text-lg font-bold" data-i18n="about.climate_risks_subtitle">How will climate change affect your business?</p>
+                </div>
+            </section>
+            <section style="width: 100%; height: 70vh; margin: 0; background-color: #009381; padding: 0; overflow: hidden;">
+                <div class="climate-risks-grid" id="climate-risks-grid">
+                    <!-- Content will be populated by JavaScript from Contentful -->
+                </div>
+            </section>
+            <section style="width: 100%; background-color: #aedfe4; padding: 40px 0;">
+                <div class="climate-responses-container">
+                    <h2 style="text-align: center; font-size: 28px; margin-bottom: 40px; color: #009381;" data-i18n="about.response_title">How we can respond to climate change</h2>
+                    <div id="climate-responses-container">
+                        <!-- Content will be populated by JavaScript from Contentful -->
+                    </div>
+                </div>
+            </section>
+            <section class="partners">
+                <div class="partners-content" id="partners-container">
+                    <!-- Content will be populated by JavaScript from Contentful -->
+                </div>
+            </section>
+            <section class="login-section">
+                <div style="position: relative; max-width: 700px; margin: 0 auto;">
+                    <h2 style="color: white; font-size: 20px; margin-bottom: 25px; max-width: 600px; margin-left: auto; margin-right: auto;" id="newsletter-title">
+                        Subscribe to our newsletter to get the latest information
+                    </h2>
+                    <form style="position: relative; padding-bottom: 20px;">
+                        <input
+                            type="email"
+                            placeholder="Your email"
+                            style="width: 100%; padding: 18px 50px 18px 25px; border: none; border-radius: 4px; font-size: 16px; color: #333; background: white;"
+                            id="newsletter-email"
+                        >
+                        <button
+                            type="submit"
+                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 22px; color: #009381; cursor: pointer;"
+                            title="Submit"
+                            id="newsletter-submit"
+                        >
+                            →
+                        </button>
+                    </form>
+                </div>
+                
+            </section>
+            <!-- Digital Human Widget -->
+            <div class="video-overlay" id="videoOverlay">
+                <div class="video-container">
+                    <span class="close-video">&times;</span>
+                    <div class="language-toggles">
+                        <button class="lang-btn active" data-lang="eng">English</button>
+                        <button class="lang-btn" data-lang="zulu">Zulu</button>
+                        <button class="lang-btn" data-lang="tswana">Tswana</button>
+                    </div>
+                    <video
+                        id="floatingVideo"
+                        playsinline
+                        loop
+                        disablepictureinpicture
+                        controlslist="nodownload nofullscreen noremoteplayback"
+                    ></video>
+                </div>
+            </div>
+            <div class="pulsing-icon" id="pulsingIcon">
+                <video autoplay muted loop playsinline>
+                    <source src="/Videos/idle.mp4" type="video/mp4" />
+                </video>
+            </div>
+            <link rel="stylesheet" href="/digital_human/digital-human.css" />
+            <script src="/digital_human/digital-human.js" defer></script>
+            <!-- Digital Human Widget End -->
+            <green-economy-chatbot></green-economy-chatbot>
+            <green-economy-footer></green-economy-footer>
+        </main>
+    </div>
+    <script src="../../scripts/about.js" defer></script>
+    <script src="../../scripts/chatbot.js" defer></script>
+</body>
+</html>

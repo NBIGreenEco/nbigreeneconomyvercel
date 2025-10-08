@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-i18n="opportunities.title">Green Economy Opportunities</title>
+  <link rel="stylesheet" href="/Master Page(Header and Footer)/MasterPage.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+  <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
+  <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
+  <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
+  <script type="module" src="/Trans.js"></script>
+  <link rel="stylesheet" href="Opportunities.css">
+  <style>
+    .loader {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px;
+      height: 80px;
+      border: 8px solid #e5e7eb;
+      border-top: 8px solid #10b981;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      z-index: 1000;
+    }
+    .loader-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+    @keyframes spin {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    #verification-modal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 24px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 1001;
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+    }
+    #verification-modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+    #verification-modal button {
+      background-color: #10b981;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+    #verification-modal button:hover {
+      background-color: #059669;
+    }
+    .pagination .page-item.active .page-link {
+      background-color: #2b9589;
+      border-color: #2b9589;
+      color: white;
+    }
+    .pagination .page-link {
+      color: #2b9589;
+    }
+    .pagination .page-item.disabled .page-link {
+      color: #6c757d;
+    }
+    #loadingSpinner {
+      display: none;
+      margin: 40px auto;
+      color: #2b9589;
+    }
+    #noResults {
+      display: none;
+      text-align: center;
+      padding: 40px 0;
+    }
+    #noResults i {
+      font-size: 3rem;
+      color: #adb5bd;
+      margin-bottom: 15px;
+    }
+    #noResults h4 {
+      color: #495057;
+      margin-bottom: 10px;
+    }
+    #noResults p {
+      color: #6c757d;
+    }
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #f8f9fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    .loading-spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #2b9589;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+    body.loading {
+      visibility: hidden;
+      opacity: 0;
+    }
+    body.loaded {
+      visibility: visible;
+      opacity: 1;
+      transition: opacity 0.3s;
+    }
+  </style>
+  <script>
+    // Initialize i18next
+    i18next
+      .use(i18nextHttpBackend)
+      .use(i18nextBrowserLanguageDetector)
+      .init({
+        fallbackLng: 'en',
+        supportedLngs: ['en', 'zu', 'tn'],
+        backend: { 
+          loadPath: '/locales/{{lng}}.json?v=' + new Date().getTime()
+        },
+        detection: {
+          order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
+          caches: ['localStorage', 'cookie']
+        }
+      }, (err, t) => {
+        if (err) {
+          console.error('i18next initialization error:', err);
+          setTimeout(() => {
+            i18next.loadResources((loadErr) => {
+              if (loadErr) {
+                console.error('Retry failed:', loadErr);
+                applyFallbackTranslations();
+              } else {
+                console.log('i18next retry successful, language:', i18next.language);
+                finalizeLoading();
+              }
+            });
+          }, 2000);
+          return;
+        }
+        console.log('i18next initialized for Opportunities.html at', new Date().toLocaleString('en-ZA'), 'language:', i18next.language);
+        finalizeLoading();
+      });
+
+    function applyFallbackTranslations() {
+      document.querySelectorAll('[data-i18n]').forEach(elem => {
+        const key = elem.getAttribute('data-i18n');
+        if (key.startsWith('[')) {
+          const match = key.match(/\[(\w+)\](.+)/);
+          if (match) {
+            const [, attr, i18nKey] = match;
+            const fallback = elem.getAttribute(attr) || 'Content not available';
+            elem.setAttribute(attr, fallback);
+            console.warn(`Fallback applied for attribute ${attr} with key ${i18nKey}: ${fallback}`);
+          } else {
+            console.error(`Invalid data-i18n format for key: ${key}`);
+          }
+        } else {
+          const fallback = elem.textContent.trim() || 'Content not available';
+          elem.textContent = fallback;
+          console.warn(`Fallback applied for text with key ${key}: ${fallback}`);
+        }
+      });
+      console.warn('Applied fallback translations due to loading failure');
+      finalizeLoading();
+    }
+
+    function updateContent() {
+      const missingKeys = [];
+      document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        try {
+          if (key.startsWith('[')) {
+            const match = key.match(/\[(\w+)\](.+)/);
+            if (match) {
+              const [, attr, translationKey] = match;
+              const translation = i18next.t(translationKey, { defaultValue: element.getAttribute(attr) || 'Content not available' });
+              if (translation === translationKey) {
+                missingKeys.push(translationKey);
+                console.warn(`Missing translation for key: ${translationKey} on element with attribute ${attr}`);
+              }
+              element.setAttribute(attr, translation);
+            } else {
+              console.error(`Invalid data-i18n format for key: ${key}`);
+            }
+          } else {
+            const translation = i18next.t(key, { defaultValue: element.textContent.trim() || 'Content not available' });
+            if (translation === key) {
+              missingKeys.push(key);
+              console.warn(`Missing translation for key: ${key} on element with innerHTML`);
+            }
+            element.textContent = translation;
+          }
+        } catch (error) {
+          console.error(`Error translating key ${key}:`, error);
+        }
+      });
+      if (missingKeys.length > 0) {
+        console.warn('Missing translations:', missingKeys);
+      } else {
+        console.log('All translations applied successfully');
+      }
+    }
+
+    function finalizeLoading() {
+      try {
+        i18next.loadResources(() => {
+          updateContent();
+          document.body.classList.remove('loading');
+          document.body.classList.add('loaded');
+          document.querySelector('.loading-overlay').style.display = 'none';
+          console.log('Translations loaded, content displayed');
+        });
+      } catch (error) {
+        console.error('Error loading translations:', error);
+        applyFallbackTranslations();
+      }
+    }
+
+    i18next.on('languageChanged', () => {
+      console.log('Language changed to:', i18next.language);
+      updateContent();
+    });
+
+    i18next.on('loaded', () => {
+      updateContent();
+    });
+  </script>
+</head>
+<body class="loading">
+  <div class="loading-overlay">
+    <div class="loading-spinner"></div>
+  </div>
+  <green-economy-header></green-economy-header>
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-image-section">
+        <img src="https://images.pexels.com/photos/30733226/pexels-photo-30733226.jpeg" alt="Hero Image" class="hero-img" data-i18n="[alt]opportunities.hero-image-alt" />
+      </div>
+      <div class="hero-text">
+        <h1 data-i18n="opportunities.hero-title">Opportunities</h1>
+        <p data-i18n="opportunities.hero-description-1">
+          Find out about opportunities for procurement, market access, capacity building, training and enterprise development support in your area.
+        </p>
+        <p data-i18n="opportunities.hero-description-2">
+          This page is your go-to hub for all the information you need, right at your fingertips. Use the filter to select resources tailored to your specific category of interest.
+        </p>
+      </div>
+    </div>
+  </section>
+  <section class="py-5 bg-light">
+    <div class="mx-auto" style="max-width: 1600px; width: 90%;">
+      <div class="row mb-4 align-items-center g-3">
+        <div class="col-md-3">
+          <select class="form-select" id="categoryFilter">
+            <option value="" data-i18n="opportunities.filter-all-categories">Filter by Category</option>
+            <option value="procurement" data-i18n="opportunities.filter-procurement">Procurement</option>
+            <option value="market-access" data-i18n="opportunities.filter-market-access">Market Access</option>
+            <option value="capacity-building" data-i18n="opportunities.filter-capacity-building">Capacity Building</option>
+            <option value="training" data-i18n="opportunities.filter-training">Training</option>
+            <option value="enterprise-development" data-i18n="opportunities.filter-enterprise-development">Enterprise Development</option>
+          </select>
+        </div>
+        <div class="col-md-3 offset-md-6 d-flex justify-content-end align-items-center">
+          <div class="input-group">
+            <input type="text" class="form-control" id="searchInput" placeholder="Search..." data-i18n="[placeholder]opportunities.search-placeholder">
+            <button type="button" class="btn btn-green" id="resetSearch" data-i18n="opportunities.reset">Reset</button>
+          </div>
+        </div>
+      </div>
+      <div id="loadingSpinner" class="spinner-border" role="status">
+        <span class="visually-hidden" data-i18n="opportunities.loading-hidden">Loading...</span>
+      </div>
+      <div id="opportunity-cards" class="row gx-4 gy-4 w-100 mx-0"></div>
+      <div id="noResults">
+        <i class="bi bi-search"></i>
+        <h4 data-i18n="opportunities.no-results-title">No opportunities found</h4>
+        <p data-i18n="opportunities.no-results-message">Try adjusting your search or filters</p>
+      </div>
+      <nav aria-label="Opportunity pagination" class="d-flex justify-content-center mt-5">
+        <ul class="pagination" id="pagination">
+        </ul>
+      </nav>
+    </div>
+  </section>
+  <section class="partners">
+    <div class="partners-content">
+      <img src="/Images/giz-logo_2024-11-11-133203_nara.jpg" alt="Partner Logo 1" class="partner-logo" data-i18n="[alt]opportunities.partner-logo-1">
+      <img src="/Images/SECO-Logo.jpg" alt="Partner Logo 2" class="partner-logo" data-i18n="[alt]opportunities.partner-logo-2">
+      <img src="/Images/GDED-Logo.jpg" alt="Partner Logo 3" class="partner-logo" data-i18n="[alt]opportunities.partner-logo-3">
+      <img src="/Images/LMS-Platform-Logo.png" alt="Partner Logo 4" class="partner-logo" data-i18n="[alt]opportunities.partner-logo-4">
+      <img src="/Images/NBI-Logo.jpg" alt="Partner Logo 5" class="partner-logo" data-i18n="[alt]opportunities.partner-logo-5">
+    </div>
+  </section>
+  <section class="login-section">
+    <div style="position: relative; max-width: 700px; margin: 0 auto;">
+      <h2 style="color: white; font-size: 20px; margin-bottom: 25px; max-width: 600px; margin-left: auto; margin-right: auto;" data-i18n="opportunities.newsletter-title">
+        Subscribe to our newsletter to get the latest information
+      </h2>
+      <form style="position: relative; padding-bottom: 20px;">
+        <input 
+          type="email" 
+          placeholder="Your email" 
+          style="width: 100%; padding: 18px 50px 18px 25px; border: none; border-radius: 4px; font-size: 16px; color: #333; background: white;"
+          data-i18n="[placeholder]opportunities.newsletter-email-placeholder"
+        >
+        <button 
+          type="submit" 
+          style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 22px; color: #009381; cursor: pointer;"
+          data-i18n="[title]opportunities.newsletter-submit"
+          title="Submit"
+        >
+          →
+        </button>
+      </form>
+    </div>
+    
+  </section>
+  <!-- Digital Human Widget -->
+  <div class="video-overlay" id="videoOverlay">
+    <div class="video-container">
+      <span class="close-video">&times;</span>
+      <div class="language-toggles">
+        <button class="lang-btn active" data-lang="eng">English</button>
+        <button class="lang-btn" data-lang="zulu">Zulu</button>
+        <button class="lang-btn" data-lang="tswana">Tswana</button>
+      </div>
+      <video
+        id="floatingVideo"
+        playsinline
+        loop
+        disablepictureinpicture
+        controlslist="nodownload nofullscreen noremoteplayback"
+      ></video>
+    </div>
+  </div>
+  <div class="pulsing-icon" id="pulsingIcon">
+    <video autoplay muted loop playsinline>
+      <source src="/Videos/idle.mp4" type="video/mp4" />
+    </video>
+  </div>
+  <link rel="stylesheet" href="/digital_human/digital-human.css" />
+  <script src="/digital_human/digital-human.js" defer></script>
+  <!-- Digital Human Widget End -->
+  <green-economy-footer></green-economy-footer>
+  <script type="module" src="/Master Page(Header and Footer)/MasterPage.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCfa827mvCLf1ETts6B_DmCfb7owTohBxk",
+      authDomain: "nbi-green-economy.firebaseapp.com",
+      projectId: "nbi-green-economy",
+      storageBucket: "nbi-green-economy.appspot.com",
+      messagingSenderId: "53732340059",
+      appId: "1:53732340059:web:3fb3f086c6662e1e9baa7e",
+      measurementId: "G-37VRZ5CGE4"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const opportunitiesRef = db.collection("opportunities");
+    const opportunityCards = document.getElementById('opportunity-cards');
+    const pagination = document.getElementById('pagination');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const searchInput = document.getElementById('searchInput');
+    const resetSearch = document.getElementById('resetSearch');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const noResults = document.getElementById('noResults');
+    let allOpportunities = [];
+    let filteredOpportunities = [];
+    const itemsPerPage = 8;
+    let currentPage = 1;
+
+    function loadOpportunities() {
+      loadingSpinner.style.display = 'block';
+      opportunityCards.innerHTML = '';
+      noResults.style.display = 'none';
+      opportunitiesRef.orderBy("createdAt", "desc").get()
+        .then((querySnapshot) => {
+          allOpportunities = [];
+          querySnapshot.forEach((doc) => {
+            allOpportunities.push({
+              id: doc.id,
+              ...doc.data()
+            });
+          });
+          filterOpportunities();
+          loadingSpinner.style.display = 'none';
+        })
+        .catch((error) => {
+          console.error("Error getting opportunities: ", error);
+          loadingSpinner.style.display = 'none';
+          alert(i18next.t('opportunities.error-loading', { defaultValue: 'Error loading opportunities. Please try again.' }));
+        });
+    }
+
+    function filterOpportunities() {
+      const category = categoryFilter.value;
+      const searchTerm = searchInput.value.toLowerCase();
+      filteredOpportunities = allOpportunities.filter(opportunity => {
+        const matchesCategory = !category || opportunity.category === category;
+        const matchesSearch = !searchTerm ||
+          opportunity.name.toLowerCase().includes(searchTerm) ||
+          opportunity.description.toLowerCase().includes(searchTerm);
+        return matchesCategory && matchesSearch;
+      });
+      currentPage = 1;
+      renderOpportunities();
+      renderPagination();
+    }
+
+    function renderOpportunities() {
+      opportunityCards.innerHTML = '';
+      if (filteredOpportunities.length === 0) {
+        noResults.style.display = 'block';
+        return;
+      } else {
+        noResults.style.display = 'none';
+      }
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      const paginatedOpportunities = filteredOpportunities.slice(startIndex, endIndex);
+      paginatedOpportunities.forEach(opportunity => {
+        const opportunityCard = document.createElement('div');
+        opportunityCard.className = 'col-md-6 col-lg-4 col-xl-3';
+        opportunityCard.innerHTML = `
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">${opportunity.name}</h5>
+              <p class="card-text">${opportunity.description.substring(0, 150)}${opportunity.description.length > 150 ? '...' : ''}</p>
+            </div>
+            <div class="card-footer bg-transparent">
+              ${opportunity.link ?
+                `<a href="${opportunity.link}" target="_blank" class="btn btn-green btn-sm" data-i18n="opportunities.view-details">${i18next.t('opportunities.view-details', { defaultValue: opportunity.linkText || 'View Details' })}</a>` :
+                `<span class="text-muted" data-i18n="opportunities.no-link-available">${i18next.t('opportunities.no-link-available', { defaultValue: 'No link available' })}</span>`}
+            </div>
+          </div>
+        `;
+        opportunityCards.appendChild(opportunityCard);
+      });
+      updateContent();
+    }
+
+    function renderPagination() {
+      pagination.innerHTML = '';
+      const totalPages = Math.ceil(filteredOpportunities.length / itemsPerPage);
+      if (totalPages <= 1) return;
+      const prevLi = document.createElement('li');
+      prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+      prevLi.innerHTML = `<a class="page-link" href="#" aria-label="Previous" data-i18n="[aria-label]opportunities.pagination-previous">${i18next.t('opportunities.pagination-previous', { defaultValue: '&laquo;' })}</a>`;
+      prevLi.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (currentPage > 1) {
+          currentPage--;
+          renderOpportunities();
+          renderPagination();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      });
+      pagination.appendChild(prevLi);
+      const maxVisiblePages = 5;
+      let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+      let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+      if (endPage - startPage + 1 < maxVisiblePages) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+      }
+      if (startPage > 1) {
+        const firstLi = document.createElement('li');
+        firstLi.className = 'page-item';
+        firstLi.innerHTML = `<a class="page-link" href="#">1</a>`;
+        firstLi.addEventListener('click', (e) => {
+          e.preventDefault();
+          currentPage = 1;
+          renderOpportunities();
+          renderPagination();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        pagination.appendChild(firstLi);
+        if (startPage > 2) {
+          const ellipsisLi = document.createElement('li');
+          ellipsisLi.className = 'page-item disabled';
+          ellipsisLi.innerHTML = `<span class="page-link">...</span>`;
+          pagination.appendChild(ellipsisLi);
+        }
+      }
+      for (let i = startPage; i <= endPage; i++) {
+        const pageLi = document.createElement('li');
+        pageLi.className = `page-item ${i === currentPage ? 'active' : ''}`;
+        pageLi.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+        pageLi.addEventListener('click', (e) => {
+          e.preventDefault();
+          currentPage = i;
+          renderOpportunities();
+          renderPagination();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        pagination.appendChild(pageLi);
+      }
+      if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+          const ellipsisLi = document.createElement('li');
+          ellipsisLi.className = 'page-item disabled';
+          ellipsisLi.innerHTML = `<span class="page-link">...</span>`;
+          pagination.appendChild(ellipsisLi);
+        }
+        const lastLi = document.createElement('li');
+        lastLi.className = 'page-item';
+        lastLi.innerHTML = `<a class="page-link" href="#">${totalPages}</a>`;
+        lastLi.addEventListener('click', (e) => {
+          e.preventDefault();
+          currentPage = totalPages;
+          renderOpportunities();
+          renderPagination();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        pagination.appendChild(lastLi);
+      }
+      const nextLi = document.createElement('li');
+      nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+      nextLi.innerHTML = `<a class="page-link" href="#" aria-label="Next" data-i18n="[aria-label]opportunities.pagination-next">${i18next.t('opportunities.pagination-next', { defaultValue: '&raquo;' })}</a>`;
+      nextLi.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (currentPage < totalPages) {
+          currentPage++;
+          renderOpportunities();
+          renderPagination();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      });
+      pagination.appendChild(nextLi);
+      updateContent();
+    }
+
+    categoryFilter.addEventListener('change', filterOpportunities);
+    searchInput.addEventListener('input', filterOpportunities);
+    resetSearch.addEventListener('click', () => {
+      categoryFilter.value = '';
+      searchInput.value = '';
+      filterOpportunities();
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('DOM fully loaded for Opportunities.html at', new Date().toLocaleString('en-ZA'));
+      if (customElements.get('green-economy-header') && customElements.get('green-economy-footer')) {
+        console.log('Custom elements defined');
+      } else {
+        console.warn('Custom elements not defined. Ensure MasterPage.js is loaded correctly.');
+      }
+      loadOpportunities();
+    });
+
+    // Fallback timeout
+    setTimeout(() => {
+      if (document.body.classList.contains('loading')) {
+        console.warn('Loading timeout reached, forcing content display');
+        applyFallbackTranslations();
+        document.body.classList.remove('loading');
+        document.body.classList.add('loaded');
+        document.querySelector('.loading-overlay').style.display = 'none';
+        alert(i18next.t('opportunities.alert-timeout', { defaultValue: 'Page load timeout. Displaying default content.' }));
+      }
+    }, 10000);
+
+    document.querySelectorAll('.business-card-button').forEach((button) => {
+      button.addEventListener('click', function () {
+        alert(i18next.t('opportunities.feature-coming-soon', { defaultValue: 'Feature coming soon!' }));
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const pulsingIcon = document.querySelector('.pulsing-icon');
+      const videoOverlay = document.querySelector('.video-overlay');
+      const closeVideo = document.querySelector('.close-video');
+      const floatingVideo = document.getElementById('floatingVideo');
+      const langButtons = document.querySelectorAll('.lang-btn');
+      const videoSources = {
+        'eng': '/Videos/OpportunitiesPage_Eng.mp4',
+        'zulu': '/Videos/OpportunitiesPage_Zulu.mp4',
+        'tswana': '/Videos/OpportunitiesPage_Tswana.mp4'
+      };
+      let currentLang = 'eng';
+      if (pulsingIcon) {
+        pulsingIcon.addEventListener('click', function(e) {
+          e.preventDefault();
+          videoOverlay.classList.toggle('active');
+          if (videoOverlay.classList.contains('active')) {
+            playCurrentVideo();
+            pulsingIcon.style.opacity = '0.7';
+          } else {
+            floatingVideo.pause();
+            pulsingIcon.style.opacity = '1';
+          }
+        });
+      }
+      if (closeVideo) {
+        closeVideo.addEventListener('click', function(e) {
+          e.stopPropagation();
+          closeVideoPlayer();
+        });
+      }
+      if (videoOverlay) {
+        videoOverlay.addEventListener('click', function(e) {
+          if (e.target === videoOverlay) {
+            closeVideoPlayer();
+          }
+        });
+      }
+      langButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const lang = this.getAttribute('data-lang');
+          if (lang !== currentLang) {
+            langButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            currentLang = lang;
+            playCurrentVideo();
+          }
+        });
+      });
+      if (floatingVideo) {
+        floatingVideo.addEventListener('ended', function() {
+          closeVideoPlayer();
+        });
+      }
+      function playCurrentVideo() {
+        const source = videoSources[currentLang];
+        if (source && floatingVideo) {
+          const currentTime = floatingVideo.currentTime;
+          floatingVideo.src = source;
+          floatingVideo.load();
+          floatingVideo.currentTime = currentTime;
+          floatingVideo.play().catch(e => console.log('Video play failed:', e));
+          floatingVideo.addEventListener('canplaythrough', function onCanPlay() {
+            floatingVideo.play().catch(e => console.log('Video auto-play failed:', e));
+            floatingVideo.removeEventListener('canplaythrough', onCanPlay);
+          });
+        }
+      }
+      function closeVideoPlayer() {
+        if (videoOverlay && floatingVideo && pulsingIcon) {
+          videoOverlay.classList.remove('active');
+          floatingVideo.pause();
+          pulsingIcon.style.opacity = '1';
+        }
+      }
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && videoOverlay && videoOverlay.classList.contains('active')) {
+          closeVideoPlayer();
+        }
+      });
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+             <!-- Include the new search file -->
+
+</body>
+</html>
