@@ -1,12 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
-/* Base Styles */
+/* Base Styles - Aligned with Index Page */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
-    font-weight: 400;
+    font-weight: 500; /* Changed from 400 to match index page */
 }
 
 body {
@@ -14,9 +14,10 @@ body {
     line-height: 1.6;
     color: #333;
     overflow-x: hidden;
+    font-weight: 500; /* Added to match index page */
 }
 
-/* Hero Section - Fully Responsive */
+/* Hero Section - Updated Font Styles */
 .hero-section {
     display: flex;
     min-height: 600px;
@@ -62,8 +63,8 @@ body {
 }
 
 .hero-text h1 {
-    font-size: 48px;
-    font-weight: 800;
+    font-size: 48px; /* Matches index page hero h1 */
+    font-weight: 800; /* Matches index page hero h1 weight */
     margin-bottom: 24px;
     line-height: 1.1;
 }
@@ -72,29 +73,30 @@ body {
     margin-bottom: 16px;
     color: white;
     line-height: 1.6;
-    font-weight: 500;
+    font-weight: 500; /* Matches index page body text weight */
+    font-size: 14px; /* Matches index page body text size */
 }
 
-/* Priority Areas Section */
+/* Priority Areas Section - Updated Font Styles */
 .light-section {
     background-color: #f8f9fa;
     padding: 80px 0;
 }
 
-.light-section h2 {
-    color: #31b45a;
-    font-size: 2.5rem;
-    font-weight: 700;
+.light-section h3 {
+    color: #36aa51; /* Using primary green from index page */
+    font-size: 32px; /* Matches index page h2 size */
+    font-weight: 700; /* Bold weight like index page */
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 16px; /* Standard spacing from index page */
 }
 
-.light-section p {
-    color: #31b45a;
-    font-size: 1.25rem;
-    font-weight: 600;
+.light-section p.text-base {
+    color: #36aa51; /* Using primary green from index page */
+    font-size: 16px; /* Adjusted size */
+    font-weight: 600; /* Semi-bold like index page */
     text-align: center;
-    margin-bottom: 60px;
+    margin-bottom: 48px; /* Standard spacing from index page */
 }
 
 .focus-grid {
@@ -106,7 +108,7 @@ body {
 
 .focus-item {
     position: relative;
-    height: 300px;
+    height: 256px; /* Matches index page focus item height */
     background-size: cover;
     background-position: center;
     cursor: pointer;
@@ -115,8 +117,20 @@ body {
 }
 
 .focus-item:hover {
-    transform: scale(1.02);
+    transform: scale(1.05); /* Matches index page hover effect */
     z-index: 1;
+}
+
+.focus-item::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4); /* Matches index page overlay */
+    transition: background 0.3s;
+}
+
+.focus-item:hover::after {
+    background: rgba(0, 0, 0, 0.5); /* Matches index page hover overlay */
 }
 
 .focus-content {
@@ -128,37 +142,41 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.5); /* Matches index page */
     color: white;
-    padding: 1rem;
+    padding: 24px; /* Matches index page padding */
     text-align: center;
+    font-weight: 800; /* Extra-bold like index page */
 }
 
+/* Fix for Focus Area H3 text color */
 .focus-content h3 {
-    font-size: 1.5rem;
-    font-weight: 600;
+    font-size: 18px; /* Matches index page focus area text size */
+    font-weight: 600; /* Semi-bold like index page */
     text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
     margin: 0;
+    line-height: 1.3; /* Matches index page line height */
+    color: white !important; /* Force white color for focus area titles */
 }
 
-/* Climate Risks Section */
+/* Climate Risks Section - Updated Font Styles */
 .climate-risks-section {
-    padding: 80px 0;
+    padding: 64px 0; /* Standard section padding from index page */
     background-color: white;
     color: #009381;
     text-align: center;
 }
 
 .climate-risks-section h2 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 15px;
+    font-size: 32px; /* Matches index page h2 size */
+    font-weight: 700; /* Bold weight like index page */
+    margin-bottom: 8px; /* Standard spacing */
 }
 
 .climate-risks-section p.subtitle {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 40px;
+    font-size: 18px; /* Adjusted size */
+    font-weight: 600; /* Semi-bold like index page */
+    margin-bottom: 48px; /* Standard spacing */
 }
 
 .climate-risks-grid {
@@ -202,9 +220,9 @@ body {
 }
 
 .climate-risk-item h3 {
-    font-size: 1.25rem;
+    font-size: 20px; /* Matches index page h3 size */
     margin: 0 0 8px 0;
-    font-weight: 600;
+    font-weight: 600; /* Semi-bold like index page */
     display: flex;
     align-items: center;
 }
@@ -216,36 +234,38 @@ body {
 }
 
 .climate-risk-item p {
-    font-size: 0.9375rem;
-    line-height: 1.3;
+    font-size: 14px; /* Matches index page body text size */
+    line-height: 1.5; /* Standard line height from index page */
     margin: 0;
+    font-weight: 500; /* Medium weight like index page */
 }
 
-/* Climate Responses Section */
+/* Climate Responses Section - Updated Font Styles */
 .climate-responses-container {
     width: 90%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 40px 0;
+    padding: 64px 0; /* Standard section padding */
 }
 
 .climate-responses-container h2 {
     text-align: center;
-    font-size: 28px;
-    margin-bottom: 40px;
+    font-size: 32px; /* Matches index page h2 size */
+    margin-bottom: 48px; /* Standard spacing */
     color: #009381;
+    font-weight: 700; /* Bold weight like index page */
 }
 
 .climate-response-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
-    margin-bottom: 30px;
+    gap: 32px; /* Standard grid gap from index page */
+    margin-bottom: 32px; /* Standard spacing */
 }
 
 .climate-response-card {
     background: #009381;
-    border-radius: 8px;
+    border-radius: 8px; /* Standard border radius from index page */
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
@@ -257,64 +277,66 @@ body {
 }
 
 .climate-response-content {
-    padding: 25px;
+    padding: 24px; /* Standard card padding from index page */
     color: white;
 }
 
 .climate-response-content h3 {
-    font-size: 1.375rem;
+    font-size: 20px; /* Matches index page card h3 size */
     margin-top: 0;
-    margin-bottom: 15px;
-    font-weight: 600;
+    margin-bottom: 16px; /* Standard spacing */
+    font-weight: 900; /* Black weight like index page business cards */
 }
 
 .climate-response-content p {
-    font-size: 1rem;
-    line-height: 1.6;
-    margin-bottom: 20px;
+    font-size: 14px; /* Matches index page body text size */
+    line-height: 1.6; /* Standard line height from index page */
+    margin-bottom: 16px; /* Standard spacing */
+    font-weight: 500; /* Medium weight like index page */
 }
 
-/* Partners Section */
+/* Partners Section - Updated to Match Index Page */
 .partners {
-    padding: 48px 0;
+    padding: 64px 0; /* Standard section padding */
     background: white;
-    border-top: 2px solid #36aa51;
+    border-top: 2px solid #36aa51; /* Matches index page */
 }
 
 .partners-content {
-    max-width: 1280px;
+    max-width: 1280px; /* Matches index page wide container */
     margin: 0 auto;
-    padding: 0 24px;
+    padding: 0 24px; /* Standard padding */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 24px;
+    gap: 32px; /* Standard gap from index page */
     flex-wrap: wrap;
 }
 
 .partner-logo {
-    height: 50px;
+    height: 50px; /* Matches index page */
     width: auto;
     max-width: 150px;
     object-fit: contain;
     flex-shrink: 0;
 }
 
-/* Login/Newsletter Section */
+/* Login/Newsletter Section - Updated to Match Index Page */
 .login-section {
-    background: #0891b2;
+    background: #2b9589; /* Using secondary green from index page */
     color: white;
-    padding: 48px 0;
+    padding: 48px 0; /* Matches index page */
     text-align: center;
 }
 
 .login-section h2 {
     color: white;
-    font-size: 20px;
+    font-size: 20px; /* Matches index page */
     margin-bottom: 25px;
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
+    font-weight: 500; /* Medium weight */
 }
 
 .login-section form {
@@ -328,10 +350,11 @@ body {
     width: 100%;
     padding: 18px 50px 18px 25px;
     border: none;
-    border-radius: 4px;
-    font-size: 16px;
+    border-radius: 4px; /* Standard border radius */
+    font-size: 16px; /* Matches index page form text */
     color: #333;
     background: white;
+    font-weight: 500; /* Medium weight */
 }
 
 .login-section button[type="submit"] {
@@ -356,7 +379,7 @@ body {
     animation: fadeIn 1s ease-in-out;
 }
 
-/* ========== RESPONSIVE BREAKPOINTS ========== */
+/* ========== RESPONSIVE BREAKPOINTS - Updated to Match Index Page ========== */
 
 /* Tablet Devices (768px - 1024px) */
 @media (max-width: 1024px) {
@@ -376,16 +399,20 @@ body {
     
     .hero-text-content {
         position: relative;
-        padding: 40px 32px;
+        padding: 40px 32px; /* Standard tablet padding */
     }
     
     .hero-text h1 {
-        font-size: 36px;
+        font-size: 36px; /* Matches index page tablet h1 size */
         margin-bottom: 20px;
     }
     
     .focus-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, 1fr); /* Matches index page tablet grid */
+    }
+    
+    .light-section h3 {
+        font-size: 28px; /* Adjusted for tablet */
     }
     
     .climate-risks-grid {
@@ -411,7 +438,7 @@ body {
     
     .climate-response-grid {
         grid-template-columns: 1fr;
-        gap: 24px;
+        gap: 24px; /* Standard tablet gap */
     }
     
     .partners-content {
@@ -431,170 +458,170 @@ body {
     }
     
     .hero-text-content {
-        padding: 32px 24px;
+        padding: 32px 24px; /* Standard mobile padding */
     }
     
     .hero-text h1 {
-        font-size: 28px;
+        font-size: 28px; /* Matches index page mobile h1 size */
         margin-bottom: 20px;
     }
     
     .hero-text p {
-        font-size: 16px;
-        line-height: 1.5;
+        font-size: 14px; /* Maintains body text size */
+        line-height: 1.6; /* Standard line height */
     }
     
     .light-section {
-        padding: 60px 0;
+        padding: 64px 0; /* Standard section padding */
     }
     
-    .light-section h2 {
-        font-size: 28px;
-        margin-bottom: 15px;
+    .light-section h3 {
+        font-size: 24px; /* Matches index page mobile h2 size */
+        margin-bottom: 16px;
     }
     
-    .light-section p {
-        font-size: 18px;
-        margin-bottom: 40px;
+    .light-section p.text-base {
+        font-size: 16px; /* Maintains size */
+        margin-bottom: 48px;
     }
     
     .focus-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; /* Matches index page mobile grid */
     }
     
     .focus-item {
-        height: 250px;
+        height: 256px; /* Maintains standard height */
     }
     
     .focus-content h3 {
-        font-size: 20px;
+        font-size: 18px; /* Maintains standard size */
     }
     
     .climate-risks-section {
-        padding: 60px 0;
+        padding: 64px 0; /* Standard section padding */
     }
     
     .climate-risks-section h2 {
-        font-size: 28px;
+        font-size: 24px; /* Matches index page mobile h2 size */
     }
     
     .climate-risks-section p.subtitle {
-        font-size: 18px;
+        font-size: 16px; /* Adjusted for mobile */
     }
     
     .climate-risk-item {
-        padding: 25px 20px;
-        min-height: 180px;
+        padding: 24px 20px; /* Standard mobile padding */
+        min-height: 200px;
     }
     
     .climate-risk-item h3 {
-        font-size: 18px;
+        font-size: 18px; /* Slightly smaller for mobile */
     }
     
     .climate-risk-item p {
-        font-size: 14px;
+        font-size: 14px; /* Maintains body text size */
     }
     
     .climate-responses-container {
-        padding: 30px 0;
+        padding: 64px 0; /* Standard section padding */
     }
     
     .climate-responses-container h2 {
-        font-size: 24px;
-        margin-bottom: 30px;
+        font-size: 24px; /* Matches index page mobile h2 size */
+        margin-bottom: 48px;
     }
     
     .climate-response-grid {
-        gap: 20px;
+        gap: 24px; /* Standard mobile gap */
     }
     
     .climate-response-content {
-        padding: 20px;
+        padding: 24px; /* Maintains standard padding */
     }
     
     .climate-response-content h3 {
-        font-size: 20px;
+        font-size: 20px; /* Maintains standard size */
     }
     
     .partners {
-        padding: 40px 0;
+        padding: 64px 0; /* Standard section padding */
     }
     
     .partners-content {
         flex-direction: column;
-        gap: 32px;
+        gap: 32px; /* Standard gap */
     }
     
     .partner-logo {
-        height: 40px;
-        max-width: 120px;
+        height: 50px; /* Maintains standard height */
+        max-width: 150px;
     }
     
     .login-section {
-        padding: 40px 24px;
+        padding: 48px 24px; /* Standard padding */
     }
     
     .login-section h2 {
-        font-size: 18px;
-        margin-bottom: 20px;
+        font-size: 20px; /* Maintains standard size */
+        margin-bottom: 25px;
     }
     
     .login-section input {
-        padding: 15px 45px 15px 20px;
-        font-size: 14px;
+        padding: 18px 50px 18px 25px; /* Maintains standard padding */
+        font-size: 16px; /* Maintains standard size */
     }
 }
 
 /* Small Mobile Devices (320px - 480px) */
 @media (max-width: 480px) {
     .hero-text h1 {
-        font-size: 24px;
+        font-size: 24px; /* Matches index page small mobile h1 */
     }
     
     .hero-text-content {
-        padding: 24px 20px;
+        padding: 24px 20px; /* Standard small mobile padding */
     }
     
     .light-section {
-        padding: 40px 0;
+        padding: 48px 0; /* Slightly reduced padding */
     }
     
-    .light-section h2 {
-        font-size: 24px;
+    .light-section h3 {
+        font-size: 22px; /* Adjusted for small mobile */
     }
     
-    .light-section p {
-        font-size: 16px;
-        margin-bottom: 30px;
+    .light-section p.text-base {
+        font-size: 14px; /* Smaller text for small mobile */
+        margin-bottom: 32px; /* Reduced spacing */
     }
     
     .focus-item {
-        height: 200px;
+        height: 200px; /* Reduced height for small mobile */
     }
     
     .focus-content h3 {
-        font-size: 18px;
+        font-size: 16px; /* Smaller text for small mobile */
     }
     
     .climate-risks-section {
-        padding: 40px 0;
+        padding: 48px 0; /* Slightly reduced padding */
     }
     
     .climate-risks-section h2 {
-        font-size: 24px;
+        font-size: 22px; /* Adjusted for small mobile */
     }
     
     .climate-risks-section p.subtitle {
-        font-size: 16px;
+        font-size: 14px; /* Smaller text for small mobile */
     }
     
     .climate-risk-item {
-        padding: 20px 15px;
-        min-height: 150px;
+        padding: 20px 15px; /* Reduced padding */
+        min-height: 150px; /* Reduced height */
     }
     
     .climate-risk-item h3 {
-        font-size: 16px;
+        font-size: 16px; /* Smaller text for small mobile */
         flex-direction: column;
         text-align: center;
     }
@@ -605,103 +632,103 @@ body {
     }
     
     .climate-risk-item p {
-        font-size: 13px;
+        font-size: 13px; /* Smaller text for small mobile */
         text-align: center;
     }
     
     .climate-responses-container {
-        padding: 20px 0;
+        padding: 48px 0; /* Slightly reduced padding */
     }
     
     .climate-responses-container h2 {
-        font-size: 22px;
-        margin-bottom: 20px;
+        font-size: 22px; /* Adjusted for small mobile */
+        margin-bottom: 32px; /* Reduced spacing */
     }
     
     .climate-response-image {
-        height: 150px;
+        height: 150px; /* Reduced height */
     }
     
     .climate-response-content {
-        padding: 15px;
+        padding: 20px; /* Reduced padding */
     }
     
     .climate-response-content h3 {
-        font-size: 18px;
+        font-size: 18px; /* Slightly smaller */
     }
     
     .climate-response-content p {
-        font-size: 14px;
+        font-size: 14px; /* Maintains body text size */
     }
     
     .partners {
-        padding: 32px 0;
+        padding: 48px 0; /* Slightly reduced padding */
     }
     
     .partner-logo {
-        height: 35px;
-        max-width: 100px;
+        height: 40px; /* Slightly smaller */
+        max-width: 120px;
     }
     
     .login-section {
-        padding: 32px 20px;
+        padding: 40px 20px; /* Reduced padding */
     }
     
     .login-section h2 {
-        font-size: 16px;
-        margin-bottom: 15px;
+        font-size: 18px; /* Slightly smaller */
+        margin-bottom: 20px; /* Reduced spacing */
     }
     
     .login-section input {
-        padding: 12px 40px 12px 15px;
-        font-size: 14px;
+        padding: 15px 45px 15px 20px; /* Reduced padding */
+        font-size: 14px; /* Slightly smaller */
     }
     
     .login-section button[type="submit"] {
         right: 8px;
-        font-size: 20px;
+        font-size: 20px; /* Slightly smaller */
     }
 }
 
 /* Extra Small Devices (below 320px) */
 @media (max-width: 320px) {
     .hero-text h1 {
-        font-size: 20px;
+        font-size: 20px; /* Minimum size */
     }
     
     .hero-text p {
-        font-size: 14px;
+        font-size: 13px; /* Minimum readable size */
     }
     
     .focus-content h3 {
-        font-size: 16px;
+        font-size: 14px; /* Minimum readable size */
     }
     
     .climate-risk-item h3 {
-        font-size: 14px;
+        font-size: 14px; /* Minimum readable size */
     }
     
     .climate-risk-item p {
-        font-size: 12px;
+        font-size: 12px; /* Minimum readable size */
     }
     
     .climate-response-content h3 {
-        font-size: 16px;
+        font-size: 16px; /* Minimum readable size */
     }
     
     .climate-response-content p {
-        font-size: 13px;
+        font-size: 13px; /* Minimum readable size */
     }
 }
 
 /* Touch Device Optimizations */
 @media (hover: none) and (pointer: coarse) {
     .focus-item:hover {
-        transform: none;
+        transform: none; /* Remove hover effects on touch devices */
     }
     
     .focus-item:active {
-        transform: scale(0.98);
+        transform: scale(0.98); /* Add active state instead */
     }
 }
 
@@ -712,31 +739,6 @@ body {
     .hero-image .image-cover {
         background-size: cover;
         image-rendering: -webkit-optimize-contrast;
-    }
-}
-
-/* Print Styles */
-@media print {
-    .hero-section {
-        flex-direction: column;
-    }
-    
-    .hero-image,
-    .hero-text-container {
-        width: 100%;
-    }
-    
-    .focus-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .climate-risks-grid {
-        grid-template-columns: 1fr;
-        height: auto;
-    }
-    
-    .login-section {
-        display: none;
     }
 }
 
@@ -756,7 +758,7 @@ body {
 
 .loading-spinner {
     border: 4px solid #f3f3f3;
-    border-top: 4px solid #10b981;
+    border-top: 4px solid #36aa51; /* Using primary green */
     border-radius: 50%;
     width: 40px;
     height: 40px;

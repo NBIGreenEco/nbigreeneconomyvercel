@@ -8,6 +8,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
   <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
@@ -16,6 +17,16 @@
   <script type="module" src="/Trans.js"></script>
   <link rel="stylesheet" href="Opportunities.css">
   <style>
+    * {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500; /* Match index page standard */
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500; /* Match index page standard */
+    }
+
     .loader {
       display: none;
       position: fixed;
@@ -109,9 +120,11 @@
     #noResults h4 {
       color: #495057;
       margin-bottom: 10px;
+      font-weight: 700; /* Bold like index page */
     }
     #noResults p {
       color: #6c757d;
+      font-weight: 500; /* Medium weight like index page */
     }
     .loading-overlay {
       position: fixed;
@@ -143,6 +156,173 @@
       transition: opacity 0.3s;
     }
 
+    /* Hero Section - Updated Font Styles */
+    .hero {
+      background: #36aa51;
+      color: white;
+      padding: 0;
+      width: 100%;
+    }
+    .hero-content {
+      max-width: none;
+      margin: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 500px;
+      width: 100%;
+    }
+    .hero-image-section {
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+      padding: 0;
+    }
+    .hero-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+    .hero-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 48px;
+      max-width: 600px;
+    }
+    .hero-text h1 {
+      font-size: 48px; /* Match index page hero H1 size */
+      font-weight: 800; /* Extra-bold like index page hero */
+      margin-bottom: 24px;
+      line-height: 1.1;
+    }
+    .hero-text p {
+      margin-bottom: 16px;
+      color: #d1fae5;
+      line-height: 1.6;
+      font-size: 14px; /* Match index page body text size */
+      font-weight: 500; /* Medium weight like index page */
+    }
+
+    /* Card Styles - Updated Font Styles */
+    .card {
+      border: none !important;
+      box-shadow: none !important;
+      background: transparent !important;
+      border-radius: 0 !important;
+      transition: none !important;
+    }
+    .card-body {
+      background: transparent !important;
+      box-shadow: none !important;
+      border: none !important;
+      border-radius: 0 !important;
+    }
+    .card-title {
+      font-size: 18px; /* Match index page H3 size */
+      font-weight: 900; /* Black weight like index page business cards */
+      color: rgb(86, 86, 86) !important;
+      transition: color 0.2s;
+      cursor: pointer;
+    }
+    .card-title:hover {
+      color: #36aa51;
+    }
+    .card-text {
+      font-weight: 500; /* Medium weight like index page */
+      color: #343a40 !important;
+      font-size: 14px; /* Match index page body text size */
+    }
+
+    /* Button Styles - Updated Font Styles */
+    .btn-green {
+      background-color: #36aa51 !important;
+      color: #fff !important;
+      border: none;
+      padding: 0.5rem 1.25rem;
+      border-radius: 8px;
+      font-weight: 500; /* Medium weight like index page */
+      font-size: 14px; /* Match index page button text size */
+    }
+    .btn-green:hover, .btn-green:focus {
+      background-color: #2d8a43 !important;
+      color: #fff !important;
+    }
+
+    /* Form elements - Updated Font Styles */
+    .form-control, .form-select {
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      border: 1px solid #ced4da;
+      font-weight: 500; /* Medium weight like index page */
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: #36aa51;
+      box-shadow: 0 0 0 0.25rem rgba(54, 170, 81, 0.25);
+    }
+
+    /* Partners Section - Updated Font Styles */
+    .partners {
+      padding: 64px 0; /* Standard section padding from index page */
+      background: white;
+      border-top: 2px solid #36aa51;
+    }
+    .partners-content {
+      max-width: 1280px; /* Match index page wide container */
+      margin: 0 auto;
+      padding: 0 24px; /* Standard padding */
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 32px; /* Standard gap from index page */
+      flex-wrap: wrap;
+    }
+    .partner-logo {
+      height: 50px; /* Match index page */
+      width: auto;
+      max-width: 150px;
+      object-fit: contain;
+    }
+
+    /* Login Section - Updated Font Styles */
+    .login-section {
+      background: #2b9589; /* Using secondary green from index page */
+      color: white;
+      padding: 48px 0; /* Match index page */
+      text-align: center;
+    }
+    .login-section h2 {
+      color: white;
+      font-size: 20px; /* Match index page newsletter title */
+      margin-bottom: 25px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      font-weight: 500; /* Medium weight like index page */
+    }
+    .login-section input {
+      width: 100%;
+      padding: 18px 50px 18px 25px;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px; /* Match index page form text */
+      color: #333;
+      background: white;
+      font-weight: 500; /* Medium weight like index page */
+    }
+    .login-section button[type="submit"] {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      font-size: 22px;
+      color: #009381;
+      cursor: pointer;
+      font-weight: 700; /* Bold like index page */
+    }
+
     /* RESPONSIVE STYLES - NO DESIGN CHANGES */
     @media (max-width: 1200px) {
       .hero-content {
@@ -152,7 +332,7 @@
         padding: 40px;
       }
       .hero-text h1 {
-        font-size: 42px;
+        font-size: 42px; /* Slightly smaller for large tablet */
       }
     }
 
@@ -171,7 +351,7 @@
         text-align: center;
       }
       .hero-text h1 {
-        font-size: 36px;
+        font-size: 36px; /* Match index page tablet H1 size */
       }
       .col-md-6.col-lg-4.col-xl-3 {
         width: 50%;
@@ -180,7 +360,7 @@
 
     @media (max-width: 768px) {
       .hero-text h1 {
-        font-size: 32px;
+        font-size: 32px; /* Match index page mobile H1 size */
       }
       .hero-text {
         padding: 24px 20px;
@@ -193,7 +373,7 @@
       }
       .partners-content {
         flex-wrap: wrap;
-        gap: 20px;
+        gap: 32px; /* Standard gap */
         justify-content: center;
       }
       .partner-logo {
@@ -214,37 +394,37 @@
 
     @media (max-width: 576px) {
       .hero-text h1 {
-        font-size: 28px;
+        font-size: 28px; /* Match index page small mobile H1 */
       }
       .hero-text p {
-        font-size: 14px;
+        font-size: 14px; /* Maintain body text size */
       }
       .hero-image-section {
         height: 250px;
       }
       .partners-content {
-        gap: 15px;
+        gap: 24px; /* Standard gap */
       }
       .partner-logo {
         max-width: 100px;
         flex: 0 1 calc(50% - 15px);
       }
       .form-select, .form-control {
-        font-size: 14px;
+        font-size: 14px; /* Slightly smaller for mobile */
       }
       .btn-green {
         padding: 6px 12px;
-        font-size: 14px;
+        font-size: 14px; /* Maintain button text size */
       }
       .pagination .page-link {
         padding: 6px 12px;
-        font-size: 14px;
+        font-size: 14px; /* Slightly smaller for mobile */
       }
     }
 
     @media (max-width: 480px) {
       .hero-text h1 {
-        font-size: 24px;
+        font-size: 24px; /* Minimum size */
       }
       .hero-text {
         padding: 20px 16px;

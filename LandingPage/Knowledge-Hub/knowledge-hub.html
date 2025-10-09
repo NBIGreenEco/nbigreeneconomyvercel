@@ -23,14 +23,15 @@
   <link rel="stylesheet" href="/Master Page(Header and Footer)/MasterPage.css">
   <link rel="stylesheet" href="/digital_human/digital-human.css">
   <script src="../../../scripts/enhancedsearch.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
       /* Reset and base styles */
       * {
           margin: 0;
           padding: 0;
           box-sizing: border-box;
-          font-weight: 500;
+          font-family: 'Poppins', sans-serif;
+          font-weight: 500; /* Match index page standard */
       }
       
       body {
@@ -39,6 +40,7 @@
           color: #333;
           width: 100%;
           overflow-x: hidden;
+          font-weight: 500; /* Match index page standard */
       }
 
       /* Loading Styles */
@@ -135,8 +137,8 @@
           max-width: 600px;
       }
       .hero-text h1 {
-          font-size: 48px;
-          font-weight: bold;
+          font-size: 48px; /* Match index page hero H1 size */
+          font-weight: 800; /* Extra-bold like index page hero */
           margin-bottom: 24px;
           line-height: 1.1;
       }
@@ -164,8 +166,8 @@
           text-align: center;
           margin-bottom: 32px;
           color: white;
-          font-size: 32px;
-          font-weight: bold;
+          font-size: 32px; /* Match index page H2 size */
+          font-weight: 700; /* Bold like index page H2 */
       }
       .news-rect-box {
           background: #fff;
@@ -184,8 +186,8 @@
       }
       .news-rect-box .rect-text {
           color: #2b9589;
-          font-size: 0.95rem;
-          font-weight: 400;
+          font-size: 14px; /* Match index page body text size */
+          font-weight: 500; /* Medium weight like index page */
       }
       .button-container {
           position: absolute;
@@ -199,8 +201,8 @@
           color: #fff;
           border: none;
           padding: 8px 16px;
-          font-size: 14px;
-          font-weight: 500;
+          font-size: 14px; /* Match index page button text size */
+          font-weight: 500; /* Medium weight like index page */
           cursor: pointer;
           transition: background-color 0.3s;
           display: flex;
@@ -222,8 +224,8 @@
           color: #fff;
           border: none;
           padding: 8px 16px;
-          font-size: 14px;
-          font-weight: 500;
+          font-size: 14px; /* Match index page button text size */
+          font-weight: 500; /* Medium weight like index page */
           cursor: pointer;
           transition: background-color 0.3s;
           display: flex;
@@ -238,7 +240,7 @@
       /* Image Background Section Styles */
       .news-header {
           text-align: center;
-          padding: 64px 0;
+          padding: 64px 0; /* Standard section padding from index page */
           background: #064e3b;
           position: relative;
           overflow: hidden;
@@ -261,8 +263,8 @@
       .news-header h2 {
           position: relative;
           z-index: 2;
-          font-size: 32px;
-          font-weight: bold;
+          font-size: 32px; /* Match index page H2 size */
+          font-weight: 700; /* Bold like index page H2 */
           color: white;
           text-align: center;
           margin-bottom: 32px;
@@ -281,22 +283,22 @@
 
       /* Partners */
       .partners {
-          padding: 48px 0;
+          padding: 64px 0; /* Standard section padding from index page */
           background: white;
           border-top: 2px solid #36aa51;
       }
       .partners-content {
-          max-width: 1280px;
+          max-width: 1280px; /* Match index page wide container */
           margin: 0 auto;
-          padding: 0 24px;
+          padding: 0 24px; /* Standard padding */
           display: flex;
           justify-content: space-between;
           align-items: center;
-          gap: 24px;
+          gap: 32px; /* Standard gap from index page */
           flex-wrap: wrap;
       }
       .partner-logo {
-          height: 50px;
+          height: 50px; /* Match index page */
           width: auto;
           max-width: 150px;
           object-fit: contain;
@@ -304,9 +306,9 @@
 
       /* Login Section */
       .login-section {
-          background: #0891b2;
+          background: #2b9589; /* Using secondary green from index page */
           color: white;
-          padding: 16px 0;
+          padding: 48px 0; /* Match index page */
           text-align: center;
       }
 
@@ -322,10 +324,16 @@
               padding: 40px;
           }
           .hero-text h1 {
-              font-size: 42px;
+              font-size: 36px; /* Match index page tablet H1 size */
           }
           .news-rect-box {
               width: 700px;
+          }
+          
+          .first-section h2,
+          .section3 h2,
+          .news-header h2 {
+              font-size: 28px; /* Adjusted for tablet */
           }
       }
 
@@ -344,14 +352,14 @@
               text-align: center;
           }
           .hero-text h1 {
-              font-size: 36px;
+              font-size: 28px; /* Match index page mobile H1 size */
           }
           .first-section-flex,
           .section3-flex,
           .news-header-flex {
               flex-direction: column;
               align-items: center;
-              gap: 32px;
+              gap: 32px; /* Standard gap */
           }
           .news-rect-box {
               width: 100%;
@@ -368,25 +376,25 @@
 
       @media (max-width: 768px) {
           .hero-text h1 {
-              font-size: 32px;
+              font-size: 24px; /* Match index page small mobile H1 */
           }
           .first-section,
           .section3,
           .news-header {
-              padding: 40px 0;
+              padding: 64px 0; /* Standard section padding */
           }
           .first-section h2,
           .section3 h2,
           .news-header h2 {
-              font-size: 28px;
-              margin-bottom: 24px;
+              font-size: 24px; /* Match index page mobile H2 size */
+              margin-bottom: 48px; /* Standard spacing */
           }
           .news-rect-box {
-              padding: 32px 24px;
+              padding: 24px; /* Standard mobile padding */
           }
           .partners-content {
               flex-direction: column;
-              gap: 20px;
+              gap: 32px; /* Standard gap */
           }
           .partner-logo {
               max-width: 120px;
@@ -398,23 +406,23 @@
               padding: 24px 20px;
           }
           .hero-text h1 {
-              font-size: 28px;
+              font-size: 22px; /* Adjusted for small mobile */
           }
           .first-section,
           .section3,
           .news-header {
-              padding: 32px 0;
+              padding: 48px 0; /* Slightly reduced padding */
           }
           .first-section h2,
           .section3 h2,
           .news-header h2 {
-              font-size: 24px;
+              font-size: 22px; /* Adjusted for small mobile */
           }
           .news-rect-box {
-              padding: 24px 20px;
+              padding: 20px; /* Reduced padding */
           }
           .news-rect-box .rect-text {
-              font-size: 0.9rem;
+              font-size: 14px; /* Maintain body text size */
           }
           .button-container {
               flex-direction: column;
@@ -434,10 +442,10 @@
 
       @media (max-width: 360px) {
           .hero-text h1 {
-              font-size: 24px;
+              font-size: 20px; /* Minimum size */
           }
           .news-rect-box {
-              padding: 20px 16px;
+              padding: 16px; /* Minimum padding */
           }
       }
 
@@ -789,7 +797,7 @@
               applyFallbackTranslations();
               document.body.classList.remove('loading');
               document.body.classList.add('loaded');
-              const loadingOverlay = document.querySelector('.loading-overlay');
+              const loadingOverlay = document.querySelector('.loadingOverlay');
               if (loadingOverlay) {
                   loadingOverlay.style.display = 'none';
               }

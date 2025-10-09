@@ -18,6 +18,7 @@
     <script type="module" src="../../../scripts/enhancedsearch.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="../../Master Page(Header and Footer)/MasterPage.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script type="module">
       // Initialize Firebase
       firebase.initializeApp({
@@ -35,17 +36,18 @@
         margin: 0;
         padding: 0;
         box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 500; /* Match index page standard */
       }
 
       body {
-        font-family:
-          ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-          "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        font-family: 'Poppins', sans-serif;
         line-height: 1.6;
         color: #333;
         background-color: white;
         overflow-x: hidden;
         width: 100%;
+        font-weight: 500; /* Match index page standard */
       }
       
       /* Container for consistent max-width */
@@ -90,8 +92,8 @@
       }
 
       .hero-title {
-        font-size: 24px;
-        font-weight: 500;
+        font-size: 24px; /* Match index page H2 size */
+        font-weight: 700; /* Bold like index page H2 */
         color: #1a8934;
         flex: 1;
       }
@@ -171,8 +173,8 @@
       }
 
       .focus-details h3 {
-        font-size: 20px;
-        font-weight: 500;
+        font-size: 20px; /* Match index page H3 size */
+        font-weight: 900; /* Black weight like index page business cards */
         color: #1f2937;
         margin-bottom: 12px;
       }
@@ -180,6 +182,8 @@
       .focus-details p {
         color: #6b7280;
         line-height: 1.6;
+        font-size: 14px; /* Match index page body text size */
+        font-weight: 500; /* Medium weight like index page */
       }
 
       /* Back Link */
@@ -198,8 +202,9 @@
         align-items: center;
         color: #1a8934;
         text-decoration: none;
-        font-weight: 500;
+        font-weight: 500; /* Medium weight like index page */
         transition: color 0.3s;
+        font-size: 14px; /* Match index page body text size */
       }
 
       .back-link:hover {
@@ -271,7 +276,7 @@
         color: white;
         padding: 8px 16px;
         border-radius: 4px;
-        font-weight: bold;
+        font-weight: 700; /* Bold like index page */
         font-size: 18px;
       }
 
@@ -286,10 +291,11 @@
       .partner-text {
         font-size: 12px;
         color: #6b7280;
+        font-weight: 500; /* Medium weight like index page */
       }
 
       .partner-text .title {
-        font-weight: 500;
+        font-weight: 600; /* Semi-bold like index page */
       }
 
       /* Newsletter Section */
@@ -307,11 +313,12 @@
       
       .newsletter-title {
         color: white;
-        font-size: 20px;
+        font-size: 20px; /* Match index page newsletter title */
         margin-bottom: 25px;
         max-width: 600px;
         margin-left: auto;
         margin-right: auto;
+        font-weight: 500; /* Medium weight like index page */
       }
       
       .newsletter-input-container {
@@ -325,9 +332,10 @@
         padding: 18px 50px 18px 25px;
         border: none;
         border-radius: 4px;
-        font-size: 16px;
+        font-size: 16px; /* Match index page form text */
         color: #333;
         background: white;
+        font-weight: 500; /* Medium weight like index page */
       }
       
       .newsletter-arrow {
@@ -337,16 +345,17 @@
         transform: translateY(-50%);
         color: #009381;
         font-size: 22px;
-        font-weight: bold;
+        font-weight: 700; /* Bold like index page */
       }
       
       .newsletter-disclaimer {
         color: rgba(255,255,255,0.7);
-        font-size: 14px;
+        font-size: 14px; /* Match index page small text */
         margin-top: 15px;
         max-width: 700px;
         margin-left: auto;
         margin-right: auto;
+        font-weight: 500; /* Medium weight like index page */
       }
 
       /* Animations */
@@ -413,7 +422,7 @@
         }
         
         .hero-title {
-          font-size: 22px;
+          font-size: 22px; /* Slightly smaller for mobile */
         }
 
         .decorative-shapes {
@@ -439,7 +448,7 @@
         }
         
         .focus-details h3 {
-          font-size: 18px;
+          font-size: 18px; /* Slightly smaller for mobile */
         }
         
         .back-section {
@@ -471,17 +480,17 @@
         }
         
         .newsletter-title {
-          font-size: 18px;
+          font-size: 18px; /* Slightly smaller for mobile */
         }
         
         .newsletter-input {
           padding: 16px 50px 16px 20px;
-          font-size: 15px;
+          font-size: 15px; /* Slightly smaller for mobile */
         }
         
         .newsletter-arrow {
           right: 20px;
-          font-size: 20px;
+          font-size: 20px; /* Slightly smaller for mobile */
         }
       }
 
@@ -495,7 +504,7 @@
         }
         
         .hero-title {
-          font-size: 20px;
+          font-size: 20px; /* Smaller for small mobile */
         }
         
         .focus-areas {
@@ -521,11 +530,11 @@
         }
         
         .focus-details h3 {
-          font-size: 17px;
+          font-size: 17px; /* Smaller for small mobile */
         }
         
         .focus-details p {
-          font-size: 15px;
+          font-size: 14px; /* Maintain body text size */
         }
         
         .back-section {
@@ -549,21 +558,21 @@
         }
         
         .newsletter-title {
-          font-size: 17px;
+          font-size: 17px; /* Smaller for small mobile */
         }
         
         .newsletter-input {
           padding: 14px 50px 14px 18px;
-          font-size: 14px;
+          font-size: 14px; /* Smaller for small mobile */
         }
         
         .newsletter-arrow {
           right: 18px;
-          font-size: 18px;
+          font-size: 18px; /* Smaller for small mobile */
         }
         
         .newsletter-disclaimer {
-          font-size: 13px;
+          font-size: 13px; /* Smaller for small mobile */
         }
       }
     </style>

@@ -15,21 +15,24 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="/Master Page(Header and Footer)/MasterPage.css">
     <link rel="stylesheet" href="/digital_human/digital-human.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         /* Reset and base styles */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-weight: 500;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500; /* Match index page standard */
         }
         
         body {
-            font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            font-family: 'Poppins', sans-serif;
             line-height: 1.6;
             color: #333;
             width: 100%;
             overflow-x: hidden;
+            font-weight: 500; /* Match index page standard */
         }
         
         .container {
@@ -76,16 +79,18 @@
         }
         
         .hero-text h1 {
-            font-size: 48px;
-            font-weight: bold;
+            font-size: 48px; /* Match index page hero H1 size */
+            font-weight: 800; /* Extra-bold like index page hero */
             margin-bottom: 24px;
             line-height: 1.1;
         }
         
         .hero-text p {
             margin-bottom: 16px;
-            color: #d1fae5;
+            color: white;
             line-height: 1.6;
+            font-size: 14px; /* Match index page body text size */
+            font-weight: 500; /* Medium weight like index page */
         }
         
         .getInvolved-button {
@@ -99,7 +104,7 @@
             color: white;
             border: none;
             border-radius: 4px;
-            font-weight: 500;
+            font-weight: 500; /* Medium weight like index page */
             cursor: pointer;
             transition: background-color 0.3s;
             margin-top: 16px;
@@ -146,8 +151,8 @@
             text-align: center;
             margin-bottom: 32px;
             color: white;
-            font-size: 32px;
-            font-weight: bold;
+            font-size: 32px; /* Match index page H2 size */
+            font-weight: 700; /* Bold like index page H2 */
             width: 100%;
             padding: 0 1rem;
         }
@@ -168,15 +173,15 @@
         
         .news-rect-box .rect-heading {
             color: #2b9589;
-            font-weight: bold;
+            font-weight: 900; /* Black weight like index page business cards */
             font-size: 1.7rem;
             margin-bottom: 16px;
         }
         
         .news-rect-box .rect-text {
             color: #2b9589;
-            font-size: 1.1rem;
-            font-weight: 400;
+            font-size: 14px; /* Match index page body text size */
+            font-weight: 500; /* Medium weight like index page */
             line-height: 1.6;
         }
 
@@ -186,7 +191,7 @@
         .news-header6,
         .news-header8 {
             text-align: center;
-            padding: 64px 0;
+            padding: 64px 0; /* Standard section padding from index page */
             background: #064e3b;
             position: relative;
             overflow: hidden;
@@ -231,8 +236,8 @@
         .news-header8 h2 {
             position: relative;
             z-index: 2;
-            font-size: 32px;
-            font-weight: bold;
+            font-size: 32px; /* Match index page H2 size */
+            font-weight: 700; /* Bold like index page H2 */
             color: white;
             text-align: center;
             margin-bottom: 32px;
@@ -269,7 +274,7 @@
 
         /* Partners */
         .partners {
-            padding: 48px 0;
+            padding: 64px 0; /* Standard section padding from index page */
             background: white;
             border-top: 2px solid #36aa51;
             width: 100%;
@@ -282,12 +287,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 24px;
+            gap: 32px; /* Standard gap from index page */
             flex-wrap: wrap;
         }
 
         .partner-logo {
-            height: 50px;
+            height: 50px; /* Match index page */
             width: auto;
             max-width: 150px;
             object-fit: contain;
@@ -297,9 +302,9 @@
 
         /* Login Section */
         .login-section {
-            background: #0891b2;
+            background: #2b9589; /* Using secondary green from index page */
             color: white;
-            padding: 16px 0;
+            padding: 48px 0; /* Match index page */
             text-align: center;
             width: 100%;
         }
@@ -323,9 +328,10 @@
             padding: 18px 50px 18px 25px;
             border: none;
             border-radius: 4px;
-            font-size: 16px;
+            font-size: 16px; /* Match index page form text */
             color: #333;
             background: white;
+            font-weight: 500; /* Medium weight like index page */
         }
         
         .newsletter-submit {
@@ -338,6 +344,7 @@
             font-size: 22px;
             color: #009381;
             cursor: pointer;
+            font-weight: 700; /* Bold like index page */
         }
 
         /* Loading Styles */
@@ -380,6 +387,25 @@
         }
 
         /* MOBILE RESPONSIVE STYLES */
+        @media (max-width: 1024px) {
+            .hero-text h1 {
+                font-size: 36px; /* Match index page tablet H1 size */
+            }
+            
+            .first-section h2,
+            .section3 h2,
+            .news-header h2,
+            .news-header4 h2,
+            .news-header6 h2,
+            .news-header8 h2 {
+                font-size: 28px; /* Adjusted for tablet */
+            }
+            
+            .news-rect-box .rect-heading {
+                font-size: 1.5rem;
+            }
+        }
+
         @media (max-width: 768px) {
             /* Hero Section - Stack vertically */
             .hero-content {
@@ -399,12 +425,12 @@
             }
             
             .hero-text h1 {
-                font-size: 28px;
+                font-size: 28px; /* Match index page mobile H1 size */
                 margin-bottom: 20px;
             }
             
             .hero-text p {
-                font-size: 16px;
+                font-size: 14px; /* Maintain body text size */
                 margin-bottom: 16px;
             }
             
@@ -425,7 +451,7 @@
             .news-header4,
             .news-header6,
             .news-header8 {
-                padding: 40px 0;
+                padding: 64px 0; /* Standard section padding */
             }
             
             .first-section h2,
@@ -434,8 +460,8 @@
             .news-header4 h2,
             .news-header6 h2,
             .news-header8 h2 {
-                font-size: 24px;
-                margin-bottom: 24px;
+                font-size: 24px; /* Match index page mobile H2 size */
+                margin-bottom: 48px; /* Standard spacing */
                 padding: 0 10px;
             }
             
@@ -444,7 +470,7 @@
             .section3-flex,
             .news-header-flex {
                 flex-direction: column;
-                gap: 24px;
+                gap: 32px; /* Standard gap */
                 width: 100%;
             }
             
@@ -452,28 +478,28 @@
             .news-rect-box {
                 width: 100%;
                 min-height: auto;
-                padding: 24px 20px;
+                padding: 24px; /* Standard mobile padding */
                 margin: 0;
             }
             
             .news-rect-box .rect-heading {
                 font-size: 1.3rem;
-                margin-bottom: 12px;
+                margin-bottom: 16px; /* Standard spacing */
             }
             
             .news-rect-box .rect-text {
-                font-size: 0.95rem;
-                line-height: 1.5;
+                font-size: 14px; /* Maintain body text size */
+                line-height: 1.6; /* Standard line height */
             }
 
             /* Partners section */
             .partners {
-                padding: 40px 0;
+                padding: 64px 0; /* Standard section padding */
             }
             
             .partners-content {
                 padding: 0 20px;
-                gap: 20px;
+                gap: 32px; /* Standard gap */
                 justify-content: center;
             }
             
@@ -485,7 +511,7 @@
 
             /* Newsletter section */
             .login-section {
-                padding: 20px 0;
+                padding: 48px 0; /* Standard padding */
             }
             
             .newsletter-form {
@@ -493,8 +519,8 @@
             }
             
             .newsletter-input {
-                padding: 16px 50px 16px 20px;
-                font-size: 16px;
+                padding: 18px 50px 18px 25px; /* Maintain standard padding */
+                font-size: 16px; /* Maintain standard size */
             }
         }
 
@@ -505,11 +531,11 @@
             }
             
             .hero-text h1 {
-                font-size: 24px;
+                font-size: 24px; /* Match index page small mobile H1 */
             }
             
             .hero-text p {
-                font-size: 14px;
+                font-size: 14px; /* Maintain body text size */
             }
             
             .first-section,
@@ -518,7 +544,7 @@
             .news-header4,
             .news-header6,
             .news-header8 {
-                padding: 32px 0;
+                padding: 48px 0; /* Slightly reduced padding */
             }
             
             .first-section h2,
@@ -527,8 +553,8 @@
             .news-header4 h2,
             .news-header6 h2,
             .news-header8 h2 {
-                font-size: 20px;
-                margin-bottom: 20px;
+                font-size: 22px; /* Adjusted for small mobile */
+                margin-bottom: 32px; /* Reduced spacing */
             }
             
             .section-content {
@@ -536,7 +562,7 @@
             }
             
             .news-rect-box {
-                padding: 20px 16px;
+                padding: 20px; /* Reduced padding */
             }
             
             .news-rect-box .rect-heading {
@@ -544,16 +570,16 @@
             }
             
             .news-rect-box .rect-text {
-                font-size: 0.9rem;
+                font-size: 14px; /* Maintain body text size */
             }
             
             .partners {
-                padding: 32px 0;
+                padding: 48px 0; /* Slightly reduced padding */
             }
             
             .partners-content {
                 padding: 0 16px;
-                gap: 16px;
+                gap: 24px; /* Standard gap */
             }
             
             .partner-logo {
@@ -562,19 +588,19 @@
             }
             
             .newsletter-input {
-                padding: 14px 50px 14px 16px;
-                font-size: 14px;
+                padding: 15px 45px 15px 20px; /* Reduced padding */
+                font-size: 14px; /* Slightly smaller */
             }
             
             .newsletter-submit {
-                font-size: 20px;
+                font-size: 20px; /* Slightly smaller */
             }
         }
 
         @media (max-width: 360px) {
             /* Smallest devices */
             .hero-text h1 {
-                font-size: 22px;
+                font-size: 22px; /* Minimum size */
             }
             
             .partner-logo {
@@ -585,11 +611,11 @@
             
             .partners-content {
                 justify-content: center;
-                gap: 12px;
+                gap: 16px; /* Reduced gap */
             }
             
             .news-rect-box {
-                padding: 16px 12px;
+                padding: 16px; /* Minimum padding */
             }
         }
 
