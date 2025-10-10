@@ -85,6 +85,7 @@ class GreenEconomyHeader extends HTMLElement {
     setTimeout(() => {
       this.setupSearchFunctionality();
       this.setupMobileMenu();
+      this.preventLayoutShift();
     }, 100);
 
     // Add event listener for logo click to handle logout
@@ -109,6 +110,29 @@ class GreenEconomyHeader extends HTMLElement {
           window.location.href = '/index.html';
         }
       });
+    }
+  }
+
+  preventLayoutShift() {
+    // Force consistent header dimensions
+    const header = this.querySelector('.header');
+    const headerOuter = this.querySelector('.header-outer');
+    
+    if (header && headerOuter) {
+      // Set fixed height to prevent layout shifts
+      header.style.minHeight = '70px';
+      header.style.height = '70px';
+      headerOuter.style.height = '70px';
+      
+      // Prevent any animations that might cause movement
+      header.style.transition = 'none';
+      headerOuter.style.transition = 'none';
+      
+      // Ensure header stays on top of everything
+      headerOuter.style.zIndex = '1000';
+      headerOuter.style.position = 'relative';
+      
+      console.log('Header layout shift prevention applied');
     }
   }
 
@@ -154,6 +178,9 @@ class GreenEconomyHeader extends HTMLElement {
         searchPopup.classList.remove('animate-out');
         console.log('Search popup opened');
         
+        // Prevent body scroll when search is open
+        document.body.style.overflow = 'hidden';
+        
         // Focus on search input
         setTimeout(() => {
           const input = document.getElementById('smartSearch');
@@ -172,6 +199,8 @@ class GreenEconomyHeader extends HTMLElement {
         searchPopup.classList.remove('animate-in');
         setTimeout(() => {
           searchPopup.style.display = 'none';
+          // Restore body scroll
+          document.body.style.overflow = '';
           console.log('Search popup closed');
         }, 300);
       }
@@ -187,6 +216,8 @@ class GreenEconomyHeader extends HTMLElement {
       searchPopup.classList.remove('animate-in');
       setTimeout(() => {
         searchPopup.style.display = 'none';
+        // Restore body scroll
+        document.body.style.overflow = '';
         console.log('Search popup closed via close button');
       }, 300);
     });
@@ -200,10 +231,17 @@ class GreenEconomyHeader extends HTMLElement {
         searchPopup.classList.remove('animate-in');
         setTimeout(() => {
           searchPopup.style.display = 'none';
+          // Restore body scroll
+          document.body.style.overflow = '';
           console.log('Search popup closed via outside click');
         }, 300);
       }
     });
+
+    // Prevent search input from affecting layout
+    if (searchInput) {
+      searchInput.style.willChange = 'transform';
+    }
 
     console.log('Search functionality setup complete');
   }
@@ -213,8 +251,15 @@ class GreenEconomyHeader extends HTMLElement {
     const nav = this.querySelector('#main-nav');
     const navLinks = this.querySelectorAll('.nav-links a, .nav-utils .search-icon, .language-selector');
     const header = this.querySelector('.header');
+    const headerOuter = this.querySelector('.header-outer');
 
     if (menuToggle && nav) {
+      // Set fixed dimensions to prevent layout shift
+      if (headerOuter) {
+        headerOuter.style.minHeight = '70px';
+        headerOuter.style.height = 'auto'; // Allow expansion for mobile menu
+      }
+
       // Toggle mobile menu
       const toggleMenu = () => {
         const isExpanding = !nav.classList.contains('active');
@@ -224,14 +269,19 @@ class GreenEconomyHeader extends HTMLElement {
           nav.style.display = 'flex';
           const height = nav.scrollHeight + 'px';
           nav.style.maxHeight = '0';
+          nav.style.opacity = '0';
           
           // Trigger reflow
           nav.offsetHeight;
           
-          // Expand
+          // Expand with smooth animation
           nav.classList.add('active');
           menuToggle.classList.add('active');
           nav.style.maxHeight = height;
+          nav.style.opacity = '1';
+          
+          // Prevent body scroll when mobile menu is open
+          document.body.style.overflow = 'hidden';
           
           // Add click outside handler
           const handleClickOutside = (e) => {
@@ -249,21 +299,37 @@ class GreenEconomyHeader extends HTMLElement {
       
       const closeMenu = () => {
         nav.style.maxHeight = nav.scrollHeight + 'px';
-        nav.offsetHeight; // Trigger reflow
+        nav.style.opacity = '1';
+        // Trigger reflow
+        nav.offsetHeight;
         nav.style.maxHeight = '0';
-        nav.classList.remove('active');
-        menuToggle.classList.remove('active');
+        nav.style.opacity = '0';
+        
+        setTimeout(() => {
+          nav.classList.remove('active');
+          menuToggle.classList.remove('active');
+          // Restore body scroll
+          document.body.style.overflow = '';
+          // Reset display after animation
+          setTimeout(() => {
+            if (!nav.classList.contains('active')) {
+              nav.style.display = '';
+            }
+          }, 300);
+        }, 300);
       };
       
       // Handle menu toggle click
       menuToggle.addEventListener('click', (e) => {
         e.stopPropagation();
+        e.preventDefault();
         toggleMenu();
       });
 
       // Close menu when clicking on a nav link
       navLinks.forEach(link => {
-        link.addEventListener('click', () => {
+        link.addEventListener('click', (e) => {
+          e.stopPropagation();
           closeMenu();
         });
       });
@@ -274,12 +340,21 @@ class GreenEconomyHeader extends HTMLElement {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
           if (window.innerWidth > 1024) {
+            // Reset mobile menu styles on desktop
             nav.style.display = '';
             nav.style.maxHeight = '';
+            nav.style.opacity = '';
             nav.classList.remove('active');
             menuToggle.classList.remove('active');
+            document.body.style.overflow = '';
           }
         }, 250);
+      });
+
+      // Prevent focus styles from causing layout shifts
+      navLinks.forEach(link => {
+        link.style.outlineOffset = '2px';
+        link.style.border = '1px solid transparent';
       });
     }
   }
@@ -405,6 +480,8 @@ class GreenEconomyFooter extends HTMLElement {
         font-family: 'Arial', sans-serif;
         font-size: 14px;
         line-height: 1.8;
+        position: relative;
+        z-index: 1;
       }
       .footer .container {
         max-width: 1200px;
@@ -782,6 +859,9 @@ function setupGlobalSearchFunctionality() {
         popup.classList.remove('animate-out');
         console.log('Search popup opened via delegation');
         
+        // Prevent body scroll when search is open
+        document.body.style.overflow = 'hidden';
+        
         // Focus on search input
         setTimeout(() => {
           const input = document.getElementById('smartSearch');
@@ -801,6 +881,8 @@ function setupGlobalSearchFunctionality() {
         popup.classList.remove('animate-in');
         setTimeout(() => {
           popup.style.display = 'none';
+          // Restore body scroll
+          document.body.style.overflow = '';
           console.log('Search popup closed via delegation');
         }, 300);
       }
@@ -818,6 +900,8 @@ function setupGlobalSearchFunctionality() {
         popup.classList.remove('animate-in');
         setTimeout(() => {
           popup.style.display = 'none';
+          // Restore body scroll
+          document.body.style.overflow = '';
           console.log('Search popup closed via close button delegation');
         }, 300);
       }
@@ -832,6 +916,8 @@ function setupGlobalSearchFunctionality() {
       popup.classList.remove('animate-in');
       setTimeout(() => {
         popup.style.display = 'none';
+        // Restore body scroll
+        document.body.style.overflow = '';
         console.log('Search popup closed via outside click delegation');
       }, 300);
     }
