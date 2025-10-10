@@ -606,7 +606,7 @@ body {
     }
 }
 
-/* Prevent horizontal scroll */
+/* Prevent horizontal scroll
 html, body {
     max-width: 100%;
     overflow-x: hidden;

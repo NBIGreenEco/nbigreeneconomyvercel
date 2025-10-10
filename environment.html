@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-i18n="title.environmental">Environmental Sustainability - Green Economy Toolkit</title>
+    <!-- Load i18next scripts -->
+    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
+    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
+    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
+    <!-- Load other scripts -->
+    <script type="module" src="../Master Page(Header and Footer)/MasterPage.js"></script>
+    <script type="module" src="../Master Page(Header and Footer)/translation.js"></script>
+    <script type="module" src="../Trans.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
+    <script type="module" src="../../scripts/enhancedsearch.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="../Master Page(Header and Footer)/MasterPage.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 500;
+      }
+
+      body {
+        font-family: 'Poppins', sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: white;
+        overflow-x: hidden;
+        width: 100%;
+        font-weight: 500;
+      }
+      
+      /* Container for consistent max-width */
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 100%;
+      }
+      
+      /* Hero Section */
+      .hero {
+        position: relative;
+        height: 400px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .hero-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+
+      .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .hero-title {
+        color: white;
+        font-size: 48px;
+        font-weight: 700;
+        text-align: center;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        z-index: 2;
+        padding: 0 20px;
+      }
+
+      /* Content Section */
+      .content-section {
+        padding: 60px 0;
+      }
+
+      .content-container {
+        width: 100%;
+        padding: 0 24px;
+      }
+
+      .content-description {
+        max-width: 800px;
+        margin: 0 auto 40px;
+        text-align: center;
+      }
+
+      .content-description h2 {
+        font-size: 32px;
+        font-weight: 700;
+        color: #1a8934;
+        margin-bottom: 20px;
+      }
+
+      .content-description p {
+        font-size: 18px;
+        color: #6b7280;
+        line-height: 1.7;
+        margin-bottom: 20px;
+      }
+
+      /* Key Points Section */
+      .key-points {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-top: 40px;
+      }
+
+      .point-card {
+        background: #f8fafc;
+        border-radius: 8px;
+        padding: 30px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .point-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .point-icon {
+        width: 60px;
+        height: 60px;
+        background: #1a8934;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+
+      .point-icon svg {
+        width: 30px;
+        height: 30px;
+        color: white;
+      }
+
+      .point-card h3 {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 15px;
+      }
+
+      .point-card p {
+        color: #6b7280;
+        line-height: 1.6;
+      }
+
+      /* Back Link */
+      .back-section {
+        padding: 40px 0;
+        background: #f8fafc;
+      }
+
+      .back-content {
+        width: 100%;
+        padding: 0 24px;
+      }
+
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        color: #1a8934;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+        font-size: 16px;
+      }
+
+      .back-link:hover {
+        color: #16a34a;
+      }
+
+      .back-link svg {
+        width: 16px;
+        height: 16px;
+        margin-right: 8px;
+      }
+
+      /* Newsletter Section */
+      .newsletter-section {
+        width: 100%;
+        background-color: #009381;
+        padding: 80px 20px;
+      }
+      
+      .newsletter-container {
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: left;
+      }
+      
+      .newsletter-title {
+        color: white;
+        font-size: 20px;
+        margin-bottom: 25px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        font-weight: 500;
+      }
+      
+      .newsletter-input-container {
+        position: relative;
+        max-width: 700px;
+        margin: 0 auto;
+      }
+      
+      .newsletter-input {
+        width: 100%;
+        padding: 18px 50px 18px 25px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        color: #333;
+        background: white;
+        font-weight: 500;
+      }
+      
+      .newsletter-arrow {
+        position: absolute;
+        right: 25px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #009381;
+        font-size: 22px;
+        font-weight: 700;
+      }
+      
+      .newsletter-disclaimer {
+        color: rgba(255,255,255,0.7);
+        font-size: 14px;
+        margin-top: 15px;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+        font-weight: 500;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 1024px) {
+        .hero-title {
+          font-size: 42px;
+        }
+        
+        .content-container {
+          padding: 0 20px;
+        }
+        
+        .back-content {
+          padding: 0 20px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .hero {
+          height: 300px;
+        }
+        
+        .hero-title {
+          font-size: 36px;
+        }
+        
+        .content-section {
+          padding: 40px 0;
+        }
+        
+        .content-container {
+          padding: 0 16px;
+        }
+        
+        .content-description h2 {
+          font-size: 28px;
+        }
+        
+        .content-description p {
+          font-size: 16px;
+        }
+        
+        .key-points {
+          grid-template-columns: 1fr;
+        }
+        
+        .back-section {
+          padding: 30px 0;
+        }
+        
+        .back-content {
+          padding: 0 16px;
+        }
+        
+        .newsletter-section {
+          padding: 60px 16px;
+        }
+        
+        .newsletter-title {
+          font-size: 18px;
+        }
+        
+        .newsletter-input {
+          padding: 16px 50px 16px 20px;
+          font-size: 15px;
+        }
+        
+        .newsletter-arrow {
+          right: 20px;
+          font-size: 20px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .hero {
+          height: 250px;
+        }
+        
+        .hero-title {
+          font-size: 28px;
+        }
+        
+        .content-section {
+          padding: 30px 0;
+        }
+        
+        .content-container {
+          padding: 0 12px;
+        }
+        
+        .content-description h2 {
+          font-size: 24px;
+        }
+        
+        .content-description p {
+          font-size: 15px;
+        }
+        
+        .point-card {
+          padding: 20px;
+        }
+        
+        .back-section {
+          padding: 20px 0;
+        }
+        
+        .back-content {
+          padding: 0 12px;
+        }
+        
+        .newsletter-section {
+          padding: 50px 12px;
+        }
+        
+        .newsletter-title {
+          font-size: 17px;
+        }
+        
+        .newsletter-input {
+          padding: 14px 50px 14px 18px;
+          font-size: 14px;
+        }
+        
+        .newsletter-arrow {
+          right: 18px;
+          font-size: 18px;
+        }
+        
+        .newsletter-disclaimer {
+          font-size: 13px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <green-economy-header></green-economy-header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-image" style="background-image: url('https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=1200&h=400&fit=crop');"></div>
+      <div class="hero-overlay">
+        <h1 class="hero-title" data-i18n="environmental.title">Environmental Sustainability</h1>
+      </div>
+    </section>
+
+    <!-- Content Section -->
+    <section class="content-section">
+      <div class="content-container container">
+        <div class="content-description">
+          <h2 data-i18n="environmental.subtitle">Balancing Development and Conservation</h2>
+          <p data-i18n="environmental.description">
+            We need to learn how to protect nature and teach others to do the same, especially 
+            in the tourism industry. That way, we can enjoy beautiful places without harming them, 
+            ensuring they remain for future generations to experience and appreciate.
+          </p>
+          <p data-i18n="environmental.importance">
+            South Africa's rich biodiversity and natural landscapes are major tourism assets. 
+            Environmental sustainability ensures these resources are protected while creating 
+            economic opportunities through responsible tourism and conservation initiatives.
+          </p>
+        </div>
+
+        <div class="key-points">
+          <div class="point-card">
+            <div class="point-icon">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 data-i18n="environmental.point1.title">Eco-Tourism Development</h3>
+            <p data-i18n="environmental.point1.description">
+              Promoting responsible travel to natural areas that conserves the environment, 
+              sustains the well-being of local people, and involves interpretation and education.
+            </p>
+          </div>
+
+          <div class="point-card">
+            <div class="point-icon">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+            </div>
+            <h3 data-i18n="environmental.point2.title">Environmental Education</h3>
+            <p data-i18n="environmental.point2.description">
+              Developing educational programs and awareness campaigns to teach sustainable 
+              practices, conservation principles, and environmental stewardship across all sectors.
+            </p>
+          </div>
+
+          <div class="point-card">
+            <div class="point-icon">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+            </div>
+            <h3 data-i18n="environmental.point3.title">Climate Resilience</h3>
+            <p data-i18n="environmental.point3.description">
+              Building capacity to adapt to climate change impacts through sustainable land use, 
+              water management, and disaster risk reduction strategies.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Back to focus areas -->
+    <section class="back-section">
+      <div class="back-content container">
+        <a href="index.html" class="back-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            />
+          </svg>
+          <span data-i18n="navigation.backToFocusAreas">Back to all focus areas</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter-section">
+      <div class="newsletter-container">
+        <!-- Title -->
+        <h2 class="newsletter-title" data-i18n="login.subscribe">
+          Subscribe to our newsletter to get the latest information
+        </h2>
+        
+        <!-- Input Box -->
+        <div class="newsletter-input-container">
+          <input 
+            type="email" 
+            placeholder="Your email" 
+            data-i18n="[placeholder]login.emailPlaceholder"
+            class="newsletter-input"
+          >
+          <span class="newsletter-arrow">→</span>
+        </div>
+        
+        <!-- Disclaimer Text -->
+        <p class="newsletter-disclaimer" data-i18n="login.noSpam">
+          *Only relevant information, no spam
+        </p>
+      </div>
+    </section>
+
+    <!-- Digital Human Widget -->
+    <div class="video-overlay" id="videoOverlay">
+      <div class="video-container">
+        <span class="close-video">&times;</span>
+        <div class="language-toggles">
+          <button class="lang-btn active" data-lang="eng">English</button>
+          <button class="lang-btn" data-lang="zulu">Zulu</button>
+          <button class="lang-btn" data-lang="tswana">Tswana</button>
+        </div>
+        <video
+          id="floatingVideo"
+          playsinline
+          loop
+          disablepictureinpicture
+          controlslist="nodownload nofullscreen noremoteplayback"
+        ></video>
+      </div>
+    </div>
+
+    <div class="pulsing-icon" id="pulsingIcon">
+      <video autoplay muted loop playsinline>
+        <source src="/Videos/idle.mp4" type="video/mp4" />
+      </video>
+    </div>
+
+    <link rel="stylesheet" href="/digital_human/digital-human.css" />
+    <script src="/digital_human/digital-human.js" defer></script>
+    <!-- Digital Human Widget End -->
+
+    <!-- Footer -->
+    <green-economy-chatbot></green-economy-chatbot>
+    <script src="../scripts/chatbot.js"></script>
+    <green-economy-footer></green-economy-footer>
+  </body>
+</html>

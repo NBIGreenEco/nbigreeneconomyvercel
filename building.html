@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-i18n="title.buildings">Green Buildings - Green Economy Toolkit</title>
+    <!-- Load i18next scripts -->
+    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
+    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
+    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
+    <!-- Load other scripts -->
+    <script type="module" src="../Master Page(Header and Footer)/MasterPage.js"></script>
+    <script type="module" src="../Master Page(Header and Footer)/translation.js"></script>
+    <script type="module" src="../Trans.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
+    <script type="module" src="../../scripts/enhancedsearch.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="../Master Page(Header and Footer)/MasterPage.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 500;
+      }
+
+      body {
+        font-family: 'Poppins', sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: white;
+        overflow-x: hidden;
+        width: 100%;
+        font-weight: 500;
+      }
+      
+      /* Container for consistent max-width */
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 100%;
+      }
+      
+      /* Hero Section */
+      .hero {
+        position: relative;
+        height: 400px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .hero-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+
+      .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .hero-title {
+        color: white;
+        font-size: 48px;
+        font-weight: 700;
+        text-align: center;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        z-index: 2;
+        padding: 0 20px;
+      }
+
+      /* Content Section */
+      .content-section {
+        padding: 60px 0;
+      }
+
+      .content-container {
+        width: 100%;
+        padding: 0 24px;
+      }
+
+      .content-description {
+        max-width: 800px;
+        margin: 0 auto 40px;
+        text-align: center;
+      }
+
+      .content-description h2 {
+        font-size: 32px;
+        font-weight: 700;
+        color: #1a8934;
+        margin-bottom: 20px;
+      }
+
+      .content-description p {
+        font-size: 18px;
+        color: #6b7280;
+        line-height: 1.7;
+        margin-bottom: 20px;
+      }
+
+      /* Key Points Section */
+      .key-points {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-top: 40px;
+      }
+
+      .point-card {
+        background: #f8fafc;
+        border-radius: 8px;
+        padding: 30px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .point-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .point-icon {
+        width: 60px;
+        height: 60px;
+        background: #1a8934;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+
+      .point-icon svg {
+        width: 30px;
+        height: 30px;
+        color: white;
+      }
+
+      .point-card h3 {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 15px;
+      }
+
+      .point-card p {
+        color: #6b7280;
+        line-height: 1.6;
+      }
+
+      /* Back Link */
+      .back-section {
+        padding: 40px 0;
+        background: #f8fafc;
+      }
+
+      .back-content {
+        width: 100%;
+        padding: 0 24px;
+      }
+
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        color: #1a8934;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+        font-size: 16px;
+      }
+
+      .back-link:hover {
+        color: #16a34a;
+      }
+
+      .back-link svg {
+        width: 16px;
+        height: 16px;
+        margin-right: 8px;
+      }
+
+      /* Newsletter Section */
+      .newsletter-section {
+        width: 100%;
+        background-color: #009381;
+        padding: 80px 20px;
+      }
+      
+      .newsletter-container {
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: left;
+      }
+      
+      .newsletter-title {
+        color: white;
+        font-size: 20px;
+        margin-bottom: 25px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        font-weight: 500;
+      }
+      
+      .newsletter-input-container {
+        position: relative;
+        max-width: 700px;
+        margin: 0 auto;
+      }
+      
+      .newsletter-input {
+        width: 100%;
+        padding: 18px 50px 18px 25px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        color: #333;
+        background: white;
+        font-weight: 500;
+      }
+      
+      .newsletter-arrow {
+        position: absolute;
+        right: 25px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #009381;
+        font-size: 22px;
+        font-weight: 700;
+      }
+      
+      .newsletter-disclaimer {
+        color: rgba(255,255,255,0.7);
+        font-size: 14px;
+        margin-top: 15px;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+        font-weight: 500;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 1024px) {
+        .hero-title {
+          font-size: 42px;
+        }
+        
+        .content-container {
+          padding: 0 20px;
+        }
+        
+        .back-content {
+          padding: 0 20px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .hero {
+          height: 300px;
+        }
+        
+        .hero-title {
+          font-size: 36px;
+        }
+        
+        .content-section {
+          padding: 40px 0;
+        }
+        
+        .content-container {
+          padding: 0 16px;
+        }
+        
+        .content-description h2 {
+          font-size: 28px;
+        }
+        
+        .content-description p {
+          font-size: 16px;
+        }
+        
+        .key-points {
+          grid-template-columns: 1fr;
+        }
+        
+        .back-section {
+          padding: 30px 0;
+        }
+        
+        .back-content {
+          padding: 0 16px;
+        }
+        
+        .newsletter-section {
+          padding: 60px 16px;
+        }
+        
+        .newsletter-title {
+          font-size: 18px;
+        }
+        
+        .newsletter-input {
+          padding: 16px 50px 16px 20px;
+          font-size: 15px;
+        }
+        
+        .newsletter-arrow {
+          right: 20px;
+          font-size: 20px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .hero {
+          height: 250px;
+        }
+        
+        .hero-title {
+          font-size: 28px;
+        }
+        
+        .content-section {
+          padding: 30px 0;
+        }
+        
+        .content-container {
+          padding: 0 12px;
+        }
+        
+        .content-description h2 {
+          font-size: 24px;
+        }
+        
+        .content-description p {
+          font-size: 15px;
+        }
+        
+        .point-card {
+          padding: 20px;
+        }
+        
+        .back-section {
+          padding: 20px 0;
+        }
+        
+        .back-content {
+          padding: 0 12px;
+        }
+        
+        .newsletter-section {
+          padding: 50px 12px;
+        }
+        
+        .newsletter-title {
+          font-size: 17px;
+        }
+        
+        .newsletter-input {
+          padding: 14px 50px 14px 18px;
+          font-size: 14px;
+        }
+        
+        .newsletter-arrow {
+          right: 18px;
+          font-size: 18px;
+        }
+        
+        .newsletter-disclaimer {
+          font-size: 13px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <green-economy-header></green-economy-header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-image" style="background-image: url('https://d1v1e13ebw3o15.cloudfront.net/data/42690/pool_and_spa_master/..jpg');"></div>
+      <div class="hero-overlay">
+        <h1 class="hero-title" data-i18n="buildings.title">Green Buildings & Built Environment</h1>
+      </div>
+    </section>
+
+    <!-- Content Section -->
+    <section class="content-section">
+      <div class="content-container container">
+        <div class="content-description">
+          <h2 data-i18n="buildings.subtitle">Sustainable Construction and Design</h2>
+          <p data-i18n="buildings.description">
+            Green buildings are designed to save energy and use eco-friendly materials. 
+            The built environment refers to human-made infrastructure and amenities. 
+            Ensuring a green built environment is about building homes, offices and factories 
+            that do as little harm as possible to Earth, and to the people who live and work in them.
+          </p>
+          <p data-i18n="buildings.importance">
+            With rapid urbanization in South Africa, green building practices offer significant 
+            opportunities to reduce environmental impact, lower operating costs, and create 
+            healthier living and working spaces while driving innovation in the construction sector.
+          </p>
+        </div>
+
+        <div class="key-points">
+          <div class="point-card">
+            <div class="point-icon">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+            </div>
+            <h3 data-i18n="buildings.point1.title">Energy Efficient Design</h3>
+            <p data-i18n="buildings.point1.description">
+              Implementing passive solar design, high-performance insulation, energy-efficient 
+              appliances, and renewable energy systems to minimize energy consumption in buildings.
+            </p>
+          </div>
+
+          <div class="point-card">
+            <div class="point-icon">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+              </svg>
+            </div>
+            <h3 data-i18n="buildings.point2.title">Water Conservation</h3>
+            <p data-i18n="buildings.point2.description">
+              Incorporating rainwater harvesting, greywater recycling, water-efficient fixtures, 
+              and drought-resistant landscaping to reduce water usage in buildings and landscapes.
+            </p>
+          </div>
+
+          <div class="point-card">
+            <div class="point-icon">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </div>
+            <h3 data-i18n="buildings.point3.title">Sustainable Materials</h3>
+            <p data-i18n="buildings.point3.description">
+              Using locally sourced, recycled, renewable, and non-toxic building materials 
+              to reduce environmental impact and create healthier indoor environments.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Back to focus areas -->
+    <section class="back-section">
+      <div class="back-content container">
+        <a href="index.html" class="back-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            />
+          </svg>
+          <span data-i18n="navigation.backToFocusAreas">Back to all focus areas</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter-section">
+      <div class="newsletter-container">
+        <!-- Title -->
+        <h2 class="newsletter-title" data-i18n="login.subscribe">
+          Subscribe to our newsletter to get the latest information
+        </h2>
+        
+        <!-- Input Box -->
+        <div class="newsletter-input-container">
+          <input 
+            type="email" 
+            placeholder="Your email" 
+            data-i18n="[placeholder]login.emailPlaceholder"
+            class="newsletter-input"
+          >
+          <span class="newsletter-arrow">→</span>
+        </div>
+        
+        <!-- Disclaimer Text -->
+        <p class="newsletter-disclaimer" data-i18n="login.noSpam">
+          *Only relevant information, no spam
+        </p>
+      </div>
+    </section>
+
+    <!-- Digital Human Widget -->
+    <div class="video-overlay" id="videoOverlay">
+      <div class="video-container">
+        <span class="close-video">&times;</span>
+        <div class="language-toggles">
+          <button class="lang-btn active" data-lang="eng">English</button>
+          <button class="lang-btn" data-lang="zulu">Zulu</button>
+          <button class="lang-btn" data-lang="tswana">Tswana</button>
+        </div>
+        <video
+          id="floatingVideo"
+          playsinline
+          loop
+          disablepictureinpicture
+          controlslist="nodownload nofullscreen noremoteplayback"
+        ></video>
+      </div>
+    </div>
+
+    <div class="pulsing-icon" id="pulsingIcon">
+      <video autoplay muted loop playsinline>
+        <source src="/Videos/idle.mp4" type="video/mp4" />
+      </video>
+    </div>
+
+    <link rel="stylesheet" href="/digital_human/digital-human.css" />
+    <script src="/digital_human/digital-human.js" defer></script>
+    <!-- Digital Human Widget End -->
+
+    <!-- Footer -->
+    <green-economy-chatbot></green-economy-chatbot>
+    <script src="../scripts/chatbot.js"></script>
+    <green-economy-footer></green-economy-footer>
+  </body>
+</html>
