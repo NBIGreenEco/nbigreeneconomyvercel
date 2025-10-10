@@ -63,7 +63,6 @@ class GreenEconomyHeader extends HTMLElement {
         <section class="search-section" id="search-popup" style="display: none;">
           <div class="search-container">
             <div class="search-header">
-{{ ... }}
               <h3 data-i18n="header.ai-search-title">AI Enhanced Search</h3>
               <span class="search-close" id="search-close">×</span>
             </div>
@@ -289,21 +288,271 @@ class GreenEconomyHeader extends HTMLElement {
 class GreenEconomyFooter extends HTMLElement {
   constructor() {
     super();
-    // Create a link element for the footer styles
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = '/Master%20Page(Header%20and%20Footer)/Footer.css';
-    document.head.appendChild(link);
+    this.ensureFooterCSS();
+  }
+
+  ensureFooterCSS() {
+    // Check if CSS is already loaded
+    if (!document.querySelector('link[href*="footer.css"]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      
+      // Calculate correct path based on current page location
+      const currentPath = window.location.pathname;
+      let cssPath = this.getFooterCSSPath();
+      
+      link.href = cssPath;
+      link.onerror = () => {
+        console.error('Failed to load footer.css from:', cssPath);
+        // Try alternative paths
+        this.tryAlternativeCSSPaths();
+      };
+      
+      link.onload = () => {
+        console.log('Footer CSS loaded successfully from:', cssPath);
+      };
+      
+      document.head.appendChild(link);
+    }
+  }
+
+  getFooterCSSPath() {
+    const currentPath = window.location.pathname;
+    
+    // ADMIN pages
+    if (currentPath.includes('/ADMIN/')) {
+      return '../Master Page(Header and Footer)/footer.css';
+    }
+    // Dashboard pages
+    else if (currentPath.includes('/Dashboard/')) {
+      return '../Master Page(Header and Footer)/footer.css';
+    }
+    // LandingPage subpages (multiple levels)
+    else if (currentPath.includes('/LandingPage/')) {
+      // Check how deep we are in LandingPage
+      const pathSegments = currentPath.split('/').filter(segment => segment);
+      const landingPageIndex = pathSegments.indexOf('LandingPage');
+      const depth = pathSegments.length - landingPageIndex - 1;
+      
+      if (depth >= 2) {
+        return '../../../Master Page(Header and Footer)/footer.css';
+      } else {
+        return '../../Master Page(Header and Footer)/footer.css';
+      }
+    }
+    // Funding Hub pages
+    else if (currentPath.includes('/Funding Hub/')) {
+      return '../Master Page(Header and Footer)/footer.css';
+    }
+    // API Management pages
+    else if (currentPath.includes('/api-management/')) {
+      return '../Master Page(Header and Footer)/footer.css';
+    }
+    // Questionnaire pages
+    else if (currentPath.includes('/questionnaire/')) {
+      return '../Master Page(Header and Footer)/footer.css';
+    }
+    // Root level pages
+    else {
+      return '/Master Page(Header and Footer)/footer.css';
+    }
+  }
+
+  tryAlternativeCSSPaths() {
+    const alternativePaths = [
+      '/Master Page(Header and Footer)/footer.css',
+      '../Master Page(Header and Footer)/footer.css',
+      '../../Master Page(Header and Footer)/footer.css',
+      '../../../Master Page(Header and Footer)/footer.css',
+      './Master Page(Header and Footer)/footer.css'
+    ];
+
+    let attempts = 0;
+    const tryNextPath = () => {
+      if (attempts >= alternativePaths.length) {
+        console.error('All footer.css paths failed, applying fallback styles');
+        this.applyInlineFallbackStyles();
+        return;
+      }
+
+      const path = alternativePaths[attempts];
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = path;
+      
+      link.onerror = () => {
+        attempts++;
+        tryNextPath();
+      };
+      
+      link.onload = () => {
+        console.log('Footer CSS loaded from alternative path:', path);
+      };
+      
+      document.head.appendChild(link);
+    };
+
+    tryNextPath();
+  }
+
+  applyInlineFallbackStyles() {
+    // Basic fallback styles if CSS fails to load
+    const fallbackStyles = `
+      .footer {
+        background: #21b457;
+        color: white;
+        padding: 80px 0 40px;
+        font-family: 'Arial', sans-serif;
+        font-size: 14px;
+        line-height: 1.8;
+      }
+      .footer .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 30px;
+      }
+      .footer-content {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 40px;
+        margin-bottom: 60px;
+      }
+      .footer-logo-img {
+        height: 50px;
+        margin-bottom: 20px;
+        max-width: 100%;
+      }
+      .footer-tagline {
+        font-size: 14px;
+        line-height: 1.6;
+        margin-top: 15px;
+        opacity: 0.9;
+      }
+      .footer-column {
+        padding: 0 15px;
+      }
+      .footer-column h4 {
+        margin-bottom: 25px;
+        font-size: 16px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        position: relative;
+        padding-bottom: 12px;
+      }
+      .footer-column h4::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 50px;
+        height: 2px;
+        background: rgba(255, 255, 255, 0.3);
+      }
+      .footer-column ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .footer-column li {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+      }
+      .footer-column a {
+        color: white;
+        text-decoration: none;
+        font-size: 14px;
+        opacity: 0.9;
+        transition: all 0.3s ease;
+        display: inline-block;
+        line-height: 1.6;
+      }
+      .footer-column a:hover {
+        opacity: 1;
+        transform: translateX(3px);
+        text-decoration: none;
+      }
+      .footer-column i {
+        margin-right: 10px;
+        width: 16px;
+        text-align: center;
+      }
+      .footer-bottom {
+        text-align: center;
+        padding-top: 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        margin-top: 20px;
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.8);
+      }
+      @media (max-width: 1200px) {
+        .footer-content {
+          grid-template-columns: repeat(3, 1fr);
+          gap: 50px 30px;
+        }
+      }
+      @media (max-width: 768px) {
+        .footer-content {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 576px) {
+        .footer-content {
+          grid-template-columns: 1fr;
+        }
+        .footer-column {
+          text-align: center;
+        }
+        .footer-column h4::after {
+          left: 50%;
+          transform: translateX(-50%);
+        }
+      }
+    `;
+    
+    const style = document.createElement('style');
+    style.textContent = fallbackStyles;
+    document.head.appendChild(style);
+    console.log('Applied inline fallback footer styles');
+  }
+
+  getBasePath() {
+    const currentPath = window.location.pathname;
+    
+    if (currentPath.includes('/ADMIN/') || currentPath.includes('/Dashboard/') || 
+        currentPath.includes('/Funding Hub/') || currentPath.includes('/api-management/') ||
+        currentPath.includes('/questionnaire/')) {
+      return '../';
+    } else if (currentPath.includes('/LandingPage/')) {
+      const pathSegments = currentPath.split('/').filter(segment => segment);
+      const landingPageIndex = pathSegments.indexOf('LandingPage');
+      const depth = pathSegments.length - landingPageIndex - 1;
+      
+      if (depth >= 2) {
+        return '../../../';
+      } else {
+        return '../../';
+      }
+    }
+    return '/';
+  }
+
+  getImagePath() {
+    return this.getBasePath();
   }
 
   connectedCallback() {
+    const basePath = this.getBasePath();
+    const imagePath = this.getImagePath();
+
     this.innerHTML = `
       <footer class="footer">
         <div class="container">
           <div class="footer-content">
             <!-- Logo Column -->
             <div class="footer-logo">
-              <img src="/Images/GET.png" alt="Green Economy Toolkit Logo" class="footer-logo-img" data-i18n="[alt]footer.logo_alt">
+              <img src="${imagePath}Images/GET.png" alt="Green Economy Toolkit Logo" class="footer-logo-img" data-i18n="[alt]footer.logo_alt">
               <p class="footer-tagline" data-i18n="footer.tagline">Empowering sustainable growth through green economy solutions</p>
             </div>
 
@@ -333,11 +582,11 @@ class GreenEconomyFooter extends HTMLElement {
             <div class="footer-column">
               <h4 data-i18n="footer.quick_links">Quick Links</h4>
               <ul>
-                <li><a href="/index.html" data-i18n="footer.home">Home</a></li>
-                <li><a href="/LandingPage/About Page/about.html" data-i18n="footer.about">About Us</a></li>
-                <li><a href="/LandingPage/IRM-Sector/IRMSector.html" data-i18n="footer.irm_sector">IRM Sector</a></li>
-                <li><a href="/LandingPage/Knowledge-Hub/knowledge-hub.html" data-i18n="footer.knowledge_hub">Knowledge Hub</a></li>
-                <li><a href="/LandingPage/Opportunities/opportunities.html" data-i18n="footer.opportunities">Opportunities</a></li>
+                <li><a href="${basePath}index.html" data-i18n="footer.home">Home</a></li>
+                <li><a href="${basePath}LandingPage/About Page/about.html" data-i18n="footer.about">About Us</a></li>
+                <li><a href="${basePath}LandingPage/IRM-Sector/IRMSector.html" data-i18n="footer.irm_sector">IRM Sector</a></li>
+                <li><a href="${basePath}LandingPage/Knowledge-Hub/knowledge-hub.html" data-i18n="footer.knowledge_hub">Knowledge Hub</a></li>
+                <li><a href="${basePath}LandingPage/Opportunities/opportunities.html" data-i18n="footer.opportunities">Opportunities</a></li>
               </ul>
             </div>
 
