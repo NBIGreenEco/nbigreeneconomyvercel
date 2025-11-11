@@ -1,6 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Fix for Google Translate proxy: when translate serves a proxied page, root-relative URLs (starting with /) point to the proxy origin and break asset loading. -->
+    <script>
+      (function() {
+        try {
+          var ref = document.referrer || '';
+          if (!ref) return;
+          var refOrigin = new URL(ref).origin;
+          var hostname = window.location.hostname || '';
+          var isProxy = /translate|googleusercontent|goog/.test(hostname) && refOrigin.indexOf(hostname) === -1;
+          if (!isProxy) return;
+          var map = [ ['link','href'], ['script','src'], ['img','src'], ['a','href'] ];
+          map.forEach(function(pair) {
+            var tag = pair[0], attr = pair[1];
+            var nodes = document.getElementsByTagName(tag);
+            for (var i = 0; i < nodes.length; i++) {
+              var el = nodes[i];
+              var v = el.getAttribute(attr);
+              if (!v) continue;
+              if (v.indexOf('/') === 0) {
+                el.setAttribute(attr, refOrigin + v);
+              } else if (v.indexOf('./') === 0) {
+                el.setAttribute(attr, refOrigin + v.slice(1));
+              }
+            }
+          });
+          var base = document.querySelector('base');
+          if (!base) {
+            base = document.createElement('base');
+            document.head.insertBefore(base, document.head.firstChild);
+          }
+          base.setAttribute('href', refOrigin + '/');
+        } catch (e) {
+          console.warn('Translate proxy fix failed:', e);
+        }
+      })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n="about.title">Green Economy Toolkit - About</title>

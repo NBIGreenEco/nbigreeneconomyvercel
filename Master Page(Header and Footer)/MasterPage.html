@@ -1,33 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-  <!-- Google Analytics is loaded via scripts/analytics.js -->
+  <!-- Google Analytics -->
   <script src="/scripts/analytics.js" defer></script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="title">Green Economy Toolkit</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
-    <script src="../scripts/enhancedsearch.js" ></script>
-    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
-    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
-    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
-    <script src="../Trans.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
-    <script src="../scripts/enhancedsearch.js"></script>
-    <script src="MasterPage.js" type="module"></script>
-    <link rel="stylesheet" href="MasterPage.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="title">Green Economy Toolkit</title>
+
+  <!-- Fix Google Translate proxy asset loading + CSS override -->
+  <script>
+    (function() {
+      try {
+        const ref = document.referrer || '';
+        if (!ref) return;
+        const refOrigin = new URL(ref).origin;
+        const hostname = window.location.hostname || '';
+        const isProxy = /translate|googleusercontent|goog/.test(hostname) && refOrigin.indexOf(hostname) === -1;
+        if (!isProxy) return;
+
+        // Fix asset URLs
+        const map = [['link','href'], ['script','src'], ['img','src'], ['a','href']];
+        map.forEach(([tag, attr]) => {
+          const nodes = document.getElementsByTagName(tag);
+          for (let i = 0; i < nodes.length; i++) {
+            const el = nodes[i];
+            const v = el.getAttribute(attr);
+            if (!v) continue;
+            if (v.startsWith('/')) el.setAttribute(attr, refOrigin + v);
+            else if (v.startsWith('./')) el.setAttribute(attr, refOrigin + v.slice(1));
+          }
+        });
+
+        if (!document.querySelector('base')) {
+          const base = document.createElement('base');
+          base.href = refOrigin + '/';
+          document.head.insertBefore(base, document.head.firstChild);
+        }
+
+        // Inject protective CSS to override Google Translate's hiding rules
+        const protectiveStyle = document.createElement('style');
+        protectiveStyle.id = 'navbar-protection-css';
+        protectiveStyle.innerHTML = `
+          /* Protect navbar from Google Translate CSS hijacking */
+          .header-outer, .header, .nav, .nav-links, .nav-utils,
+          .nav a, .search-icon, .language-selector, #google_translate_element {
+            display: block !important; visibility: visible !important; opacity: 1 !important;
+          }
+          .header { display: flex !important; }
+          .nav, .nav-links, .nav-utils { display: flex !important; }
+          .nav a { color: white !important; background-color: #2b9589 !important; }
+          .search-icon { color: white !important; background-color: #2b9589 !important; display: flex !important; }
+          .language-selector { background-color: #207e74 !important; color: white !important; }
+          #google_translate_element { display: inline-block !important; }
+          .goog-te-combo { display: block !important; visibility: visible !important; }
+        `;
+        document.head.appendChild(protectiveStyle);
+        console.log('Google Translate navbar protection CSS injected');
+      } catch (e) { console.warn('Proxy fix failed:', e); }
+    })();
+  </script>
+
+  <!-- Core Scripts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
+  <script src="../scripts/enhancedsearch.js"></script>
+  <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
+  <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
+  <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
+  <script src="../Trans.js"></script>
+  <script src="MasterPage.js" type="module"></script>
+  <link rel="stylesheet" href="MasterPage.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+  <!-- Google Translate: Robust + Fallback -->
+  <script type="text/javascript">
+    let gtInit = false;
+    function googleTranslateElementInit() {
+      if (gtInit) return;
+      try {
+        new google.translate.TranslateElement({
+          pageLanguage: 'en',
+          includedLanguages: 'en,zu,tn',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+          autoDisplay: false
+        }, 'google_translate_element');
+        gtInit = true;
+        setTimeout(() => {
+          const combo = document.querySelector('.goog-te-combo');
+          if (combo) combo.style.display = 'block';
+        }, 500);
+      } catch (e) { console.warn('GT init failed:', e); }
+    }
+
+    function loadGT() {
+      if (document.querySelector('script[src*="translate.google.com"]')) return;
+      const s = document.createElement('script');
+      s.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+      s.onerror = () => setTimeout(() => document.getElementById('google_translate_element').innerHTML = fallbackSelect, 1000);
+      document.head.appendChild(s);
+    }
+
+    const fallbackSelect = `
+      <select onchange="window.location.href='?lang='+this.value" style="padding:8px 12px;border:1px solid #ccc;border-radius:4px;font-size:14px;background:white;">
+        <option value="en">English</option>
+        <option value="zu">isiZulu</option>
+        <option value="tn">Setswana</option>
+      </select>
+    `;
+
+    document.addEventListener('DOMContentLoaded', () => setTimeout(loadGT, 500));
+  </script>
+
+  <!-- Anti-Google Translate CSS -->
+  <style>
+    .goog-te-banner-frame, .goog-logo-link, .goog-te-gadget span:not(.goog-te-combo) { display: none !important; }
+    .goog-te-gadget { font-size: 0 !important; }
+    .goog-te-combo {
+      margin: 0 5px !important; padding: 8px 12px !important; border: 1px solid #ccc !important;
+      border-radius: 4px !important; font-size: 14px !important; background: white !important;
+      color: #333 !important; min-width: 120px; display: block !important;
+    }
+    #google_translate_element { display: inline-block !important; }
+    @media (max-width: 1024px) { .goog-te-combo { width: 100% !important; margin: 5px 0 !important; } }
+  </style>
+
+  <!-- Re-render header after translation -->
+  <script>
+    function reRenderHeader() {
+      const header = document.querySelector('green-economy-header');
+      if (!header) return;
+      const newHeader = document.createElement('green-economy-header');
+      header.parentNode.replaceChild(newHeader, header);
+      setTimeout(() => {
+        if (typeof updateContent === 'function') updateContent();
+      }, 100);
+    }
+
+    const observer = new MutationObserver((m, obs) => {
+      if (document.querySelector('.goog-te-combo')) {
+        console.log('Translation detected → re-rendering header');
+        setTimeout(reRenderHeader, 300);
+        obs.disconnect();
+      }
+    });
+    document.addEventListener('DOMContentLoaded', () => {
+      observer.observe(document.body, { childList: true, subtree: true });
+      setTimeout(() => { if (!document.querySelector('.goog-te-combo')) reRenderHeader(); }, 5000);
+    });
+  </script>
 </head>
 <body>
-    <!-- Header will be loaded dynamically -->
-    <green-economy-header></green-economy-header>
-
-    <!-- Main content placeholder -->
-    <main id="main-content" data-i18n="main.placeholder">Page content will be inserted here</main>
-
-    <!-- Footer will be loaded dynamically -->
-    <green-economy-footer></green-economy-footer>
+  <green-economy-header></green-economy-header>
+  <main id="main-content" data-i18n="main.placeholder">Page content will be inserted here</main>
+  <green-economy-footer></green-economy-footer>
 </body>
 </html>

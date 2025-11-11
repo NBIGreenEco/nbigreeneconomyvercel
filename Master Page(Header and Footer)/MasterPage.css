@@ -606,8 +606,164 @@ body {
     }
 }
 
-/* Prevent horizontal scroll
+/* Prevent horizontal scroll */
 html, body {
     max-width: 100%;
     overflow-x: hidden;
+}
+
+/* =====================================================
+   CRITICAL: Protect Navbar from Google Translate CSS Override
+   Google Translate injects global CSS that hides/breaks elements.
+   These !important rules ensure navbar stays visible and styled.
+   ===================================================== */
+
+/* Force navbar and header visibility */
+.header-outer,
+.header,
+.nav,
+.nav-links,
+.nav-utils,
+.nav a,
+.search-icon,
+.language-selector,
+.mobile-menu-button,
+.logo,
+.logo a,
+.logo img {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Ensure nav flex layout is not overridden */
+.header {
+    display: flex !important;
+}
+
+.nav {
+    display: flex !important;
+}
+
+.nav-links {
+    display: flex !important;
+}
+
+.nav-utils {
+    display: flex !important;
+}
+
+/* Protect nav link colors and backgrounds */
+.nav a {
+    color: white !important;
+    background-color: #2b9589 !important;
+    text-decoration: none !important;
+}
+
+.nav a:hover {
+    background-color: #4ec3b0 !important;
+}
+
+/* Protect language selector */
+.language-selector {
+    background-color: #207e74 !important;
+    color: white !important;
+    visibility: visible !important;
+    display: flex !important;
+}
+
+.language-selector:hover {
+    background-color: #4ec3b0 !important;
+}
+
+/* Protect search icon */
+.search-icon {
+    color: white !important;
+    background-color: #2b9589 !important;
+    display: flex !important;
+    visibility: visible !important;
+}
+
+.search-icon:hover {
+    background-color: #4ec3b0 !important;
+}
+
+/* Protect Google Translate widget itself from being hidden */
+#google_translate_element {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    width: auto !important;
+}
+
+/* Ensure Google Translate dropdown is visible */
+.goog-te-combo {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    padding: 5px !important;
+    margin: 0 5px !important;
+}
+
+/* Protect nav items from Google Translate's :hover/:focus overrides */
+.nav a:focus,
+.nav a:active,
+.search-icon:focus,
+.search-icon:active,
+.language-selector:focus,
+.language-selector:active {
+    background-color: #4ec3b0 !important;
+    outline: none !important;
+}
+
+/* Force header height and layout */
+.header-outer {
+    height: auto !important;
+    min-height: 70px !important;
+    z-index: 1000 !important;
+    position: relative !important;
+}
+
+.header {
+    height: 70px !important;
+    min-height: 70px !important;
+    align-items: center !important;
+}
+
+/* Protect logo sizing */
+.logo {
+    height: 100% !important;
+    min-height: 70px !important;
+}
+
+.logo img {
+    height: 100% !important;
+    width: auto !important;
+}
+
+/* Mobile menu button visibility */
+@media (max-width: 1024px) {
+    .mobile-menu-button {
+        display: flex !important;
+    }
+    
+    .nav {
+        display: none !important;
+    }
+    
+    .nav.active {
+        display: flex !important;
+    }
+    
+    .nav-links {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    
+    .nav-utils {
+        display: flex !important;
+        flex-direction: column !important;
+    }
 }

@@ -4,6 +4,65 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title data-i18n="title">Green Economy Toolkit</title>
+
+    <!-- Fix for Google Translate proxy: when translate serves a proxied page, root-relative URLs (starting with /) point to the proxy origin and break asset loading.
+         This small script runs early and rewrites root-relative href/src attributes to use the original page origin (taken from document.referrer) so CSS/JS continue to load after translation. -->
+    <script>
+      (function() {
+        try {
+          var ref = document.referrer || '';
+          if (!ref) return;
+          var refOrigin = new URL(ref).origin;
+          var hostname = window.location.hostname || '';
+          // Detect likely Google Translate proxy hosts
+          var isProxy = /translate|googleusercontent|goog/.test(hostname) && refOrigin.indexOf(hostname) === -1;
+          if (!isProxy) return;
+
+          var map = [ ['link','href'], ['script','src'], ['img','src'], ['a','href'] ];
+          map.forEach(function(pair) {
+            var tag = pair[0], attr = pair[1];
+            var nodes = document.getElementsByTagName(tag);
+            for (var i = 0; i < nodes.length; i++) {
+              var el = nodes[i];
+              var v = el.getAttribute(attr);
+              if (!v) continue;
+              if (v.indexOf('/') === 0) {
+                el.setAttribute(attr, refOrigin + v);
+              } else if (v.indexOf('./') === 0) {
+                el.setAttribute(attr, refOrigin + v.slice(1));
+              }
+            }
+          });
+
+          // Ensure a base tag so any other relative URLs work
+          var base = document.querySelector('base');
+          if (!base) {
+            base = document.createElement('base');
+            document.head.insertBefore(base, document.head.firstChild);
+          }
+          base.setAttribute('href', refOrigin + '/');
+
+          // Inject protective CSS to override Google Translate's hiding rules
+          var protectiveStyle = document.createElement('style');
+          protectiveStyle.id = 'navbar-protection-css';
+          protectiveStyle.innerHTML = 
+            '.header-outer, .header, .nav, .nav-links, .nav-utils, ' +
+            '.nav a, .search-icon, .language-selector, #google_translate_element { ' +
+            'display: block !important; visibility: visible !important; opacity: 1 !important; } ' +
+            '.header { display: flex !important; } ' +
+            '.nav, .nav-links, .nav-utils { display: flex !important; } ' +
+            '.nav a { color: white !important; background-color: #2b9589 !important; } ' +
+            '.search-icon { color: white !important; background-color: #2b9589 !important; display: flex !important; } ' +
+            '.language-selector { background-color: #207e74 !important; color: white !important; } ' +
+            '#google_translate_element { display: inline-block !important; } ' +
+            '.goog-te-combo { display: block !important; visibility: visible !important; }';
+          document.head.appendChild(protectiveStyle);
+          console.log('Applied Google Translate proxy asset fix — using origin:', refOrigin);
+        } catch (e) {
+          console.warn('Translate proxy fix failed:', e);
+        }
+      })();
+    </script>
     <!-- Load i18next as global scripts -->
     <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
     <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
@@ -20,12 +79,28 @@
     <link rel="stylesheet" href="Master Page(Header and Footer)/MasterPage.css">
     <link rel="stylesheet" href="index.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
-    <script id="messenger-widget-b" src="https://cdn.botpenguin.com/website-bot.js" defer>6912ee821c29f29c0d7d6882,6912edf6e9437105db53226c,agent</script>
+    <!-- Google Translate Script (initializes the google_translate_element used by MasterPage.js) -->
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        if (typeof google === 'undefined' || !google.translate) {
+          console.warn('Google Translate API not available yet');
+        }
+        new google.translate.TranslateElement({
+          pageLanguage: 'en',
+          includedLanguages: 'en,zu,tn',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+          autoDisplay: false
+        }, 'google_translate_element');
+      }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <!-- BotPenguin widget (single include) -->
     <script id="botpenguin-widget"
-    src="https://cdn.botpenguin.com/website-bot.js"
-    data-bot-id="6912ee821c29f29c0d7d6882"
-    defer>
-</script>
+      src="https://cdn.botpenguin.com/website-bot.js"
+      data-bot-id="6912ee821c29f29c0d7d6882"
+      defer>
+    </script>
 
 
     <script type="module" src="scripts/enhancedsearch.js" defer></script>

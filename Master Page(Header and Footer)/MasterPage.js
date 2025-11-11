@@ -1,3 +1,4 @@
+// MasterPage.js (only the changed part – everything else stays the same)
 import { updateContent } from '../Trans.js';
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
 import { getAuth, browserLocalPersistence, setPersistence } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
@@ -49,12 +50,8 @@ class GreenEconomyHeader extends HTMLElement {
               `}
             </div>
             <div class="nav-utils">
-              <select class="language-selector" onchange="i18next.changeLanguage(this.value)">
-                <option value="" disabled selected data-i18n="header.select">Select</option>
-                <option value="en">English</option>
-                <option value="zu">Isizulu</option>
-                <option value="tn">Setswana</option>
-              </select>
+              <!-- GOOGLE TRANSLATE DROPDOWN (replaces i18next selector) -->
+              <div id="google_translate_element" style="display:inline-block;"></div>
               <i class="fas fa-search search-icon" id="search-toggle"></i>
             </div>
             <div class="blue-section"></div>
@@ -81,7 +78,7 @@ class GreenEconomyHeader extends HTMLElement {
     // Apply translations after rendering
     setTimeout(updateContent, 0);
 
-    // Setup search functionality - use setTimeout to ensure DOM is ready
+    // Setup search functionality
     setTimeout(() => {
       this.setupSearchFunctionality();
       this.setupMobileMenu();
@@ -114,84 +111,51 @@ class GreenEconomyHeader extends HTMLElement {
   }
 
   preventLayoutShift() {
-    // Force consistent header dimensions
     const header = this.querySelector('.header');
     const headerOuter = this.querySelector('.header-outer');
-    
     if (header && headerOuter) {
-      // Set fixed height to prevent layout shifts
       header.style.minHeight = '70px';
       header.style.height = '70px';
       headerOuter.style.height = '70px';
-      
-      // Prevent any animations that might cause movement
       header.style.transition = 'none';
       headerOuter.style.transition = 'none';
-      
-      // Ensure header stays on top of everything
       headerOuter.style.zIndex = '1000';
       headerOuter.style.position = 'relative';
-      
       console.log('Header layout shift prevention applied');
     }
   }
 
   setupSearchFunctionality() {
     console.log('Setting up search functionality...');
-    
     const searchToggle = this.querySelector('#search-toggle');
     const searchPopup = this.querySelector('#search-popup');
     const searchClose = this.querySelector('#search-close');
     const searchInput = this.querySelector('#smartSearch');
-
-    console.log('Search elements found:', {
-      searchToggle: !!searchToggle,
-      searchPopup: !!searchPopup,
-      searchClose: !!searchClose,
-      searchInput: !!searchInput
-    });
 
     if (!searchToggle || !searchPopup || !searchClose) {
       console.error('Critical search elements not found');
       return;
     }
 
-    // Remove any existing event listeners
     const newSearchToggle = searchToggle.cloneNode(true);
     searchToggle.parentNode.replaceChild(newSearchToggle, searchToggle);
-    
     const newSearchClose = searchClose.cloneNode(true);
     searchClose.parentNode.replaceChild(newSearchClose, searchClose);
 
-    // Add click event listener to search toggle
     newSearchToggle.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
-      console.log('Search toggle clicked!');
-      
       const isHidden = searchPopup.style.display === 'none' || !searchPopup.style.display;
-      console.log('Search popup is hidden:', isHidden);
-      
       if (isHidden) {
         searchPopup.style.display = 'block';
         searchPopup.classList.add('animate-in');
         searchPopup.classList.remove('animate-out');
-        console.log('Search popup opened');
-        
-        // Prevent body scroll when search is open
         document.body.style.overflow = 'hidden';
-        
-        // Focus on search input
         setTimeout(() => {
           const input = document.getElementById('smartSearch');
-          if (input) {
-            input.focus();
-          }
+          if (input) input.focus();
         }, 100);
-        
-        // Initialize EnhancedSearch when popup is opened
         if (window.greenEconomySearch && !window.greenEconomySearch.initialized) {
-          console.log('Initializing enhanced search...');
           window.greenEconomySearch.init();
         }
       } else {
@@ -199,30 +163,22 @@ class GreenEconomyHeader extends HTMLElement {
         searchPopup.classList.remove('animate-in');
         setTimeout(() => {
           searchPopup.style.display = 'none';
-          // Restore body scroll
           document.body.style.overflow = '';
-          console.log('Search popup closed');
         }, 300);
       }
     });
 
-    // Add click event listener to search close
     newSearchClose.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
-      console.log('Search close clicked!');
-      
       searchPopup.classList.add('animate-out');
       searchPopup.classList.remove('animate-in');
       setTimeout(() => {
         searchPopup.style.display = 'none';
-        // Restore body scroll
         document.body.style.overflow = '';
-        console.log('Search popup closed via close button');
       }, 300);
     });
 
-    // Close search when clicking outside
     document.addEventListener('click', (e) => {
       if (searchPopup.style.display === 'block' && 
           !searchPopup.contains(e.target) && 
@@ -231,14 +187,11 @@ class GreenEconomyHeader extends HTMLElement {
         searchPopup.classList.remove('animate-in');
         setTimeout(() => {
           searchPopup.style.display = 'none';
-          // Restore body scroll
           document.body.style.overflow = '';
-          console.log('Search popup closed via outside click');
         }, 300);
       }
     });
 
-    // Prevent search input from affecting layout
     if (searchInput) {
       searchInput.style.willChange = 'transform';
     }
@@ -249,68 +202,52 @@ class GreenEconomyHeader extends HTMLElement {
   setupMobileMenu() {
     const menuToggle = this.querySelector('#mobile-menu-toggle');
     const nav = this.querySelector('#main-nav');
-    const navLinks = this.querySelectorAll('.nav-links a, .nav-utils .search-icon, .language-selector');
+    const navLinks = this.querySelectorAll('.nav-links a, .nav-utils .search-icon, #google_translate_element');
     const header = this.querySelector('.header');
     const headerOuter = this.querySelector('.header-outer');
 
     if (menuToggle && nav) {
-      // Set fixed dimensions to prevent layout shift
       if (headerOuter) {
         headerOuter.style.minHeight = '70px';
-        headerOuter.style.height = 'auto'; // Allow expansion for mobile menu
+        headerOuter.style.height = 'auto';
       }
 
-      // Toggle mobile menu
       const toggleMenu = () => {
         const isExpanding = !nav.classList.contains('active');
-        
         if (isExpanding) {
-          // Calculate height before expanding
           nav.style.display = 'flex';
           const height = nav.scrollHeight + 'px';
           nav.style.maxHeight = '0';
           nav.style.opacity = '0';
-          
-          // Trigger reflow
           nav.offsetHeight;
-          
-          // Expand with smooth animation
           nav.classList.add('active');
           menuToggle.classList.add('active');
           nav.style.maxHeight = height;
           nav.style.opacity = '1';
-          
-          // Prevent body scroll when mobile menu is open
           document.body.style.overflow = 'hidden';
-          
-          // Add click outside handler
+
           const handleClickOutside = (e) => {
             if (!nav.contains(e.target) && !menuToggle.contains(e.target)) {
               closeMenu();
               document.removeEventListener('click', handleClickOutside);
             }
           };
-          
           setTimeout(() => document.addEventListener('click', handleClickOutside), 10);
         } else {
           closeMenu();
         }
       };
-      
+
       const closeMenu = () => {
         nav.style.maxHeight = nav.scrollHeight + 'px';
         nav.style.opacity = '1';
-        // Trigger reflow
         nav.offsetHeight;
         nav.style.maxHeight = '0';
         nav.style.opacity = '0';
-        
         setTimeout(() => {
           nav.classList.remove('active');
           menuToggle.classList.remove('active');
-          // Restore body scroll
           document.body.style.overflow = '';
-          // Reset display after animation
           setTimeout(() => {
             if (!nav.classList.contains('active')) {
               nav.style.display = '';
@@ -318,29 +255,25 @@ class GreenEconomyHeader extends HTMLElement {
           }, 300);
         }, 300);
       };
-      
-      // Handle menu toggle click
+
       menuToggle.addEventListener('click', (e) => {
         e.stopPropagation();
         e.preventDefault();
         toggleMenu();
       });
 
-      // Close menu when clicking on a nav link
       navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
           e.stopPropagation();
           closeMenu();
         });
       });
-      
-      // Handle window resize
+
       let resizeTimer;
       window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
           if (window.innerWidth > 1024) {
-            // Reset mobile menu styles on desktop
             nav.style.display = '';
             nav.style.maxHeight = '';
             nav.style.opacity = '';
@@ -351,7 +284,6 @@ class GreenEconomyHeader extends HTMLElement {
         }, 250);
       });
 
-      // Prevent focus styles from causing layout shifts
       navLinks.forEach(link => {
         link.style.outlineOffset = '2px';
         link.style.border = '1px solid transparent';
@@ -367,68 +299,41 @@ class GreenEconomyFooter extends HTMLElement {
   }
 
   ensureFooterCSS() {
-    // Check if CSS is already loaded
     if (!document.querySelector('link[href*="footer.css"]')) {
       const link = document.createElement('link');
       link.rel = 'stylesheet';
-      
-      // Calculate correct path based on current page location
       const currentPath = window.location.pathname;
       let cssPath = this.getFooterCSSPath();
-      
       link.href = cssPath;
       link.onerror = () => {
         console.error('Failed to load footer.css from:', cssPath);
-        // Try alternative paths
         this.tryAlternativeCSSPaths();
       };
-      
       link.onload = () => {
         console.log('Footer CSS loaded successfully from:', cssPath);
       };
-      
       document.head.appendChild(link);
     }
   }
 
   getFooterCSSPath() {
     const currentPath = window.location.pathname;
-    
-    // ADMIN pages
     if (currentPath.includes('/ADMIN/')) {
       return '../Master Page(Header and Footer)/footer.css';
-    }
-    // Dashboard pages
-    else if (currentPath.includes('/Dashboard/')) {
+    } else if (currentPath.includes('/Dashboard/')) {
       return '../Master Page(Header and Footer)/footer.css';
-    }
-    // LandingPage subpages (multiple levels)
-    else if (currentPath.includes('/LandingPage/')) {
-      // Check how deep we are in LandingPage
+    } else if (currentPath.includes('/LandingPage/')) {
       const pathSegments = currentPath.split('/').filter(segment => segment);
       const landingPageIndex = pathSegments.indexOf('LandingPage');
       const depth = pathSegments.length - landingPageIndex - 1;
-      
-      if (depth >= 2) {
-        return '../../../Master Page(Header and Footer)/footer.css';
-      } else {
-        return '../../Master Page(Header and Footer)/footer.css';
-      }
-    }
-    // Funding Hub pages
-    else if (currentPath.includes('/Funding Hub/')) {
+      return depth >= 2 ? '../../../Master Page(Header and Footer)/footer.css' : '../../Master Page(Header and Footer)/footer.css';
+    } else if (currentPath.includes('/Funding Hub/')) {
       return '../Master Page(Header and Footer)/footer.css';
-    }
-    // API Management pages
-    else if (currentPath.includes('/api-management/')) {
+    } else if (currentPath.includes('/api-management/')) {
       return '../Master Page(Header and Footer)/footer.css';
-    }
-    // Questionnaire pages
-    else if (currentPath.includes('/questionnaire/')) {
+    } else if (currentPath.includes('/questionnaire/')) {
       return '../Master Page(Header and Footer)/footer.css';
-    }
-    // Root level pages
-    else {
+    } else {
       return '/Master Page(Header and Footer)/footer.css';
     }
   }
@@ -441,7 +346,6 @@ class GreenEconomyFooter extends HTMLElement {
       '../../../Master Page(Header and Footer)/footer.css',
       './Master Page(Header and Footer)/footer.css'
     ];
-
     let attempts = 0;
     const tryNextPath = () => {
       if (attempts >= alternativePaths.length) {
@@ -449,145 +353,37 @@ class GreenEconomyFooter extends HTMLElement {
         this.applyInlineFallbackStyles();
         return;
       }
-
       const path = alternativePaths[attempts];
       const link = document.createElement('link');
       link.rel = 'stylesheet';
       link.href = path;
-      
-      link.onerror = () => {
-        attempts++;
-        tryNextPath();
-      };
-      
-      link.onload = () => {
-        console.log('Footer CSS loaded from alternative path:', path);
-      };
-      
+      link.onerror = () => { attempts++; tryNextPath(); };
+      link.onload = () => { console.log('Footer CSS loaded from alternative path:', path); };
       document.head.appendChild(link);
     };
-
     tryNextPath();
   }
 
   applyInlineFallbackStyles() {
-    // Basic fallback styles if CSS fails to load
     const fallbackStyles = `
-      .footer {
-        background: #21b457;
-        color: white;
-        padding: 80px 0 40px;
-        font-family: 'Arial', sans-serif;
-        font-size: 14px;
-        line-height: 1.8;
-        position: relative;
-        z-index: 1;
-      }
-      .footer .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 30px;
-      }
-      .footer-content {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 40px;
-        margin-bottom: 60px;
-      }
-      .footer-logo-img {
-        height: 50px;
-        margin-bottom: 20px;
-        max-width: 100%;
-      }
-      .footer-tagline {
-        font-size: 14px;
-        line-height: 1.6;
-        margin-top: 15px;
-        opacity: 0.9;
-      }
-      .footer-column {
-        padding: 0 15px;
-      }
-      .footer-column h4 {
-        margin-bottom: 25px;
-        font-size: 16px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        position: relative;
-        padding-bottom: 12px;
-      }
-      .footer-column h4::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        width: 50px;
-        height: 2px;
-        background: rgba(255, 255, 255, 0.3);
-      }
-      .footer-column ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-      .footer-column li {
-        margin-bottom: 15px;
-        display: flex;
-        align-items: center;
-      }
-      .footer-column a {
-        color: white;
-        text-decoration: none;
-        font-size: 14px;
-        opacity: 0.9;
-        transition: all 0.3s ease;
-        display: inline-block;
-        line-height: 1.6;
-      }
-      .footer-column a:hover {
-        opacity: 1;
-        transform: translateX(3px);
-        text-decoration: none;
-      }
-      .footer-column i {
-        margin-right: 10px;
-        width: 16px;
-        text-align: center;
-      }
-      .footer-bottom {
-        text-align: center;
-        padding-top: 30px;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        margin-top: 20px;
-        font-size: 14px;
-        color: rgba(255, 255, 255, 0.8);
-      }
-      @media (max-width: 1200px) {
-        .footer-content {
-          grid-template-columns: repeat(3, 1fr);
-          gap: 50px 30px;
-        }
-      }
-      @media (max-width: 768px) {
-        .footer-content {
-          grid-template-columns: repeat(2, 1fr);
-        }
-      }
-      @media (max-width: 576px) {
-        .footer-content {
-          grid-template-columns: 1fr;
-        }
-        .footer-column {
-          text-align: center;
-        }
-        .footer-column h4::after {
-          left: 50%;
-          transform: translateX(-50%);
-        }
-      }
+      .footer { background: #21b457; color: white; padding: 80px 0 40px; font-family: 'Arial', sans-serif; font-size: 14px; line-height: 1.8; position: relative; z-index: 1; }
+      .footer .container { max-width: 1200px; margin: 0 auto; padding: 0 30px; }
+      .footer-content { display: grid; grid-template-columns: repeat(5, 1fr); gap: 40px; margin-bottom: 60px; }
+      .footer-logo-img { height: 50px; margin-bottom: 20px; max-width: 100%; }
+      .footer-tagline { font-size: 14px; line-height: 1.6; margin-top: 15px; opacity: 0.9; }
+      .footer-column { padding: 0 15px; }
+      .footer-column h4 { margin-bottom: 25px; font-size: 16px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; position: relative; padding-bottom: 12px; }
+      .footer-column h4::after { content: ''; position: absolute; left: 0; bottom: 0; width: 50px; height: 2px; background: rgba(255, 255, 255, 0.3); }
+      .footer-column ul { list-style: none; padding: 0; margin: 0; }
+      .footer-column li { margin-bottom: 15px; display: flex; align-items: center; }
+      .footer-column a { color: white; text-decoration: none; font-size: 14px; opacity: 0.9; transition: all 0.3s ease; display: inline-block; line-height: 1.6; }
+      .footer-column a:hover { opacity: 1; transform: translateX(3px); text-decoration: none; }
+      .footer-column i { margin-right: 10px; width: 16px; text-align: center; }
+      .footer-bottom { text-align: center; padding-top: 30px; border-top: 1px solid rgba(255, 255, 255, 0.1); margin-top: 20px; font-size: 14px; color: rgba(255, 255, 255, 0.8); }
+      @media (max-width: 1200px) { .footer-content { grid-template-columns: repeat(3, 1fr); gap: 50px 30px; } }
+      @media (max-width: 768px) { .footer-content { grid-template-columns: repeat(2, 1fr); } }
+      @media (max-width: 576px) { .footer-content { grid-template-columns: 1fr; } .footer-column { text-align: center; } .footer-column h4::after { left: 50%; transform: translateX(-50%); } }
     `;
-    
     const style = document.createElement('style');
     style.textContent = fallbackStyles;
     document.head.appendChild(style);
@@ -596,7 +392,6 @@ class GreenEconomyFooter extends HTMLElement {
 
   getBasePath() {
     const currentPath = window.location.pathname;
-    
     if (currentPath.includes('/ADMIN/') || currentPath.includes('/Dashboard/') || 
         currentPath.includes('/Funding Hub/') || currentPath.includes('/api-management/') ||
         currentPath.includes('/questionnaire/')) {
@@ -605,12 +400,7 @@ class GreenEconomyFooter extends HTMLElement {
       const pathSegments = currentPath.split('/').filter(segment => segment);
       const landingPageIndex = pathSegments.indexOf('LandingPage');
       const depth = pathSegments.length - landingPageIndex - 1;
-      
-      if (depth >= 2) {
-        return '../../../';
-      } else {
-        return '../../';
-      }
+      return depth >= 2 ? '../../../' : '../../';
     }
     return '/';
   }
@@ -627,13 +417,10 @@ class GreenEconomyFooter extends HTMLElement {
       <footer class="footer">
         <div class="container">
           <div class="footer-content">
-            <!-- Logo Column -->
             <div class="footer-logo">
               <img src="${imagePath}Images/GET.png" alt="Green Economy Toolkit Logo" class="footer-logo-img" data-i18n="[alt]footer.logo_alt">
               <p class="footer-tagline" data-i18n="footer.tagline">Empowering sustainable growth through green economy solutions</p>
             </div>
-
-            <!-- Contact Details Column -->
             <div class="footer-column">
               <h4 data-i18n="footer.contact_title">Contact Details</h4>
               <ul>
@@ -641,8 +428,6 @@ class GreenEconomyFooter extends HTMLElement {
                 <li><i class="fas fa-envelope"></i> <span data-i18n="[html]footer.email">info@nbi.org.za</span></li>
               </ul>
             </div>
-
-            <!-- Address Column -->
             <div class="footer-column">
               <h4 data-i18n="footer.address_title">Address</h4>
               <address>
@@ -654,8 +439,6 @@ class GreenEconomyFooter extends HTMLElement {
                 <p data-i18n="footer.postal_city">Johannesburg, 2006</p>
               </address>
             </div>
-
-            <!-- Quick Links Column -->
             <div class="footer-column">
               <h4 data-i18n="footer.quick_links">Quick Links</h4>
               <ul>
@@ -666,8 +449,6 @@ class GreenEconomyFooter extends HTMLElement {
                 <li><a href="${basePath}LandingPage/Opportunities/opportunities.html" data-i18n="footer.opportunities">Opportunities</a></li>
               </ul>
             </div>
-
-            <!-- Information Column -->
             <div class="footer-column">
               <h4 data-i18n="footer.information">Information</h4>
               <ul>
@@ -678,7 +459,6 @@ class GreenEconomyFooter extends HTMLElement {
               </ul>
             </div>
           </div>
-          
           <div class="footer-bottom">
             <p data-i18n="[html]footer.copyright">© ${new Date().getFullYear()} Green Economy Network. All rights reserved.</p>
           </div>
@@ -687,39 +467,23 @@ class GreenEconomyFooter extends HTMLElement {
     `;
 
     setTimeout(updateContent, 0);
-    
-    // Add smooth scrolling for all anchor links
+
     this.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function(e) {
         const targetId = this.getAttribute('href');
-        
-        // Only handle internal anchor links
         if (targetId === '#' || targetId.startsWith('#!')) return;
-        
-        // Check if the link is on the same page
         if (window.location.pathname === this.pathname || this.pathname.endsWith('index.html')) {
           e.preventDefault();
-          
-          // Get the target element
           const targetElement = document.querySelector(targetId);
           if (targetElement) {
-            // Get header height for offset
             const header = document.querySelector('green-economy-header');
             const headerHeight = header ? header.offsetHeight : 100;
             const offsetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight - 20;
-            
-            // Use smooth scrolling with fallback
             try {
-              window.scrollTo({
-                top: offsetPosition,
-                behavior: 'smooth'
-              });
+              window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
             } catch (e) {
-              // Fallback for browsers that don't support smooth scrolling
               window.scrollTo(0, offsetPosition);
             }
-            
-            // Update URL without page jump
             if (history.pushState) {
               history.pushState(null, null, targetId);
             } else {
@@ -729,12 +493,11 @@ class GreenEconomyFooter extends HTMLElement {
         }
       });
     });
-    
-    // Handle initial page load with hash
+
     if (window.location.hash) {
       const targetElement = document.querySelector(window.location.hash);
       if (targetElement) {
-        window.scrollTo(0, 0); // Reset scroll first
+        window.scrollTo(0, 0);
         setTimeout(() => {
           const header = document.querySelector('green-economy-header');
           const headerHeight = header ? header.offsetHeight : 100;
@@ -753,17 +516,10 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log("DOM fully loaded for MasterPage.js at", new Date().toLocaleString('en-ZA'));
 
   setPersistence(auth, browserLocalPersistence)
-    .then(() => {
-      console.log("Firebase auth persistence set to LOCAL");
-    })
-    .catch(error => {
-      console.error("Error setting auth persistence:", error);
-    });
+    .then(() => console.log("Firebase auth persistence set to LOCAL"))
+    .catch(error => console.error("Error setting auth persistence:", error));
 
-  // Setup search functionality as a fallback
-  setTimeout(() => {
-    setupGlobalSearchFunctionality();
-  }, 1000);
+  setTimeout(() => setupGlobalSearchFunctionality(), 1000);
 
   document.querySelectorAll('a[href]').forEach((anchor) => {
     anchor.addEventListener('click', async (e) => {
@@ -773,11 +529,9 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
           const user = auth.currentUser;
           if (user) {
-            console.log('Logging out due to navigation to non-protected page:', href);
             await auth.signOut();
             window.localStorage.removeItem('emailForSignIn');
             window.localStorage.removeItem('isVerified');
-            console.log('User logged out successfully');
           }
         } catch (error) {
           console.error('Error during navigation logout:', error);
@@ -799,8 +553,6 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log('Login button clicked');
       window.location.href = '/LandingPage/SignInAndSignUp/SignIn.html';
     });
-  } else {
-    console.log('No login button found on this page');
   }
 
   const playBtn = document.querySelector('.play-button');
@@ -820,10 +572,8 @@ document.addEventListener('DOMContentLoaded', () => {
   setTimeout(updateContent, 0);
 });
 
-// Global search functionality setup
 function setupGlobalSearchFunctionality() {
   console.log('Setting up global search functionality...');
-  
   const searchToggle = document.querySelector('#search-toggle');
   const searchPopup = document.querySelector('#search-popup');
   const searchClose = document.querySelector('#search-close');
@@ -834,46 +584,22 @@ function setupGlobalSearchFunctionality() {
     return;
   }
 
-  console.log('Global search elements found, setting up event listeners...');
-
-  // Use event delegation to handle clicks
   document.addEventListener('click', (e) => {
-    // Handle search toggle click
     if (e.target && (e.target.id === 'search-toggle' || e.target.closest('#search-toggle'))) {
       e.preventDefault();
       e.stopPropagation();
-      console.log('Search toggle clicked via delegation!');
-      
       const popup = document.querySelector('#search-popup');
-      if (!popup) {
-        console.error('Search popup not found');
-        return;
-      }
-      
       const isHidden = popup.style.display === 'none' || !popup.style.display;
-      console.log('Popup is hidden:', isHidden);
-      
       if (isHidden) {
         popup.style.display = 'block';
         popup.classList.add('animate-in');
         popup.classList.remove('animate-out');
-        console.log('Search popup opened via delegation');
-        
-        // Prevent body scroll when search is open
         document.body.style.overflow = 'hidden';
-        
-        // Focus on search input
         setTimeout(() => {
           const input = document.getElementById('smartSearch');
-          if (input) {
-            input.focus();
-            console.log('Search input focused');
-          }
+          if (input) input.focus();
         }, 100);
-        
-        // Initialize EnhancedSearch when popup is opened
         if (window.greenEconomySearch && !window.greenEconomySearch.initialized) {
-          console.log('Initializing enhanced search via delegation...');
           window.greenEconomySearch.init();
         }
       } else {
@@ -881,33 +607,25 @@ function setupGlobalSearchFunctionality() {
         popup.classList.remove('animate-in');
         setTimeout(() => {
           popup.style.display = 'none';
-          // Restore body scroll
           document.body.style.overflow = '';
-          console.log('Search popup closed via delegation');
         }, 300);
       }
     }
-    
-    // Handle search close click
+
     if (e.target && (e.target.id === 'search-close' || e.target.closest('#search-close'))) {
       e.preventDefault();
       e.stopPropagation();
-      console.log('Search close clicked via delegation!');
-      
       const popup = document.querySelector('#search-popup');
       if (popup) {
         popup.classList.add('animate-out');
         popup.classList.remove('animate-in');
         setTimeout(() => {
           popup.style.display = 'none';
-          // Restore body scroll
           document.body.style.overflow = '';
-          console.log('Search popup closed via close button delegation');
         }, 300);
       }
     }
-    
-    // Close search when clicking outside
+
     const popup = document.querySelector('#search-popup');
     if (popup && popup.style.display === 'block' && 
         !popup.contains(e.target) && 
@@ -916,9 +634,7 @@ function setupGlobalSearchFunctionality() {
       popup.classList.remove('animate-in');
       setTimeout(() => {
         popup.style.display = 'none';
-        // Restore body scroll
         document.body.style.overflow = '';
-        console.log('Search popup closed via outside click delegation');
       }, 300);
     }
   });
@@ -927,12 +643,10 @@ function setupGlobalSearchFunctionality() {
 }
 
 window.logout = async function() {
-  console.log('Logging out...');
   try {
     await auth.signOut();
     window.localStorage.removeItem('emailForSignIn');
     window.localStorage.removeItem('isVerified');
-    console.log('User logged out successfully');
     window.location.href = '/index.html';
   } catch (error) {
     console.error('Logout error:', error);
@@ -941,20 +655,12 @@ window.logout = async function() {
 };
 
 window.home = async function() {
-  console.log('Logging out via Home...');
   try {
     const user = auth.currentUser;
     if (user) {
       await auth.signOut();
       window.localStorage.removeItem('emailForSignIn');
       window.localStorage.removeItem('isVerified');
-      window.history.pushState(null, document.title, window.location.href);
-      window.onpopstate = async function() {
-        await auth.signOut();
-        window.localStorage.removeItem('emailForSignIn');
-        window.localStorage.removeItem('isVerified');
-        window.location.href = '/index.html';
-      };
     }
     window.location.href = '/index.html';
   } catch (error) {
@@ -967,13 +673,7 @@ function navigateToFocusArea(areaId) {
   window.location.href = `/LandingPage/Focus-Area/focus-area.html?area=${areaId}`;
 }
 
-// Debug function to test search manually
 window.testSearch = function() {
-  console.log('Testing search functionality...');
   const searchToggle = document.querySelector('#search-toggle');
-  if (searchToggle) {
-    searchToggle.click();
-  } else {
-    console.error('Search toggle not found for manual test');
-  }
+  if (searchToggle) searchToggle.click();
 };
