@@ -1,6 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Fix for Google Translate proxy: when translate serves a proxied page, root-relative URLs (starting with /) point to the proxy origin and break asset loading. -->
+  <script>
+    (function() {
+      try {
+        var ref = document.referrer || '';
+        if (!ref) return;
+        var refOrigin = new URL(ref).origin;
+        var hostname = window.location.hostname || '';
+        var isProxy = /translate|googleusercontent|goog/.test(hostname) && refOrigin.indexOf(hostname) === -1;
+        if (!isProxy) return;
+        var map = [ ['link','href'], ['script','src'], ['img','src'], ['a','href'] ];
+        map.forEach(function(pair) {
+          var tag = pair[0], attr = pair[1];
+          var nodes = document.getElementsByTagName(tag);
+          for (var i = 0; i < nodes.length; i++) {
+            var el = nodes[i];
+            var v = el.getAttribute(attr);
+            if (!v) continue;
+            if (v.indexOf('/') === 0) {
+              el.setAttribute(attr, refOrigin + v);
+            } else if (v.indexOf('./') === 0) {
+              el.setAttribute(attr, refOrigin + v.slice(1));
+            }
+          }
+        });
+        var base = document.querySelector('base');
+        if (!base) {
+          base = document.createElement('base');
+          document.head.insertBefore(base, document.head.firstChild);
+        }
+        base.setAttribute('href', refOrigin + '/');
+
+        // Inject protective CSS to override Google Translate's hiding rules
+        var protectiveStyle = document.createElement('style');
+        protectiveStyle.id = 'navbar-protection-css';
+        protectiveStyle.innerHTML = 
+          '.header-outer, .header, .nav, .nav-links, .nav-utils, ' +
+          '.nav a, .search-icon, .language-selector, #google_translate_element { ' +
+          'display: block !important; visibility: visible !important; opacity: 1 !important; } ' +
+          '.header { display: flex !important; } ' +
+          '.nav, .nav-links, .nav-utils { display: flex !important; } ' +
+          '.nav a { color: white !important; background-color: #2b9589 !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 0 2rem !important; padding-top: 0 !important; } ' +
+          '.nav a:nth-child(2), .nav a:nth-child(3), .nav a:nth-child(4) { padding-top: 12px !important; } ' +
+          '.search-icon { color: white !important; background-color: #2b9589 !important; display: flex !important; } ' +
+          '.language-selector { background-color: #207e74 !important; color: white !important; padding-top: 12px !important; } ' +
+          '#google_translate_element { display: inline-block !important; background: transparent !important; border: none !important; } ' +
+          '.goog-te-gadget { background-color: transparent !important; border: none !important; font-size: 0 !important; } ' +
+          '.goog-te-combo { display: inline-flex !important; align-items: center !important; justify-content: center !important; background-color: #2b9589 !important; color: white !important; border: none !important; height: 70px !important; padding: 0 2rem !important; padding-top: 12px !important; margin: 0 !important; font-size: 0.9rem !important; font-weight: 600 !important; line-height: 1.2 !important; } ' +
+          '.goog-te-combo:hover { background-color: #4ec3b0 !important; } ' +
+          '.goog-te-banner-frame { display: none !important; }';
+        document.head.appendChild(protectiveStyle);
+        console.log('Applied Google Translate proxy asset fix — using origin:', refOrigin);
+      } catch (e) {
+        console.warn('Translate proxy fix failed:', e);
+      }
+    })();
+  </script>
 
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-37VRZ5CGE4"></script>
@@ -400,6 +457,21 @@
       }
     }
   </script>
+  <!-- Google Translate Script (initializes the google_translate_element used by MasterPage.js) -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      if (typeof google === 'undefined' || !google.translate) {
+        console.warn('Google Translate API not available yet');
+      }
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,zu,tn',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </head>
 <body class="loading">
   <div class="loading-overlay">
