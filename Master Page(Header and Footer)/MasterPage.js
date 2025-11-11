@@ -515,6 +515,64 @@ customElements.define('green-economy-footer', GreenEconomyFooter);
 document.addEventListener('DOMContentLoaded', () => {
   console.log("DOM fully loaded for MasterPage.js at", new Date().toLocaleString('en-ZA'));
 
+  // Hide Google Translate notification bar
+  const hideGoogleTranslateBanner = () => {
+    // Hide the notification bar element
+    const notifbars = document.querySelectorAll('.goog-te-notifbar, [class*="goog-te-banner"], [id*="goog-te-banner"]');
+    notifbars.forEach(el => {
+      el.style.display = 'none !important';
+      el.style.visibility = 'hidden !important';
+      el.style.height = '0 !important';
+      el.style.overflow = 'hidden !important';
+    });
+
+    // Hide any iframes that contain the banner
+    const iframes = document.querySelectorAll('iframe');
+    iframes.forEach(iframe => {
+      if (iframe.id && iframe.id.includes('goog')) {
+        iframe.style.display = 'none !important';
+        iframe.style.visibility = 'hidden !important';
+        iframe.style.height = '0 !important';
+        iframe.style.width = '0 !important';
+      }
+    });
+  };
+
+  // Hide banner immediately and on intervals to catch it if it loads later
+  hideGoogleTranslateBanner();
+  setTimeout(hideGoogleTranslateBanner, 500);
+  setTimeout(hideGoogleTranslateBanner, 1000);
+  setTimeout(hideGoogleTranslateBanner, 2000);
+
+  // Watch for dynamically added banner elements
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.addedNodes.length > 0) {
+        mutation.addedNodes.forEach((node) => {
+          if (node.nodeType === 1) { // Check if it's an element node
+            if (node.classList && (node.classList.contains('goog-te-notifbar') || 
+                                   node.classList.contains('goog-te-banner-frame') ||
+                                   node.classList.contains('goog-te-banner'))) {
+              node.style.display = 'none !important';
+              node.style.visibility = 'hidden !important';
+            }
+            if (node.tagName === 'IFRAME' && node.id && node.id.includes('goog')) {
+              node.style.display = 'none !important';
+              node.style.visibility = 'hidden !important';
+            }
+          }
+        });
+      }
+    });
+  });
+
+  // Start observing the document for changes
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true
+  });
+
   setPersistence(auth, browserLocalPersistence)
     .then(() => console.log("Firebase auth persistence set to LOCAL"))
     .catch(error => console.error("Error setting auth persistence:", error));

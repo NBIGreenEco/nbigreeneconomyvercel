@@ -16,7 +16,7 @@ const firebaseConfig = {
 const config = {
     baseUrl: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
         ? 'http://127.0.0.1:5504' 
-        : 'https://nbi2.netlify.app'
+        : 'https://greeneconomytoolkit.org'
 };
 
 console.log("Initializing Firebase for SignUp at", new Date().toLocaleString('en-ZA'));

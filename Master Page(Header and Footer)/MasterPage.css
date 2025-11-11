@@ -761,6 +761,103 @@ html, body {
 /* Hide the Google Translate banner completely */
 .goog-te-banner-frame {
     display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+}
+
+/* Hide any banner container */
+.goog-te-banner {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+}
+
+/* Hide the floating translate button that appears on some pages */
+.goog-te-floating-button {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Hide banner iframe */
+iframe.goog-te-banner-frame {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Hide all Google Translate iframes at the top of page */
+body > iframe[id^='goog'] {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Hide Google Translate notification messages and dialogs */
+.goog-te-notifbar {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+}
+
+/* Hide Google Translate popup notifications */
+.goog-te-popup {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Hide Google banner elements globally */
+[class*='goog-te-banner'],
+[id*='goog-te-banner'],
+[class*='google-translate'],
+[id*='google-translate-banner'] {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Hide any element with goog in ID or class that might be a banner */
+[class*='goog'][class*='banner'],
+[id*='goog'][id*='banner'] {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Specifically hide the notification area - multiple methods */
+.goog-te-notifbar {
+    position: fixed !important;
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    width: 0 !important;
+    top: -9999px !important;
+    left: -9999px !important;
+    z-index: -9999 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    overflow: hidden !important;
+}
+
+/* Alternative selector for notification bar */
+.goog-te-notifbar-close {
+    display: none !important;
+}
+
+/* Hide the iframe that contains the notification */
+.goog-te-notifbar-frame {
+    display: none !important;
+    visibility: hidden !important;
 }
 
 /* Hide powered by Google text */
