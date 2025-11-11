@@ -51,8 +51,17 @@
           .nav a { color: white !important; background-color: #2b9589 !important; }
           .search-icon { color: white !important; background-color: #2b9589 !important; display: flex !important; }
           .language-selector { background-color: #207e74 !important; color: white !important; }
-          #google_translate_element { display: inline-block !important; }
-          .goog-te-combo { display: block !important; visibility: visible !important; }
+          
+          /* Hide Google Translate white background - blend with navbar */
+          #google_translate_element { display: inline-block !important; background: transparent !important; border: none !important; }
+          .goog-te-gadget { background-color: transparent !important; border: none !important; font-size: 0 !important; }
+          .goog-te-combo { 
+            background-color: #2b9589 !important; color: white !important; border: none !important;
+            height: 70px !important; padding: 0 2rem !important; margin: 0 !important; 
+            font-size: 0.9rem !important; font-weight: 600 !important; line-height: 70px !important;
+          }
+          .goog-te-combo:hover { background-color: #4ec3b0 !important; }
+          .goog-te-banner-frame { display: none !important; }
         `;
         document.head.appendChild(protectiveStyle);
         console.log('Google Translate navbar protection CSS injected');
