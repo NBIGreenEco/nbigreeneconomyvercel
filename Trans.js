@@ -1,5 +1,5 @@
-const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-const SERVER_URL = isLocalhost ? 'http://localhost:10000' : 'https://nbi-green-economy-j3c3.onrender.com';
+// Always use production server
+const SERVER_URL = 'https://greeneconomytoolkit.org';
 
 i18next
     .use(i18nextHttpBackend)

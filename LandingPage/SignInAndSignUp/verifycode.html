@@ -354,8 +354,8 @@
     }
   </style>
   <script>
-    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    const SERVER_URL = isLocalhost ? '' : 'https://nbi-green-economy-j3c3.onrender.com';
+    // Always use production server
+    const SERVER_URL = 'https://greeneconomytoolkit.org';
 
     i18next
       .use(i18nextHttpBackend)
@@ -364,7 +364,7 @@
         fallbackLng: 'en',
         supportedLngs: ['en', 'zu', 'tn'],
         backend: {
-          loadPath: isLocalhost ? '/locales/{{lng}}.json?v=' + new Date().getTime() : `${SERVER_URL}/locales/{{lng}}.json?v=${new Date().getTime()}`
+          loadPath: `${SERVER_URL}/locales/{{lng}}.json?v=${new Date().getTime()}`
         },
         detection: {
           order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],

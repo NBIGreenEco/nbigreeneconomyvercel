@@ -14,9 +14,7 @@ const firebaseConfig = {
 
 // Configuration for baseUrl (browser-compatible replacement for process.env)
 const config = {
-    baseUrl: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-        ? 'http://127.0.0.1:5504' 
-        : 'https://greeneconomytoolkit.org'
+    baseUrl: 'https://greeneconomytoolkit.org'
 };
 
 console.log("Initializing Firebase for SignUp at", new Date().toLocaleString('en-ZA'));

@@ -12,9 +12,8 @@ const firebaseConfig = {
     measurementId: "G-37VRZ5CGE4"
 };
 
-// Browser-compatible environment detection
-const isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
-const baseUrl = isProduction ? 'https://greeneconomytoolkit.org' : 'http://127.0.0.1:5504';
+// Always use production URL
+const baseUrl = 'https://greeneconomytoolkit.org';
 
 console.log("DEBUG: Initializing Firebase for SignIn at", new Date().toLocaleString('en-ZA'));
 console.log(`DEBUG: Environment: ${isProduction ? 'production' : 'development'}, Base URL: ${baseUrl}`);

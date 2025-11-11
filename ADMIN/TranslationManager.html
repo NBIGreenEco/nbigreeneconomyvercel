@@ -393,8 +393,8 @@ if (!getApps().length) {
 db = getFirestore(app);
 auth = getAuth(app);
 
-const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-const SERVER_URL = isLocalhost ? 'http://localhost:10000' : 'https://nbi-green-economy-j3c3.onrender.com';
+// Always use production server
+const SERVER_URL = 'https://greeneconomytoolkit.org';
 
 // Initialize i18next
 i18next
@@ -404,7 +404,7 @@ i18next
         fallbackLng: 'en',
         supportedLngs: ['en', 'zu', 'tn'],
         backend: {
-            loadPath: isLocalhost ? '/locales/{{lng}}.json?v=' + new Date().getTime() : `${SERVER_URL}/locales/{{lng}}.json?v=${new Date().getTime()}`
+            loadPath: `${SERVER_URL}/locales/{{lng}}.json?v=${new Date().getTime()}`
         },
         detection: {
             order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
@@ -488,15 +488,9 @@ function showAlertModal(message, type = 'success') {
 
 async function fetchProgress() {
     try {
-        if (isLocalhost) {
-            const response = await fetch('/translation_progress.json?v=' + new Date().getTime());
-            if (!response.ok) throw new Error(`Failed to fetch progress: ${response.status}`);
-            return await response.json();
-        } else {
-            const response = await fetch(`${SERVER_URL}/translation-progress`, { mode: 'cors' });
-            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-            return await response.json();
-        }
+        const response = await fetch(`${SERVER_URL}/translation-progress`, { mode: 'cors' });
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        return await response.json();
     } catch (error) {
         console.error('Error fetching progress:', error);
         showAlertModal(i18next.t('translation.error', { message: error.message, defaultValue: `Failed to fetch progress: ${error.message}` }), 'error');
@@ -516,26 +510,19 @@ async function runTranslation() {
     logContainer.innerHTML = '';
 
     try {
-        if (isLocalhost) {
-            console.log('Running translation locally');
-            // Simulate VSCode task for local development
-            window.location.href = 'vscode://run-task/Run%20Translation';
-            await new Promise(resolve => setTimeout(resolve, 1000));
-        } else {
-            console.log('Sending translation request to server:', `${SERVER_URL}/run-translation`);
-            const optionsResponse = await fetch(`${SERVER_URL}/ping`, { method: 'OPTIONS', mode: 'cors' });
-            if (!optionsResponse.ok) throw new Error(`CORS preflight request failed: ${optionsResponse.status}`);
-            const pingResponse = await fetch(`${SERVER_URL}/ping`, { mode: 'cors' });
-            if (!pingResponse.ok) throw new Error(`Server is not reachable: ${pingResponse.statusText}`);
-            const response = await fetch(`${SERVER_URL}/run-translation`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                mode: 'cors'
-            });
-            const data = await response.json();
-            if (!response.ok || data.status === 'error') {
-                throw new Error(data.message || 'Failed to start translation');
-            }
+        console.log('Sending translation request to server:', `${SERVER_URL}/run-translation`);
+        const optionsResponse = await fetch(`${SERVER_URL}/ping`, { method: 'OPTIONS', mode: 'cors' });
+        if (!optionsResponse.ok) throw new Error(`CORS preflight request failed: ${optionsResponse.status}`);
+        const pingResponse = await fetch(`${SERVER_URL}/ping`, { mode: 'cors' });
+        if (!pingResponse.ok) throw new Error(`Server is not reachable: ${pingResponse.statusText}`);
+        const response = await fetch(`${SERVER_URL}/run-translation`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            mode: 'cors'
+        });
+        const data = await response.json();
+        if (!response.ok || data.status === 'error') {
+            throw new Error(data.message || 'Failed to start translation');
         }
 
         let lastLogLength = 0;
@@ -578,9 +565,7 @@ async function runTranslation() {
         progressText.textContent = i18next.t('translation.error', { message: error.message, defaultValue: `Translation failed: ${error.message}` });
         let errorMessage;
         if (error.message.includes('Failed to fetch') || error.message.includes('CORS')) {
-            errorMessage = isLocalhost
-                ? i18next.t('translation.error_local', { defaultValue: 'Translation process failed. Please ensure Python is installed and the backend server is running at http://localhost:10000.' })
-                : i18next.t('translation.error_server', { message: error.message, defaultValue: `Failed to connect to the translation server: ${error.message}. Please check if the backend is running at ${SERVER_URL} and CORS is configured correctly.` });
+            errorMessage = i18next.t('translation.error_server', { message: error.message, defaultValue: `Failed to connect to the translation server: ${error.message}. Please check if the backend is running at ${SERVER_URL} and CORS is configured correctly.` });
         } else {
             errorMessage = i18next.t('translation.error', { message: error.message, defaultValue: `Translation failed: ${error.message}` });
         }
