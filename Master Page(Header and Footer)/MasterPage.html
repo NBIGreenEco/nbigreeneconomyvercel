@@ -122,62 +122,85 @@
     document.addEventListener('DOMContentLoaded', () => setTimeout(loadGT, 500));
   </script>
 
-  <!-- Auto-close Google Translate notification bar -->
+  <!-- Auto-close Google Translate notification bar and hide after translation completes -->
   <script>
-    // Function to find and click the Close button on the Google Translate bar
-    const autoCloseGoogleBar = () => {
-      try {
-        const banner = document.querySelector('.goog-te-banner-frame');
-        if (banner) {
-          // Find the close button
-          const buttons = banner.querySelectorAll('button');
-          for (let btn of buttons) {
-            const btnText = btn.textContent.trim();
-            if (btnText === 'Close' || btnText.includes('Close')) {
-              // Found the close button - click it
-              btn.click();
-              console.log('DEBUG: Clicked Google Translate Close button');
-              return true;
+    (function() {
+      const initialLang = (document.documentElement && document.documentElement.lang) ? document.documentElement.lang : 'en';
+
+      const autoCloseGoogleBar = () => {
+        try {
+          const bannerSelectors = ['.goog-te-banner-frame', '.goog-te-notification', '.goog-te-notifbar'];
+          for (const sel of bannerSelectors) {
+            const banner = document.querySelector(sel);
+            if (!banner) continue;
+            const buttons = banner.querySelectorAll('button, [role="button"]');
+            for (let btn of buttons) {
+              const t = (btn.textContent || btn.getAttribute('aria-label') || '').trim();
+              if (!t) continue;
+              if (t === 'Close' || /close|×|✕/i.test(t)) {
+                try { btn.click(); console.log('DEBUG: Clicked Google Translate Close button'); return true; } catch (e) {}
+              }
             }
+            const possible = banner.querySelector('[aria-label="Close"], .goog-close, .close, .goog-te-banner-close');
+            if (possible) { try { possible.click(); console.log('DEBUG: Clicked fallback close control'); return true; } catch(e){} }
           }
-        }
-        return false;
-      } catch (e) {
-        console.error('Error auto-closing Google bar:', e);
-        return false;
-      }
-    };
+          return false;
+        } catch (e) { console.error('Error auto-closing Google bar:', e); return false; }
+      };
 
-    // Watch for the banner to appear and close it immediately
-    const closeObserver = new MutationObserver(() => {
-      // Check if banner exists and close it
-      if (document.querySelector('.goog-te-banner-frame')) {
-        // Give it a tiny moment to fully render, then close
-        setTimeout(autoCloseGoogleBar, 50);
-      }
-    });
+      const forceHideBannerNodes = () => {
+        try {
+          const selectors = ['.goog-te-banner-frame', '.goog-te-notifbar', '.goog-te-banner', 'div[class*="goog-te-banner"]', '[id*="goog-te-notif"]'];
+          selectors.forEach(s => {
+            document.querySelectorAll(s).forEach(el => {
+              try {
+                el.style.setProperty('display','none','important');
+                el.style.setProperty('visibility','hidden','important');
+                el.style.setProperty('height','0','important');
+                el.style.setProperty('width','0','important');
+                el.setAttribute('aria-hidden','true');
+              } catch(e){}
+            });
+          });
+          document.querySelectorAll('iframe').forEach(iframe => {
+            try { if (iframe.src && iframe.src.includes('translate.google')) { iframe.style.setProperty('display','none','important'); iframe.style.setProperty('visibility','hidden','important'); } } catch(e){}
+          });
+        } catch(e){console.error(e)}
+      };
 
-    // Start observing when DOM is ready
-    if (document.body) {
-      closeObserver.observe(document.body, {
-        childList: true,
-        subtree: true
-      });
-      console.log('DEBUG: Google Translate auto-close observer ACTIVE');
-    } else {
-      document.addEventListener('DOMContentLoaded', () => {
-        closeObserver.observe(document.body, {
-          childList: true,
-          subtree: true
-        });
-        console.log('DEBUG: Google Translate auto-close observer ACTIVE');
-      });
-    }
+      const protectDropdown = () => {
+        try {
+          const dropdown = document.getElementById('google_translate_element');
+          if (dropdown) { dropdown.style.setProperty('display','inline-block','important'); dropdown.style.setProperty('visibility','visible','important'); }
+          const combo = document.querySelector('.goog-te-combo');
+          if (combo) { combo.style.setProperty('display','inline-block','important'); combo.style.setProperty('visibility','visible','important'); }
+        } catch(e){}
+      };
 
-    // Also try to close on window load
-    window.addEventListener('load', () => {
-      setTimeout(autoCloseGoogleBar, 500);
-    });
+      const onTranslationDetected = () => {
+        setTimeout(() => { autoCloseGoogleBar(); forceHideBannerNodes(); protectDropdown(); }, 50);
+        setTimeout(() => { autoCloseGoogleBar(); forceHideBannerNodes(); protectDropdown(); }, 400);
+        setTimeout(() => { autoCloseGoogleBar(); forceHideBannerNodes(); protectDropdown(); }, 1200);
+      };
+
+      const closeObserver = new MutationObserver(() => { if (document.querySelector('.goog-te-banner-frame') || document.querySelector('.goog-te-notifbar')) { setTimeout(autoCloseGoogleBar, 50); } });
+
+      const startObservers = () => {
+        if (document.body) { closeObserver.observe(document.body, { childList: true, subtree: true }); console.log('DEBUG: Google Translate auto-close observer ACTIVE'); }
+        try {
+          const langObserver = new MutationObserver((mutations) => { mutations.forEach(m => { if (m.type === 'attributes' && m.attributeName === 'lang') { const newLang = document.documentElement.lang || ''; if (newLang && newLang !== initialLang) { console.log('DEBUG: html[lang] changed to', newLang); onTranslationDetected(); } } }); });
+          langObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
+        } catch(e){ console.warn('lang observer failed', e); }
+
+        try {
+          let lastCookie = (document.cookie.match(/(^|; )googtrans=([^;]+)/) || [])[2] || '';
+          setInterval(() => { const current = (document.cookie.match(/(^|; )googtrans=([^;]+)/) || [])[2] || ''; if (current && current !== lastCookie) { lastCookie = current; console.log('DEBUG: googtrans cookie changed to', current); onTranslationDetected(); } }, 500);
+        } catch(e){ console.warn('cookie poll failed', e); }
+      };
+
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startObservers); else startObservers();
+      window.addEventListener('load', () => { setTimeout(() => { autoCloseGoogleBar(); forceHideBannerNodes(); protectDropdown(); }, 500); });
+    })();
   </script>
 
   <!-- Anti-Google Translate CSS -->
