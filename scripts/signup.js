@@ -14,7 +14,7 @@ const firebaseConfig = {
 
 // Configuration for baseUrl (browser-compatible replacement for process.env)
 const config = {
-    baseUrl: 'https://greeneconomytoolkit.org'
+    baseUrl: 'https://greeneconomytoolkit.com'
 };
 
 console.log("Initializing Firebase for SignUp at", new Date().toLocaleString('en-ZA'));
