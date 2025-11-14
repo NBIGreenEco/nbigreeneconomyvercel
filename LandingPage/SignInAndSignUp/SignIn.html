@@ -260,19 +260,7 @@
         });
     </script>
     <!-- Google Translate Script (initializes the google_translate_element used by MasterPage.js) -->
-    <script type="text/javascript">
-      function googleTranslateElementInit() {
-        if (typeof google === 'undefined' || !google.translate) {
-          console.warn('Google Translate API not available yet');
-        }
-        new google.translate.TranslateElement({
-          pageLanguage: 'en',
-          includedLanguages: 'en,zu,tn',
-          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-          autoDisplay: false
-        }, 'google_translate_element');
-      }
-    </script>
+
     <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </head>
 <body>
@@ -328,7 +316,21 @@
         </main>
         <green-economy-footer></green-economy-footer>
     </div>
-        <script id="messenger-widget-b" src="https://cdn.botpenguin.com/website-bot.js" defer></script>
+
+        <!--<script type="text/javascript">
+      function googleTranslateElementInit() {
+        if (typeof google === 'undefined' || !google.translate) {
+          console.warn('Google Translate API not available yet');
+        }
+        new google.translate.TranslateElement({
+          pageLanguage: 'en',
+          includedLanguages: 'en,zu,tn',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+          autoDisplay: false
+        }, 'google_translate_element');
+      }
+    </script>-->
+        <script id="messenger-widget-b" src="https://cdn.botpenguin.com/website-bot.js" defer>6912ee821c29f29c0d7d6882,6912edf6e9437105db53226c,agent</script>
 
     <div class="loader-overlay" id="loader-overlay"></div>
     <div class="loader" id="loader"></div>
