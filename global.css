@@ -328,3 +328,19 @@
     min-height: 500px;
   }
 }
+
+/* ===== HIDE TRANSLATION BUTTON ===== */
+#google_translate_element,
+.goog-te-gadget,
+.goog-te-combo,
+.language-selector,
+[id*="google_translate"],
+[class*="goog-te"]:not(.goog-te-banner-frame) {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  width: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}

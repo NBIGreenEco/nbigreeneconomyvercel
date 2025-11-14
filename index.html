@@ -82,6 +82,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="Master Page(Header and Footer)/MasterPage.css">
     <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="hide-translate.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
     <!-- Google Translate Script (initializes the google_translate_element used by MasterPage.js) -->
     <script type="text/javascript">
@@ -163,29 +164,15 @@
           } catch(e){console.error(e)}
         };
 
-        // Ensure the dropdown remains visible
-        const protectDropdown = () => {
-          try {
-            const dropdown = document.getElementById('google_translate_element');
-            if (dropdown) {
-              dropdown.style.setProperty('display','inline-block','important');
-              dropdown.style.setProperty('visibility','visible','important');
-            }
-            const combo = document.querySelector('.goog-te-combo');
-            if (combo) {
-              combo.style.setProperty('display','inline-block','important');
-              combo.style.setProperty('visibility','visible','important');
-            }
-          } catch(e){}
-        };
+        // Translation dropdown is now hidden via CSS
 
         // Called when a translation completion is detected
         const onTranslationDetected = () => {
           // Wait a bit for Google to finish rendering then close
-          setTimeout(() => { autoCloseGoogleBar(); forceHideBannerNodes(); protectDropdown(); }, 50);
+          setTimeout(() => { autoCloseGoogleBar(); forceHideBannerNodes(); }, 50);
           // Also run a few times to ensure banner is gone
-          setTimeout(() => { autoCloseGoogleBar(); forceHideBannerNodes(); protectDropdown(); }, 400);
-          setTimeout(() => { autoCloseGoogleBar(); forceHideBannerNodes(); protectDropdown(); }, 1200);
+          setTimeout(() => { autoCloseGoogleBar(); forceHideBannerNodes(); }, 400);
+          setTimeout(() => { autoCloseGoogleBar(); forceHideBannerNodes(); }, 1200);
         };
 
         // Observer: watch for the banner to appear and close it immediately
@@ -235,14 +222,10 @@
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startObservers); else startObservers();
 
         // Also ensure closure after page load
-        window.addEventListener('load', () => { setTimeout(() => { autoCloseGoogleBar(); forceHideBannerNodes(); protectDropdown(); }, 500); });
+        window.addEventListener('load', () => { setTimeout(() => { autoCloseGoogleBar(); forceHideBannerNodes(); }, 500); });
       })();
     </script>
-    <script id="botpenguin-widget"
-      src="https://cdn.botpenguin.com/website-bot.js"
-      data-bot-id="6912ee821c29f29c0d7d6882"
-      defer>
-    </script>
+    <script id="messenger-widget-b" src="https://cdn.botpenguin.com/website-bot.js" defer>6912ee821c29f29c0d7d6882,6912edf6e9437105db53226c,agent</script>
 
 
     <script type="module" src="scripts/enhancedsearch.js" defer></script>
@@ -973,7 +956,7 @@
             });
 
           // Listen for new service worker and prompt user to refresh
-          navigator.serviceWorker.addEventListener('controllerchange', () => {
+          navigator.serviceWorker.addEventListener('32w', () => {
             console.log('[SW] New service worker activated');
             // Optionally show a notification to refresh the page
           });

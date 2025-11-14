@@ -81,6 +81,7 @@
   <script src="../Trans.js"></script>
   <script src="MasterPage.js" type="module"></script>
   <link rel="stylesheet" href="MasterPage.css">
+  <link rel="stylesheet" href="../hide-translate.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
   <!-- Google Translate: Robust + Fallback -->
@@ -168,19 +169,12 @@
         } catch(e){console.error(e)}
       };
 
-      const protectDropdown = () => {
-        try {
-          const dropdown = document.getElementById('google_translate_element');
-          if (dropdown) { dropdown.style.setProperty('display','inline-block','important'); dropdown.style.setProperty('visibility','visible','important'); }
-          const combo = document.querySelector('.goog-te-combo');
-          if (combo) { combo.style.setProperty('display','inline-block','important'); combo.style.setProperty('visibility','visible','important'); }
-        } catch(e){}
-      };
+      // Translation dropdown is now hidden via CSS
 
       const onTranslationDetected = () => {
-        setTimeout(() => { autoCloseGoogleBar(); forceHideBannerNodes(); protectDropdown(); }, 50);
-        setTimeout(() => { autoCloseGoogleBar(); forceHideBannerNodes(); protectDropdown(); }, 400);
-        setTimeout(() => { autoCloseGoogleBar(); forceHideBannerNodes(); protectDropdown(); }, 1200);
+        setTimeout(() => { autoCloseGoogleBar(); forceHideBannerNodes(); }, 50);
+        setTimeout(() => { autoCloseGoogleBar(); forceHideBannerNodes(); }, 400);
+        setTimeout(() => { autoCloseGoogleBar(); forceHideBannerNodes(); }, 1200);
       };
 
       const closeObserver = new MutationObserver(() => { if (document.querySelector('.goog-te-banner-frame') || document.querySelector('.goog-te-notifbar')) { setTimeout(autoCloseGoogleBar, 50); } });
@@ -199,7 +193,7 @@
       };
 
       if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startObservers); else startObservers();
-      window.addEventListener('load', () => { setTimeout(() => { autoCloseGoogleBar(); forceHideBannerNodes(); protectDropdown(); }, 500); });
+        window.addEventListener('load', () => { setTimeout(() => { autoCloseGoogleBar(); forceHideBannerNodes(); }, 500); });
     })();
   </script>
 

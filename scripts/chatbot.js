@@ -231,20 +231,12 @@ class GreenEconomyChatbot extends HTMLElement {
         }
       </style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-      <div class="ai-assistant-btn">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-        </svg>
-      </div>
       <div id="aiModal" class="modal" style="display: none;">
         <div class="modal-content">
           <span class="modal-close">&times;</span>
           <div class="chat-container">
             <h3 data-translate="ai-assistant-title">AI Assistant</h3>
             <div class="chat-messages" id="chatMessages">
-              <div class="message ai">
-                <div class="message-content" data-translate="ai-welcome">Sawubona! Hello! Dumelang! 🌱 I'm your Green Economy AI Assistant. I can help you in isiZulu, English, or Tswana. How can I assist you with green economy opportunities today?</div>
-              </div>
             </div>
             <div class="chat-input-container">
               <input type="text" id="chatInput" class="chat-input" data-translate-placeholder="ai-input-placeholder" placeholder="Ask me about green economy opportunities...">
