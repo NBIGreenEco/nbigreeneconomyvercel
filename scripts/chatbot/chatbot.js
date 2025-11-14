@@ -1,4 +1,4 @@
-class GreenEconomyChatbot extends HTMLElement {
+/*class GreenEconomyChatbot extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
@@ -362,7 +362,7 @@ generateAIResponse(userMessage) {
     };
     const langResponses = responses[this.currentLanguage] || responses.en;
     return langResponses[Math.floor(Math.random() * langResponses.length)];
-  }*/
+  }
 
   trackUserInteraction(category, action, label = '') {
     if (this.db) {
@@ -409,4 +409,4 @@ generateAIResponse(userMessage) {
   }
 }
 
-customElements.define('green-economy-chatbot', GreenEconomyChatbot);
+//customElements.define('green-economy-chatbot', GreenEconomyChatbot);*/
