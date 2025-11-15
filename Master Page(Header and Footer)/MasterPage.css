@@ -81,6 +81,31 @@ body {
     gap: 0;
 }
 
+/* Navigation buttons - exact same as dropdown */
+.nav-button {
+    background-color: #2b9589;
+    color: white;
+    border: none;
+    padding: 0 2rem;
+    height: 70px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0;
+    margin-right: 0;
+    line-height: 1.2;
+    padding-top: 12px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.nav-button:hover {
+    background-color: #4ec3b0;
+}
+
 /* Mobile menu button */
 .mobile-menu-button {
     display: none;
@@ -114,29 +139,6 @@ body {
 
 .mobile-menu-button.active .menu-icon:nth-child(3) {
     transform: translateY(-9px) rotate(-45deg);
-}
-
-/* Desktop Navigation - EXACT ORIGINAL STYLES */
-.nav a {
-    color: white;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.9rem;
-    background-color: #2b9589;
-    padding: 0 2rem;
-    height: 70px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 0;
-    width: 200px;
-    line-height: 1;
-    transition: background-color 0.3s ease;
-}
-
-.nav a:hover {
-    background-color: #4ec3b0;
-    text-decoration: none;
 }
 
 .language-selector {
@@ -674,17 +676,6 @@ html, body {
 
 .nav-utils {
     display: flex !important;
-}
-
-/* Protect nav link colors and backgrounds */
-.nav a {
-    color: white !important;
-    background-color: #2b9589 !important;
-    text-decoration: none !important;
-}
-
-.nav a:hover {
-    background-color: #4ec3b0 !important;
 }
 
 /* Protect language selector */
