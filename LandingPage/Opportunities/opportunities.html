@@ -71,6 +71,81 @@
   <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
   <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
   <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
+  
+  <!-- Translation System (Unofficial Google Translate API) -->
+  <script>
+    let currentLanguage = 'en';
+
+    // Translate a single piece of text
+    async function translateText(text, targetLang) {
+      const sourceLang = currentLanguage || 'en';
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        return data[0].map(seg => seg[0]).join('');
+      } catch (e) {
+        console.error('Translation error:', e);
+        return text;
+      }
+    }
+
+    // Translate the whole page (all text nodes)
+    async function translatePage(targetLang) {
+      const selector = document.getElementById('langSelect');
+      if (!selector) return;
+      
+      const original = selector.dataset.original || selector.options[selector.selectedIndex].text;
+      selector.dataset.original = original;
+
+      const translating = targetLang === 'en' ? 'English' :
+                          targetLang === 'zu' ? 'isiZulu' :
+                          'Setswana';
+      selector.options[selector.selectedIndex].text = `Translating to ${translating}…`;
+
+      const walker = document.createTreeWalker(
+        document.body,
+        NodeFilter.SHOW_TEXT,
+        {
+          acceptNode: node => {
+            const p = node.parentNode;
+            if (!p) return NodeFilter.FILTER_REJECT;
+            const tag = p.tagName;
+            if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'NOSCRIPT') return NodeFilter.FILTER_REJECT;
+            return node.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+          }
+        }
+      );
+
+      const nodes = [];
+      let n;
+      while (n = walker.nextNode()) nodes.push(n);
+
+      const BATCH = 15;
+      for (let i = 0; i < nodes.length; i += BATCH) {
+        const batch = nodes.slice(i, i + BATCH);
+        const promises = batch.map(node => translateText(node.nodeValue, targetLang));
+        const results = await Promise.all(promises);
+        batch.forEach((node, idx) => node.nodeValue = results[idx]);
+      }
+
+      selector.options[selector.selectedIndex].text = original;
+      currentLanguage = targetLang;
+    }
+
+    function onLangChange() {
+      const lang = this.value;
+      if (lang === 'en') {
+        location.reload();
+        return;
+      }
+      translatePage(lang).catch(err => {
+        console.error(err);
+        alert('Translation failed – check your internet connection.');
+      });
+    }
+  </script>
+  
   <link href="stylesheet" href="/Master Page(Header and Footer)/footer.css">
   <script type="module" src="/Trans.js"></script>
   <link rel="stylesheet" href="Opportunities.css">
@@ -664,21 +739,7 @@
       updateContent();
     });
   </script>
-  <!-- Google Translate Script (initializes the google_translate_element used by MasterPage.js) -->
-  <script type="text/javascript">
-    function googleTranslateElementInit() {
-      if (typeof google === 'undefined' || !google.translate) {
-        console.warn('Google Translate API not available yet');
-      }
-      new google.translate.TranslateElement({
-        pageLanguage: 'en',
-        includedLanguages: 'en,zu,tn',
-        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-        autoDisplay: false
-      }, 'google_translate_element');
-    }
-  </script>
-  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <!-- Translation system is now in MasterPage header -->
 </head>
 <body class="loading">
   <div class="loading-overlay">

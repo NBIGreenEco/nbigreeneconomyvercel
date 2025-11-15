@@ -7,9 +7,12 @@
 
     <!-- Translation System (Unofficial Google Translate API) -->
     <script>
+      let currentLanguage = 'en';
+
       // Translate a single piece of text
       async function translateText(text, targetLang) {
-        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
+        const sourceLang = currentLanguage || 'en';
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
         try {
           const res = await fetch(url);
           const data = await res.json();
@@ -60,6 +63,7 @@
         }
 
         selector.options[selector.selectedIndex].text = original;
+        currentLanguage = targetLang;
       }
 
       function onLangChange() {
