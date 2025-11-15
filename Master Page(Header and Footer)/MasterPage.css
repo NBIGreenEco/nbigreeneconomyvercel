@@ -79,7 +79,6 @@ body {
     display: flex;
     align-items: center;
     gap: 0;
-    margin-right: auto;
 }
 
 /* Navigation buttons - like search icon */
@@ -87,7 +86,7 @@ body {
     background-color: #2b9589;
     color: white;
     border: none;
-    padding: 0 1rem;
+    padding: 0 2rem;
     height: 70px;
     font-size: 0.9rem;
     font-weight: 700;
@@ -96,16 +95,12 @@ body {
     align-items: center;
     justify-content: center;
     border-radius: 0;
-    width: auto;
+    width: 200px;
     margin-right: 0;
     line-height: 70px;
     text-decoration: none;
     transition: background-color 0.3s ease;
     box-sizing: border-box;
-}
-
-.nav-button:nth-child(1) {
-    width: auto;
 }
 
 .nav-button:hover {
