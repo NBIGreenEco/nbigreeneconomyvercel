@@ -438,8 +438,29 @@ async function trackInteraction(userId, category, action, label = "") {
 
 async function verifyEmailLink() {
   const urlParams = new URLSearchParams(window.location.search);
-  const oobCode = urlParams.get('oobCode'); // Firebase's verification code
-  const email = urlParams.get('email') || 'nbigreeneconomy@gmail.com';
+  let oobCode = urlParams.get('oobCode'); // Firebase's verification code
+  let email = urlParams.get('email') || urlParams.get('email') || 'nbigreeneconomy@gmail.com';
+  
+  // If oobCode not in URL params, check if Firebase sent it and we need to handle the landing page redirect
+  if (!oobCode) {
+    // Firebase might have sent us here with the oobCode in the URL, check full URL
+    const fullUrl = window.location.href;
+    console.log('Full URL for debugging:', fullUrl);
+    
+    // Try to extract oobCode from the full URL if it exists
+    const oobCodeMatch = fullUrl.match(/oobCode=([^&]+)/);
+    if (oobCodeMatch) {
+      oobCode = decodeURIComponent(oobCodeMatch[1]);
+      console.log('Extracted oobCode from URL:', oobCode);
+    }
+    
+    // Try to extract email if available
+    const emailMatch = fullUrl.match(/email=([^&]+)/);
+    if (emailMatch) {
+      email = decodeURIComponent(emailMatch[1]);
+      console.log('Extracted email from URL:', email);
+    }
+  }
   const message = document.getElementById('message');
   const successMessage = document.getElementById('success-message');
   const errorMessage = document.getElementById('error-message');
@@ -465,79 +486,77 @@ async function verifyEmailLink() {
   }
 
   try {
-    let user = auth.currentUser;
-    console.log('Checking auth state:', user ? { email: user.email, uid: user.uid, emailVerified: user.emailVerified } : 'No user signed in');
-    
-    if (!user) {
-      console.log('Attempting to sign in with email:', email);
-      const userCredential = await signInWithEmailAndPassword(auth, email, HARDCODED_CODE);
-      user = userCredential.user;
-      console.log('User signed in successfully:', { email: user.email, uid: user.uid, emailVerified: user.emailVerified });
-    } else {
-      console.log('User already signed in:', { email: user.email, uid: user.uid, emailVerified: user.emailVerified });
-    }
-
-    // CRITICAL: Verify the email using Firebase's applyActionCode
-    console.log('Before applyActionCode - emailVerified:', user.emailVerified);
+    // CRITICAL: applyActionCode doesn't require a signed-in user
+    // It validates the verification code on the Firebase backend
+    console.log('Applying action code (verification):', oobCode);
     await applyActionCode(auth, oobCode);
-    console.log('applyActionCode completed successfully');
+    console.log('applyActionCode completed successfully - Email is now verified on Firebase');
 
-    // CRITICAL: Multiple reload attempts to ensure Firebase updates the token
-    console.log('Starting aggressive token refresh strategy...');
+    // Now try to get the current user and refresh their token
+    let user = auth.currentUser;
+    console.log('Checking auth state after applyActionCode:', user ? { email: user.email, uid: user.uid, emailVerified: user.emailVerified } : 'No user signed in');
     
-    // First reload: reload user object
-    await user.reload();
-    console.log('After first reload - emailVerified:', user.emailVerified);
-    
-    // Second reload: get fresh auth.currentUser
-    const currentUser = auth.currentUser;
-    if (currentUser) {
-      await currentUser.reload();
-      console.log('After currentUser reload - emailVerified:', currentUser.emailVerified);
-    }
-    
-    // Force re-authenticate by getting new ID token
-    try {
-      const idToken = await user.getIdToken(true); // Force refresh
-      console.log('ID token refreshed forcefully');
+    if (user) {
+      // CRITICAL: Multiple reload attempts to ensure Firebase updates the token
+      console.log('Starting aggressive token refresh strategy...');
+      
+      // First reload: reload user object
       await user.reload();
-      console.log('After token refresh reload - emailVerified:', user.emailVerified);
-    } catch (tokenError) {
-      console.log('Could not force refresh token, continuing:', tokenError.message);
+      console.log('After first reload - emailVerified:', user.emailVerified);
+      
+      // Second reload: get fresh auth.currentUser
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        await currentUser.reload();
+        console.log('After currentUser reload - emailVerified:', currentUser.emailVerified);
+      }
+      
+      // Force re-authenticate by getting new ID token
+      try {
+        const idToken = await user.getIdToken(true); // Force refresh
+        console.log('ID token refreshed forcefully');
+        await user.reload();
+        console.log('After token refresh reload - emailVerified:', user.emailVerified);
+      } catch (tokenError) {
+        console.log('Could not force refresh token, continuing:', tokenError.message);
+      }
+
+      // Update Firestore to mark email as verified (CRITICAL - this is the fallback)
+      const emailVerificationRef = doc(db, 'email_verifications', email);
+      await setDoc(emailVerificationRef, {
+        isVerified: true,
+        emailVerified: true,
+        verifiedAt: new Date(),
+        uid: user.uid,
+        verificationMethod: 'link_clicked',
+        tokenRefreshAttempts: 3
+      }, { merge: true });
+      console.log('Email verification recorded in Firestore');
+
+      // Also update the user document in Firestore as backup
+      const userDocRef = doc(db, 'users', user.uid);
+      await setDoc(userDocRef, {
+        emailVerified: true,
+        verifiedAt: new Date(),
+        email: email
+      }, { merge: true });
+      console.log('User document updated with verified status');
+
+      await trackInteraction(user.uid, 'email_verification', 'success', `Email: ${email}, oobCode: ${oobCode}, Firebase emailVerified: ${user.emailVerified}`);
+    } else {
+      // No user signed in, but applyActionCode succeeded - just mark in Firestore
+      console.log('No user signed in, but applyActionCode succeeded. Recording in Firestore only.');
+      const emailVerificationRef = doc(db, 'email_verifications', email);
+      await setDoc(emailVerificationRef, {
+        isVerified: true,
+        emailVerified: true,
+        verifiedAt: new Date(),
+        verificationMethod: 'link_clicked_no_signin'
+      }, { merge: true });
+      console.log('Email verification recorded in Firestore (no user context)');
+
+      await trackInteraction(null, 'email_verification', 'success_no_signin', `Email: ${email}, oobCode: ${oobCode}`);
     }
-
-    // Update Firestore to mark email as verified (CRITICAL - this is the fallback)
-    const emailVerificationRef = doc(db, 'email_verifications', email);
-    await setDoc(emailVerificationRef, {
-      isVerified: true,
-      emailVerified: true,
-      verifiedAt: new Date(),
-      uid: user.uid,
-      verificationMethod: 'link_clicked',
-      tokenRefreshAttempts: 3
-    }, { merge: true });
-    console.log('Email verification recorded in Firestore');
-
-    // Also update the user document in Firestore as backup
-    const userDocRef = doc(db, 'users', user.uid);
-    await setDoc(userDocRef, {
-      emailVerified: true,
-      verifiedAt: new Date(),
-      email: email
-    }, { merge: true });
-    console.log('User document updated with verified status');
-
-    await trackInteraction(user.uid, 'email_verification', 'success', `Email: ${email}, oobCode: ${oobCode}, Firebase emailVerified: ${user.emailVerified}`);
-
-    message.textContent = i18next.t('verifyemail.message_success', { defaultValue: 'Email verified successfully!' });
-    successMessage.textContent = i18next.t('verifyemail.success_redirect', { defaultValue: 'You can now sign in with your credentials.' });
-    successMessage.style.display = 'block';
-
-    console.log('Verification complete. Final auth state:', { 
-      uid: auth.currentUser?.uid, 
-      email: auth.currentUser?.email,
-      emailVerified: auth.currentUser?.emailVerified 
-    });
 
     console.log('Preparing to redirect to SignIn.html');
     setTimeout(() => {
@@ -558,27 +577,19 @@ async function verifyEmailLink() {
     try {
       let user = auth.currentUser;
       if (!user) {
-        console.log('Attempting to sign in for resend:', email);
-        const userCredential = await signInWithEmailAndPassword(auth, email, HARDCODED_CODE);
-        user = userCredential.user;
+        console.log('Error: No user signed in. Cannot resend verification email.');
+        errorMessage.textContent = i18next.t('verifyemail.error_no_user', { defaultValue: 'Please sign up first to resend the verification email.' });
+        errorMessage.style.display = 'block';
+        await trackInteraction(null, 'email_verification', 'resend_no_user', `Email: ${email}`);
+        return;
       }
 
       const actionCodeSettings = {
-        url: `${NETLIFY_BASE_URL}/LandingPage/SignInAndSignUp/VerifyEmail.html`,
+        url: `${config.baseUrl}/LandingPage/VerifyEmail.html?email=${encodeURIComponent(email)}`,
         handleCodeInApp: true
       };
       await sendEmailVerification(user, actionCodeSettings);
       console.log('Verification email resent:', actionCodeSettings.url);
-
-      // Update Firestore with a new token (for consistency with your existing flow)
-      const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
-      await setDoc(doc(db, 'email_verifications', email), {
-        token: token,
-        isVerified: false,
-        createdAt: serverTimestamp(),
-        expiresAt: new Date(Date.now() + 10 * 60 * 1000)
-      }, { merge: true });
-      console.log('Email verification token updated in Firestore');
 
       await trackInteraction(user.uid, 'email_verification', 'resend', `Email: ${email}, URL: ${actionCodeSettings.url}`);
       message.textContent = i18next.t('verifyemail.message_resent', { defaultValue: 'Verification email resent.' });

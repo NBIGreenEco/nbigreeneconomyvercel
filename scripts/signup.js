@@ -204,10 +204,15 @@ try {
                         const user = userCredential.user;
                         // Track attempt after successful creation (now authenticated)
                         await trackInteraction('signup', 'attempt', `Email: ${email}`);
-                        await sendEmailVerification(user, {
-                            url: `${config.baseUrl}/LandingPage/VerifyEmail.html`,
+                        
+                        // Send verification email with proper continueUrl
+                        const actionCodeSettings = {
+                            url: `${config.baseUrl}/LandingPage/VerifyEmail.html?email=${encodeURIComponent(email)}`,
                             handleCodeInApp: true
-                        });
+                        };
+                        await sendEmailVerification(user, actionCodeSettings);
+                        console.log('Verification email sent with actionCodeSettings:', actionCodeSettings);
+                        
                         await setDoc(doc(db, 'users', user.uid), {
                             userId: user.uid,
                             email: user.email,
