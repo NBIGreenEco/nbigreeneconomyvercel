@@ -205,7 +205,7 @@ try {
                         // Track attempt after successful creation (now authenticated)
                         await trackInteraction('signup', 'attempt', `Email: ${email}`);
                         await sendEmailVerification(user, {
-                            url: `${config.baseUrl}/LandingPage/SignInAndSignUp/SignIn.html?tempUserId=${tempUserId}`,
+                            url: `${config.baseUrl}/LandingPage/VerifyEmail.html`,
                             handleCodeInApp: true
                         });
                         await setDoc(doc(db, 'users', user.uid), {
@@ -216,7 +216,7 @@ try {
                             createdAt: serverTimestamp()
                         }, { merge: true });
 
-                        console.log("User created and email verification sent");
+                        console.log("User created and email verification sent to VerifyEmail.html");
                         await trackInteraction('signup', 'success', `Email: ${email}`);
                         hideLoader();
                         errorMessage.textContent = i18next.t('signup.success_message', { defaultValue: "Account created! Please verify your email." });

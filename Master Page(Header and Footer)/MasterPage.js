@@ -50,8 +50,12 @@ class GreenEconomyHeader extends HTMLElement {
               `}
             </div>
             <div class="nav-utils">
-              <!-- GOOGLE TRANSLATE DROPDOWN (replaces i18next selector) -->
-              <div id="google_translate_element" style="display:inline-block;"></div>
+              <!-- Language Selector Dropdown -->
+              <select id="langSelect" onchange="onLangChange.call(this)" style="padding: 0 2rem; height: 70px; border: none; font-size: 0.9rem; background-color: #2b9589; color: white; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; appearance: none; -webkit-appearance: none; -moz-appearance: none; padding-right: 35px; background-image: url('data:image/svg+xml;utf8,<svg fill=\'white\' height=\'24\' viewBox=\'0 0 24 24\' width=\'24\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M7 10l5 5 5-5z\'/></svg>'); background-repeat: no-repeat; background-position: right 8px center; background-size: 24px;">
+                <option value="en" style="background-color: #fff; color: #333;">English</option>
+                <option value="zu" style="background-color: #fff; color: #333;">isiZulu</option>
+                <option value="tn" style="background-color: #fff; color: #333;">Setswana</option>
+              </select>
               <i class="fas fa-search search-icon" id="search-toggle"></i>
             </div>
             <div class="blue-section"></div>

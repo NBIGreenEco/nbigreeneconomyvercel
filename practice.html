@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Water Management – Translate Page</title>
+
+  <!-- Google Translate unofficial API (no key) -->
+  <script>
+    let currentLanguage = 'en';
+
+    // --------------------------------------------------------------
+    // 1. Translate a single piece of text
+    // --------------------------------------------------------------
+    async function translateText(text, targetLang) {
+      const sourceLang = currentLanguage || 'en';
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      return data[0].map(seg => seg[0]).join('');
+    }
+
+    // --------------------------------------------------------------
+    // 2. Translate the whole page (all text nodes)
+    // --------------------------------------------------------------
+    async function translatePage(targetLang) {
+      // skip the selector itself
+      const selector = document.getElementById('langSelect');
+      const original = selector.dataset.original || selector.options[selector.selectedIndex].text;
+      selector.dataset.original = original;
+
+      // show "Translating…"
+      const translating = targetLang === 'en' ? 'English' :
+                          targetLang === 'zu' ? 'isiZulu' :
+                          'Setswana';
+      selector.options[selector.selectedIndex].text = `Translating to ${translating}…`;
+
+      // collect every text node that is NOT inside script/style/noscript
+      const walker = document.createTreeWalker(
+        document.body,
+        NodeFilter.SHOW_TEXT,
+        {
+          acceptNode: node => {
+            const p = node.parentNode;
+            if (!p) return NodeFilter.FILTER_REJECT;
+            const tag = p.tagName;
+            if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'NOSCRIPT') return NodeFilter.FILTER_REJECT;
+            // keep only nodes with visible text
+            return node.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+          }
+        }
+      );
+
+      const nodes = [];
+      let n;
+      while (n = walker.nextNode()) nodes.push(n);
+
+      // translate in small batches to avoid hitting rate-limits
+      const BATCH = 15;
+      for (let i = 0; i < nodes.length; i += BATCH) {
+        const batch = nodes.slice(i, i + BATCH);
+        const promises = batch.map(node => translateText(node.nodeValue, targetLang));
+        const results = await Promise.all(promises);
+        batch.forEach((node, idx) => node.nodeValue = results[idx]);
+      }
+
+      // restore selector text
+      selector.options[selector.selectedIndex].text = original;
+      currentLanguage = targetLang;
+    }
+
+    // --------------------------------------------------------------
+    // 3. Dropdown change handler
+    // --------------------------------------------------------------
+    function onLangChange() {
+      const lang = this.value;               // en / zu / tn
+      if (lang === 'en') {
+        location.reload();                   // reload = original English
+        return;
+      }
+      translatePage(lang).catch(err => {
+        console.error(err);
+        alert('Translation failed – check your internet connection.');
+      });
+    }
+  </script>
+
+  <!-- ==== PAGE STYLES (exactly the same you posted) ==== -->
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;font-weight:500}
+    body{font-family:'Poppins',sans-serif;line-height:1.6;color:#333;background:#fff;overflow-x:hidden}
+    .container{max-width:1200px;margin:0 auto;width:100%}
+    .hero{position:relative;height:400px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+    .hero-image{position:absolute;top:0;left:0;width:100%;height:100%;background-size:cover;background-position:center}
+    .hero-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center}
+    .hero-title{color:#fff;font-size:48px;font-weight:700;text-align:center;text-shadow:2px 2px 4px rgba(0,0,0,.5);z-index:2;padding:0 20px}
+    .content-section{padding:60px 0}
+    .content-container{width:100%;padding:0 24px}
+    .content-description{max-width:800px;margin:0 auto 40px;text-align:center}
+    .content-description h2{font-size:32px;font-weight:700;color:#1a8934;margin-bottom:20px}
+    .content-description p{font-size:18px;color:#6b7280;line-height:1.7;margin-bottom:20px}
+    .key-points{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:30px;margin-top:40px}
+    .point-card{background:#f8fafc;border-radius:8px;padding:30px;box-shadow:0 4px 6px rgba(0,0,0,.05);transition:.3s}
+    .point-card:hover{transform:translateY(-5px);box-shadow:0 10px 20px rgba(0,0,0,.1)}
+    .point-icon{width:60px;height:60px;background:#1a8934;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+    .point-icon svg{width:30px;height:30px;color:#fff}
+    .point-card h3{font-size:20px;font-weight:700;color:#1f2937;margin-bottom:15px}
+    .point-card p{color:#6b7280;line-height:1.6}
+    .back-section{padding:40px 0;background:#f8fafc}
+    .back-content{width:100%;padding:0 24px}
+    .back-link{display:inline-flex;align-items:center;color:#1a8934;text-decoration:none;font-weight:500;transition:.3s;font-size:16px}
+    .back-link:hover{color:#16a34a}
+    .back-link svg{width:16px;height:16px;margin-right:8px}
+    .newsletter-section{background:#009381;padding:80px 20px}
+    .newsletter-container{max-width:800px;margin:0 auto;text-align:left}
+    .newsletter-title{color:#fff;font-size:20px;margin-bottom:25px;max-width:600px;margin-left:auto;margin-right:auto}
+    .newsletter-input-container{position:relative;max-width:700px;margin:0 auto}
+    .newsletter-input{width:100%;padding:18px 50px 18px 25px;border:none;border-radius:4px;font-size:16px;color:#333;background:#fff}
+    .newsletter-arrow{position:absolute;right:25px;top:50%;transform:translateY(-50%);color:#009381;font-size:22px;font-weight:700}
+    .newsletter-disclaimer{color:rgba(255,255,255,.7);font-size:14px;margin-top:15px;max-width:700px;margin-left:auto;margin-right:auto}
+    @media(max-width:1024px){.hero-title{font-size:42px}.content-container,.back-content{padding:0 20px}}
+    @media(max-width:768px){.hero{height:300px}.hero-title{font-size:36px}.content-section{padding:40px 0}.content-container,.back-content{padding:0 16px}.content-description h2{font-size:28px}.key-points{grid-template-columns:1fr}.back-section{padding:30px 0}.newsletter-section{padding:60px 16px}.newsletter-title{font-size:18px}.newsletter-input{padding:16px 50px 16px 20px;font-size:15px}.newsletter-arrow{right:20px;font-size:20px}}
+    @media(max-width:480px){.hero{height:250px}.hero-title{font-size:28px}.content-section{padding:30px 0}.content-container,.back-content{padding:0 12px}.content-description h2{font-size:24px}.point-card{padding:20px}.back-section{padding:20px 0}.newsletter-section{padding:50px 12px}.newsletter-title{font-size:17px}.newsletter-input{padding:14px 50px 14px 18px;font-size:14px}.newsletter-arrow{right:18px;font-size:18px}.newsletter-disclaimer{font-size:13px}}
+  </style>
+</head>
+
+<body>
+
+  <!-- ==== LANGUAGE DROPDOWN (placed at the top-right) ==== -->
+  <div style="position:fixed;top:15px;right:15px;z-index:9999;background:#fff;padding:8px 12px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.15);">
+    <select id="langSelect" onchange="onLangChange.call(this)">
+      <option value="en">English</option>
+      <option value="zu">isiZulu</option>
+      <option value="tn">Setswana</option>
+    </select>
+  </div>
+
+  <!-- ==== ORIGINAL PAGE CONTENT (exactly what you gave) ==== -->
+  <section class="hero">
+    <div class="hero-image" style="background-image:url('https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1200&h=400&fit=crop');"></div>
+    <div class="hero-overlay">
+      <h1 class="hero-title">Water Management</h1>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="content-container container">
+      <div class="content-description">
+        <h2>Sustainable Water Solutions</h2>
+        <p>
+          Using water wisely and keeping it clean is essential because without potable water 
+          humanity cannot survive. Water is also critical for most industrial processes. 
+          This means we should use water carefully in farming and industry and ensure our 
+          rivers and lakes stay clean for future generations.
+        </p>
+        <p>
+          South Africa is a water-scarce country facing increasing water stress due to 
+          climate change and growing demand. Sustainable water management is crucial for 
+          economic development, food security, and environmental protection.
+        </p>
+      </div>
+
+      <div class="key-points">
+        <div class="point-card">
+          <div class="point-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 6l4-4 4 4M8 18l4 4 4-4M4 10h16M4 14h16"/>
+            </svg>
+          </div>
+          <h3>Water Conservation</h3>
+          <p>
+            Implementing efficient irrigation systems, water-saving technologies, and 
+            demand management strategies to reduce water consumption across all sectors.
+          </p>
+        </div>
+
+        <div class="point-card">
+          <div class="point-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/>
+            </svg>
+          </div>
+          <h3>Water Quality Protection</h3>
+          <p>
+            Monitoring and maintaining water quality through pollution prevention, 
+            wastewater treatment, and ecosystem protection to ensure safe water supplies.
+          </p>
+        </div>
+
+        <div class="point-card">
+          <div class="point-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+            </svg>
+          </div>
+          <h3>Integrated Management</h3>
+          <p>
+            Adopting holistic approaches to water resource management that balance 
+            competing needs while protecting ecosystems and ensuring equitable access.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="back-section">
+    <div class="back-content container">
+      <a href="index.html" class="back-link">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        <span>Back to all focus areas</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="newsletter-section">
+    <div class="newsletter-container">
+      <h2 class="newsletter-title">Subscribe to our newsletter to get the latest information</h2>
+      <div class="newsletter-input-container">
+        <input type="email" placeholder="Your email" class="newsletter-input">
+        <span class="newsletter-arrow">Right Arrow</span>
+      </div>
+      <p class="newsletter-disclaimer">*Only relevant information, no spam</p>
+    </div>
+  </section>
+
+</body>
+</html>

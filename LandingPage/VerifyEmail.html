@@ -67,6 +67,95 @@
   <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
   <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
   <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
+  
+  <!-- Translation System (Unofficial Google Translate API) -->
+  <script>
+    let currentLanguage = 'en';
+
+    // Translate a single piece of text
+    async function translateText(text, targetLang) {
+      const sourceLang = currentLanguage || 'en';
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        return data[0].map(seg => seg[0]).join('');
+      } catch (e) {
+        console.error('Translation error:', e);
+        return text;
+      }
+    }
+
+    // Translate the whole page (all text nodes)
+    async function translatePage(targetLang) {
+      const selector = document.getElementById('langSelect');
+      if (!selector) return;
+      
+      const original = selector.dataset.original || selector.options[selector.selectedIndex].text;
+      selector.dataset.original = original;
+
+      const translating = targetLang === 'en' ? 'English' :
+                          targetLang === 'zu' ? 'isiZulu' :
+                          'Setswana';
+      selector.options[selector.selectedIndex].text = `Translating to ${translating}…`;
+
+      const walker = document.createTreeWalker(
+        document.body,
+        NodeFilter.SHOW_TEXT,
+        {
+          acceptNode: node => {
+            const p = node.parentNode;
+            if (!p) return NodeFilter.FILTER_REJECT;
+            const tag = p.tagName;
+            if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'NOSCRIPT') return NodeFilter.FILTER_REJECT;
+            return node.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+          }
+        }
+      );
+
+      const nodes = [];
+      let n;
+      while (n = walker.nextNode()) nodes.push(n);
+
+      const BATCH = 15;
+      for (let i = 0; i < nodes.length; i += BATCH) {
+        const batch = nodes.slice(i, i + BATCH);
+        const promises = batch.map(node => translateText(node.nodeValue, targetLang));
+        const results = await Promise.all(promises);
+        batch.forEach((node, idx) => node.nodeValue = results[idx]);
+      }
+
+      selector.options[selector.selectedIndex].text = original;
+      currentLanguage = targetLang;
+    }
+
+    function onLangChange() {
+      const lang = this.value;
+      if (lang === 'en') {
+        location.reload();
+        return;
+      }
+      translatePage(lang).catch(err => {
+        console.error(err);
+        alert('Translation failed – check your internet connection.');
+      });
+    }
+
+    // Check for saved language preference on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedLang = localStorage.getItem('selectedLanguage');
+      if (savedLang && savedLang !== 'en') {
+        setTimeout(() => {
+          const selector = document.getElementById('langSelect');
+          if (selector) {
+            selector.value = savedLang;
+            translatePage(savedLang).catch(err => console.error('Auto-translate error:', err));
+          }
+        }, 500);
+      }
+    });
+  </script>
+  
   <script src="/Trans.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js" type="module"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js" type="module"></script>
@@ -282,21 +371,7 @@
       updateContent();
     });
   </script>
-  <!-- Google Translate Script (initializes the google_translate_element used by MasterPage.js) -->
-  <script type="text/javascript">
-    function googleTranslateElementInit() {
-      if (typeof google === 'undefined' || !google.translate) {
-        console.warn('Google Translate API not available yet');
-      }
-      new google.translate.TranslateElement({
-        pageLanguage: 'en',
-        includedLanguages: 'en,zu,tn',
-        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-        autoDisplay: false
-      }, 'google_translate_element');
-    }
-  </script>
-  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <!-- Translation system is now in MasterPage header -->
 </head>
 <body class="loading">
   <div class="loading-overlay">
@@ -391,37 +466,82 @@ async function verifyEmailLink() {
 
   try {
     let user = auth.currentUser;
-    console.log('Checking auth state:', user ? { email: user.email, uid: user.uid } : 'No user signed in');
+    console.log('Checking auth state:', user ? { email: user.email, uid: user.uid, emailVerified: user.emailVerified } : 'No user signed in');
+    
     if (!user) {
       console.log('Attempting to sign in with email:', email);
       const userCredential = await signInWithEmailAndPassword(auth, email, HARDCODED_CODE);
       user = userCredential.user;
-      console.log('User signed in successfully:', { email: user.email, uid: user.uid });
+      console.log('User signed in successfully:', { email: user.email, uid: user.uid, emailVerified: user.emailVerified });
     } else {
-      console.log('User already signed in:', { email: user.email, uid: user.uid });
+      console.log('User already signed in:', { email: user.email, uid: user.uid, emailVerified: user.emailVerified });
     }
 
-    // Verify the email using Firebase's applyActionCode
+    // CRITICAL: Verify the email using Firebase's applyActionCode
+    console.log('Before applyActionCode - emailVerified:', user.emailVerified);
     await applyActionCode(auth, oobCode);
-    console.log('Email verification successful using oobCode');
+    console.log('applyActionCode completed successfully');
 
-    // Update Firestore to mark email as verified (for consistency with your existing flow)
+    // CRITICAL: Multiple reload attempts to ensure Firebase updates the token
+    console.log('Starting aggressive token refresh strategy...');
+    
+    // First reload: reload user object
+    await user.reload();
+    console.log('After first reload - emailVerified:', user.emailVerified);
+    
+    // Second reload: get fresh auth.currentUser
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      await currentUser.reload();
+      console.log('After currentUser reload - emailVerified:', currentUser.emailVerified);
+    }
+    
+    // Force re-authenticate by getting new ID token
+    try {
+      const idToken = await user.getIdToken(true); // Force refresh
+      console.log('ID token refreshed forcefully');
+      await user.reload();
+      console.log('After token refresh reload - emailVerified:', user.emailVerified);
+    } catch (tokenError) {
+      console.log('Could not force refresh token, continuing:', tokenError.message);
+    }
+
+    // Update Firestore to mark email as verified (CRITICAL - this is the fallback)
     const emailVerificationRef = doc(db, 'email_verifications', email);
     await setDoc(emailVerificationRef, {
       isVerified: true,
-      verifiedAt: new Date()
+      emailVerified: true,
+      verifiedAt: new Date(),
+      uid: user.uid,
+      verificationMethod: 'link_clicked',
+      tokenRefreshAttempts: 3
     }, { merge: true });
     console.log('Email verification recorded in Firestore');
 
-    await trackInteraction(user.uid, 'email_verification', 'success', `Email: ${email}, oobCode: ${oobCode}`);
+    // Also update the user document in Firestore as backup
+    const userDocRef = doc(db, 'users', user.uid);
+    await setDoc(userDocRef, {
+      emailVerified: true,
+      verifiedAt: new Date(),
+      email: email
+    }, { merge: true });
+    console.log('User document updated with verified status');
+
+    await trackInteraction(user.uid, 'email_verification', 'success', `Email: ${email}, oobCode: ${oobCode}, Firebase emailVerified: ${user.emailVerified}`);
 
     message.textContent = i18next.t('verifyemail.message_success', { defaultValue: 'Email verified successfully!' });
-    successMessage.textContent = i18next.t('verifyemail.success_redirect', { defaultValue: 'Redirecting to code verification...' });
+    successMessage.textContent = i18next.t('verifyemail.success_redirect', { defaultValue: 'You can now sign in with your credentials.' });
     successMessage.style.display = 'block';
 
-    console.log('Preparing to redirect to VerifyCode.html');
+    console.log('Verification complete. Final auth state:', { 
+      uid: auth.currentUser?.uid, 
+      email: auth.currentUser?.email,
+      emailVerified: auth.currentUser?.emailVerified 
+    });
+
+    console.log('Preparing to redirect to SignIn.html');
     setTimeout(() => {
-      const redirectUrl = `${NETLIFY_BASE_URL}/LandingPage/SignInAndSignUp/VerifyCode.html?email=${encodeURIComponent(email)}&enableButton=true`;
+      const redirectUrl = `${NETLIFY_BASE_URL}/LandingPage/SignInAndSignUp/SignIn.html`;
       console.log('Redirecting to:', redirectUrl);
       window.location.href = redirectUrl;
     }, 2000);
