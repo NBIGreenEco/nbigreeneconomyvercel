@@ -200,6 +200,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log("DEBUG: Sign-in successful, checking email verification status");
                 console.log("DEBUG: Firebase emailVerified flag:", user.emailVerified);
 
+                // Refresh the user to get the latest emailVerified status from Firebase
+                await user.reload();
+                console.log("DEBUG: After reload - Firebase emailVerified flag:", user.emailVerified);
+
                 // Check if email is verified in Firestore (most reliable method)
                 let isEmailVerified = false;
                 
@@ -270,48 +274,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (googleSignInBtn) {
-        googleSignInBtn.addEventListener('click', async (e) => {
-            if (isProcessing) return;
-            isProcessing = true;
-            e.preventDefault();
-            console.log("DEBUG: Google sign-in button clicked");
-            await trackInteraction(null, 'login', 'attempt', 'Google');
-            showLoader();
-            googleSignInBtn.disabled = true;
-
-            try {
-                const userCredential = await signInWithPopup(auth, googleProvider);
-                const user = userCredential.user;
-
-                await setDoc(doc(db, 'users', user.uid), {
-                    userId: user.uid,
-                    email: user.email,
-                    isAdmin: user.email === 'nbigreeneconomy@gmail.com',
-                    language: (typeof i18next !== 'undefined' ? i18next.language : 'en') || 'en',
-                    createdAt: serverTimestamp()
-                }, { merge: true });
-                console.log("DEBUG: User doc written successfully");
-                await trackInteraction(user.uid, 'login', 'success', 'Google');
-
-                if (user.email === 'nbigreeneconomy@gmail.com') {
-                    window.location.href = `${baseUrl}/LandingPage/SignInAndSignUp/VerifyCode.html?email=${encodeURIComponent(user.email)}`;
-                } else {
-                    const questionnaireCompleted = await checkQuestionnaireCompletion(user);
-                    const redirectUrl = questionnaireCompleted
-                        ? `${baseUrl}/Dashboard/dashboard.html?userId=${user.uid}`
-                        : `${baseUrl}/questionnaire/questionnaire.html?userId=${user.uid}`;
-                    window.location.href = redirectUrl;
-                }
-            } catch (error) {
-                console.error("DEBUG: Google sign-in error:", error);
-                await trackInteraction(null, 'login', 'failure', error.message || 'Google sign-in failed');
-                showError("Google sign-in failed. Please try again.");
-            } finally {
-                hideLoader();
-                googleSignInBtn.disabled = false;
-                isProcessing = false;
-            }
-        });
+        // Google sign-in removed - keeping button reference check for compatibility
+        console.log("DEBUG: Google sign-in button element exists but functionality removed");
     }
 
     // Initial page load tracking
