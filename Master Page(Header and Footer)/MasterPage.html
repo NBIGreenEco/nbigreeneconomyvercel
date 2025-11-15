@@ -7,68 +7,74 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title data-i18n="title">Green Economy Toolkit</title>
 
-  <!-- Fix Google Translate proxy asset loading + CSS override -->
+  <!-- Translation System (Unofficial Google Translate API) -->
   <script>
-    (function() {
+    // Translate a single piece of text
+    async function translateText(text, targetLang) {
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
       try {
-        const ref = document.referrer || '';
-        if (!ref) return;
-        const refOrigin = new URL(ref).origin;
-        const hostname = window.location.hostname || '';
-        const isProxy = /translate|googleusercontent|goog/.test(hostname) && refOrigin.indexOf(hostname) === -1;
-        if (!isProxy) return;
+        const res = await fetch(url);
+        const data = await res.json();
+        return data[0].map(seg => seg[0]).join('');
+      } catch (e) {
+        console.error('Translation error:', e);
+        return text;
+      }
+    }
 
-        // Fix asset URLs
-        const map = [['link','href'], ['script','src'], ['img','src'], ['a','href']];
-        map.forEach(([tag, attr]) => {
-          const nodes = document.getElementsByTagName(tag);
-          for (let i = 0; i < nodes.length; i++) {
-            const el = nodes[i];
-            const v = el.getAttribute(attr);
-            if (!v) continue;
-            if (v.startsWith('/')) el.setAttribute(attr, refOrigin + v);
-            else if (v.startsWith('./')) el.setAttribute(attr, refOrigin + v.slice(1));
+    // Translate the whole page (all text nodes)
+    async function translatePage(targetLang) {
+      const selector = document.getElementById('langSelect');
+      if (!selector) return;
+      
+      const original = selector.dataset.original || selector.options[selector.selectedIndex].text;
+      selector.dataset.original = original;
+
+      const translating = targetLang === 'en' ? 'English' :
+                          targetLang === 'zu' ? 'isiZulu' :
+                          'Setswana';
+      selector.options[selector.selectedIndex].text = `Translating to ${translating}…`;
+
+      const walker = document.createTreeWalker(
+        document.body,
+        NodeFilter.SHOW_TEXT,
+        {
+          acceptNode: node => {
+            const p = node.parentNode;
+            if (!p) return NodeFilter.FILTER_REJECT;
+            const tag = p.tagName;
+            if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'NOSCRIPT') return NodeFilter.FILTER_REJECT;
+            return node.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
           }
-        });
-
-        if (!document.querySelector('base')) {
-          const base = document.createElement('base');
-          base.href = refOrigin + '/';
-          document.head.insertBefore(base, document.head.firstChild);
         }
+      );
 
-        // Inject protective CSS to override Google Translate's hiding rules
-        const protectiveStyle = document.createElement('style');
-        protectiveStyle.id = 'navbar-protection-css';
-        protectiveStyle.innerHTML = `
-          /* Protect navbar from Google Translate CSS hijacking */
-          .header-outer, .header, .nav, .nav-links, .nav-utils,
-          .nav a, .search-icon, .language-selector, #google_translate_element {
-            display: block !important; visibility: visible !important; opacity: 1 !important;
-          }
-          .header { display: flex !important; }
-          .nav, .nav-links, .nav-utils { display: flex !important; }
-          .nav a { color: white !important; background-color: #2b9589 !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 0 2rem !important; padding-top: 0 !important; }
-          .nav a:nth-child(2), .nav a:nth-child(3), .nav a:nth-child(4) { padding-top: 12px !important; }
-          .search-icon { color: white !important; background-color: #2b9589 !important; display: flex !important; }
-          .language-selector { background-color: #207e74 !important; color: white !important; padding-top: 12px !important; }
-          
-          /* Hide Google Translate white background - blend with navbar */
-          #google_translate_element { display: inline-block !important; background: transparent !important; border: none !important; }
-          .goog-te-gadget { background-color: transparent !important; border: none !important; font-size: 0 !important; }
-          .goog-te-combo { 
-            display: inline-flex !important; align-items: center !important; justify-content: center !important;
-            background-color: #2b9589 !important; color: white !important; border: none !important;
-            height: 70px !important; padding: 0 2rem !important; padding-top: 12px !important; margin: 0 !important; 
-            font-size: 0.9rem !important; font-weight: 600 !important; line-height: 1.2 !important;
-          }
-          .goog-te-combo:hover { background-color: #4ec3b0 !important; }
-          .goog-te-banner-frame { display: none !important; }
-        `;
-        document.head.appendChild(protectiveStyle);
-        console.log('Google Translate navbar protection CSS injected');
-      } catch (e) { console.warn('Proxy fix failed:', e); }
-    })();
+      const nodes = [];
+      let n;
+      while (n = walker.nextNode()) nodes.push(n);
+
+      const BATCH = 15;
+      for (let i = 0; i < nodes.length; i += BATCH) {
+        const batch = nodes.slice(i, i + BATCH);
+        const promises = batch.map(node => translateText(node.nodeValue, targetLang));
+        const results = await Promise.all(promises);
+        batch.forEach((node, idx) => node.nodeValue = results[idx]);
+      }
+
+      selector.options[selector.selectedIndex].text = original;
+    }
+
+    function onLangChange() {
+      const lang = this.value;
+      if (lang === 'en') {
+        location.reload();
+        return;
+      }
+      translatePage(lang).catch(err => {
+        console.error(err);
+        alert('Translation failed – check your internet connection.');
+      });
+    }
   </script>
 
   <!-- Core Scripts -->
@@ -83,82 +89,10 @@
   <link rel="stylesheet" href="MasterPage.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-  <!-- Google Translate: Robust + Fallback -->
-  <script type="text/javascript">
-    let gtInit = false;
-    function googleTranslateElementInit() {
-      if (gtInit) return;
-      try {
-        new google.translate.TranslateElement({
-          pageLanguage: 'en',
-          includedLanguages: 'en,zu,tn',
-          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-          autoDisplay: false
-        }, 'google_translate_element');
-        gtInit = true;
-        setTimeout(() => {
-          const combo = document.querySelector('.goog-te-combo');
-          if (combo) combo.style.display = 'block';
-        }, 500);
-      } catch (e) { console.warn('GT init failed:', e); }
-    }
-
-    function loadGT() {
-      if (document.querySelector('script[src*="translate.google.com"]')) return;
-      const s = document.createElement('script');
-      s.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-      s.onerror = () => setTimeout(() => document.getElementById('google_translate_element').innerHTML = fallbackSelect, 1000);
-      document.head.appendChild(s);
-    }
-
-    const fallbackSelect = `
-      <select onchange="window.location.href='?lang='+this.value" style="padding:8px 12px;border:1px solid #ccc;border-radius:4px;font-size:14px;background:white;">
-        <option value="en">English</option>
-        <option value="zu">isiZulu</option>
-        <option value="tn">Setswana</option>
-      </select>
-    `;
-
-    document.addEventListener('DOMContentLoaded', () => setTimeout(loadGT, 500));
-  </script>
-
-  <!-- Anti-Google Translate CSS -->
+  <!-- Language Selector Styles -->
   <style>
-    .goog-te-banner-frame, .goog-logo-link, .goog-te-gadget span:not(.goog-te-combo) { display: none !important; }
-    .goog-te-gadget { font-size: 0 !important; }
-    .goog-te-combo {
-      margin: 0 5px !important; padding: 8px 12px !important; border: 1px solid #ccc !important;
-      border-radius: 4px !important; font-size: 14px !important; background: white !important;
-      color: #333 !important; min-width: 120px; display: block !important;
-    }
-    #google_translate_element { display: inline-block !important; }
-    @media (max-width: 1024px) { .goog-te-combo { width: 100% !important; margin: 5px 0 !important; } }
+    /* Placeholder for future styles */
   </style>
-
-  <!-- Re-render header after translation -->
-  <script>
-    function reRenderHeader() {
-      const header = document.querySelector('green-economy-header');
-      if (!header) return;
-      const newHeader = document.createElement('green-economy-header');
-      header.parentNode.replaceChild(newHeader, header);
-      setTimeout(() => {
-        if (typeof updateContent === 'function') updateContent();
-      }, 100);
-    }
-
-    const observer = new MutationObserver((m, obs) => {
-      if (document.querySelector('.goog-te-combo')) {
-        console.log('Translation detected → re-rendering header');
-        setTimeout(reRenderHeader, 300);
-        obs.disconnect();
-      }
-    });
-    document.addEventListener('DOMContentLoaded', () => {
-      observer.observe(document.body, { childList: true, subtree: true });
-      setTimeout(() => { if (!document.querySelector('.goog-te-combo')) reRenderHeader(); }, 5000);
-    });
-  </script>
 </head>
 <body>
   <green-economy-header></green-economy-header>
