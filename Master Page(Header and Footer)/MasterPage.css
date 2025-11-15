@@ -81,7 +81,7 @@ body {
     gap: 0;
 }
 
-/* Navigation buttons - like search icon */
+/* Navigation buttons - exact same as dropdown */
 .nav-button {
     background-color: #2b9589;
     color: white;
@@ -95,12 +95,11 @@ body {
     align-items: center;
     justify-content: center;
     border-radius: 0;
-    width: 200px;
     margin-right: 0;
-    line-height: 70px;
+    line-height: 1.2;
+    padding-top: 12px;
     text-decoration: none;
     transition: background-color 0.3s ease;
-    box-sizing: border-box;
 }
 
 .nav-button:hover {
