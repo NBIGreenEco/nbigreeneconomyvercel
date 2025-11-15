@@ -466,37 +466,82 @@ async function verifyEmailLink() {
 
   try {
     let user = auth.currentUser;
-    console.log('Checking auth state:', user ? { email: user.email, uid: user.uid } : 'No user signed in');
+    console.log('Checking auth state:', user ? { email: user.email, uid: user.uid, emailVerified: user.emailVerified } : 'No user signed in');
+    
     if (!user) {
       console.log('Attempting to sign in with email:', email);
       const userCredential = await signInWithEmailAndPassword(auth, email, HARDCODED_CODE);
       user = userCredential.user;
-      console.log('User signed in successfully:', { email: user.email, uid: user.uid });
+      console.log('User signed in successfully:', { email: user.email, uid: user.uid, emailVerified: user.emailVerified });
     } else {
-      console.log('User already signed in:', { email: user.email, uid: user.uid });
+      console.log('User already signed in:', { email: user.email, uid: user.uid, emailVerified: user.emailVerified });
     }
 
-    // Verify the email using Firebase's applyActionCode
+    // CRITICAL: Verify the email using Firebase's applyActionCode
+    console.log('Before applyActionCode - emailVerified:', user.emailVerified);
     await applyActionCode(auth, oobCode);
-    console.log('Email verification successful using oobCode');
+    console.log('applyActionCode completed successfully');
 
-    // Update Firestore to mark email as verified (for consistency with your existing flow)
+    // CRITICAL: Multiple reload attempts to ensure Firebase updates the token
+    console.log('Starting aggressive token refresh strategy...');
+    
+    // First reload: reload user object
+    await user.reload();
+    console.log('After first reload - emailVerified:', user.emailVerified);
+    
+    // Second reload: get fresh auth.currentUser
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      await currentUser.reload();
+      console.log('After currentUser reload - emailVerified:', currentUser.emailVerified);
+    }
+    
+    // Force re-authenticate by getting new ID token
+    try {
+      const idToken = await user.getIdToken(true); // Force refresh
+      console.log('ID token refreshed forcefully');
+      await user.reload();
+      console.log('After token refresh reload - emailVerified:', user.emailVerified);
+    } catch (tokenError) {
+      console.log('Could not force refresh token, continuing:', tokenError.message);
+    }
+
+    // Update Firestore to mark email as verified (CRITICAL - this is the fallback)
     const emailVerificationRef = doc(db, 'email_verifications', email);
     await setDoc(emailVerificationRef, {
       isVerified: true,
-      verifiedAt: new Date()
+      emailVerified: true,
+      verifiedAt: new Date(),
+      uid: user.uid,
+      verificationMethod: 'link_clicked',
+      tokenRefreshAttempts: 3
     }, { merge: true });
     console.log('Email verification recorded in Firestore');
 
-    await trackInteraction(user.uid, 'email_verification', 'success', `Email: ${email}, oobCode: ${oobCode}`);
+    // Also update the user document in Firestore as backup
+    const userDocRef = doc(db, 'users', user.uid);
+    await setDoc(userDocRef, {
+      emailVerified: true,
+      verifiedAt: new Date(),
+      email: email
+    }, { merge: true });
+    console.log('User document updated with verified status');
+
+    await trackInteraction(user.uid, 'email_verification', 'success', `Email: ${email}, oobCode: ${oobCode}, Firebase emailVerified: ${user.emailVerified}`);
 
     message.textContent = i18next.t('verifyemail.message_success', { defaultValue: 'Email verified successfully!' });
-    successMessage.textContent = i18next.t('verifyemail.success_redirect', { defaultValue: 'Redirecting to code verification...' });
+    successMessage.textContent = i18next.t('verifyemail.success_redirect', { defaultValue: 'You can now sign in with your credentials.' });
     successMessage.style.display = 'block';
 
-    console.log('Preparing to redirect to VerifyCode.html');
+    console.log('Verification complete. Final auth state:', { 
+      uid: auth.currentUser?.uid, 
+      email: auth.currentUser?.email,
+      emailVerified: auth.currentUser?.emailVerified 
+    });
+
+    console.log('Preparing to redirect to SignIn.html');
     setTimeout(() => {
-      const redirectUrl = `${NETLIFY_BASE_URL}/LandingPage/SignInAndSignUp/VerifyCode.html?email=${encodeURIComponent(email)}&enableButton=true`;
+      const redirectUrl = `${NETLIFY_BASE_URL}/LandingPage/SignInAndSignUp/SignIn.html`;
       console.log('Redirecting to:', redirectUrl);
       window.location.href = redirectUrl;
     }, 2000);

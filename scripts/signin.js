@@ -197,7 +197,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
-                if (!user.emailVerified) {
+                console.log("DEBUG: Sign-in successful, checking email verification status");
+                console.log("DEBUG: Firebase emailVerified flag:", user.emailVerified);
+
+                // Check if email is verified in Firestore (most reliable method)
+                let isEmailVerified = false;
+                
+                try {
+                    const verificationDoc = await getDoc(doc(db, 'email_verifications', email));
+                    if (verificationDoc.exists() && verificationDoc.data().isVerified) {
+                        console.log("DEBUG: Email verification found in Firestore - VERIFIED");
+                        isEmailVerified = true;
+                    } else {
+                        console.log("DEBUG: Email verification not found or not marked in Firestore");
+                    }
+                } catch (e) {
+                    console.log("DEBUG: Error checking Firestore verification:", e.message);
+                }
+
+                // Also check Firebase's flag as secondary check
+                if (user.emailVerified) {
+                    console.log("DEBUG: Firebase emailVerified flag is TRUE");
+                    isEmailVerified = true;
+                }
+
+                if (!isEmailVerified) {
+                    console.log("DEBUG: Email not verified - blocking sign-in");
                     await auth.signOut();
                     hideLoader();
                     signInBtn.disabled = false;
@@ -208,12 +233,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
+                console.log("DEBUG: Email verified - PROCEEDING WITH SIGN-IN");
                 await setDoc(doc(db, 'users', user.uid), {
                     userId: user.uid,
                     email: user.email,
                     isAdmin: false,
                     language: (typeof i18next !== 'undefined' ? i18next.language : 'en') || 'en',
-                    createdAt: serverTimestamp()
+                    createdAt: serverTimestamp(),
+                    emailVerified: true
                 }, { merge: true });
                 console.log("DEBUG: User doc written successfully");
                 await trackInteraction(user.uid, 'login', 'success', `Email: ${email}`);

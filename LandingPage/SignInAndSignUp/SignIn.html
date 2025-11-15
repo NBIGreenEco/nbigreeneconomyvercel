@@ -381,8 +381,11 @@
             </div>
             <div id="verification-modal-overlay" class="hidden"></div>
             <div id="verification-modal" class="hidden">
-                <p class="text-lg font-medium text-gray-900 mb-4" data-i18n="signin.verification_message">Please verify your email to continue.</p>
-                <button id="modal-ok-btn" data-i18n="signin.ok_button">Okay</button>
+                <div class="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto">
+                    <p class="text-lg font-medium text-gray-900 mb-4" data-i18n="signin.verification_message">Please verify your email to continue.</p>
+                    <p class="text-sm text-gray-600 mb-6">Check your email inbox for a verification link. Click the link to verify your email address, then sign in again.</p>
+                    <button id="modal-ok-btn" class="w-full bg-green-primary text-white font-semibold py-2 px-4 rounded-md hover:bg-green-dark transition-all duration-300" data-i18n="signin.ok_button">Okay</button>
+                </div>
             </div>
         </main>
         <green-economy-footer></green-economy-footer>

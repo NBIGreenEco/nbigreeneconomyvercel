@@ -66,8 +66,7 @@
         }
 
         selector.options[selector.selectedIndex].text = original;
-        // Store language preference
-        localStorage.setItem('selectedLanguage', targetLang);
+        currentLanguage = targetLang;
       }
 
       function onLangChange() {
