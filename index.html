@@ -5,6 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title data-i18n="title">Green Economy Toolkit</title>
 
+    <!-- Firebase Email Verification Redirect -->
+    <script>
+      // Intercept Firebase email verification links and redirect to VerifyEmail.html
+      (function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode');
+        const oobCode = urlParams.get('oobCode');
+        const continueUrl = urlParams.get('continueUrl');
+        
+        // If this is a Firebase email verification link, redirect to VerifyEmail.html
+        if (mode === 'verifyEmail' && oobCode) {
+          // Extract email from continueUrl if available
+          let email = urlParams.get('email');
+          if (!email && continueUrl) {
+            const emailMatch = continueUrl.match(/email=([^&]+)/);
+            if (emailMatch) {
+              email = decodeURIComponent(emailMatch[1]);
+            }
+          }
+          
+          // Build the redirect URL
+          let verifyUrl = '/LandingPage/VerifyEmail.html?oobCode=' + encodeURIComponent(oobCode);
+          if (email) {
+            verifyUrl += '&email=' + encodeURIComponent(email);
+          }
+          
+          console.log('Firebase email verification detected, redirecting to:', verifyUrl);
+          window.location.href = verifyUrl;
+        }
+      })();
+    </script>
+
     <!-- Translation System (Unofficial Google Translate API) -->
     <script>
       let currentLanguage = 'en';
