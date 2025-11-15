@@ -199,6 +199,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log("DEBUG: Sign-in successful, checking email verification status");
                 console.log("DEBUG: Firebase emailVerified flag:", user.emailVerified);
 
+                // Refresh the user to get the latest emailVerified status from Firebase
+                await user.reload();
+                console.log("DEBUG: After reload - Firebase emailVerified flag:", user.emailVerified);
+
                 // Check if email is verified in Firestore (most reliable method)
                 let isEmailVerified = false;
                 
