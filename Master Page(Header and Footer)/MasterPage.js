@@ -225,15 +225,18 @@ class GreenEconomyHeader extends HTMLElement {
       return;
     }
 
-    const newSearchToggle = searchToggle.cloneNode(true);
-    searchToggle.parentNode.replaceChild(newSearchToggle, searchToggle);
-    const newSearchClose = searchClose.cloneNode(true);
-    searchClose.parentNode.replaceChild(newSearchClose, searchClose);
+    // Ensure search is hidden by default
+    searchPopup.style.display = 'none';
+    searchPopup.classList.remove('animate-in');
+    searchPopup.classList.remove('animate-out');
 
-    newSearchToggle.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
+    // Helper function to toggle search popup
+    const toggleSearchPopup = (e) => {
+      e?.preventDefault?.();
+      e?.stopPropagation?.();
       const isHidden = searchPopup.style.display === 'none' || !searchPopup.style.display;
+      console.log('Search popup toggle called. Current state hidden:', isHidden);
+      
       if (isHidden) {
         searchPopup.style.display = 'block';
         searchPopup.classList.add('animate-in');
@@ -246,6 +249,7 @@ class GreenEconomyHeader extends HTMLElement {
         if (window.greenEconomySearch && !window.greenEconomySearch.initialized) {
           window.greenEconomySearch.init();
         }
+        console.log('Search popup OPENED');
       } else {
         searchPopup.classList.add('animate-out');
         searchPopup.classList.remove('animate-in');
@@ -253,30 +257,62 @@ class GreenEconomyHeader extends HTMLElement {
           searchPopup.style.display = 'none';
           document.body.style.overflow = '';
         }, 300);
+        console.log('Search popup CLOSED');
       }
-    });
+    };
 
-    newSearchClose.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
+    // Helper function to close search popup
+    const closeSearchPopup = (e) => {
+      e?.preventDefault?.();
+      e?.stopPropagation?.();
       searchPopup.classList.add('animate-out');
       searchPopup.classList.remove('animate-in');
       setTimeout(() => {
         searchPopup.style.display = 'none';
         document.body.style.overflow = '';
       }, 300);
+      console.log('Search popup CLOSED via close button');
+    };
+
+    // Clone and replace to ensure fresh listeners
+    const newSearchToggle = searchToggle.cloneNode(true);
+    searchToggle.parentNode.replaceChild(newSearchToggle, searchToggle);
+    
+    // IMPORTANT: Set pointer-events to auto to ensure clicks work
+    newSearchToggle.style.pointerEvents = 'auto';
+    newSearchToggle.style.cursor = 'pointer';
+    
+    // Attach click handler to cloned toggle
+    newSearchToggle.addEventListener('click', (e) => {
+      console.log('Search icon clicked (direct handler on cloned element)');
+      toggleSearchPopup(e);
     });
 
+    // Also use event delegation to catch clicks on search-icon anywhere
+    if (!window._searchIconDelegateAttached) {
+      document.addEventListener('click', (e) => {
+        const target = e.target;
+        if (target?.id === 'search-toggle' || target?.classList?.contains('search-icon') || target?.closest('#search-toggle')) {
+          console.log('Search icon clicked (delegated handler - capture phase)');
+          toggleSearchPopup(e);
+        }
+      }, true); // Use capture phase to catch clicks early
+      window._searchIconDelegateAttached = true;
+      console.log('Attached delegated search click handler to document');
+    }
+
+    // Close search when clicking close button
+    const newSearchClose = searchClose.cloneNode(true);
+    searchClose.parentNode.replaceChild(newSearchClose, searchClose);
+    newSearchClose.addEventListener('click', closeSearchPopup);
+
+    // Close search when clicking outside
     document.addEventListener('click', (e) => {
       if (searchPopup.style.display === 'block' && 
           !searchPopup.contains(e.target) && 
-          !newSearchToggle.contains(e.target)) {
-        searchPopup.classList.add('animate-out');
-        searchPopup.classList.remove('animate-in');
-        setTimeout(() => {
-          searchPopup.style.display = 'none';
-          document.body.style.overflow = '';
-        }, 300);
+          e.target.id !== 'search-toggle' &&
+          !e.target.classList?.contains('search-icon')) {
+        closeSearchPopup();
       }
     });
 
@@ -284,7 +320,7 @@ class GreenEconomyHeader extends HTMLElement {
       searchInput.style.willChange = 'transform';
     }
 
-    console.log('Search functionality setup complete');
+    console.log('Search functionality setup complete - all handlers attached');
   }
 
   setupMobileMenu() {

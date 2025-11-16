@@ -563,9 +563,17 @@ if (typeof Fuse === 'undefined') {
     }
   }
   
-  // Initialize search when DOM is loaded
-  document.addEventListener('DOMContentLoaded', () => {
-    window.greenEconomySearch = new GreenEconomySearch();
+    async function _initializeSearchModule() {
+        // Ensure header custom element is upgraded before setting up global search
+        try {
+            if (typeof customElements !== 'undefined') {
+                await customElements.whenDefined('green-economy-header');
+            }
+        } catch (e) {
+            console.warn('customElements.whenDefined failed or not available:', e);
+        }
+
+        window.greenEconomySearch = new GreenEconomySearch();
     
     // Setup search toggle functionality
     const searchToggle = document.getElementById('search-toggle');
@@ -599,5 +607,19 @@ if (typeof Fuse === 'undefined') {
                 searchPopup.style.display = 'none';
             }, 300);
         });
+        }
     }
-  });
+
+    // Exported initializer so pages can call it after the header is ready. Also auto-initialize
+    // on DOMContentLoaded but only after the header custom element is defined.
+    export async function initializeSearch() {
+        if (window.greenEconomySearch) return window.greenEconomySearch;
+        await _initializeSearchModule();
+        return window.greenEconomySearch;
+    }
+
+    // Auto-init on DOMContentLoaded for pages that still load this script in the head
+    document.addEventListener('DOMContentLoaded', () => {
+        // Don't block — call initialize but tolerate failures
+        initializeSearch().catch(err => console.warn('Search init error:', err));
+    });

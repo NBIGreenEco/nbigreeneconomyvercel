@@ -232,6 +232,9 @@ body {
     width: 70px;
     flex-shrink: 0;
     transition: background-color 0.3s ease, transform 0.2s ease;
+    pointer-events: auto !important;
+    position: relative;
+    z-index: 1002;
 }
 
 .search-icon.fas {
@@ -1079,4 +1082,11 @@ select.goog-te-combo {
     .goog-te-combo:hover {
         background-color: #e6f7f5 !important;
     }
+}
+
+/* Extra protection for search UI in case translation proxy hides elements */
+.search-container, .search-input, .search-results {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }

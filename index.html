@@ -50,7 +50,8 @@
     <!-- FIXED: data-config WAS OUTSIDE SCRIPT TAG → NOW INSIDE -->
     <script id="messenger-widget-b" src="https://cdn.botpenguin.com/website-bot.js" defer data-config="6912ee821c29f29c0d7d6882,6912edf6e9437105db53226c,agent"></script>
 
-    <script type="module" src="scripts/enhancedsearch.js" defer></script>
+    <!-- enhancedsearch.js moved to bottom of body to ensure header is ready (custom elements must be upgraded) -->
+    
 
     <!-- Language Selector Styles -->
     <style>
@@ -562,6 +563,21 @@
     <script src="scripts/chatbot.js"></script>
     <green-economy-chatbot></green-economy-chatbot>
     <green-economy-footer></green-economy-footer>
+    <script type="module">
+      import { initializeSearch } from '/scripts/enhancedsearch.js';
+
+      document.addEventListener('DOMContentLoaded', async () => {
+        try {
+          await customElements.whenDefined('green-economy-header');
+          // Give header a frame to render internal DOM
+          await new Promise(r => requestAnimationFrame(r));
+          console.log('Initializing global search after header is ready');
+          await initializeSearch();
+        } catch (e) {
+          console.error('Failed to initialize search after header ready:', e);
+        }
+      });
+    </script>
     <script type="text/javascript">
       (function(c,l,a,r,i,t,y){
           c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
