@@ -833,6 +833,35 @@
     <!-- Translation system is now in MasterPage header -->
 </head>
 <body class="loading">
+    <!-- CRITICAL: Load MasterPage CSS and JavaScript at start of BODY -->
+    <link rel="stylesheet" href="../../Master Page(Header and Footer)/MasterPage.css">
+    <script type="module" src="../../Master Page(Header and Footer)/MasterPage.js"></script>
+    <!-- Wait for custom elements to load -->
+    <script>
+      Promise.all([
+        customElements.whenDefined('green-economy-header'),
+        customElements.whenDefined('green-economy-footer')
+      ]).then(() => {
+        console.log('✅ Header and Footer custom elements loaded');
+      }).catch(err => {
+        console.error('❌ Error loading custom elements:', err);
+      });
+      
+      // Remove loading state
+      function removeLoading() {
+        document.body.classList.remove('loading');
+        document.body.classList.add('loaded');
+        const overlay = document.querySelector('.loading-overlay');
+        if (overlay) overlay.style.display = 'none';
+      }
+      
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', removeLoading);
+      } else {
+        removeLoading();
+      }
+      setTimeout(removeLoading, 2000);
+    </script>
     <div class="loading-overlay">
         <div class="loading-spinner"></div>
     </div>
