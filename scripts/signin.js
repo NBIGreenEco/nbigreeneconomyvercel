@@ -1,4 +1,6 @@
-// /scripts/signin.js
+'use strict';
+// /scripts/signin.js - Clean Sign In implementation
+
 window.signinScriptLoaded = true;
 console.log("DEBUG: signin.js loaded at", new Date().toLocaleString('en-ZA'));
 
