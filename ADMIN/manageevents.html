@@ -1,15 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="manage_events.title">Manage Events - Green Economy Toolkit</title>
+    <title>Manage Events - Green Economy Toolkit</title>
     <script type="module" src="/ADMIN/scripts/adminAuthCheck.js"></script>
     <script type="module" src="/Master%20Page(Header%20and%20Footer)/MasterPage.js"></script>
-    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
-    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
-    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
-    <script src="/Master%20Page(Header%20and%20Footer)/Trans.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"></script>
@@ -383,45 +379,45 @@
     <green-economy-header></green-economy-header>
     <section class="hero">
         <div class="hero-content">
-            <h1 data-i18n="manage_events.title">Manage Events</h1>
+            <h1>Manage Events</h1>
         </div>
     </section>
     <section class="main">
         <div class="form-container">
-            <button class="btn-primary" id="add-event-btn" data-i18n="manage_events.add_button">Add New Event</button>
-            <button class="btn-primary" id="back-to-dashboard" data-i18n="manage_events.back_button">Back to Dashboard</button>
-            <button class="btn-danger" id="logout-btn" data-i18n="[html]manage_events.logout_button"><i class="fas fa-sign-out-alt mr-2"></i> Logout</button>
+            <button class="btn-primary" id="add-event-btn">Add New Event</button>
+            <button class="btn-primary" id="back-to-dashboard">Back to Dashboard</button>
+            <button class="btn-danger" id="logout-btn"><i class="fas fa-sign-out-alt mr-2"></i> Logout</button>
         </div>
         <div class="events-list"></div>
     </section>
     <div class="modal" id="add-event-modal">
         <div class="modal-content">
             <span class="modal-close">&times;</span>
-            <h2 data-i18n="manage_events.add_modal_title">Add New Event</h2>
+            <h2>Add New Event</h2>
             <form id="add-event-form">
-                <label for="event-title" data-i18n="manage_events.title_label">Event Title:</label>
-                <input type="text" id="event-title" required data-i18n="[placeholder]manage_events.title_placeholder" placeholder="Enter event title">
-                <label for="event-date" data-i18n="manage_events.date_label">Event Date (YYYY-MM-DD):</label>
-                <input type="date" id="event-date" required data-i18n="[placeholder]manage_events.date_placeholder" placeholder="Select event date">
-                <label for="event-details" data-i18n="manage_events.details_label">Event Details:</label>
-                <textarea id="event-details" required data-i18n="[placeholder]manage_events.details_placeholder" placeholder="Enter event details"></textarea>
-                <button type="submit" class="btn-primary" data-i18n="manage_events.add_submit">Add Event</button>
+                <label for="event-title">Event Title:</label>
+                <input type="text" id="event-title" required placeholder="Enter event title">
+                <label for="event-date">Event Date (YYYY-MM-DD):</label>
+                <input type="date" id="event-date" required placeholder="Select event date">
+                <label for="event-details">Event Details:</label>
+                <textarea id="event-details" required placeholder="Enter event details"></textarea>
+                <button type="submit" class="btn-primary">Add Event</button>
             </form>
         </div>
     </div>
     <div class="modal" id="edit-event-modal">
         <div class="modal-content">
             <span class="modal-close">&times;</span>
-            <h2 data-i18n="manage_events.edit_modal_title">Edit Event</h2>
+            <h2>Edit Event</h2>
             <form id="edit-event-form">
                 <input type="hidden" id="edit-event-id">
-                <label for="edit-event-title" data-i18n="manage_events.title_label">Event Title:</label>
-                <input type="text" id="edit-event-title" required data-i18n="[placeholder]manage_events.title_placeholder" placeholder="Enter event title">
-                <label for="edit-event-date" data-i18n="manage_events.date_label">Event Date (YYYY-MM-DD):</label>
-                <input type="date" id="edit-event-date" required data-i18n="[placeholder]manage_events.date_placeholder" placeholder="Select event date">
-                <label for="edit-event-details" data-i18n="manage_events.details_label">Event Details:</label>
-                <textarea id="edit-event-details" required data-i18n="[placeholder]manage_events.details_placeholder" placeholder="Enter event details"></textarea>
-                <button type="submit" class="btn-primary" data-i18n="manage_events.update_submit">Update Event</button>
+                <label for="edit-event-title">Event Title:</label>
+                <input type="text" id="edit-event-title" required placeholder="Enter event title">
+                <label for="edit-event-date">Event Date (YYYY-MM-DD):</label>
+                <input type="date" id="edit-event-date" required placeholder="Select event date">
+                <label for="edit-event-details">Event Details:</label>
+                <textarea id="edit-event-details" required placeholder="Enter event details"></textarea>
+                <button type="submit" class="btn-primary">Update Event</button>
             </form>
         </div>
     </div>
@@ -454,8 +450,8 @@ auth = getAuth(app);
 
 // Initialize i18next
 i18next
-    .use(i18nextHttpBackend)
-    .use(i18nextBrowserLanguageDetector)
+    .use()
+    .use()
     .init({
         fallbackLng: 'en',
         supportedLngs: ['en', 'zu', 'tn'],
@@ -472,9 +468,7 @@ i18next
             setTimeout(() => {
                 i18next.loadResources((loadErr) => {
                     if (loadErr) {
-                        console.error('Retry failed:', loadErr);
-                        applyFallbackTranslations();
-                    } else {
+                        console.error('Retry failed:', loadErr);                    } else {
                         console.log('i18next retry successful, language:', i18next.language);
                         finalizeLoading();
                     }
@@ -484,119 +478,22 @@ i18next
         }
         console.log('i18next initialized for manage_events.html at', new Date().toLocaleString('en-ZA'), ':', i18next.language);
         finalizeLoading();
-    });
-
-function applyFallbackTranslations() {
-    document.querySelectorAll('[data-i18n]').forEach(elem => {
-        const key = elem.getAttribute('data-i18n');
-        if (key.startsWith('[')) {
-            const match = key.match(/\[(\w+)\](.+)/);
-            if (match) {
-                const [, attr, i18nKey] = match;
-                const fallback = elem.getAttribute(attr) || 'Content not available';
-                elem.setAttribute(attr, fallback);
-            }
-        } else {
-            const fallback = elem.textContent.trim() || 'Content not available';
-            elem.textContent = fallback;
-        }
-    });
-    console.warn('Applied fallback translations');
-    finalizeLoading();
-}
-
-function updateContent() {
-    const missingKeys = [];
-    document.querySelectorAll('[data-i18n]').forEach(element => {
-        const key = element.getAttribute('data-i18n');
-        try {
-            if (key.startsWith('[')) {
-                const match = key.match(/\[(\w+)\](.+)/);
-                if (match) {
-                    const [, attr, translationKey] = match;
-                    const translation = i18next.t(translationKey, { defaultValue: element.getAttribute(attr) || 'Content not available' });
-                    if (translation === translationKey) missingKeys.push(translationKey);
-                    element.setAttribute(attr, translation);
-                }
-            } else {
-                const translation = i18next.t(key, { defaultValue: element.textContent.trim() || 'Content not available' });
-                if (translation === key) missingKeys.push(key);
-                element.textContent = translation;
-            }
-        } catch (error) {
-            console.error(`Error translating key ${key}:`, error);
-        }
-    });
-    if (missingKeys.length > 0) {
-        console.warn('Missing translations:', missingKeys);
-    }
-}
-
-function finalizeLoading() {
-    i18next.loadResources(() => {
-        updateContent();
-        document.body.classList.remove('loading');
-        document.body.classList.add('loaded');
-        document.querySelector('.loading-overlay').style.display = 'none';
-        console.log('Translations loaded, content displayed');
-    });
-}
-
-i18next.on('languageChanged', () => {
-    console.log('Language changed to:', i18next.language);
-    updateContent();
-    loadEvents();
-});
-
-i18next.on('loaded', () => {
-    updateContent();
-});
-
-function validateDate(dateString) {
-    const regex = /^\d{4}-\d{2}-\d{2}$/;
-    return regex.test(dateString) && !isNaN(new Date(dateString).getTime());
-}
-
-async function loadEvents() {
-    try {
-        const eventsList = document.querySelector('.events-list');
-        if (!eventsList) {
-            console.error('Events list container not found');
-            showAlertModal(i18next.t('manage_events.alert_list_not_found', { defaultValue: 'Events list container not found' }), 'error');
-            return;
-        }
-        eventsList.innerHTML = '<p data-i18n="manage_events.loading">Loading events...</p>';
-        updateContent();
-        const eventsSnapshot = await getDocs(collection(db, 'events'));
-        eventsList.innerHTML = '';
-        if (eventsSnapshot.empty) {
-            eventsList.innerHTML = '<p data-i18n="manage_events.empty">No events found.</p>';
-            updateContent();
-            return;
-        }
-        eventsSnapshot.forEach(doc => {
-            const event = doc.data();
-            const eventItem = document.createElement('div');
-            eventItem.className = 'event-item';
-            eventItem.dataset.id = doc.id;
-            const formattedDate = event.date && validateDate(event.date) ? event.date : i18next.t('manage_events.no_date', { defaultValue: 'No Date' });
+    }););
             eventItem.innerHTML = `
                 <div class="event-details">
-                    <h4>${event.title || i18next.t('manage_events.no_title', { defaultValue: 'No Title' })}</h4>
-                    <p>${i18next.t('manage_events.event_date', { defaultValue: 'Date: {date}', date: formattedDate })}</p>
-                    <p>${event.details || i18next.t('manage_events.no_details', { defaultValue: 'No Details' })}</p>
+                    <h4>${event.title || 'No Title'}</h4>
+                    <p>${'Date: {date}'}</p>
+                    <p>${event.details || 'No Details'}</p>
                 </div>
                 <div class="event-actions">
-                    <button class="btn-primary" data-action="edit" data-i18n="manage_events.edit">Edit</button>
-                    <button class="btn-danger" data-action="delete" data-i18n="manage_events.delete">Delete</button>
+                    <button class="btn-primary" data-action="edit">Edit</button>
+                    <button class="btn-danger" data-action="delete">Delete</button>
                 </div>
             `;
             eventsList.appendChild(eventItem);
-        });
-        updateContent();
-    } catch (error) {
+        });    } catch (error) {
         console.error('Error loading events:', error.code, error.message);
-        showAlertModal(i18next.t('manage_events.alert_load_error', { defaultValue: 'Error loading events: {message}', message: error.message }), 'error');
+        showAlertModal('Error loading events: {message}', 'error');
     }
 }
 
@@ -607,7 +504,7 @@ function showModal(modalId) {
         setTimeout(() => modal.classList.add('show'), 10);
     } else {
         console.error(`Modal with ID ${modalId} not found`);
-        showAlertModal(i18next.t('manage_events.alert_modal_not_found', { defaultValue: 'Modal not found: {id}', id: modalId }), 'error');
+        showAlertModal('Modal not found: {id}', 'error');
     }
 }
 
@@ -629,7 +526,7 @@ function showAlertModal(message, type = 'success') {
         <div class="alert-modal-content">
             <span class="alert-modal-close">&times;</span>
             <p>${message}</p>
-            <button class="alert-modal-btn">${i18next.t('manage_events.alert_ok', { defaultValue: 'OK' })}</button>
+            <button class="alert-modal-btn">${'OK'}</button>
         </div>
     `;
     document.body.appendChild(modal);
@@ -647,7 +544,7 @@ function showAlertModal(message, type = 'success') {
 
 async function editEvent(id, user) {
     if (!user) {
-        showAlertModal(i18next.t('manage_events.alert_not_authenticated', { defaultValue: 'You must be logged in to edit events.' }), 'error');
+        showAlertModal('You must be logged in to edit events.', 'error');
         setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
         return;
     }
@@ -662,24 +559,24 @@ async function editEvent(id, user) {
         showModal('edit-event-modal');
     } catch (error) {
         console.error('Error editing event:', error.code, error.message);
-        showAlertModal(i18next.t('manage_events.alert_edit_error', { defaultValue: 'Error editing event: {message}', message: error.message }), 'error');
+        showAlertModal('Error editing event: {message}', 'error');
     }
 }
 
 async function deleteEvent(id, user) {
     if (!user) {
-        showAlertModal(i18next.t('manage_events.alert_not_authenticated', { defaultValue: 'You must be logged in to delete events.' }), 'error');
+        showAlertModal('You must be logged in to delete events.', 'error');
         setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
         return;
     }
-    if (!confirm(i18next.t('manage_events.alert_delete_confirm', { defaultValue: 'Are you sure you want to delete this event?' }))) return;
+    if (!confirm('Are you sure you want to delete this event?')) return;
     try {
         await deleteDoc(doc(db, 'events', id));
         await loadEvents();
-        showAlertModal(i18next.t('manage_events.alert_delete_success', { defaultValue: 'Event deleted successfully.' }));
+        showAlertModal('Event deleted successfully.');
     } catch (error) {
         console.error('Error deleting event:', error.code, error.message);
-        showAlertModal(i18next.t('manage_events.alert_delete_error', { defaultValue: 'Error deleting event: {message}', message: error.message }), 'error');
+        showAlertModal('Error deleting event: {message}', 'error');
     }
 }
 
@@ -689,8 +586,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
        
-        
-
         // Load events immediately if session is verified
         const isVerified = sessionStorage.getItem('verified') === 'true';
         if (isVerified) {
@@ -704,7 +599,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.log('DEBUG: Firebase auth state checked, user:', user ? user.email : 'null');
             if (!user) {
                 console.log('DEBUG: No user signed in, redirecting to VerifyCode.html');
-                showAlertModal(i18next.t('manage_events.alert_not_authenticated', { defaultValue: 'You must be logged in to access this page.' }), 'error');
+                showAlertModal('You must be logged in to access this page.', 'error');
                 setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
                 return;
             }
@@ -726,7 +621,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 });
             } else {
                 console.error('Events list container not found');
-                showAlertModal(i18next.t('manage_events.alert_list_not_found', { defaultValue: 'Events list container not found' }), 'error');
+                showAlertModal('Events list container not found', 'error');
             }
 
             const addEventForm = document.getElementById('add-event-form');
@@ -734,7 +629,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 addEventForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
                     if (!user) {
-                        showAlertModal(i18next.t('manage_events.alert_not_authenticated', { defaultValue: 'You must be logged in to add events.' }), 'error');
+                        showAlertModal('You must be logged in to add events.', 'error');
                         setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
                         return;
                     }
@@ -742,11 +637,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const date = document.getElementById('event-date').value;
                     const details = document.getElementById('event-details').value.trim();
                     if (!title || !date || !details) {
-                        showAlertModal(i18next.t('manage_events.alert_fill_fields', { defaultValue: 'Please fill in all required fields.' }), 'error');
+                        showAlertModal('Please fill in all required fields.', 'error');
                         return;
                     }
                     if (!validateDate(date)) {
-                        showAlertModal(i18next.t('manage_events.alert_invalid_date', { defaultValue: 'Please enter a valid date in YYYY-MM-DD format.' }), 'error');
+                        showAlertModal('Please enter a valid date in YYYY-MM-DD format.', 'error');
                         return;
                     }
                     try {
@@ -760,10 +655,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                         addEventForm.reset();
                         closeModal('add-event-modal');
                         await loadEvents();
-                        showAlertModal(i18next.t('manage_events.alert_add_success', { defaultValue: 'Event added successfully.' }));
+                        showAlertModal('Event added successfully.');
                     } catch (error) {
                         console.error('Error adding event:', error.code, error.message);
-                        showAlertModal(i18next.t('manage_events.alert_add_error', { defaultValue: 'Error adding event: {message}', message: error.message }), 'error');
+                        showAlertModal('Error adding event: {message}', 'error');
                     }
                 });
             }
@@ -773,7 +668,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 editEventForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
                     if (!user) {
-                        showAlertModal(i18next.t('manage_events.alert_not_authenticated', { defaultValue: 'You must be logged in to update events.' }), 'error');
+                        showAlertModal('You must be logged in to update events.', 'error');
                         setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
                         return;
                     }
@@ -782,11 +677,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const date = document.getElementById('edit-event-date').value;
                     const details = document.getElementById('edit-event-details').value.trim();
                     if (!title || !date || !details) {
-                        showAlertModal(i18next.t('manage_events.alert_fill_fields', { defaultValue: 'Please fill in all required fields.' }), 'error');
+                        showAlertModal('Please fill in all required fields.', 'error');
                         return;
                     }
                     if (!validateDate(date)) {
-                        showAlertModal(i18next.t('manage_events.alert_invalid_date', { defaultValue: 'Please enter a valid date in YYYY-MM-DD format.' }), 'error');
+                        showAlertModal('Please enter a valid date in YYYY-MM-DD format.', 'error');
                         return;
                     }
                     try {
@@ -799,10 +694,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                         });
                         closeModal('edit-event-modal');
                         await loadEvents();
-                        showAlertModal(i18next.t('manage_events.alert_update_success', { defaultValue: 'Event updated successfully.' }));
+                        showAlertModal('Event updated successfully.');
                     } catch (error) {
                         console.error('Error updating event:', error.code, error.message);
-                        showAlertModal(i18next.t('manage_events.alert_update_error', { defaultValue: 'Error updating event: {message}', message: error.message }), 'error');
+                        showAlertModal('Error updating event: {message}', 'error');
                     }
                 });
             }
@@ -811,7 +706,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (addEventBtn) {
                 addEventBtn.addEventListener('click', async () => {
                     if (!user) {
-                        showAlertModal(i18next.t('manage_events.alert_not_authenticated', { defaultValue: 'You must be logged in to add events.' }), 'error');
+                        showAlertModal('You must be logged in to add events.', 'error');
                         setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
                         return;
                     }
@@ -843,7 +738,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     } catch (error) {
         console.error('Error in DOMContentLoaded:', error.code, error.message);
-        showAlertModal(i18next.t('manage_events.alert_load_error', { defaultValue: 'An error occurred while loading the page: {message}', message: error.message }), 'error');
+        showAlertModal('An error occurred while loading the page: {message}', 'error');
         document.body.classList.remove('loading');
         document.body.classList.add('loaded');
         document.querySelector('.loading-overlay').style.display = 'none';
@@ -853,14 +748,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Fallback timeout
 setTimeout(() => {
     if (document.body.classList.contains('loading')) {
-        console.warn('Loading timeout reached, forcing content display');
-        applyFallbackTranslations();
-        document.body.classList.remove('loading');
+        console.warn('Loading timeout reached, forcing content display');        document.body.classList.remove('loading');
         document.body.classList.add('loaded');
         document.querySelector('.loading-overlay').style.display = 'none';
-        showAlertModal(i18next.t('manage_events.alert_timeout', { defaultValue: 'Page load timeout. Displaying default content.' }), 'error');
+        showAlertModal('Page load timeout. Displaying default content.', 'error');
     }
 }, 10000);
     </script>
 </body>
 </html>
+
+

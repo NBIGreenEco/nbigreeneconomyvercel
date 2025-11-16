@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <!-- Fix for Google Translate proxy: when translate serves a proxied page, root-relative URLs (starting with /) point to the proxy origin and break asset loading. -->
@@ -52,7 +52,7 @@
           '.goog-te-combo:hover { background-color: #4ec3b0 !important; } ' +
           '.goog-te-banner-frame { display: none !important; }';
         document.head.appendChild(protectiveStyle);
-        console.log('Applied Google Translate proxy asset fix — using origin:', refOrigin);
+        console.log('Applied Google Translate proxy asset fix â€” using origin:', refOrigin);
       } catch (e) {
         console.warn('Translate proxy fix failed:', e);
       }
@@ -69,7 +69,7 @@
   </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title data-i18n="verifycode.title">Verify Admin Code - Green Economy Toolkit</title>
+  <title>Verify Admin Code - Green Economy Toolkit</title>
   
   <!-- Translation System (Unofficial Google Translate API) -->
   <script>
@@ -100,7 +100,7 @@
       const translating = targetLang === 'en' ? 'English' :
                           targetLang === 'zu' ? 'isiZulu' :
                           'Setswana';
-      selector.options[selector.selectedIndex].text = `Translating to ${translating}…`;
+      selector.options[selector.selectedIndex].text = `Translating to ${translating}â€¦`;
 
       const walker = document.createTreeWalker(
         document.body,
@@ -140,18 +140,12 @@
       }
       translatePage(lang).catch(err => {
         console.error(err);
-        alert('Translation failed – check your internet connection.');
+        alert('Translation failed â€“ check your internet connection.');
       });
     }
   </script>
   
   <link rel="stylesheet" href="/Master Page(Header and Footer)/MasterPage.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  <script src="https://unpkg.com/lunr@2.3.9/lunr.js"></script>
-  <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
-  <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
-  <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
-  <script src="/Master Page(Header and Footer)/Trans.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"></script>
@@ -433,8 +427,8 @@
     const SERVER_URL = 'https://greeneconomytoolkit.com';
 
     i18next
-      .use(i18nextHttpBackend)
-      .use(i18nextBrowserLanguageDetector)
+      .use()
+      .use()
       .init({
         fallbackLng: 'en',
         supportedLngs: ['en', 'zu', 'tn'],
@@ -451,9 +445,7 @@
           setTimeout(() => {
             i18next.loadResources((loadErr) => {
               if (loadErr) {
-                console.error('Retry failed:', loadErr);
-                applyFallbackTranslations();
-              } else {
+                console.error('Retry failed:', loadErr);              } else {
                 console.log('i18next retry successful, language:', i18next.language);
                 finalizeLoading();
               }
@@ -463,74 +455,7 @@
         }
         console.log('i18next initialized for VerifyCode.html at', new Date().toLocaleString('en-ZA'), ':', i18next.language);
         finalizeLoading();
-      });
-
-    function applyFallbackTranslations() {
-      document.querySelectorAll('[data-i18n]').forEach(elem => {
-        const key = elem.getAttribute('data-i18n');
-        if (key.startsWith('[')) {
-          const match = key.match(/\[(\w+)\](.+)/);
-          if (match) {
-            const [, attr, i18nKey] = match;
-            const fallback = elem.getAttribute(attr) || 'Content not available';
-            elem.setAttribute(attr, fallback);
-          }
-        } else {
-          const fallback = elem.textContent.trim() || 'Content not available';
-          elem.textContent = fallback;
-        }
-      });
-      console.warn('Applied fallback translations due to loading failure');
-      finalizeLoading();
-    }
-
-    function updateContent() {
-      const missingKeys = [];
-      document.querySelectorAll('[data-i18n]').forEach(element => {
-        const key = element.getAttribute('data-i18n');
-        try {
-          if (key.startsWith('[')) {
-            const match = key.match(/\[(\w+)\](.+)/);
-            if (match) {
-              const [, attr, translationKey] = match;
-              const translation = i18next.t(translationKey, { defaultValue: element.getAttribute(attr) || 'Content not available' });
-              if (translation === translationKey) {
-                missingKeys.push(translationKey);
-              }
-              element.setAttribute(attr, translation);
-            }
-          } else {
-            const translation = i18next.t(key, { defaultValue: element.textContent.trim() || 'Content not available' });
-            if (translation === key) {
-              missingKeys.push(key);
-            }
-            element.textContent = translation;
-          }
-        } catch (error) {
-          console.error(`Error translating key ${key}:`, error);
-        }
-      });
-      if (missingKeys.length > 0) {
-        console.warn('Missing translations:', missingKeys);
-      }
-    }
-
-    function finalizeLoading() {
-      try {
-        i18next.loadResources(() => {
-          updateContent();
-          document.body.classList.remove('loading');
-          document.body.classList.add('loaded');
-          document.querySelector('.loading-overlay').style.display = 'none';
-          console.log('Translations loaded, content displayed');
-        });
-      } catch (error) {
-        console.error('Error loading translations:', error);
-        document.body.classList.remove('loading');
-        document.body.classList.add('loaded');
-        document.querySelector('.loading-overlay').style.display = 'none';
-      }
-    }
+      });}
   </script>
   <!-- Google Translate Script (initializes the google_translate_element used by MasterPage.js) -->
   <script type="text/javascript">
@@ -555,16 +480,16 @@
   <green-economy-header></green-economy-header>
   <section class="hero">
     <div class="hero-content">
-      <h1 data-i18n="verifycode.header">Verify Admin Access</h1>
+      <h1>Verify Admin Access</h1>
     </div>
   </section>
   <section class="form-container">
     <form id="verify-code-form">
-      <label for="verification-code" data-i18n="verifycode.label">Enter Admin Code:</label>
-      <input type="password" id="verification-code" required placeholder="Enter admin code" data-i18n="[placeholder]verifycode.placeholder">
-      <button type="submit" class="btn-primary" id="verify-btn" data-i18n="verifycode.button">Verify Code</button>
-      <div id="verification-message" class="success-message hidden" data-i18n="verifycode.success_message"></div>
-      <div id="error-message" class="error-message hidden" data-i18n="verifycode.error_message"></div>
+      <label for="verification-code">Enter Admin Code:</label>
+      <input type="password" id="verification-code" required placeholder="Enter admin code">
+      <button type="submit" class="btn-primary" id="verify-btn">Verify Code</button>
+      <div id="verification-message" class="success-message hidden"></div>
+      <div id="error-message" class="error-message hidden"></div>
     </form>
   </section>
   <div class="loader-overlay" id="loader-overlay"></div>
@@ -573,3 +498,5 @@
   <script type="module" src="/scripts/verifyCode.js"></script>
 </body>
 </html>
+
+

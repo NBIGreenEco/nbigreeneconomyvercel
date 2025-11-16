@@ -1,6 +1,6 @@
-i18next
-  .use(i18nextHttpBackend)
-  .use(i18nextBrowserLanguageDetector)
+﻿i18next
+  .use()
+  .use()
   .init({
     debug: true,
     fallbackLng: 'en',
@@ -22,3 +22,4 @@ function updateContent() {
 function changeLanguage(lng) {
   i18next.changeLanguage(lng, updateContent);
 }
+

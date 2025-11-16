@@ -1,16 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="manage_funding.title">Manage Funding - Green Economy Toolkit</title>
+    <title>Manage Funding - Green Economy Toolkit</title>
     <script type="module" src="/ADMIN/scripts/adminAuthCheck.js"></script>
     <script type="module" src="/Master%20Page(Header%20and%20Footer)/MasterPage.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
-    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
-    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
-    <script src="/Master%20Page(Header%20and%20Footer)/Trans.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"></script>
@@ -187,10 +183,10 @@
         <div style="background: linear-gradient(to right, #2b9589, #2b9589);" class="h-64 flex items-center justify-center text-white">
             <div class="text-center px-4 flex justify-between items-center w-full max-w-6xl">
                 <div>
-                    <h1 class="text-4xl font-bold mb-4" data-i18n="manage_funding.hero_title">Manage Funding Opportunities</h1>
-                    <p class="text-xl" data-i18n="manage_funding.hero_subtitle">Add, edit, and manage funding opportunities in the database</p>
+                    <h1 class="text-4xl font-bold mb-4">Manage Funding Opportunities</h1>
+                    <p class="text-xl">Add, edit, and manage funding opportunities in the database</p>
                 </div>
-                <button id="logoutBtn" class="btn-danger flex items-center px-4 py-2 rounded-lg" data-i18n="[html]manage_funding.logout_button">
+                <button id="logoutBtn" class="btn-danger flex items-center px-4 py-2 rounded-lg">
                     <i class="fas fa-sign-out-alt mr-2"></i> Logout
                 </button>
             </div>
@@ -200,8 +196,8 @@
                 Failed to load content. Please check your connection or try again later.
             </div>
             <div class="flex space-x-2 mb-6 bg-white p-1 rounded-lg shadow-sm">
-                <div class="tab active" data-tab="list" data-i18n="manage_funding.tab_list">List View</div>
-                <div class="tab" data-tab="grid" data-i18n="manage_funding.tab_grid">Grid View</div>
+                <div class="tab active" data-tab="list">List View</div>
+                <div class="tab" data-tab="grid">Grid View</div>
             </div>
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                 <div class="relative w-full md:w-64">
@@ -209,12 +205,12 @@
                         type="text"
                         id="search-input"
                         class="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                        data-i18n="[placeholder]manage_funding.search_placeholder"
+                       
                         placeholder="Search funding..."
                     >
                     <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
                 </div>
-                <button id="filter-btn" class="flex items-center px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-50" data-i18n="[html]manage_funding.filter_button">
+                <button id="filter-btn" class="flex items-center px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-50">
                     <i class="fas fa-filter mr-2"></i> Filters
                 </button>
                 <button
@@ -223,7 +219,7 @@
                     onmouseover="this.style.backgroundColor='#23786f'"
                     onmouseout="this.style.backgroundColor='#2b9589'"
                     class="text-white px-4 py-2 rounded-lg flex items-center"
-                    data-i18n="[html]manage_funding.add_button"
+                   
                 >
                     <i class="fas fa-plus-circle mr-2"></i> Add New Funding
                 </button>
@@ -231,75 +227,75 @@
             <div id="filters-panel" class="hidden bg-white p-4 rounded-lg shadow-md mb-6">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
-                        <h3 class="font-medium mb-2" data-i18n="manage_funding.sector_label">Sector</h3>
+                        <h3 class="font-medium mb-2">Sector</h3>
                         <div class="space-y-2">
-                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="sector" data-value="Energy" data-i18n="[html]manage_funding.sector_energy">
+                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="sector" data-value="Energy">
                                 <i class="fas fa-bolt mr-2"></i> Energy
                             </div>
-                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="sector" data-value="Agriculture" data-i18n="[html]manage_funding.sector_agriculture">
+                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="sector" data-value="Agriculture">
                                 <i class="fas fa-tractor mr-2"></i> Agriculture
                             </div>
-                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="sector" data-value="Climate Finance" data-i18n="[html]manage_funding.sector_climate_finance">
+                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="sector" data-value="Climate Finance">
                                 <i class="fas fa-cloud-sun mr-2"></i> Climate Finance
                             </div>
-                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="sector" data-value="Waste" data-i18n="[html]manage_funding.sector_waste">
+                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="sector" data-value="Waste">
                                 <i class="fas fa-trash mr-2"></i> Waste
                             </div>
-                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="sector" data-value="Water and Sanitation" data-i18n="[html]manage_funding.sector_water_sanitation">
+                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="sector" data-value="Water and Sanitation">
                                 <i class="fas fa-tint mr-2"></i> Water & Sanitation
                             </div>
-                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="sector" data-value="Green Infrastructure" data-i18n="[html]manage_funding.sector_green_infrastructure">
+                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="sector" data-value="Green Infrastructure">
                                 <i class="fas fa-leaf mr-2"></i> Green Infrastructure
                             </div>
                         </div>
                     </div>
                     <div>
-                        <h3 class="font-medium mb-2" data-i18n="manage_funding.funding_type_label">Funding Type</h3>
+                        <h3 class="font-medium mb-2">Funding Type</h3>
                         <div class="space-y-2">
-                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="type" data-value="Grant" data-i18n="[html]manage_funding.type_grant">
+                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="type" data-value="Grant">
                                 <i class="fas fa-gift mr-2"></i> Grant
                             </div>
-                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="type" data-value="Debt" data-i18n="[html]manage_funding.type_debt">
+                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="type" data-value="Debt">
                                 <i class="fas fa-hand-holding-usd mr-2"></i> Debt
                             </div>
-                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="type" data-value="Equity" data-i18n="[html]manage_funding.type_equity">
+                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="type" data-value="Equity">
                                 <i class="fas fa-chart-line mr-2"></i> Equity
                             </div>
-                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="type" data-value="Working Capital" data-i18n="[html]manage_funding.type_working_capital">
+                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="type" data-value="Working Capital">
                                 <i class="fas fa-money-bill-wave mr-2"></i> Working Capital
                             </div>
-                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="type" data-value="Business Development or Technical Assistance" data-i18n="[html]manage_funding.type_business_development">
+                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="type" data-value="Business Development or Technical Assistance">
                                 <i class="fas fa-cogs mr-2"></i> Business Development
                             </div>
                         </div>
                     </div>
                     <div>
-                        <h3 class="font-medium mb-2" data-i18n="manage_funding.target_label">Target</h3>
+                        <h3 class="font-medium mb-2">Target</h3>
                         <div class="space-y-2">
-                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="target" data-value="SMMEs" data-i18n="[html]manage_funding.target_smme">
+                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="target" data-value="SMMEs">
                                 <i class="fas fa-store mr-2"></i> SMME's
                             </div>
-                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="target" data-value="no" data-i18n="[html]manage_funding.target_non_smme">
+                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="target" data-value="no">
                                 <i class="fas fa-building mr-2"></i> Non-SMME's
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="flex justify-end mt-4">
-                    <button id="apply-filters" class="bg-green-600 text-white px-4 py-2 rounded-lg mr-2" data-i18n="manage_funding.apply_filters">Apply Filters</button>
-                    <button id="clear-filters" class="border border-gray-300 px-4 py-2 rounded-lg" data-i18n="manage_funding.clear_filters">Clear All</button>
+                    <button id="apply-filters" class="bg-green-600 text-white px-4 py-2 rounded-lg mr-2">Apply Filters</button>
+                    <button id="clear-filters" class="border border-gray-300 px-4 py-2 rounded-lg">Clear All</button>
                 </div>
             </div>
             <div id="list-view" class="space-y-4"></div>
             <div id="grid-view" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             <div id="loading" class="text-center py-8">
                 <i class="fas fa-spinner fa-spin text-3xl text-green-600"></i>
-                <p class="mt-2" data-i18n="manage_funding.loading">Loading funding opportunities...</p>
+                <p class="mt-2">Loading funding opportunities...</p>
             </div>
             <div id="no-results" class="hidden text-center py-12">
                 <i class="fas fa-search text-3xl text-gray-400 mb-4"></i>
-                <h3 class="text-xl font-medium text-gray-600" data-i18n="manage_funding.no_results_title">No funding opportunities found</h3>
-                <p class="text-gray-500 mt-2" data-i18n="manage_funding.no_results_message">Try adjusting your search or filters</p>
+                <h3 class="text-xl font-medium text-gray-600">No funding opportunities found</h3>
+                <p class="text-gray-500 mt-2">Try adjusting your search or filters</p>
             </div>
         </div>
     </div>
@@ -311,54 +307,54 @@
                     <i class="fas fa-times text-2xl"></i>
                 </button>
                 <div class="p-6">
-                    <h2 id="modal-title" class="text-2xl font-bold text-gray-800 mb-6" data-i18n="manage_funding.add_modal_title">Add New Funding Opportunity</h2>
+                    <h2 id="modal-title" class="text-2xl font-bold text-gray-800 mb-6">Add New Funding Opportunity</h2>
                     <form id="funding-form" class="space-y-6">
                         <input type="hidden" id="doc-id">
                         <div class="bg-gray-50 p-4 rounded-lg">
-                            <h3 class="text-lg font-medium text-gray-800 mb-4" data-i18n="manage_funding.basic_info">Basic Information</h3>
+                            <h3 class="text-lg font-medium text-gray-800 mb-4">Basic Information</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label class="block text-gray-700 mb-2" data-i18n="manage_funding.name_label">Name of Funding Opportunity*</label>
+                                    <label class="block text-gray-700 mb-2">Name of Funding Opportunity*</label>
                                     <input
                                         type="text"
                                         id="funding-name"
                                         class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                                         required
-                                        data-i18n="[placeholder]manage_funding.name_placeholder"
+                                       
                                         placeholder="Enter funding opportunity name"
                                     >
                                 </div>
                                 <div>
-                                    <label class="block text-gray-700 mb-2" data-i18n="manage_funding.channel_label">Name of Disbursement Channel*</label>
+                                    <label class="block text-gray-700 mb-2">Name of Disbursement Channel*</label>
                                     <input
                                         type="text"
                                         id="disbursement-channel"
                                         class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                                         required
-                                        data-i18n="[placeholder]manage_funding.channel_placeholder"
+                                       
                                         placeholder="Enter disbursement channel name"
                                     >
                                 </div>
                                 <div>
-                                    <label class="block text-gray-700 mb-2" data-i18n="manage_funding.channel_type_label">Type of Disbursement Channel*</label>
+                                    <label class="block text-gray-700 mb-2">Type of Disbursement Channel*</label>
                                     <input
                                         type="text"
                                         id="channel-type"
                                         class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                                         required
-                                        data-i18n="[placeholder]manage_funding.channel_type_placeholder"
+                                       
                                         placeholder="Enter channel type"
                                     >
                                 </div>
                                 <div>
-                                    <label class="block text-gray-700 mb-2" data-i18n="manage_funding.website_label">Website URL*</label>
+                                    <label class="block text-gray-700 mb-2">Website URL*</label>
                                     <div class="flex items-center space-x-2">
                                         <input
                                             type="text"
                                             id="website"
                                             class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 url-input"
                                             required
-                                            data-i18n="[placeholder]manage_funding.website_placeholder"
+                                           
                                             placeholder="www.example.com"
                                         >
                                         <button type="button" id="fetch-logo" class="px-3 py-2 bg-gray-100 rounded-lg">
@@ -367,34 +363,34 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <label class="block text-gray-700 mb-2" data-i18n="manage_funding.email_label">Contact Email</label>
+                                    <label class="block text-gray-700 mb-2">Contact Email</label>
                                     <input
                                         type="email"
                                         id="contact-email"
                                         class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                                        data-i18n="[placeholder]manage_funding.email_placeholder"
+                                       
                                         placeholder="Enter contact email"
                                     >
                                 </div>
                                 <div>
-                                    <label class="block text-gray-700 mb-2" data-i18n="manage_funding.number_label">Contact Number</label>
+                                    <label class="block text-gray-700 mb-2">Contact Number</label>
                                     <input
                                         type="tel"
                                         id="contact-number"
                                         class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                                        data-i18n="[placeholder]manage_funding.number_placeholder"
+                                       
                                         placeholder="Enter contact number"
                                     >
                                 </div>
                                 <div class="md:col-span-2">
-                                    <label class="block text-gray-700 mb-2" data-i18n="manage_funding.logo_label">Website Logo</label>
+                                    <label class="block text-gray-700 mb-2">Website Logo</label>
                                     <div class="flex items-center space-x-4">
                                         <img id="logo-preview" src="" class="logo-preview">
                                         <input
                                             type="text"
                                             id="logo-url"
                                             class="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                                            data-i18n="[placeholder]manage_funding.logo_placeholder"
+                                           
                                             placeholder="Logo URL or leave blank to auto-fetch"
                                         >
                                     </div>
@@ -402,124 +398,124 @@
                             </div>
                         </div>
                         <div class="bg-gray-50 p-4 rounded-lg">
-                            <h3 class="text-lg font-medium text-gray-800 mb-4" data-i18n="manage_funding.funding_type_label">Funding Type</h3>
+                            <h3 class="text-lg font-medium text-gray-800 mb-4">Funding Type</h3>
                             <div class="checkbox-container">
                                 <label class="checkbox-item">
                                     <input type="checkbox" name="funding-type" value="Grant">
-                                    <span data-i18n="[html]manage_funding.type_grant"><i class="fas fa-gift mr-2"></i> Grant</span>
+                                    <span><i class="fas fa-gift mr-2"></i> Grant</span>
                                 </label>
                                 <label class="checkbox-item">
                                     <input type="checkbox" name="funding-type" value="Debt">
-                                    <span data-i18n="[html]manage_funding.type_debt"><i class="fas fa-hand-holding-usd mr-2"></i> Debt</span>
+                                    <span><i class="fas fa-hand-holding-usd mr-2"></i> Debt</span>
                                 </label>
                                 <label class="checkbox-item">
                                     <input type="checkbox" name="funding-type" value="Equity">
-                                    <span data-i18n="[html]manage_funding.type_equity"><i class="fas fa-chart-line mr-2"></i> Equity</span>
+                                    <span><i class="fas fa-chart-line mr-2"></i> Equity</span>
                                 </label>
                                 <label class="checkbox-item">
                                     <input type="checkbox" name="funding-type" value="Working Capital">
-                                    <span data-i18n="[html]manage_funding.type_working_capital"><i class="fas fa-money-bill-wave mr-2"></i> Working Capital</span>
+                                    <span><i class="fas fa-money-bill-wave mr-2"></i> Working Capital</span>
                                 </label>
                                 <label class="checkbox-item">
                                     <input type="checkbox" name="funding-type" value="Business Development or Technical Assistance">
-                                    <span data-i18n="[html]manage_funding.type_business_development"><i class="fas fa-cogs mr-2"></i> Business Development</span>
+                                    <span><i class="fas fa-cogs mr-2"></i> Business Development</span>
                                 </label>
                             </div>
                         </div>
                         <div class="bg-gray-50 p-4 rounded-lg">
-                            <h3 class="text-lg font-medium text-gray-800 mb-4" data-i18n="manage_funding.target_label">Target</h3>
+                            <h3 class="text-lg font-medium text-gray-800 mb-4">Target</h3>
                             <div class="checkbox-container">
                                 <label class="checkbox-item">
                                     <input type="radio" name="target" value="SMMEs">
-                                    <span data-i18n="[html]manage_funding.target_smme"><i class="fas fa-store mr-2"></i> SMME's</span>
+                                    <span><i class="fas fa-store mr-2"></i> SMME's</span>
                                 </label>
                                 <label class="checkbox-item">
                                     <input type="radio" name="target" value="no">
-                                    <span data-i18n="[html]manage_funding.target_non_smme"><i class="fas fa-building mr-2"></i> Non-SMME's</span>
+                                    <span><i class="fas fa-building mr-2"></i> Non-SMME's</span>
                                 </label>
                             </div>
                         </div>
                         <div class="bg-gray-50 p-4 rounded-lg">
-                            <h3 class="text-lg font-medium text-gray-800 mb-4" data-i18n="manage_funding.sector_label">Sector</h3>
+                            <h3 class="text-lg font-medium text-gray-800 mb-4">Sector</h3>
                             <div class="checkbox-container">
                                 <label class="checkbox-item">
                                     <input type="checkbox" name="sector" value="Energy">
-                                    <span data-i18n="[html]manage_funding.sector_energy"><i class="fas fa-bolt mr-2"></i> Energy</span>
+                                    <span><i class="fas fa-bolt mr-2"></i> Energy</span>
                                 </label>
                                 <label class="checkbox-item">
                                     <input type="checkbox" name="sector" value="Agriculture">
-                                    <span data-i18n="[html]manage_funding.sector_agriculture"><i class="fas fa-tractor mr-2"></i> Agriculture</span>
+                                    <span><i class="fas fa-tractor mr-2"></i> Agriculture</span>
                                 </label>
                                 <label class="checkbox-item">
                                     <input type="checkbox" name="sector" value="Climate Finance">
-                                    <span data-i18n="[html]manage_funding.sector_climate_finance"><i class="fas fa-cloud-sun mr-2"></i> Climate Finance</span>
+                                    <span><i class="fas fa-cloud-sun mr-2"></i> Climate Finance</span>
                                 </label>
                                 <label class="checkbox-item">
                                     <input type="checkbox" name="sector" value="Waste">
-                                    <span data-i18n="[html]manage_funding.sector_waste"><i class="fas fa-trash mr-2"></i> Waste</span>
+                                    <span><i class="fas fa-trash mr-2"></i> Waste</span>
                                 </label>
                                 <label class="checkbox-item">
                                     <input type="checkbox" name="sector" value="Water and Sanitation">
-                                    <span data-i18n="[html]manage_funding.sector_water_sanitation"><i class="fas fa-tint mr-2"></i> Water & Sanitation</span>
+                                    <span><i class="fas fa-tint mr-2"></i> Water & Sanitation</span>
                                 </label>
                                 <label class="checkbox-item">
                                     <input type="checkbox" name="sector" value="Green Infrastructure">
-                                    <span data-i18n="[html]manage_funding.sector_green_infrastructure"><i class="fas fa-leaf mr-2"></i> Green Infrastructure</span>
+                                    <span><i class="fas fa-leaf mr-2"></i> Green Infrastructure</span>
                                 </label>
                             </div>
                         </div>
                         <div class="bg-gray-50 p-4 rounded-lg">
-                            <h3 class="text-lg font-medium text-gray-800 mb-4" data-i18n="manage_funding.additional_info">Additional Information</h3>
+                            <h3 class="text-lg font-medium text-gray-800 mb-4">Additional Information</h3>
                             <div class="grid grid-cols-1 gap-6">
                                 <div>
-                                    <label class="block text-gray-700 mb-2" data-i18n="manage_funding.focus_label">Focus of Fund</label>
+                                    <label class="block text-gray-700 mb-2">Focus of Fund</label>
                                     <textarea
                                         id="focus"
                                         rows="3"
                                         class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                                        data-i18n="[placeholder]manage_funding.focus_placeholder"
+                                       
                                         placeholder="Enter fund focus"
                                     ></textarea>
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                                     <div>
-                                        <label class="block text-gray-700 mb-2" data-i18n="manage_funding.keywords_label">Key Words</label>
+                                        <label class="block text-gray-700 mb-2">Key Words</label>
                                         <input
                                             type="text"
                                             id="keywords"
                                             class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                                            data-i18n="[placeholder]manage_funding.keywords_placeholder"
+                                           
                                             placeholder="Enter keywords"
                                         >
                                     </div>
                                     <div>
-                                        <label class="block text-gray-700 mb-2" data-i18n="manage_funding.keywords2_label">Key Words 2</label>
+                                        <label class="block text-gray-700 mb-2">Key Words 2</label>
                                         <input
                                             type="text"
                                             id="keywords2"
                                             class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                                            data-i18n="[placeholder]manage_funding.keywords2_placeholder"
+                                           
                                             placeholder="Enter additional keywords"
                                         >
                                     </div>
                                     <div>
-                                        <label class="block text-gray-700 mb-2" data-i18n="manage_funding.keywords3_label">Key Words 3</label>
+                                        <label class="block text-gray-700 mb-2">Key Words 3</label>
                                         <input
                                             type="text"
                                             id="keywords3"
                                             class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                                            data-i18n="[placeholder]manage_funding.keywords3_placeholder"
+                                           
                                             placeholder="Enter more keywords"
                                         >
                                     </div>
                                 </div>
                                 <div>
-                                    <label class="block text-gray-700 mb-2" data-i18n="manage_funding.ticket_size_label">Ticket Size</label>
+                                    <label class="block text-gray-700 mb-2">Ticket Size</label>
                                     <input
                                         type="text"
                                         id="ticket-size"
                                         class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                                        data-i18n="[placeholder]manage_funding.ticket_size_placeholder"
+                                       
                                         placeholder="Enter ticket size"
                                     >
                                 </div>
@@ -530,7 +526,7 @@
                                 type="button"
                                 id="cancel-btn"
                                 class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100"
-                                data-i18n="manage_funding.cancel_button"
+                               
                             >
                                 Cancel
                             </button>
@@ -538,7 +534,7 @@
                                 type="submit"
                                 id="submit-btn"
                                 class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center"
-                                data-i18n="[html]manage_funding.save_button"
+                               
                             >
                                 <i class="fas fa-save mr-2"></i> Save Funding Opportunity
                             </button>
@@ -578,8 +574,8 @@
 
         // Initialize i18next
         i18next
-            .use(i18nextHttpBackend)
-            .use(i18nextBrowserLanguageDetector)
+            .use()
+            .use()
             .init({
                 fallbackLng: 'en',
                 supportedLngs: ['en', 'zu', 'tn'],
@@ -596,9 +592,7 @@
                     setTimeout(() => {
                         i18next.loadResources((loadErr) => {
                             if (loadErr) {
-                                console.error('Retry failed:', loadErr);
-                                applyFallbackTranslations();
-                            } else {
+                                console.error('Retry failed:', loadErr);                            } else {
                                 console.log('i18next retry successful, language:', i18next.language);
                                 finalizeLoading();
                             }
@@ -608,268 +602,24 @@
                 }
                 console.log('i18next initialized for manage_funding.html at', new Date().toLocaleString('en-ZA'), ':', i18next.language);
                 finalizeLoading();
-            });
-
-        function applyFallbackTranslations() {
-            document.querySelectorAll('[data-i18n]').forEach(elem => {
-                const key = elem.getAttribute('data-i18n');
-                if (key.startsWith('[')) {
-                    const match = key.match(/\[(\w+)\](.+)/);
-                    if (match) {
-                        const [, attr, i18nKey] = match;
-                        const fallback = elem.getAttribute(attr) || 'Content not available';
-                        elem.setAttribute(attr, fallback);
-                    }
-                } else {
-                    const fallback = elem.textContent.trim() || 'Content not available';
-                    elem.textContent = fallback;
-                }
-            });
-            console.warn('Applied fallback translations');
-            finalizeLoading();
-        }
-
-        function updateContent() {
-            const missingKeys = [];
-            document.querySelectorAll('[data-i18n]').forEach(element => {
-                const key = element.getAttribute('data-i18n');
-                try {
-                    if (key.startsWith('[')) {
-                        const match = key.match(/\[(\w+)\](.+)/);
-                        if (match) {
-                            const [, attr, translationKey] = match;
-                            const translation = i18next.t(translationKey, { defaultValue: element.getAttribute(attr) || 'Content not available' });
-                            if (translation === translationKey) missingKeys.push(translationKey);
-                            element.setAttribute(attr, translation);
-                        }
-                    } else {
-                        const translation = i18next.t(key, { defaultValue: element.textContent.trim() || 'Content not available' });
-                        if (translation === key) missingKeys.push(key);
-                        element.textContent = translation;
-                    }
-                } catch (error) {
-                    console.error(`Error translating key ${key}:`, error);
-                }
-            });
-            if (missingKeys.length > 0) {
-                console.warn('Missing translations:', missingKeys);
-            }
-        }
-
-        function finalizeLoading() {
-            i18next.loadResources(() => {
-                updateContent();
-                loadFundingOpportunities();
-                document.body.classList.remove('loading');
-                document.body.classList.add('loaded');
-                document.querySelector('.loading-overlay').style.display = 'none';
-                console.log('Translations loaded, content displayed');
-            });
-        }
-
-        i18next.on('languageChanged', () => {
-            console.log('Language changed to:', i18next.language);
-            updateContent();
-            displayFunding(allFunding);
-        });
-
-        i18next.on('loaded', () => {
-            updateContent();
-        });
-
-        // DOM elements
-        const elements = {
-            addFundingBtn: document.getElementById('add-funding-btn'),
-            fundingModal: document.getElementById('funding-modal'),
-            closeModalBtn: document.getElementById('close-modal'),
-            cancelBtn: document.getElementById('cancel-btn'),
-            fundingForm: document.getElementById('funding-form'),
-            fundingList: document.getElementById('list-view'),
-            fundingGrid: document.getElementById('grid-view'),
-            loadingIndicator: document.getElementById('loading'),
-            noResults: document.getElementById('no-results'),
-            searchInput: document.getElementById('search-input'),
-            filterBtn: document.getElementById('filter-btn'),
-            filtersPanel: document.getElementById('filters-panel'),
-            applyFiltersBtn: document.getElementById('apply-filters'),
-            clearFiltersBtn: document.getElementById('clear-filters'),
-            tabs: document.querySelectorAll('[data-tab]'),
-            fetchLogoBtn: document.getElementById('fetch-logo'),
-            logoPreview: document.getElementById('logo-preview'),
-            logoUrlInput: document.getElementById('logo-url'),
-            websiteInput: document.getElementById('website'),
-            errorMessage: document.getElementById('errorMessage'),
-            modalTitle: document.getElementById('modal-title'),
-            submitBtn: document.getElementById('submit-btn'),
-            logoutBtn: document.getElementById('logoutBtn')
-        };
-
-        // State management
-        let activeFilters = { sector: [], type: [], target: [] };
-        let allFunding = [];
-        let currentPage = 0;
-        const itemsPerPage = 20;
-
-        // Utility functions
-        function showErrorMessage(message) {
-            if (elements.errorMessage) {
-                elements.errorMessage.textContent = i18next.t('manage_funding.alert_load_error', { defaultValue: message });
-                elements.errorMessage.classList.remove('hidden');
-            } else {
-                console.warn('Error message container not found');
-            }
-        }
-
-        // Fetch website logo
-        async function fetchWebsiteLogo(url) {
-            try {
-                if (!url) return null;
-                if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                    url = 'https://' + url;
-                }
-                const domain = url.replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0];
-                const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
-                const response = await fetch(faviconUrl, { method: 'HEAD' });
-                if (response.ok) {
-                    return faviconUrl;
-                }
-                console.warn(`No favicon found for ${domain}`);
-                return null;
-            } catch (error) {
-                console.warn(`Failed to fetch logo for ${url}:`, error);
-                return null;
-            }
-        }
-
-        // Load funding opportunities from Firestore
-        async function loadFundingOpportunities() {
-            if (!fundingRef) {
-                showErrorMessage('Database connection failed. Please try again later.');
-                return;
-            }
-            try {
-                elements.loadingIndicator.classList.remove('hidden');
-                const q = query(fundingRef);
-                const querySnapshot = await getDocs(q);
-                console.log('Retrieved documents:', querySnapshot.size);
-                allFunding = [];
-                querySnapshot.forEach(doc => {
-                    const data = doc.data();
-                    data.id = doc.id;
-                    console.log('Document:', doc.id, data);
-                    allFunding.push(data);
-                });
-                const logoPromises = allFunding.map(async (funding) => {
-                    if (funding.Website && funding.Website !== 'no' && !funding.logo) {
-                        try {
-                            const logoUrl = await fetchWebsiteLogo(funding.Website);
-                            if (logoUrl) funding.logo = logoUrl;
-                        } catch (error) {
-                            console.warn(`Skipping logo fetch for ${funding.Website}:`, error);
-                            funding.logo = null;
-                        }
-                    }
-                    return funding;
-                });
-                allFunding = await Promise.all(logoPromises);
-                currentPage = 0;
-                filterFunding();
-                elements.loadingIndicator.classList.add('hidden');
-            } catch (error) {
-                console.error('Error loading funding opportunities:', error);
-                elements.loadingIndicator.classList.add('hidden');
-                let errorMessage = 'Error loading funding opportunities. Please try again.';
-                if (error.code === 'failed-precondition') {
-                    errorMessage = 'Missing index for query. Please create an index in Firestore or remove sorting.';
-                } else if (error.code === 'permission-denied') {
-                    errorMessage = 'Permission denied. Please check your authentication status.';
-                }
-                showErrorMessage(errorMessage);
-            }
-        }
-
-        // Filter funding opportunities
-        function filterFunding() {
-            let filtered = [...allFunding];
-            const searchTerm = elements.searchInput.value.toLowerCase();
-            if (searchTerm) {
-                filtered = filtered.filter(funding =>
-                    (funding['Name of funding opportunity']?.toLowerCase().includes(searchTerm) || '') ||
-                    (funding['Name of disbursement channel']?.toLowerCase().includes(searchTerm) || '') ||
-                    (funding['Focus of Fund'] !== 'no' && funding['Focus of Fund']?.toLowerCase().includes(searchTerm))
-                );
-            }
-            if (activeFilters.sector.length > 0) {
-                filtered = filtered.filter(funding =>
-                    activeFilters.sector.some(sector => funding[sector] === true || funding[sector] === sector)
-                );
-            }
-            if (activeFilters.type.length > 0) {
-                filtered = filtered.filter(funding =>
-                    activeFilters.type.some(type => funding[type] === true || funding[type] === type)
-                );
-            }
-            if (activeFilters.target.length > 0) {
-                filtered = filtered.filter(funding =>
-                    activeFilters.target.includes(funding.SMMEs)
-                );
-            }
-            displayFunding(filtered);
-        }
-
-        // Handle edit button click
-        function handleEditClick(event) {
-            const id = event.currentTarget.getAttribute('data-id');
-            editFundingOpportunity(id);
-        }
-
-        // Handle delete button click
-        function handleDeleteClick(event) {
-            const id = event.currentTarget.getAttribute('data-id');
-            deleteFundingOpportunity(id);
-        }
-
-        // Display funding opportunities with pagination
-        function displayFunding(fundingArray) {
-            if (!elements.fundingList || !elements.fundingGrid) {
-                showErrorMessage('Page rendering error. Please refresh the page.');
-                return;
-            }
-            elements.fundingList.innerHTML = '';
-            elements.fundingGrid.innerHTML = '';
-            if (fundingArray.length === 0) {
-                console.log('No funding data to display');
-                elements.noResults.classList.remove('hidden');
-                return;
-            }
-            elements.noResults.classList.add('hidden');
-            const startIdx = currentPage * itemsPerPage;
-            const endIdx = startIdx + itemsPerPage;
-            const itemsToDisplay = fundingArray.slice(startIdx, endIdx);
-            itemsToDisplay.forEach(funding => {
-                const listItem = document.createElement('div');
-                listItem.className = 'funding-item bg-white p-4 rounded-lg shadow-sm';
-                listItem.innerHTML = `
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div class="flex items-start space-x-4">
-                            ${funding.logo ? `<img src="${funding.logo}" class="w-12 h-12 object-contain rounded-lg" alt="Funding Logo">` : '<div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center"><i class="fas fa-link text-gray-400"></i></div>'}
+            });" class="w-12 h-12 object-contain rounded-lg" alt="Funding Logo">` : '<div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center"><i class="fas fa-link text-gray-400"></i></div>'}
                             <div>
-                                <h3 class="font-medium text-lg">${funding['Name of funding opportunity'] || i18next.t('manage_funding.no_name', { defaultValue: 'No name' })}</h3>
-                                <h3 class="text-gray-600">${funding['Name of disbursement channel'] || i18next.t('manage_funding.no_channel', { defaultValue: 'No channel' })}</h3>
+                                <h3 class="font-medium text-lg">${funding['Name of funding opportunity'] || 'No name'}</h3>
+                                <h3 class="text-gray-600">${funding['Name of disbursement channel'] || 'No channel'}</h3>
                                 <div class="flex flex-wrap gap-2 mt-2">
-                                    ${funding.Grant === true || funding.Grant === 'Grant' ? `<span class="badge" data-i18n="[html]manage_funding.type_grant"><i class="fas fa-gift"></i> ${i18next.t('manage_funding.type_grant', { defaultValue: 'Grant' })}</span>` : ''}
-                                    ${funding.Debt === true || funding.Debt === 'Debt' ? `<span class="badge" data-i18n="[html]manage_funding.type_debt"><i class="fas fa-hand-holding-usd"></i> ${i18next.t('manage_funding.type_debt', { defaultValue: 'Debt' })}</span>` : ''}
-                                    ${funding.Equity === true || funding.Equity === 'Equity' ? `<span class="badge" data-i18n="[html]manage_funding.type_equity"><i class="fas fa-chart-line"></i> ${i18next.t('manage_funding.type_equity', { defaultValue: 'Equity' })}</span>` : ''}
-                                    ${funding['Working Capital'] === true || funding['Working Capital'] === 'Working Capital' ? `<span class="badge" data-i18n="[html]manage_funding.type_working_capital"><i class="fas fa-money-bill-wave"></i> ${i18next.t('manage_funding.type_working_capital', { defaultValue: 'Working Capital' })}</span>` : ''}
-                                    ${funding['Business Development or Technical Assistance'] === true || funding['Business Development or Technical Assistance'] === 'Business Development or Technical Assistance' ? `<span class="badge" data-i18n="[html]manage_funding.type_business_development"><i class="fas fa-cogs"></i> ${i18next.t('manage_funding.type_business_development', { defaultValue: 'Business Development' })}</span>` : ''}
+                                    ${funding.Grant === true || funding.Grant === 'Grant' ? `<span class="badge"><i class="fas fa-gift"></i> ${'Grant'}</span>` : ''}
+                                    ${funding.Debt === true || funding.Debt === 'Debt' ? `<span class="badge"><i class="fas fa-hand-holding-usd"></i> ${'Debt'}</span>` : ''}
+                                    ${funding.Equity === true || funding.Equity === 'Equity' ? `<span class="badge"><i class="fas fa-chart-line"></i> ${'Equity'}</span>` : ''}
+                                    ${funding['Working Capital'] === true || funding['Working Capital'] === 'Working Capital' ? `<span class="badge"><i class="fas fa-money-bill-wave"></i> ${'Working Capital'}</span>` : ''}
+                                    ${funding['Business Development or Technical Assistance'] === true || funding['Business Development or Technical Assistance'] === 'Business Development or Technical Assistance' ? `<span class="badge"><i class="fas fa-cogs"></i> ${'Business Development'}</span>` : ''}
                                 </div>
                             </div>
                         </div>
                         <div class="flex space-x-2">
-                            <button class="edit-btn px-3 py-1 bg-blue-100 text-blue-600 rounded-md hover:bg-blue-200" data-id="${funding.id}" data-i18n="[title]manage_funding.edit_button">
+                            <button class="edit-btn px-3 py-1 bg-blue-100 text-blue-600 rounded-md hover:bg-blue-200" data-id="${funding.id}">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button class="delete-btn px-3 py-1 bg-red-100 text-red-600 rounded-md hover:bg-red-200" data-id="${funding.id}" data-i18n="[title]manage_funding.delete_button">
+                            <button class="delete-btn px-3 py-1 bg-red-100 text-red-600 rounded-md hover:bg-red-200" data-id="${funding.id}">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
@@ -883,24 +633,24 @@
                     <div class="p-4">
                         <div class="flex justify-between items-start">
                             <div>
-                                <h3 class="font-medium">${funding['Name of funding opportunity'] || i18next.t('manage_funding.no_name', { defaultValue: 'No name' })}</h3>
-                                <p class="text-gray-600 text-sm">${funding['Name of disbursement channel'] || i18next.t('manage_funding.no_channel', { defaultValue: 'No channel' })}</p>
+                                <h3 class="font-medium">${funding['Name of funding opportunity'] || 'No name'}</h3>
+                                <p class="text-gray-600 text-sm">${funding['Name of disbursement channel'] || 'No channel'}</p>
                             </div>
                             ${funding.logo ? `<img src="${funding.logo}" class="w-12 h-12 object-contain rounded-lg" alt="Funding Logo">` : '<div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center"><i class="fas fa-link text-gray-400"></i></div>'}
                         </div>
                         ${funding['Focus of Fund'] !== 'no' ? `<p class="mt-3 text-gray-700 text-sm">${funding['Focus of Fund']}</p>` : ''}
                         <div class="flex flex-wrap gap-2 mt-4">
-                            ${funding.Grant === true || funding.Grant === 'Grant' ? `<span class="badge" data-i18n="[html]manage_funding.type_grant"><i class="fas fa-gift"></i> ${i18next.t('manage_funding.type_grant', { defaultValue: 'Grant' })}</span>` : ''}
-                            ${funding.Debt === true || funding.Debt === 'Debt' ? `<span class="badge" data-i18n="[html]manage_funding.type_debt"><i class="fas fa-hand-holding-usd"></i> ${i18next.t('manage_funding.type_debt', { defaultValue: 'Debt' })}</span>` : ''}
-                            ${funding.Equity === true || funding.Equity === 'Equity' ? `<span class="badge" data-i18n="[html]manage_funding.type_equity"><i class="fas fa-chart-line"></i> ${i18next.t('manage_funding.type_equity', { defaultValue: 'Equity' })}</span>` : ''}
-                            ${funding['Working Capital'] === true || funding['Working Capital'] === 'Working Capital' ? `<span class="badge" data-i18n="[html]manage_funding.type_working_capital"><i class="fas fa-money-bill-wave"></i> ${i18next.t('manage_funding.type_working_capital', { defaultValue: 'Working Capital' })}</span>` : ''}
-                            ${funding['Business Development or Technical Assistance'] === true || funding['Business Development or Technical Assistance'] === 'Business Development or Technical Assistance' ? `<span class="badge" data-i18n="[html]manage_funding.type_business_development"><i class="fas fa-cogs"></i> ${i18next.t('manage_funding.type_business_development', { defaultValue: 'Business Development' })}</span>` : ''}
+                            ${funding.Grant === true || funding.Grant === 'Grant' ? `<span class="badge"><i class="fas fa-gift"></i> ${'Grant'}</span>` : ''}
+                            ${funding.Debt === true || funding.Debt === 'Debt' ? `<span class="badge"><i class="fas fa-hand-holding-usd"></i> ${'Debt'}</span>` : ''}
+                            ${funding.Equity === true || funding.Equity === 'Equity' ? `<span class="badge"><i class="fas fa-chart-line"></i> ${'Equity'}</span>` : ''}
+                            ${funding['Working Capital'] === true || funding['Working Capital'] === 'Working Capital' ? `<span class="badge"><i class="fas fa-money-bill-wave"></i> ${'Working Capital'}</span>` : ''}
+                            ${funding['Business Development or Technical Assistance'] === true || funding['Business Development or Technical Assistance'] === 'Business Development or Technical Assistance' ? `<span class="badge"><i class="fas fa-cogs"></i> ${'Business Development'}</span>` : ''}
                         </div>
                         <div class="flex justify-end space-x-2 mt-4">
-                            <button class="edit-btn px-3 py-1 bg-blue-100 text-blue-600 rounded-md hover:bg-blue-200" data-id="${funding.id}" data-i18n="[title]manage_funding.edit_button">
+                            <button class="edit-btn px-3 py-1 bg-blue-100 text-blue-600 rounded-md hover:bg-blue-200" data-id="${funding.id}">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button class="delete-btn px-3 py-1 bg-red-100 text-red-600 rounded-md hover:bg-red-200" data-id="${funding.id}" data-i18n="[title]manage_funding.delete_button">
+                            <button class="delete-btn px-3 py-1 bg-red-100 text-red-600 rounded-md hover:bg-red-200" data-id="${funding.id}">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
@@ -953,14 +703,12 @@
             document.querySelectorAll('.delete-btn').forEach(btn => {
                 btn.removeEventListener('click', handleDeleteClick);
                 btn.addEventListener('click', handleDeleteClick);
-            });
-            updateContent();
-        }
+            });        }
 
         // Edit funding opportunity
         async function editFundingOpportunity(id) {
             if (!auth.currentUser) {
-                alert(i18next.t('manage_funding.alert_not_authenticated', { defaultValue: 'You must be logged in to edit funding opportunities.' }));
+                alert('You must be logged in to edit funding opportunities.');
                 return;
             }
             try {
@@ -1045,9 +793,7 @@
                     }
                 });
                 elements.modalTitle.setAttribute('data-i18n', 'manage_funding.edit_modal_title');
-                elements.submitBtn.setAttribute('data-i18n', '[html]manage_funding.update_button');
-                updateContent();
-                toggleModal();
+                elements.submitBtn.setAttribute('data-i18n', '[html]manage_funding.update_button');                toggleModal();
             } catch (error) {
                 console.error('Error retrieving funding opportunity:', error);
                 showErrorMessage('Error loading funding opportunity. Please try again.');
@@ -1057,14 +803,14 @@
         // Delete funding opportunity
         async function deleteFundingOpportunity(id) {
             if (!auth.currentUser) {
-                alert(i18next.t('manage_funding.alert_not_authenticated', { defaultValue: 'You must be logged in to delete funding opportunities.' }));
+                alert('You must be logged in to delete funding opportunities.');
                 return;
             }
-            if (confirm(i18next.t('manage_funding.delete_confirm', { defaultValue: 'Are you sure you want to delete this funding opportunity?' }))) {
+            if (confirm('Are you sure you want to delete this funding opportunity?')) {
                 try {
                     await deleteDoc(doc(db, "funding", id));
                     loadFundingOpportunities();
-                    alert(i18next.t('manage_funding.alert_delete_success', { defaultValue: 'Funding opportunity deleted successfully.' }));
+                    alert('Funding opportunity deleted successfully.');
                 } catch (error) {
                     console.error('Error deleting funding opportunity:', error);
                     showErrorMessage('Error deleting funding opportunity. Please try again.');
@@ -1095,17 +841,13 @@
                     input.checked = !input.checked;
                 } else {
                     input.checked = true;
-                }
-                updateContent();
-            }
+                }            }
             document.querySelectorAll('.filter-option').forEach(option => {
                 option.removeEventListener('click', handleFilterClick);
                 option.addEventListener('click', handleFilterClick);
             });
             function handleFilterClick() {
-                this.classList.toggle('selected');
-                updateContent();
-            }
+                this.classList.toggle('selected');            }
             elements.applyFiltersBtn.addEventListener('click', () => {
                 activeFilters = { sector: [], type: [], target: [] };
                 document.querySelectorAll('.filter-option.selected').forEach(option => {
@@ -1133,11 +875,11 @@
                 const channelType = elements.fundingForm.querySelector('#channel-type').value.trim();
                 let websiteUrl = elements.websiteInput.value.trim();
                 if (!name || !channel || !channelType || !websiteUrl) {
-                    alert(i18next.t('manage_funding.alert_missing_fields', { defaultValue: 'Please fill in all required fields.' }));
+                    alert('Please fill in all required fields.');
                     return;
                 }
                 if (!/^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w- ./?%&=]*)?$/.test(websiteUrl)) {
-                    alert(i18next.t('manage_funding.alert_invalid_url', { defaultValue: 'Please enter a valid website URL.' }));
+                    alert('Please enter a valid website URL.');
                     return;
                 }
                 if (!websiteUrl.startsWith('http://') && !websiteUrl.startsWith('https://')) {
@@ -1181,17 +923,17 @@
                 try {
                     const user = auth.currentUser;
                     if (!user) {
-                        alert(i18next.t('manage_funding.alert_not_authenticated', { defaultValue: 'You must be logged in to save funding opportunities.' }));
+                        alert('You must be logged in to save funding opportunities.');
                         return;
                     }
                     const docId = elements.fundingForm.querySelector('#doc-id').value;
                     if (docId) {
                         await updateDoc(doc(db, "funding", docId), fundingData);
-                        alert(i18next.t('manage_funding.alert_update_success', { defaultValue: 'Funding opportunity updated successfully.' }));
+                        alert('Funding opportunity updated successfully.');
                     } else {
                         fundingData.createdAt = new Date();
                         await addDoc(fundingRef, fundingData);
-                        alert(i18next.t('manage_funding.alert_add_success', { defaultValue: 'Funding opportunity added successfully.' }));
+                        alert('Funding opportunity added successfully.');
                     }
                     elements.fundingForm.reset();
                     elements.logoPreview.style.display = 'none';
@@ -1205,11 +947,11 @@
             elements.fetchLogoBtn.addEventListener('click', async () => {
                 let websiteUrl = elements.websiteInput.value.trim();
                 if (!websiteUrl) {
-                    alert(i18next.t('manage_funding.alert_no_website', { defaultValue: 'Please enter a website URL first.' }));
+                    alert('Please enter a website URL first.');
                     return;
                 }
                 if (!/^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w- ./?%&=]*)?$/.test(websiteUrl)) {
-                    alert(i18next.t('manage_funding.alert_invalid_url', { defaultValue: 'Please enter a valid website URL.' }));
+                    alert('Please enter a valid website URL.');
                     return;
                 }
                 try {
@@ -1219,7 +961,7 @@
                         elements.logoPreview.style.display = 'block';
                         elements.logoUrlInput.value = logoUrl;
                     } else {
-                        alert(i18next.t('manage_funding.alert_no_logo', { defaultValue: 'Could not find a logo for this website.' }));
+                        alert('Could not find a logo for this website.');
                     }
                 } catch (error) {
                     console.error('Error fetching logo:', error);
@@ -1254,7 +996,7 @@
             });
             elements.addFundingBtn.addEventListener('click', () => {
                 if (!auth.currentUser) {
-                    alert(i18next.t('manage_funding.alert_not_authenticated', { defaultValue: 'You must be logged in to add funding opportunities.' }));
+                    alert('You must be logged in to add funding opportunities.');
                     return;
                 }
                 elements.fundingForm.reset();
@@ -1267,9 +1009,7 @@
                 });
                 document.querySelectorAll('.checkbox-item input').forEach(input => {
                     input.checked = false;
-                });
-                updateContent();
-                toggleModal();
+                });                toggleModal();
             });
             elements.closeModalBtn.addEventListener('click', toggleModal);
             elements.cancelBtn.addEventListener('click', toggleModal);
@@ -1300,9 +1040,7 @@
         // Fallback timeout
         setTimeout(() => {
             if (document.body.classList.contains('loading')) {
-                console.warn('Loading timeout reached, forcing content display');
-                applyFallbackTranslations();
-                document.body.classList.remove('loading');
+                console.warn('Loading timeout reached, forcing content display');                document.body.classList.remove('loading');
                 document.body.classList.add('loaded');
                 document.querySelector('.loading-overlay').style.display = 'none';
                 showErrorMessage('Page load timeout. Displaying default content.');
@@ -1311,3 +1049,5 @@
     </script>
 </body>
 </html>
+
+

@@ -1,4 +1,4 @@
-// Service Worker for Caching Static Assets
+﻿// Service Worker for Caching Static Assets
 // This file caches CSS, JS, images, and fonts to improve load times
 
 const CACHE_VERSION = 'v1.0.0';
@@ -35,10 +35,7 @@ const STATIC_ASSETS = [
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/webfonts/fa-solid-900.woff2',
 
-  // i18next libraries (for translations)
-  'https://unpkg.com/i18next@22/i18next.min.js',
-  'https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js',
-  'https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js',
+
 
   // Lunr.js (for search)
   'https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js',
@@ -214,3 +211,4 @@ self.addEventListener('message', (event) => {
 });
 
 console.log('[Service Worker] Loaded successfully');
+

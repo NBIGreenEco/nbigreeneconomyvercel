@@ -32,7 +32,7 @@ function hideLoader() {
 function showError(msg) {
     const el = document.getElementById('error-message');
     if (!el) return;
-    const txt = window.i18next?.t ? i18next.t('signin.error_message', { defaultValue: msg }) : msg;
+    const txt = 'en' ? msg : msg;
     el.textContent = txt; el.classList.remove('hidden');
     setTimeout(() => el.classList.add('hidden'), 5000);
 }
@@ -49,7 +49,7 @@ async function trackInteraction(uid, cat, act, lbl = "") {
             userId: uid || `anonymous_${Date.now()}`,
             category: cat, action: act, label: lbl,
             timestamp: serverTimestamp(),
-            language: window.i18next?.language || 'en',
+            language: 'en' || 'en',
             userAgent: navigator.userAgent
         });
     } catch (e) { console.error("Track error:", e); }
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             await setDoc(doc(db, 'users', user.uid), {
                 email: user.email,
-                language: window.i18next?.language || 'en',
+                language: 'en' || 'en',
                 emailVerified: true
             }, { merge: true });
 

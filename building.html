@@ -1,9 +1,9 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title data-i18n="title.buildings">Green Buildings - Green Economy Toolkit</title>
+    <title>Green Buildings - Green Economy Toolkit</title>
     <!-- Translation System (Unofficial Google Translate API) -->
     <script>
       let currentLanguage = 'en';
@@ -33,7 +33,7 @@
         const translating = targetLang === 'en' ? 'English' :
                             targetLang === 'zu' ? 'isiZulu' :
                             'Setswana';
-        selector.options[selector.selectedIndex].text = `Translating to ${translating}…`;
+        selector.options[selector.selectedIndex].text = `Translating to ${translating}â€¦`;
 
         const walker = document.createTreeWalker(
           document.body,
@@ -73,20 +73,13 @@
         }
         translatePage(lang).catch(err => {
           console.error(err);
-          alert('Translation failed – check your internet connection.');
+          alert('Translation failed â€“ check your internet connection.');
         });
       }
     </script>
 
-    <!-- Load i18next scripts -->
-    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
-    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
-    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
-    
     <!-- Load other scripts -->
     <script type="module" src="../Master Page(Header and Footer)/MasterPage.js"></script>
-    <script type="module" src="../Master Page(Header and Footer)/translation.js"></script>
-    <script type="module" src="../Trans.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
@@ -474,7 +467,7 @@
     <section class="hero">
       <div class="hero-image" style="background-image: url('https://d1v1e13ebw3o15.cloudfront.net/data/42690/pool_and_spa_master/..jpg');"></div>
       <div class="hero-overlay">
-        <h1 class="hero-title" data-i18n="buildings.title">Green Buildings & Built Environment</h1>
+        <h1 class="hero-title">Green Buildings & Built Environment</h1>
       </div>
     </section>
 
@@ -482,14 +475,14 @@
     <section class="content-section">
       <div class="content-container container">
         <div class="content-description">
-          <h2 data-i18n="buildings.subtitle">Sustainable Construction and Design</h2>
-          <p data-i18n="buildings.description">
+          <h2>Sustainable Construction and Design</h2>
+          <p>
             Green buildings are designed to save energy and use eco-friendly materials. 
             The built environment refers to human-made infrastructure and amenities. 
             Ensuring a green built environment is about building homes, offices and factories 
             that do as little harm as possible to Earth, and to the people who live and work in them.
           </p>
-          <p data-i18n="buildings.importance">
+          <p>
             With rapid urbanization in South Africa, green building practices offer significant 
             opportunities to reduce environmental impact, lower operating costs, and create 
             healthier living and working spaces while driving innovation in the construction sector.
@@ -503,8 +496,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
               </svg>
             </div>
-            <h3 data-i18n="buildings.point1.title">Energy Efficient Design</h3>
-            <p data-i18n="buildings.point1.description">
+            <h3>Energy Efficient Design</h3>
+            <p>
               Implementing passive solar design, high-performance insulation, energy-efficient 
               appliances, and renewable energy systems to minimize energy consumption in buildings.
             </p>
@@ -516,8 +509,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
               </svg>
             </div>
-            <h3 data-i18n="buildings.point2.title">Water Conservation</h3>
-            <p data-i18n="buildings.point2.description">
+            <h3>Water Conservation</h3>
+            <p>
               Incorporating rainwater harvesting, greywater recycling, water-efficient fixtures, 
               and drought-resistant landscaping to reduce water usage in buildings and landscapes.
             </p>
@@ -529,8 +522,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
               </svg>
             </div>
-            <h3 data-i18n="buildings.point3.title">Sustainable Materials</h3>
-            <p data-i18n="buildings.point3.description">
+            <h3>Sustainable Materials</h3>
+            <p>
               Using locally sourced, recycled, renewable, and non-toxic building materials 
               to reduce environmental impact and create healthier indoor environments.
             </p>
@@ -553,7 +546,7 @@
               d="M10 19l-7-7m0 0l7-7m-7 7h18"
             />
           </svg>
-          <span data-i18n="navigation.backToFocusAreas">Back to all focus areas</span>
+          <span>Back to all focus areas</span>
         </a>
       </div>
     </section>
@@ -562,7 +555,7 @@
     <section class="newsletter-section">
       <div class="newsletter-container">
         <!-- Title -->
-        <h2 class="newsletter-title" data-i18n="login.subscribe">
+        <h2 class="newsletter-title">
           Subscribe to our newsletter to get the latest information
         </h2>
         
@@ -571,14 +564,14 @@
           <input 
             type="email" 
             placeholder="Your email" 
-            data-i18n="[placeholder]login.emailPlaceholder"
+           
             class="newsletter-input"
           >
-          <span class="newsletter-arrow">→</span>
+          <span class="newsletter-arrow">â†’</span>
         </div>
         
         <!-- Disclaimer Text -->
-        <p class="newsletter-disclaimer" data-i18n="login.noSpam">
+        <p class="newsletter-disclaimer">
           *Only relevant information, no spam
         </p>
       </div>
@@ -633,3 +626,4 @@
     <green-economy-footer></green-economy-footer>
   </body>
 </html>
+

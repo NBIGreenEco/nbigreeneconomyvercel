@@ -1,15 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="manage_news.title">Manage News - Green Economy Toolkit</title>
+    <title>Manage News - Green Economy Toolkit</title>
     <script type="module" src="/ADMIN/scripts/adminAuthCheck.js"></script>
     <script type="module" src="/Master Page(Header and Footer)/MasterPage.js"></script>
-    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
-    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
-    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
-    <script src="/Master Page(Header and Footer)/Trans.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"></script>
@@ -391,45 +387,45 @@
     <green-economy-header></green-economy-header>
     <section class="hero">
         <div class="hero-content">
-            <h1 data-i18n="manage_news.title">Manage News</h1>
+            <h1>Manage News</h1>
         </div>
     </section>
     <section class="main">
         <div class="form-container">
-            <button class="btn-primary" id="add-news-btn" data-i18n="manage_news.add_button">Add New News</button>
-            <button class="btn-primary" id="back-to-dashboard" data-i18n="manage_news.back_button">Back to Dashboard</button>
-            <button class="btn-danger" id="logout-btn" data-i18n="[html]manage_news.logout_button"><i class="fas fa-sign-out-alt mr-2"></i> Logout</button>
+            <button class="btn-primary" id="add-news-btn">Add New News</button>
+            <button class="btn-primary" id="back-to-dashboard">Back to Dashboard</button>
+            <button class="btn-danger" id="logout-btn"><i class="fas fa-sign-out-alt mr-2"></i> Logout</button>
         </div>
         <div class="news-list"></div>
     </section>
     <div class="modal" id="add-news-modal">
         <div class="modal-content">
             <span class="modal-close">&times;</span>
-            <h2 data-i18n="manage_news.add_title">Add New News</h2>
+            <h2>Add New News</h2>
             <form id="add-news-form">
-                <label for="news-title" data-i18n="manage_news.title_label">News Title:</label>
-                <input type="text" id="news-title" required data-i18n="[placeholder]manage_news.title_placeholder" placeholder="Enter news title">
-                <label for="news-date" data-i18n="manage_news.date_label">News Date (YYYY-MM-DD):</label>
-                <input type="date" id="news-date" required data-i18n="[placeholder]manage_news.date_placeholder" placeholder="Select news date">
-                <label for="news-description" data-i18n="manage_news.description_label">News Description:</label>
-                <textarea id="news-description" required data-i18n="[placeholder]manage_news.description_placeholder" placeholder="Enter news description"></textarea>
-                <button type="submit" class="btn-primary" data-i18n="manage_news.add_submit">Add News</button>
+                <label for="news-title">News Title:</label>
+                <input type="text" id="news-title" required placeholder="Enter news title">
+                <label for="news-date">News Date (YYYY-MM-DD):</label>
+                <input type="date" id="news-date" required placeholder="Select news date">
+                <label for="news-description">News Description:</label>
+                <textarea id="news-description" required placeholder="Enter news description"></textarea>
+                <button type="submit" class="btn-primary">Add News</button>
             </form>
         </div>
     </div>
     <div class="modal" id="edit-news-modal">
         <div class="modal-content">
             <span class="modal-close">&times;</span>
-            <h2 data-i18n="manage_news.edit_title">Edit News</h2>
+            <h2>Edit News</h2>
             <form id="edit-news-form">
                 <input type="hidden" id="edit-news-id">
-                <label for="edit-news-title" data-i18n="manage_news.title_label">News Title:</label>
-                <input type="text" id="edit-news-title" required data-i18n="[placeholder]manage_news.title_placeholder" placeholder="Enter news title">
-                <label for="edit-news-date" data-i18n="manage_news.date_label">News Date (YYYY-MM-DD):</label>
-                <input type="date" id="edit-news-date" required data-i18n="[placeholder]manage_news.date_placeholder" placeholder="Select news date">
-                <label for="edit-news-description" data-i18n="manage_news.description_label">News Description:</label>
-                <textarea id="edit-news-description" required data-i18n="[placeholder]manage_news.description_placeholder" placeholder="Enter news description"></textarea>
-                <button type="submit" class="btn-primary" data-i18n="manage_news.update_submit">Update News</button>
+                <label for="edit-news-title">News Title:</label>
+                <input type="text" id="edit-news-title" required placeholder="Enter news title">
+                <label for="edit-news-date">News Date (YYYY-MM-DD):</label>
+                <input type="date" id="edit-news-date" required placeholder="Select news date">
+                <label for="edit-news-description">News Description:</label>
+                <textarea id="edit-news-description" required placeholder="Enter news description"></textarea>
+                <button type="submit" class="btn-primary">Update News</button>
             </form>
         </div>
     </div>
@@ -462,8 +458,8 @@ auth = getAuth(app);
 
 // Initialize i18next
 i18next
-    .use(i18nextHttpBackend)
-    .use(i18nextBrowserLanguageDetector)
+    .use()
+    .use()
     .init({
         fallbackLng: 'en',
         supportedLngs: ['en', 'zu', 'tn'],
@@ -480,9 +476,7 @@ i18next
             setTimeout(() => {
                 i18next.loadResources((loadErr) => {
                     if (loadErr) {
-                        console.error('Retry failed:', loadErr);
-                        applyFallbackTranslations();
-                    } else {
+                        console.error('Retry failed:', loadErr);                    } else {
                         console.log('i18next retry successful, language:', i18next.language);
                         finalizeLoading();
                     }
@@ -492,119 +486,22 @@ i18next
         }
         console.log('i18next initialized for manage_news.html at', new Date().toLocaleString('en-ZA'), ':', i18next.language);
         finalizeLoading();
-    });
-
-function applyFallbackTranslations() {
-    document.querySelectorAll('[data-i18n]').forEach(elem => {
-        const key = elem.getAttribute('data-i18n');
-        if (key.startsWith('[')) {
-            const match = key.match(/\[(\w+)\](.+)/);
-            if (match) {
-                const [, attr, i18nKey] = match;
-                const fallback = elem.getAttribute(attr) || 'Content not available';
-                elem.setAttribute(attr, fallback);
-            }
-        } else {
-            const fallback = elem.textContent.trim() || 'Content not available';
-            elem.textContent = fallback;
-        }
-    });
-    console.warn('Applied fallback translations');
-    finalizeLoading();
-}
-
-function updateContent() {
-    const missingKeys = [];
-    document.querySelectorAll('[data-i18n]').forEach(element => {
-        const key = element.getAttribute('data-i18n');
-        try {
-            if (key.startsWith('[')) {
-                const match = key.match(/\[(\w+)\](.+)/);
-                if (match) {
-                    const [, attr, translationKey] = match;
-                    const translation = i18next.t(translationKey, { defaultValue: element.getAttribute(attr) || 'Content not available' });
-                    if (translation === translationKey) missingKeys.push(translationKey);
-                    element.setAttribute(attr, translation);
-                }
-            } else {
-                const translation = i18next.t(key, { defaultValue: element.textContent.trim() || 'Content not available' });
-                if (translation === key) missingKeys.push(key);
-                element.textContent = translation;
-            }
-        } catch (error) {
-            console.error(`Error translating key ${key}:`, error);
-        }
-    });
-    if (missingKeys.length > 0) {
-        console.warn('Missing translations:', missingKeys);
-    }
-}
-
-function finalizeLoading() {
-    i18next.loadResources(() => {
-        updateContent();
-        document.body.classList.remove('loading');
-        document.body.classList.add('loaded');
-        document.querySelector('.loading-overlay').style.display = 'none';
-        console.log('Translations loaded, content displayed');
-    });
-}
-
-i18next.on('languageChanged', () => {
-    console.log('Language changed to:', i18next.language);
-    updateContent();
-    loadNews();
-});
-
-i18next.on('loaded', () => {
-    updateContent();
-});
-
-function validateDate(dateString) {
-    const regex = /^\d{4}-\d{2}-\d{2}$/;
-    return regex.test(dateString) && !isNaN(new Date(dateString).getTime());
-}
-
-async function loadNews() {
-    try {
-        const newsList = document.querySelector('.news-list');
-        if (!newsList) {
-            console.error('News list container not found');
-            showAlertModal(i18next.t('manage_news.list_not_found', { defaultValue: 'News list container not found' }), 'error');
-            return;
-        }
-        newsList.innerHTML = '<p data-i18n="manage_news.loading">Loading news...</p>';
-        updateContent();
-        const newsSnapshot = await getDocs(collection(db, 'news'));
-        newsList.innerHTML = '';
-        if (newsSnapshot.empty) {
-            newsList.innerHTML = '<p data-i18n="manage_news.empty">No news items found.</p>';
-            updateContent();
-            return;
-        }
-        newsSnapshot.forEach(doc => {
-            const news = doc.data();
-            const newsItem = document.createElement('div');
-            newsItem.className = 'news-item';
-            newsItem.dataset.id = doc.id;
-            const formattedDate = news.date && validateDate(news.date) ? news.date : i18next.t('manage_news.no_date', { defaultValue: 'No Date' });
+    }););
             newsItem.innerHTML = `
                 <div class="news-details">
-                    <h4>${news.title || i18next.t('manage_news.no_title', { defaultValue: 'No Title' })}</h4>
-                    <p>${i18next.t('manage_news.news_date', { defaultValue: 'Date: {date}', date: formattedDate })}</p>
-                    <p>${news.description || i18next.t('manage_news.no_description', { defaultValue: 'No Description' })}</p>
+                    <h4>${news.title || 'No Title'}</h4>
+                    <p>${'Date: {date}'}</p>
+                    <p>${news.description || 'No Description'}</p>
                 </div>
                 <div class="news-actions">
-                    <button class="btn-primary" data-action="edit" data-i18n="manage_news.edit">Edit</button>
-                    <button class="btn-danger" data-action="delete" data-i18n="manage_news.delete">Delete</button>
+                    <button class="btn-primary" data-action="edit">Edit</button>
+                    <button class="btn-danger" data-action="delete">Delete</button>
                 </div>
             `;
             newsList.appendChild(newsItem);
-        });
-        updateContent();
-    } catch (error) {
+        });    } catch (error) {
         console.error('Error loading news:', error.code, error.message);
-        showAlertModal(i18next.t('manage_news.load_error', { defaultValue: 'Error loading news: {message}', message: error.message }), 'error');
+        showAlertModal('Error loading news: {message}', 'error');
     }
 }
 
@@ -615,7 +512,7 @@ function showModal(modalId) {
         setTimeout(() => modal.classList.add('show'), 10);
     } else {
         console.error(`Modal with ID ${modalId} not found`);
-        showAlertModal(i18next.t('manage_news.modal_not_found', { defaultValue: 'Modal not found: {id}', id: modalId }), 'error');
+        showAlertModal('Modal not found: {id}', 'error');
     }
 }
 
@@ -637,7 +534,7 @@ function showAlertModal(message, type = 'success') {
         <div class="alert-modal-content">
             <span class="alert-modal-close">&times;</span>
             <p>${message}</p>
-            <button class="alert-modal-btn">${i18next.t('manage_news.alert_ok', { defaultValue: 'OK' })}</button>
+            <button class="alert-modal-btn">${'OK'}</button>
         </div>
     `;
     document.body.appendChild(modal);
@@ -655,7 +552,7 @@ function showAlertModal(message, type = 'success') {
 
 async function editNews(id, user) {
     if (!user) {
-        showAlertModal(i18next.t('manage_news.alert_not_authenticated', { defaultValue: 'You must be logged in to edit news.' }), 'error');
+        showAlertModal('You must be logged in to edit news.', 'error');
         setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
         return;
     }
@@ -670,24 +567,24 @@ async function editNews(id, user) {
         showModal('edit-news-modal');
     } catch (error) {
         console.error('Error editing news:', error.code, error.message);
-        showAlertModal(i18next.t('manage_news.edit_error', { defaultValue: 'Error editing news: {message}', message: error.message }), 'error');
+        showAlertModal('Error editing news: {message}', 'error');
     }
 }
 
 async function deleteNews(id, user) {
     if (!user) {
-        showAlertModal(i18next.t('manage_news.alert_not_authenticated', { defaultValue: 'You must be logged in to delete news.' }), 'error');
+        showAlertModal('You must be logged in to delete news.', 'error');
         setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
         return;
     }
-    if (!confirm(i18next.t('manage_news.delete_confirm', { defaultValue: 'Are you sure you want to delete this news item?' }))) return;
+    if (!confirm('Are you sure you want to delete this news item?')) return;
     try {
         await deleteDoc(doc(db, 'news', id));
         await loadNews();
-        showAlertModal(i18next.t('manage_news.delete_success', { defaultValue: 'News item deleted successfully.' }));
+        showAlertModal('News item deleted successfully.');
     } catch (error) {
         console.error('Error deleting news:', error.code, error.message);
-        showAlertModal(i18next.t('manage_news.delete_error', { defaultValue: 'Error deleting news: {message}', message: error.message }), 'error');
+        showAlertModal('Error deleting news: {message}', 'error');
     }
 }
 
@@ -696,7 +593,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('DEBUG: Initial sessionStorage state - verified:', sessionStorage.getItem('verified'), 'sessionStart:', sessionStorage.getItem('sessionStart'));
 
     try {
-        
         
         // Load news immediately if session is verified
         const isVerified = sessionStorage.getItem('verified') === 'true';
@@ -711,7 +607,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.log('DEBUG: Firebase auth state checked, user:', user ? user.email : 'null');
             if (!user) {
                 console.log('DEBUG: No user signed in, redirecting to VerifyCode.html');
-                showAlertModal(i18next.t('manage_news.alert_not_authenticated', { defaultValue: 'You must be logged in to access this page.' }), 'error');
+                showAlertModal('You must be logged in to access this page.', 'error');
                 setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
                 return;
             }
@@ -733,7 +629,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 });
             } else {
                 console.error('News list container not found');
-                showAlertModal(i18next.t('manage_news.list_not_found', { defaultValue: 'News list container not found' }), 'error');
+                showAlertModal('News list container not found', 'error');
             }
 
             const addNewsForm = document.getElementById('add-news-form');
@@ -741,7 +637,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 addNewsForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
                     if (!user) {
-                        showAlertModal(i18next.t('manage_news.alert_not_authenticated', { defaultValue: 'You must be logged in to add news.' }), 'error');
+                        showAlertModal('You must be logged in to add news.', 'error');
                         setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
                         return;
                     }
@@ -749,11 +645,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const date = document.getElementById('news-date').value;
                     const description = document.getElementById('news-description').value.trim();
                     if (!title || !date || !description) {
-                        showAlertModal(i18next.t('manage_news.form_error', { defaultValue: 'Please fill in all required fields.' }), 'error');
+                        showAlertModal('Please fill in all required fields.', 'error');
                         return;
                     }
                     if (!validateDate(date)) {
-                        showAlertModal(i18next.t('manage_news.alert_invalid_date', { defaultValue: 'Please enter a valid date in YYYY-MM-DD format.' }), 'error');
+                        showAlertModal('Please enter a valid date in YYYY-MM-DD format.', 'error');
                         return;
                     }
                     try {
@@ -766,10 +662,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                         addNewsForm.reset();
                         closeModal('add-news-modal');
                         await loadNews();
-                        showAlertModal(i18next.t('manage_news.add_success', { defaultValue: 'News item added successfully.' }));
+                        showAlertModal('News item added successfully.');
                     } catch (error) {
                         console.error('Error adding news:', error.code, error.message);
-                        showAlertModal(i18next.t('manage_news.add_error', { defaultValue: 'Error adding news: {message}', message: error.message }), 'error');
+                        showAlertModal('Error adding news: {message}', 'error');
                     }
                 });
             }
@@ -779,7 +675,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 editNewsForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
                     if (!user) {
-                        showAlertModal(i18next.t('manage_news.alert_not_authenticated', { defaultValue: 'You must be logged in to update news.' }), 'error');
+                        showAlertModal('You must be logged in to update news.', 'error');
                         setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
                         return;
                     }
@@ -788,11 +684,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const date = document.getElementById('edit-news-date').value;
                     const description = document.getElementById('edit-news-description').value.trim();
                     if (!title || !date || !description) {
-                        showAlertModal(i18next.t('manage_news.form_error', { defaultValue: 'Please fill in all required fields.' }), 'error');
+                        showAlertModal('Please fill in all required fields.', 'error');
                         return;
                     }
                     if (!validateDate(date)) {
-                        showAlertModal(i18next.t('manage_news.alert_invalid_date', { defaultValue: 'Please enter a valid date in YYYY-MM-DD format.' }), 'error');
+                        showAlertModal('Please enter a valid date in YYYY-MM-DD format.', 'error');
                         return;
                     }
                     try {
@@ -804,10 +700,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                         });
                         closeModal('edit-news-modal');
                         await loadNews();
-                        showAlertModal(i18next.t('manage_news.update_success', { defaultValue: 'News item updated successfully.' }));
+                        showAlertModal('News item updated successfully.');
                     } catch (error) {
                         console.error('Error updating news:', error.code, error.message);
-                        showAlertModal(i18next.t('manage_news.update_error', { defaultValue: 'Error updating news: {message}', message: error.message }), 'error');
+                        showAlertModal('Error updating news: {message}', 'error');
                     }
                 });
             }
@@ -816,7 +712,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (addNewsBtn) {
                 addNewsBtn.addEventListener('click', async () => {
                     if (!user) {
-                        showAlertModal(i18next.t('manage_news.alert_not_authenticated', { defaultValue: 'You must be logged in to add news.' }), 'error');
+                        showAlertModal('You must be logged in to add news.', 'error');
                         setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
                         return;
                     }
@@ -848,7 +744,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     } catch (error) {
         console.error('Error in DOMContentLoaded:', error.code, error.message);
-        showAlertModal(i18next.t('manage_news.load_error', { defaultValue: 'An error occurred while loading the page: {message}', message: error.message }), 'error');
+        showAlertModal('An error occurred while loading the page: {message}', 'error');
         document.body.classList.remove('loading');
         document.body.classList.add('loaded');
         document.querySelector('.loading-overlay').style.display = 'none';
@@ -858,14 +754,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Fallback timeout
 setTimeout(() => {
     if (document.body.classList.contains('loading')) {
-        console.warn('Loading timeout reached, forcing content display');
-        applyFallbackTranslations();
-        document.body.classList.remove('loading');
+        console.warn('Loading timeout reached, forcing content display');        document.body.classList.remove('loading');
         document.body.classList.add('loaded');
         document.querySelector('.loading-overlay').style.display = 'none';
-        showAlertModal(i18next.t('manage_news.alert_timeout', { defaultValue: 'Page load timeout. Displaying default content.' }), 'error');
+        showAlertModal('Page load timeout. Displaying default content.', 'error');
     }
 }, 10000);
     </script>
 </body>
 </html>
+
+

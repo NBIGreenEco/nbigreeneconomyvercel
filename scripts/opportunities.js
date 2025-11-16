@@ -1,6 +1,4 @@
-
-  
-  // Card data array
+﻿  // Card data array
       const opportunityCards = [
         {
           title: "Green Finance Database",
@@ -70,7 +68,7 @@
         },
         {
           title: "Sector education and training authorities",
-          desc: "Sector education and training authorities (seta) – your relevant seta can tell you about funding opportunities, especially for skills training",
+          desc: "Sector education and training authorities (seta) â€“ your relevant seta can tell you about funding opportunities, especially for skills training",
           details: "#",
           detailsText: "View details"
         }
@@ -188,5 +186,4 @@
       document.querySelector('.dashboard-button').addEventListener('click', function () {
         window.location.href = "questionnaire/questionnaire.html";
       });
-
-      
+

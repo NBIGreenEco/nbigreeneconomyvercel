@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <!-- Fix for Google Translate proxy: when translate serves a proxied page, root-relative URLs (starting with /) point to the proxy origin and break asset loading. -->
@@ -52,7 +52,7 @@
             '.goog-te-combo:hover { background-color: #4ec3b0 !important; } ' +
             '.goog-te-banner-frame { display: none !important; }';
           document.head.appendChild(protectiveStyle);
-          console.log('Applied Google Translate proxy asset fix — using origin:', refOrigin);
+          console.log('Applied Google Translate proxy asset fix â€” using origin:', refOrigin);
         } catch (e) {
           console.warn('Translate proxy fix failed:', e);
         }
@@ -60,7 +60,7 @@
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title data-i18n="title">Focus Areas - Green Economy Toolkit</title>
+    <title>Focus Areas - Green Economy Toolkit</title>
     
   <!-- Translation System (Unofficial Google Translate API) -->
   <script>
@@ -91,7 +91,7 @@
       const translating = targetLang === 'en' ? 'English' :
                           targetLang === 'zu' ? 'isiZulu' :
                           'Setswana';
-      selector.options[selector.selectedIndex].text = `Translating to ${translating}…`;
+      selector.options[selector.selectedIndex].text = `Translating to ${translating}â€¦`;
 
       const walker = document.createTreeWalker(
         document.body,
@@ -129,19 +129,14 @@
         }
         translatePage(lang).catch(err => {
           console.error(err);
-          alert('Translation failed – check your internet connection.');
+          alert('Translation failed â€“ check your internet connection.');
         });
       }
     </script>
     
-    <!-- Load i18next scripts -->
-    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
-    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
-    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
     <!-- Load other scripts -->
     <script type="module" src="../../Master Page(Header and Footer)/MasterPage.js"></script>
-    <script type="module" src="../../Master Page(Header and Footer)/translation.js"></script>
-    <script type="module" src="../../Trans.js"></script>
+    <!-- Trans.js removed -->
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
@@ -761,8 +756,8 @@
               </svg>
             </div>
             <div class="focus-details">
-              <h3 data-i18n="focus.agriculture">Agriculture</h3>
-              <p data-i18n="focus.agriculture.description">
+              <h3>Agriculture</h3>
+              <p>
                 Green agriculture means farming in a way that doesn't harm the
                 environment. It includes using fewer chemicals, saving water and
                 protecting wildlife while growing our food.
@@ -782,8 +777,8 @@
               </svg>
             </div>
             <div class="focus-details">
-              <h3 data-i18n="focus.energy">Energy (clean and efficient)</h3>
-              <p data-i18n="focus.energy.description">
+              <h3>Energy (clean and efficient)</h3>
+              <p>
                 Clean and efficient energy means using power sources like the
                 sun and wind, which don't cause pollution. It also means using
                 less energy by making our machines and buildings work better.
@@ -803,10 +798,10 @@
               </svg>
             </div>
             <div class="focus-details">
-              <h3 data-i18n="focus.naturalResource">
+              <h3>
                 Natural resource conservation and management (including mining)
               </h3>
-              <p data-i18n="focus.naturalResource.description">
+              <p>
                 Natural resource conservation and management is about being
                 careful with our land and other natural resources. When we mine,
                 we should do it in a way that minimizes damage to nature, and we
@@ -827,8 +822,8 @@
               </svg>
             </div>
             <div class="focus-details">
-              <h3 data-i18n="focus.transport">Sustainable transport and infrastructure</h3>
-              <p data-i18n="focus.transport.description">
+              <h3>Sustainable transport and infrastructure</h3>
+              <p>
                 Sustainable transport means using greener ways to get around,
                 such as electric cars and public transport. Sustainable
                 infrastructure means constructing roads and buildings that are
@@ -849,8 +844,8 @@
               </svg>
             </div>
             <div class="focus-details">
-              <h3 data-i18n="focus.environmental">Environmental sustainability, including tourism education</h3>
-              <p data-i18n="focus.environmental.description">
+              <h3>Environmental sustainability, including tourism education</h3>
+              <p>
                 We need to learn how to protect nature and teach others to do
                 the same, especially in the tourism industry. That way, we can
                 enjoy beautiful places without harming them.
@@ -870,8 +865,8 @@
               </svg>
             </div>
             <div class="focus-details">
-              <h3 data-i18n="focus.buildings">Green buildings and the built environment</h3>
-              <p data-i18n="focus.buildings.description">
+              <h3>Green buildings and the built environment</h3>
+              <p>
                 Green buildings are designed to save energy and use eco-friendly
                 materials. The built environment refers to human-made
                 infrastructure and amenities. Ensuring a green built environment
@@ -894,8 +889,8 @@
               </svg>
             </div>
             <div class="focus-details">
-              <h3 data-i18n="focus.waste">Sustainable waste management and recycling</h3>
-              <p data-i18n="focus.waste.description">
+              <h3>Sustainable waste management and recycling</h3>
+              <p>
                 To protect our planet and humanity's future, we must responsibly
                 manage and recycle waste. Items we now throw away. Opportunities
                 include the installation of public recycling bins labelled
@@ -919,8 +914,8 @@
               </svg>
             </div>
             <div class="focus-details">
-              <h3 data-i18n="focus.water">Water management</h3>
-              <p data-i18n="focus.water.description">
+              <h3>Water management</h3>
+              <p>
                 Using water wisely and keeping it clean is important because
                 without potable water humanity will die. We also use water in
                 most industrial processes. This means that we should use water
@@ -942,8 +937,8 @@
               </svg>
             </div>
             <div class="focus-details">
-              <h3 data-i18n="focus.production">Sustainable production and consumption</h3>
-              <p data-i18n="focus.production.description">
+              <h3>Sustainable production and consumption</h3>
+              <p>
                 This involves making products and items that last longer and can
                 be used again. It also means buying only the things we really
                 need, thus reducing waste.
@@ -977,7 +972,7 @@
     <section class="newsletter-section">
       <div class="newsletter-container">
         <!-- Title -->
-        <h2 class="newsletter-title" data-i18n="login.subscribe">
+        <h2 class="newsletter-title">
           Subscribe to our newsletter to get the latest information
         </h2>
         
@@ -986,14 +981,14 @@
           <input 
             type="email" 
             placeholder="Your email" 
-            data-i18n="[placeholder]login.emailPlaceholder"
+           
             class="newsletter-input"
           >
-          <span class="newsletter-arrow">→</span>
+          <span class="newsletter-arrow">â†’</span>
         </div>
         
         <!-- Disclaimer Text -->
-        <p class="newsletter-disclaimer" data-i18n="login.noSpam">
+        <p class="newsletter-disclaimer">
           *Only relevant information, no spam
         </p>
       </div>
@@ -1034,3 +1029,4 @@
     <script src="../../scripts/focus-area.js"></script>
   </body>
 </html>
+

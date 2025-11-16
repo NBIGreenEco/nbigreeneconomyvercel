@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 
@@ -12,7 +12,7 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title data-i18n="pageTitle">Database Management | NBI Green Economy</title>
+  <title>Database Management | NBI Green Economy</title>
   
   <!-- Translation System (Unofficial Google Translate API) -->
   <script>
@@ -43,7 +43,7 @@
       const translating = targetLang === 'en' ? 'English' :
                           targetLang === 'zu' ? 'isiZulu' :
                           'Setswana';
-      selector.options[selector.selectedIndex].text = `Translating to ${translating}…`;
+      selector.options[selector.selectedIndex].text = `Translating to ${translating}â€¦`;
 
       const walker = document.createTreeWalker(
         document.body,
@@ -83,7 +83,7 @@
       }
       translatePage(lang).catch(err => {
         console.error(err);
-        alert('Translation failed – check your internet connection.');
+        alert('Translation failed â€“ check your internet connection.');
       });
     }
   </script>
@@ -93,7 +93,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/i18next@23.11.5/dist/umd/i18next.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/i18next-browser-languagedetector@7.1.0/dist/umd/i18nextBrowserLanguageDetector.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/i18next-browser-languagedetector@7.1.0/dist/umd/.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <style>
     * {
@@ -483,7 +483,7 @@
 <body>
   <div class="loading-overlay" id="pageLoading">
     <div class="loading-spinner"></div>
-    <div class="loading-text" data-i18n="loadingText">Loading...</div>
+    <div class="loading-text">Loading...</div>
   </div>
   <green-economy-header></green-economy-header>
   <section class="dashboard">
@@ -491,41 +491,41 @@
       <div class="language-switcher">
         <select id="languageSelect">
           <option value="en">English</option>
-          <option value="fr">Français</option>
+          <option value="fr">FranÃ§ais</option>
         </select>
       </div>
       <div class="dashboard-header">
-        <h1 class="dashboard-title" data-i18n="dashboardTitle">Project Database Management</h1>
+        <h1 class="dashboard-title">Project Database Management</h1>
         <div class="action-buttons" id="actionButtons">
           <div class="search-container">
-            <input type="text" id="searchInput" class="search-input" placeholder="Search projects..." data-i18n="[placeholder]searchPlaceholder">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search projects...">
           </div>
           <input type="file" id="excelUpload" accept=".xlsx" style="display: none;">
-          <button id="uploadBtn" class="btn btn-primary" data-i18n="[html]uploadButton">
+          <button id="uploadBtn" class="btn btn-primary">
             <i class="bi bi-upload"></i> Upload Excel
           </button>
-          <button id="exportBtn" class="btn btn-primary" data-i18n="[html]exportButton">
+          <button id="exportBtn" class="btn btn-primary">
             <i class="bi bi-download"></i> Export Data
           </button>
-          <button id="refreshBtn" class="btn btn-secondary" data-i18n="[html]refreshButton">
+          <button id="refreshBtn" class="btn btn-secondary">
             <i class="bi bi-arrow-clockwise"></i> Refresh
           </button>
         </div>
       </div>
       <div class="category-selector">
-        <h3 data-i18n="categorySelectorTitle">Select Data Categories to Display</h3>
+        <h3>Select Data Categories to Display</h3>
         <div class="category-tabs" id="categoryTabs"></div>
       </div>
       <div class="data-table-container">
         <div id="loadingIndicator" class="loading-indicator">
           <div class="spinner"></div>
-          <p data-i18n="loadingProjects">Loading project data...</p>
+          <p>Loading project data...</p>
         </div>
         <table class="data-table">
           <thead id="tableHeader"></thead>
           <tbody id="tableBody"></tbody>
         </table>
-        <div id="noResults" class="no-results" style="display: none;" data-i18n="noResults">
+        <div id="noResults" class="no-results" style="display: none;">
           No projects found matching your criteria.
         </div>
       </div>
@@ -535,7 +535,7 @@
   <div class="modal-overlay" id="projectModal">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="modal-title" data-i18n="projectDetailsTitle">Project Details</h2>
+        <h2 class="modal-title">Project Details</h2>
         <button class="modal-close" id="closeModal">&times;</button>
       </div>
       <div class="modal-body" id="projectDetails"></div>
@@ -544,7 +544,7 @@
   <script>
     // Translation initialization
     i18next
-      .use(i18nextBrowserLanguageDetector)
+      .use()
       .init({
         fallbackLng: 'en',
         debug: false,
@@ -576,24 +576,24 @@
           },
           fr: {
             translation: {
-              pageTitle: "Gestion de la base de données | NBI Économie Verte",
-              dashboardTitle: "Gestion de la base de données des projets",
+              pageTitle: "Gestion de la base de donnÃ©es | NBI Ã‰conomie Verte",
+              dashboardTitle: "Gestion de la base de donnÃ©es des projets",
               searchPlaceholder: "Rechercher des projets...",
-              uploadButton: "<i class='bi bi-upload'></i> Télécharger Excel",
-              exportButton: "<i class='bi bi-download'></i> Exporter les données",
+              uploadButton: "<i class='bi bi-upload'></i> TÃ©lÃ©charger Excel",
+              exportButton: "<i class='bi bi-download'></i> Exporter les donnÃ©es",
               refreshButton: "<i class='bi bi-arrow-clockwise'></i> Actualiser",
-              categorySelectorTitle: "Sélectionner les catégories de données à afficher",
-              loadingProjects: "Chargement des données des projets...",
-              noResults: "Aucun projet trouvé correspondant à vos critères.",
-              projectDetailsTitle: "Détails du projet",
+              categorySelectorTitle: "SÃ©lectionner les catÃ©gories de donnÃ©es Ã  afficher",
+              loadingProjects: "Chargement des donnÃ©es des projets...",
+              noResults: "Aucun projet trouvÃ© correspondant Ã  vos critÃ¨res.",
+              projectDetailsTitle: "DÃ©tails du projet",
               loadingText: "Chargement...",
               errorLoadingProjects: "Erreur lors du chargement des projets",
-              noDataToExport: "Aucune donnée à exporter",
-              noFileSelected: "Aucun fichier sélectionné",
-              confirmOverwrite: "Des données existent déjà. Remplacer ?",
-              uploadSuccess: "{count} projets téléchargés avec succès",
-              uploadSuccessWithIds: "{count} projets téléchargés avec succès, {idCount} avec des ID générés",
-              errorUploadingExcel: "Erreur lors du téléchargement d'Excel : {message}",
+              noDataToExport: "Aucune donnÃ©e Ã  exporter",
+              noFileSelected: "Aucun fichier sÃ©lectionnÃ©",
+              confirmOverwrite: "Des donnÃ©es existent dÃ©jÃ . Remplacer ?",
+              uploadSuccess: "{count} projets tÃ©lÃ©chargÃ©s avec succÃ¨s",
+              uploadSuccessWithIds: "{count} projets tÃ©lÃ©chargÃ©s avec succÃ¨s, {idCount} avec des ID gÃ©nÃ©rÃ©s",
+              errorUploadingExcel: "Erreur lors du tÃ©lÃ©chargement d'Excel : {message}",
               errorReadingFile: "Erreur lors de la lecture du fichier",
               viewButton: "Voir",
               actionsHeader: "Actions"
@@ -601,9 +601,7 @@
           }
         }
       }, function(err, t) {
-        if (err) console.error('i18next initialization failed:', err);
-        updateContent();
-      });
+        if (err) console.error('i18next initialization failed:', err);      });
 
     // Update content with translations
     function updateContent() {
@@ -621,9 +619,7 @@
 
     // Language switcher
     document.getElementById('languageSelect').addEventListener('change', (e) => {
-      i18next.changeLanguage(e.target.value, () => {
-        updateContent();
-      });
+      i18next.changeLanguage(e.target.value, () => {      });
     });
 
     // Show loading overlay
@@ -751,7 +747,7 @@
         displayProjects();
       } catch (error) {
         console.error('Error loading projects:', error);
-        alert(i18next.t('errorLoadingProjects'));
+        alert('errorLoadingProjects');
       } finally {
         hideLoadingOverlay();
       }
@@ -800,7 +796,7 @@
         displayProjects();
       } catch (error) {
         console.error('Error loading projects:', error);
-        alert(i18next.t('errorLoadingProjects'));
+        alert('errorLoadingProjects');
       } finally {
         loadingIndicator.style.display = 'none';
       }
@@ -842,7 +838,7 @@
         const viewBtn = document.createElement('button');
         viewBtn.className = 'btn btn-primary';
         viewBtn.style.padding = '5px 10px';
-        viewBtn.innerHTML = '<i class="bi bi-eye"></i> ' + i18next.t('viewButton');
+        viewBtn.innerHTML = '<i class="bi bi-eye"></i> ' + 'viewButton';
         viewBtn.addEventListener('click', () => viewProjectDetails(project["Project Code"] || project["New project name"] || project["Oroginal Project name"]));
         actionCell.appendChild(viewBtn);
         row.appendChild(actionCell);
@@ -862,7 +858,7 @@
         headerRow.appendChild(th);
       });
       const actionTh = document.createElement('th');
-      actionTh.textContent = i18next.t('actionsHeader');
+      actionTh.textContent = 'actionsHeader';
       headerRow.appendChild(actionTh);
       tableHeader.appendChild(headerRow);
     }
@@ -992,7 +988,7 @@
     function exportData() {
       console.log('Exporting data');
       if (filteredProjects.length === 0) {
-        alert(i18next.t('noDataToExport'));
+        alert('noDataToExport');
         return;
       }
       let csvContent = currentColumns.join(',') + ',Actions\n';
@@ -1044,7 +1040,7 @@
       const file = event.target.files[0];
       if (!file) {
         console.log('No file selected');
-        alert(i18next.t('noFileSelected'));
+        alert('noFileSelected');
         return;
       }
       loadingIndicator.style.display = 'block';
@@ -1097,3 +1093,5 @@
   <script src="../public/Master Page(Header and Footer)/MasterPage.js"></script>
 </body>
 </html>
+
+

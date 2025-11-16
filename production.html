@@ -1,9 +1,9 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title data-i18n="title.production">Production Management - Green Economy Toolkit</title>
+    <title>Production Management - Green Economy Toolkit</title>
     <!-- Fix for Google Translate proxy: when translate serves a proxied page, root-relative URLs (starting with /) point to the proxy origin and break asset loading. -->
     <script>
       (function() {
@@ -55,7 +55,7 @@
             '.goog-te-combo:hover { background-color: #4ec3b0 !important; } ' +
             '.goog-te-banner-frame { display: none !important; }';
           document.head.appendChild(protectiveStyle);
-          console.log('Applied Google Translate proxy asset fix — using origin:', refOrigin);
+          console.log('Applied Google Translate proxy asset fix â€” using origin:', refOrigin);
         } catch (e) {
           console.warn('Translate proxy fix failed:', e);
         }
@@ -90,7 +90,7 @@
         const translating = targetLang === 'en' ? 'English' :
                             targetLang === 'zu' ? 'isiZulu' :
                             'Setswana';
-        selector.options[selector.selectedIndex].text = `Translating to ${translating}…`;
+        selector.options[selector.selectedIndex].text = `Translating to ${translating}â€¦`;
 
         const walker = document.createTreeWalker(
           document.body,
@@ -130,19 +130,13 @@
         }
         translatePage(lang).catch(err => {
           console.error(err);
-          alert('Translation failed – check your internet connection.');
+          alert('Translation failed â€“ check your internet connection.');
         });
       }
     </script>
 
-    <!-- Load i18next as global scripts -->
-    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
-    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
-    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
     <!-- Load other scripts -->
     <script type="module" src="../Master Page(Header and Footer)/MasterPage.js"></script>
-    <script type="module" src="../Master Page(Header and Footer)/translation.js"></script>
-    <script type="module" src="../Trans.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
@@ -531,7 +525,7 @@
     <section class="hero">
       <div class="hero-image" style="background-image: url('https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=1200&h=400&fit=crop');"></div>
       <div class="hero-overlay">
-        <h1 class="hero-title" data-i18n="production.title">Sustainable Production & Consumption</h1>
+        <h1 class="hero-title">Sustainable Production & Consumption</h1>
       </div>
     </section>
 
@@ -539,13 +533,13 @@
     <section class="content-section">
       <div class="content-container container">
         <div class="content-description">
-          <h2 data-i18n="production.subtitle">Circular Economy Transformation</h2>
-          <p data-i18n="production.description">
+          <h2>Circular Economy Transformation</h2>
+          <p>
             This involves making products and items that last longer and can be used again. 
             It also means buying only the things we really need, thus reducing waste and 
             minimizing environmental impact throughout product lifecycles.
           </p>
-          <p data-i18n="production.importance">
+          <p>
             Transitioning to sustainable production and consumption patterns is essential 
             for addressing resource depletion, climate change, and pollution. This shift 
             creates new business opportunities while reducing environmental footprints 
@@ -560,8 +554,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
               </svg>
             </div>
-            <h3 data-i18n="production.point1.title">Circular Design</h3>
-            <p data-i18n="production.point1.description">
+            <h3>Circular Design</h3>
+            <p>
               Creating products for durability, repairability, and recyclability while 
               using sustainable materials and minimizing resource use throughout production processes.
             </p>
@@ -573,8 +567,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
             </div>
-            <h3 data-i18n="production.point2.title">Responsible Consumption</h3>
-            <p data-i18n="production.point2.description">
+            <h3>Responsible Consumption</h3>
+            <p>
               Promoting conscious consumer choices, sharing economy models, and product-service 
               systems that reduce overall resource consumption and waste generation.
             </p>
@@ -586,8 +580,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
               </svg>
             </div>
-            <h3 data-i18n="production.point3.title">Supply Chain Sustainability</h3>
-            <p data-i18n="production.point3.description">
+            <h3>Supply Chain Sustainability</h3>
+            <p>
               Implementing green procurement policies, ethical sourcing practices, and 
               transparency throughout supply chains to ensure sustainable production systems.
             </p>
@@ -608,7 +602,7 @@
               d="M10 19l-7-7m0 0l7-7m-7 7h18"
             />
           </svg>
-          <span data-i18n="navigation.backToFocusAreas">Back to all focus areas</span>
+          <span>Back to all focus areas</span>
         </a>
       </div>
     </section>
@@ -617,7 +611,7 @@
     <section class="newsletter-section">
       <div class="newsletter-container">
         <!-- Title -->
-        <h2 class="newsletter-title" data-i18n="login.subscribe">
+        <h2 class="newsletter-title">
           Subscribe to our newsletter to get the latest information
         </h2>
         
@@ -626,14 +620,14 @@
           <input 
             type="email" 
             placeholder="Your email" 
-            data-i18n="[placeholder]login.emailPlaceholder"
+           
             class="newsletter-input"
           >
-          <span class="newsletter-arrow">→</span>
+          <span class="newsletter-arrow">â†’</span>
         </div>
         
         <!-- Disclaimer Text -->
-        <p class="newsletter-disclaimer" data-i18n="login.noSpam">
+        <p class="newsletter-disclaimer">
           *Only relevant information, no spam
         </p>
       </div>
@@ -674,3 +668,4 @@
     <green-economy-footer></green-economy-footer>
   </body>
 </html>
+

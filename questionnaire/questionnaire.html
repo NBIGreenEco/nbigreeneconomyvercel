@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title data-i18n="title">Green Economy Toolkit - Questionnaire</title>
+    <title>Green Economy Toolkit - Questionnaire</title>
     <!-- Fix for Google Translate proxy: when translate serves a proxied page, root-relative URLs (starting with /) point to the proxy origin and break asset loading. -->
     <script>
       (function() {
@@ -58,7 +58,7 @@
             '.goog-te-combo:hover { background-color: #4ec3b0 !important; } ' +
             '.goog-te-banner-frame { display: none !important; }';
           document.head.appendChild(protectiveStyle);
-          console.log('Applied Google Translate proxy asset fix — using origin:', refOrigin);
+          console.log('Applied Google Translate proxy asset fix â€” using origin:', refOrigin);
         } catch (e) {
           console.warn('Translate proxy fix failed:', e);
         }
@@ -67,9 +67,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
     <script type="module" src="../Master Page(Header and Footer)/MasterPage.js"></script>
-    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
-    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
-    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
     
     <!-- Translation System (Unofficial Google Translate API) -->
     <script>
@@ -100,7 +97,7 @@
         const translating = targetLang === 'en' ? 'English' :
                             targetLang === 'zu' ? 'isiZulu' :
                             'Setswana';
-        selector.options[selector.selectedIndex].text = `Translating to ${translating}…`;
+        selector.options[selector.selectedIndex].text = `Translating to ${translating}â€¦`;
 
         const walker = document.createTreeWalker(
           document.body,
@@ -140,12 +137,11 @@
         }
         translatePage(lang).catch(err => {
           console.error(err);
-          alert('Translation failed – check your internet connection.');
+          alert('Translation failed â€“ check your internet connection.');
         });
       }
     </script>
     
-    <script type="module" src="../Master Page(Header and Footer)/Trans.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"></script>
@@ -263,8 +259,8 @@
     <div class="hero">
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <h1 class="hero-title" data-i18n="hero.title">Join the Green Economy Movement</h1>
-            <p class="hero-subtitle" data-i18n="hero.subtitle">Tell Us About Your Interests</p>
+            <h1 class="hero-title">Join the Green Economy Movement</h1>
+            <p class="hero-subtitle">Tell Us About Your Interests</p>
             <div class="hero-decoration-1"></div>
             <div class="hero-decoration-2"></div>
         </div>
@@ -276,88 +272,88 @@
         </div>
         <div class="questionnaire-container">
             <div class="question-nav">
-                <div class="nav-item" data-question="1"><span class="step-number">1</span> <span data-i18n="nav.whoAreYou">Who are you?</span></div>
-                <div class="nav-item" data-question="2"><span class="step-number">2</span> <span data-i18n="nav.yourInterests">Your Interests</span></div>
-                <div class="nav-item" data-question="3"><span class="step-number">3</span> <span data-i18n="nav.fundingTypes">Funding Types</span></div>
-                <div class="nav-item" data-question="4"><span class="step-number">4</span> <span data-i18n="nav.businessSectors">Business Sectors</span></div>
-                <div class="nav-item" data-question="5"><span class="step-number">5</span> <span data-i18n="nav.experienceLevel">Experience Level</span></div>
-                <div class="nav-item" data-question="6"><span class="step-number">6</span> <span data-i18n="nav.greenTools">Green Tools</span></div>
-                <div class="nav-item" data-question="7"><span class="step-number">7</span> <span data-i18n="nav.preferredLanguage">Preferred Language</span></div>
+                <div class="nav-item" data-question="1"><span class="step-number">1</span> <span>Who are you?</span></div>
+                <div class="nav-item" data-question="2"><span class="step-number">2</span> <span>Your Interests</span></div>
+                <div class="nav-item" data-question="3"><span class="step-number">3</span> <span>Funding Types</span></div>
+                <div class="nav-item" data-question="4"><span class="step-number">4</span> <span>Business Sectors</span></div>
+                <div class="nav-item" data-question="5"><span class="step-number">5</span> <span>Experience Level</span></div>
+                <div class="nav-item" data-question="6"><span class="step-number">6</span> <span>Green Tools</span></div>
+                <div class="nav-item" data-question="7"><span class="step-number">7</span> <span>Preferred Language</span></div>
             </div>
             <div class="question-panel">
                 <form id="questionnaireForm">
                     <div id="error-message" class="error-message"></div>
                     <div class="question-content" data-question="1">
-                        <label class="form-label" data-i18n="form.whoAreYou">Who are you? (Select at least one)</label>
+                        <label class="form-label">Who are you? (Select at least one)</label>
                         <div class="button-group">
-                            <button type="button" class="option-button" data-value="township-irm" data-i18n="form.townshipIrm">Township IRM</button>
-                            <button type="button" class="option-button" data-value="youth-underrepresented" data-i18n="form.youthUnderrepresented">Youth Underrepresented</button>
-                            <button type="button" class="option-button" data-value="stakeholder-partner" data-i18n="form.stakeholderPartner">Stakeholder/Partner</button>
-                            <button type="button" class="option-button" data-value="local-community" data-i18n="form.localCommunity">Local Community</button>
-                            <button type="button" class="option-button" data-value="tvet-student-staff" data-i18n="form.tvetStudentStaff">TVET Student/Staff</button>
-                            <button type="button" class="option-button" data-value="entrepreneurial-hub" data-i18n="form.entrepreneurialHub">Entrepreneurial Hub</button>
+                            <button type="button" class="option-button" data-value="township-irm">Township IRM</button>
+                            <button type="button" class="option-button" data-value="youth-underrepresented">Youth Underrepresented</button>
+                            <button type="button" class="option-button" data-value="stakeholder-partner">Stakeholder/Partner</button>
+                            <button type="button" class="option-button" data-value="local-community">Local Community</button>
+                            <button type="button" class="option-button" data-value="tvet-student-staff">TVET Student/Staff</button>
+                            <button type="button" class="option-button" data-value="entrepreneurial-hub">Entrepreneurial Hub</button>
                         </div>
                     </div>
                     <div class="question-content" data-question="2">
-                        <label class="form-label" data-i18n="form.yourInterests">What are your interests? (Select at least one)</label>
+                        <label class="form-label">What are your interests? (Select at least one)</label>
                         <div class="button-group">
-                            <button type="button" class="option-button" data-value="green-funding" data-i18n="form.greenFunding">Green Funding</button>
-                            <button type="button" class="option-button" data-value="smme-support" data-i18n="form.smmeSupport">SMME Support</button>
-                            <button type="button" class="option-button" data-value="green-education" data-i18n="form.greenEducation">Green Education</button>
-                            <button type="button" class="option-button" data-value="green-tools" data-i18n="form.greenTools">Green Tools</button>
-                            <button type="button" class="option-button" data-value="networking" data-i18n="form.networking">Networking</button>
+                            <button type="button" class="option-button" data-value="green-funding">Green Funding</button>
+                            <button type="button" class="option-button" data-value="smme-support">SMME Support</button>
+                            <button type="button" class="option-button" data-value="green-education">Green Education</button>
+                            <button type="button" class="option-button" data-value="green-tools">Green Tools</button>
+                            <button type="button" class="option-button" data-value="networking">Networking</button>
                         </div>
                     </div>
                     <div class="question-content" data-question="3">
-                        <label class="form-label" data-i18n="form.fundingTypes">What funding types? (Select at least one)</label>
+                        <label class="form-label">What funding types? (Select at least one)</label>
                         <div class="button-group">
-                            <button type="button" class="option-button" data-value="grants" data-i18n="form.grants">Grants</button>
-                            <button type="button" class="option-button" data-value="loans" data-i18n="form.loans">Loans</button>
-                            <button type="button" class="option-button" data-value="equity" data-i18n="form.equity">Equity</button>
-                            <button type="button" class="option-button" data-value="crowdfunding" data-i18n="form.crowdfunding">Crowdfunding</button>
-                            <button type="button" class="option-button" data-value="not-seeking" data-i18n="form.notSeeking">Not Seeking</button>
+                            <button type="button" class="option-button" data-value="grants">Grants</button>
+                            <button type="button" class="option-button" data-value="loans">Loans</button>
+                            <button type="button" class="option-button" data-value="equity">Equity</button>
+                            <button type="button" class="option-button" data-value="crowdfunding">Crowdfunding</button>
+                            <button type="button" class="option-button" data-value="not-seeking">Not Seeking</button>
                         </div>
                     </div>
                     <div class="question-content" data-question="4">
-                        <label class="form-label" data-i18n="form.businessSectors">What are your sectors? (Select at least one)</label>
+                        <label class="form-label">What are your sectors? (Select at least one)</label>
                         <div class="button-group">
-                            <button type="button" class="option-button" data-value="renewable-energy" data-i18n="form.renewableEnergy">Renewable Energy</button>
-                            <button type="button" class="option-button" data-value="waste-management" data-i18n="form.wasteManagement">Waste Management</button>
-                            <button type="button" class="option-button" data-value="sustainable-agriculture" data-i18n="form.sustainableAgriculture">Sustainable Agriculture</button>
-                            <button type="button" class="option-button" data-value="green-technology" data-i18n="form.greenTechnology">Green Technology</button>
-                            <button type="button" class="option-button" data-value="community-development" data-i18n="form.communityDevelopment">Community Development</button>
-                            <button type="button" class="option-button" data-value="education" data-i18n="form.education">Education</button>
-                            <button type="button" class="option-button" data-value="other" data-i18n="form.other">Other</button>
+                            <button type="button" class="option-button" data-value="renewable-energy">Renewable Energy</button>
+                            <button type="button" class="option-button" data-value="waste-management">Waste Management</button>
+                            <button type="button" class="option-button" data-value="sustainable-agriculture">Sustainable Agriculture</button>
+                            <button type="button" class="option-button" data-value="green-technology">Green Technology</button>
+                            <button type="button" class="option-button" data-value="community-development">Community Development</button>
+                            <button type="button" class="option-button" data-value="education">Education</button>
+                            <button type="button" class="option-button" data-value="other">Other</button>
                         </div>
                     </div>
                     <div class="question-content" data-question="5">
-                        <label for="experienceLevel" class="form-label" data-i18n="form.experienceLevel">Your experience level?</label>
+                        <label for="experienceLevel" class="form-label">Your experience level?</label>
                         <select id="experienceLevel" name="experienceLevel" class="form-select" required>
-                            <option value="" data-i18n="form.selectExperience">Select experience</option>
-                            <option value="beginner" data-i18n="form.beginner">Beginner</option>
-                            <option value="intermediate" data-i18n="form.intermediate">Intermediate</option>
-                            <option value="advanced" data-i18n="form.advanced">Advanced</option>
+                            <option value="">Select experience</option>
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advanced">Advanced</option>
                         </select>
-                        <button type="button" class="submit-btn" id="nextBtn" style="display: none;" data-i18n="form.next">Next</button>
+                        <button type="button" class="submit-btn" id="nextBtn" style="display: none;">Next</button>
                     </div>
                     <div class="question-content" data-question="6">
-                        <label class="form-label" data-i18n="form.greenTools">Which green tools? (Select at least one)</label>
+                        <label class="form-label">Which green tools? (Select at least one)</label>
                         <div class="button-group">
-                            <button type="button" class="option-button" data-value="carbon-calculator" data-i18n="form.carbonCalculator">Carbon Calculator</button>
-                            <button type="button" class="option-button" data-value="sustainability-assessment" data-i18n="form.sustainabilityAssessment">Sustainability Assessment</button>
-                            <button type="button" class="option-button" data-value="energy-audit" data-i18n="form.energyAudit">Energy Audit</button>
-                            <button type="button" class="option-button" data-value="supply-chain" data-i18n="form.greenSupplyChain">Green Supply Chain</button>
-                            <button type="button" class="option-button" data-value="none" data-i18n="form.none">None</button>
+                            <button type="button" class="option-button" data-value="carbon-calculator">Carbon Calculator</button>
+                            <button type="button" class="option-button" data-value="sustainability-assessment">Sustainability Assessment</button>
+                            <button type="button" class="option-button" data-value="energy-audit">Energy Audit</button>
+                            <button type="button" class="option-button" data-value="supply-chain">Green Supply Chain</button>
+                            <button type="button" class="option-button" data-value="none">None</button>
                         </div>
                     </div>
                     <div class="question-content" data-question="7">
-                        <label for="preferredLanguage" class="form-label" data-i18n="form.preferredLanguage">Preferred Language</label>
+                        <label for="preferredLanguage" class="form-label">Preferred Language</label>
                         <select id="preferredLanguage" name="preferredLanguage" class="form-select" required>
-                            <option value="English" data-i18n="form.english">English</option>
-                            <option value="isiZulu" data-i18n="form.isiZulu">isiZulu</option>
-                            <option value="Setswana" data-i18n="form.setswana">Setswana</option>
+                            <option value="English">English</option>
+                            <option value="isiZulu">isiZulu</option>
+                            <option value="Setswana">Setswana</option>
                         </select>
-                        <button type="submit" class="submit-btn" id="finishBtn" style="display: none;" data-i18n="form.finish">Finish</button>
+                        <button type="submit" class="submit-btn" id="finishBtn" style="display: none;">Finish</button>
                     </div>
                 </form>
             </div>
@@ -410,8 +406,7 @@
         function showError(message) {
             const errorMessage = document.getElementById('error-message');
             if (errorMessage) {
-                const finalMessage = i18next.t('form.error', { defaultValue: message });
-                errorMessage.textContent = finalMessage;
+                errorMessage.textContent = message;
                 errorMessage.classList.add('visible');
                 setTimeout(() => errorMessage.classList.remove('visible'), 5000);
             }
@@ -427,7 +422,7 @@
                     action,
                     label,
                     timestamp: serverTimestamp(),
-                    language: i18next.language || 'en',
+                    language: 'en',
                     userAgent: navigator.userAgent
                 });
                 console.log("DEBUG: Interaction logged successfully to Firestore");
@@ -449,101 +444,6 @@
                 }
             }, 4 * 60 * 1000); // 4 minutes
         }
-
-        // Initialize i18next
-        i18next
-            .use(i18nextHttpBackend)
-            .use(i18nextBrowserLanguageDetector)
-            .init({
-                lng: 'en',
-                fallbackLng: 'en',
-                backend: {
-                    loadPath: '/locales/{{lng}}.json?v=' + new Date().getTime()
-                },
-                detection: {
-                    order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
-                    caches: ['localStorage', 'cookie']
-                }
-            }, (err, t) => {
-                if (err) {
-                    console.error('DEBUG: i18next initialization error:', err);
-                    setTimeout(() => {
-                        i18next.loadResources((loadErr) => {
-                            if (loadErr) {
-                                console.error('DEBUG: i18next retry failed:', loadErr);
-                                applyFallbackTranslations();
-                            } else {
-                                console.log('DEBUG: i18next retry successful, language:', i18next.language);
-                                finalizeLoading();
-                            }
-                        });
-                    }, 2000);
-                    return;
-                }
-                console.log('DEBUG: i18next initialized for questionnaire.html at', new Date().toLocaleString('en-ZA'), ':', i18next.language);
-                finalizeLoading();
-            });
-
-        function applyFallbackTranslations() {
-            document.querySelectorAll('[data-i18n]').forEach(elem => {
-                const key = elem.getAttribute('data-i18n');
-                if (key.startsWith('[')) {
-                    const match = key.match(/\[(\w+)\](.+)/);
-                    if (match) {
-                        const [, attr, i18nKey] = match;
-                        const fallback = elem.getAttribute(attr) || 'Content not available';
-                        elem.setAttribute(attr, fallback);
-                    }
-                } else {
-                    const fallback = elem.innerHTML.trim() || 'Content not available';
-                    elem.innerHTML = fallback;
-                }
-            });
-            console.warn('DEBUG: Applied fallback translations due to loading failure');
-            finalizeLoading();
-        }
-
-        function updateContent() {
-            const missingKeys = [];
-            document.querySelectorAll('[data-i18n]').forEach(elem => {
-                const key = elem.getAttribute('data-i18n');
-                if (key.startsWith('[')) {
-                    const match = key.match(/\[(\w+)\](.+)/);
-                    if (match) {
-                        const [, attr, i18nKey] = match;
-                        const translation = i18next.t(i18nKey, { defaultValue: elem.getAttribute(attr) || 'Content not available' });
-                        if (translation === i18nKey) missingKeys.push(i18nKey);
-                        elem.setAttribute(attr, translation);
-                    }
-                } else {
-                    const translation = i18next.t(key, { defaultValue: elem.innerHTML.trim() || 'Content not available' });
-                    if (translation === key) missingKeys.push(key);
-                    elem.innerHTML = translation;
-                }
-            });
-            if (missingKeys.length > 0) {
-                console.warn('DEBUG: Missing translations:', missingKeys);
-            }
-        }
-
-        function finalizeLoading() {
-            i18next.loadResources(() => {
-                updateContent();
-                document.body.classList.remove('loading');
-                document.body.classList.add('loaded');
-                document.querySelector('.loading-overlay').style.display = 'none';
-                console.log('DEBUG: Translations loaded, content displayed');
-            });
-        }
-
-        i18next.on('languageChanged', () => {
-            console.log('DEBUG: Language changed to:', i18next.language);
-            updateContent();
-        });
-
-        i18next.on('loaded', () => {
-            updateContent();
-        });
 
         // Initialize Questionnaire
         document.addEventListener("DOMContentLoaded", () => {
@@ -606,9 +506,7 @@
                         }
 
                         nextBtn.style.display = index === 5 ? 'block' : 'none';
-                        finishBtn.style.display = index === 7 && isFormComplete() ? 'block' : 'none';
-                        updateContent();
-                    }, 400);
+                        finishBtn.style.display = index === 7 && isFormComplete() ? 'block' : 'none';                    }, 400);
                 }
 
                 function isFormComplete() {
@@ -628,17 +526,11 @@
                 if (preferredLanguageSelect) {
                     preferredLanguageSelect.addEventListener('change', () => {
                         const selectedLang = preferredLanguageSelect.value === 'isiZulu' ? 'zu' : preferredLanguageSelect.value === 'Setswana' ? 'tn' : 'en';
-                        i18next.changeLanguage(selectedLang, async (err) => {
-                            if (err) {
-                                console.error('DEBUG: Error changing language:', err);
-                                showError("Failed to change language.");
-                                return;
-                            }
-                            updateContent();
-                            if (userId) {
-                                await trackUserInteraction(userId, 'language', 'change', selectedLang);
-                            }
-                        });
+                        // Language selection noted (no i18next)
+                        console.log('Language selected:', selectedLang);
+                        if (userId) {
+                            trackUserInteraction(userId, 'language', 'change', selectedLang);
+                        }
                     });
                 }
 
@@ -692,7 +584,7 @@
                     }
 
                     finishBtn.disabled = true;
-                    finishBtn.innerHTML = `<span class="loading-spinner"></span> ${i18next.t('form.finishing', { defaultValue: 'Submitting...' })}`;
+                    finishBtn.innerHTML = `<span class="loading-spinner"></span> Submitting...`;
                     showLoader();
 
                     const selectedButtons = {
@@ -740,7 +632,7 @@
                         await trackUserInteraction(userId, 'form', 'error', error.message);
                     } finally {
                         finishBtn.disabled = false;
-                        finishBtn.innerHTML = i18next.t('form.finish', { defaultValue: 'Finish' });
+                        finishBtn.innerHTML = 'Finish';
                         hideLoader();
                     }
                 });
@@ -819,3 +711,5 @@
     </script>
 </body>
 </html>
+
+

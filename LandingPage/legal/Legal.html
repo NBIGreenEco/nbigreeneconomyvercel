@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title data-i18n="legal.title">Legal & Policies - Green Economy Toolkit</title>
+    <title>Legal & Policies - Green Economy Toolkit</title>
     
   <!-- Translation System (Unofficial Google Translate API) -->
   <script>
@@ -37,7 +37,7 @@
       const translating = targetLang === 'en' ? 'English' :
                           targetLang === 'zu' ? 'isiZulu' :
                           'Setswana';
-      selector.options[selector.selectedIndex].text = `Translating to ${translating}…`;
+      selector.options[selector.selectedIndex].text = `Translating to ${translating}â€¦`;
 
       const walker = document.createTreeWalker(
         document.body,
@@ -75,7 +75,7 @@
         }
         translatePage(lang).catch(err => {
           console.error(err);
-          alert('Translation failed – check your internet connection.');
+          alert('Translation failed â€“ check your internet connection.');
         });
       }
     </script>
@@ -84,10 +84,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="/Master Page(Header and Footer)/MasterPage.css">
     <script src="https://unpkg.com/lunr@2/lunr.min.js" onerror="this.src='/scripts/lunr.min.js'"></script>
-    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
-    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
-    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
-    <script type="module" src="/Trans.js"></script>
+    <!-- i18next scripts removed -->
+    <!-- Trans.js removed -->
     <script type="module" src="/Master Page(Header and Footer)/MasterPage.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"></script>
@@ -560,9 +558,7 @@
             text-align: center;
         }
     </style>
-    <script type="module">
-        import { updateContent } from '/Trans.js';
-        import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
+    <script type="module">        import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
         import { getAuth, onAuthStateChanged, setPersistence, browserSessionPersistence } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
         import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
 
@@ -593,7 +589,7 @@
             .then(() => console.log("DEBUG: Auth persistence set to session-only"))
             .catch(error => {
                 console.error("DEBUG: Error setting auth persistence:", error);
-                displayErrorMessage(i18next.t('legal.error_message', { defaultValue: "Failed to initialize session: " + error.message }));
+                displayErrorMessage('Failed to initialize session: ');
             });
 
         // Temporary User ID
@@ -673,7 +669,7 @@
                 link.download = `${docType}.pdf`;
                 link.onerror = () => {
                     console.error("DEBUG: Download failed for:", docType);
-                    displayErrorMessage(i18next.t('legal.error_document', { defaultValue: 'Document not available.' }));
+                    displayErrorMessage('Document not available.');
                     hideLoader();
                 };
                 document.body.appendChild(link);
@@ -682,7 +678,7 @@
                 hideLoader();
             } else {
                 console.error("DEBUG: Invalid document type:", docType);
-                displayErrorMessage(i18next.t('legal.error_document', { defaultValue: 'Document not available.' }));
+                displayErrorMessage('Document not available.');
                 hideLoader();
             }
         }
@@ -714,7 +710,7 @@
                 titleKey: 'legal.energy_title',
                 title: 'Renewable Energy Incentives and Requirements',
                 descKey: 'legal.energy_details',
-                description: 'South Africa’s Renewable Energy Independent Power Producer Procurement Programme (REIPPPP) offers incentives for renewable energy adoption. Businesses must comply with feed-in tariffs, net metering, and renewable energy quotas as outlined in the Integrated Resource Plan.',
+                description: 'South Africaâ€™s Renewable Energy Independent Power Producer Procurement Programme (REIPPPP) offers incentives for renewable energy adoption. Businesses must comply with feed-in tariffs, net metering, and renewable energy quotas as outlined in the Integrated Resource Plan.',
                 link: '/documents/Renewable_Energy.pdf'
             }
         };
@@ -734,12 +730,12 @@
                 modalDescription.textContent = i18next.t(details.descKey, { defaultValue: details.description });
                 modalLink.href = details.link;
                 modalLink.download = `${regulationId}.pdf`;
-                modalLink.textContent = i18next.t('legal.view_full_document', { defaultValue: 'View Full Document' });
+                modalLink.textContent = 'View Full Document';
                 modal.style.display = 'flex';
                 console.log("DEBUG: Modal displayed for:", regulationId);
             } else {
                 console.error("DEBUG: Regulation details or modal elements not found for:", regulationId);
-                displayErrorMessage(i18next.t('legal.error_regulation', { defaultValue: 'Regulation details not available.' }));
+                displayErrorMessage('Regulation details not available.');
             }
         }
 
@@ -758,7 +754,7 @@
             const checkbox = item.querySelector(".checkbox");
             if (checkbox) {
                 checkbox.classList.toggle("checked");
-                checkbox.innerHTML = checkbox.classList.contains("checked") ? "✓" : "";
+                checkbox.innerHTML = checkbox.classList.contains("checked") ? "âœ“" : "";
                 const checklistText = item.querySelector(".checklist-text")?.textContent || "Unknown";
                 console.log("DEBUG: Checklist toggled:", checklistText);
                 trackUserInteraction(tempUserId, "checklist", "toggle", checklistText);
@@ -774,7 +770,7 @@
             link.download = 'ComplianceGuide.pdf';
             link.onerror = () => {
                 console.error("DEBUG: Download failed for ComplianceGuide.pdf");
-                displayErrorMessage(i18next.t('legal.error_document', { defaultValue: 'Compliance guide not available.' }));
+                displayErrorMessage('Compliance guide not available.');
             };
             document.body.appendChild(link);
             link.click();
@@ -843,8 +839,8 @@
             function initializePage() {
                 if (!i18next.isInitialized) {
                     i18next
-                        .use(i18nextHttpBackend)
-                        .use(i18nextBrowserLanguageDetector)
+                        .use()
+                        .use()
                         .init({
                             fallbackLng: 'en',
                             supportedLngs: ['en', 'zu', 'tn'],
@@ -856,7 +852,7 @@
                         }, (err) => {
                             if (err) {
                                 console.error('DEBUG: i18next initialization error:', err);
-                                displayErrorMessage(i18next.t('legal.error_message', { defaultValue: 'Failed to load translations.' }));
+                                displayErrorMessage('Failed to load translations.');
                                 finalizePageLoad();
                                 return;
                             }
@@ -874,7 +870,7 @@
 
                 i18next.on('failedLoading', (lng, ns, msg) => {
                     console.error(`DEBUG: Failed to load ${lng}.json: ${msg}`);
-                    displayErrorMessage(i18next.t('legal.error_message', { defaultValue: `Failed to load ${lng} translations.` }));
+                    displayErrorMessage(`Failed to load ${lng} translations.`);
                     clearTimeout(timeout);
                     finalizePageLoad();
                 });
@@ -882,9 +878,7 @@
 
             function finalizePageLoad() {
                 try {
-                    i18next.loadResources(() => {
-                        updateContent();
-                        document.body.classList.remove('loading');
+                    i18next.loadResources(() => {                        document.body.classList.remove('loading');
                         document.body.classList.add('loaded');
                         hideLoader();
                         console.log('DEBUG: Content displayed, loading overlay hidden');
@@ -894,7 +888,7 @@
                     document.body.classList.remove('loading');
                     document.body.classList.add('loaded');
                     hideLoader();
-                    displayErrorMessage(i18next.t('legal.error_message', { defaultValue: 'Failed to load translations.' }));
+                    displayErrorMessage('Failed to load translations.');
                 }
             }
         });
@@ -909,8 +903,8 @@
         <main class="main">
             <section class="hero">
                 <div class="hero-content">
-                    <h1 data-i18n="legal.hero_title">Legal Framework & Policies</h1>
-                    <p data-i18n="legal.hero_description">
+                    <h1>Legal Framework & Policies</h1>
+                    <p>
                         Understand the legal requirements, policies, and regulations
                         governing green economy initiatives and sustainable business
                         practices.
@@ -918,45 +912,45 @@
                 </div>
             </section>
             <section class="quick-access-section">
-                <h2 class="section-title" data-i18n="legal.quick_access_title">Quick Access</h2>
+                <h2 class="section-title">Quick Access</h2>
                 <div class="quick-access-grid">
                     <div class="access-card">
-                        <div class="access-icon">📄</div>
-                        <h3 class="access-title" data-i18n="legal.terms_title">Terms of Service</h3>
-                        <p class="access-description" data-i18n="legal.terms_description">
+                        <div class="access-icon">ðŸ“„</div>
+                        <h3 class="access-title">Terms of Service</h3>
+                        <p class="access-description">
                             Read our platform terms and conditions, user rights, and service
                             limitations.
                         </p>
-                        <a href="#" class="access-link" data-i18n="legal.view_document">View Document →</a>
+                        <a href="#" class="access-link">View Document â†’</a>
                     </div>
                     <div class="access-card">
-                        <div class="access-icon">🛡️</div>
-                        <h3 class="access-title" data-i18n="legal.privacy_title">Privacy Policy</h3>
-                        <p class="access-description" data-i18n="legal.privacy_description">
+                        <div class="access-icon">ðŸ›¡ï¸</div>
+                        <h3 class="access-title">Privacy Policy</h3>
+                        <p class="access-description">
                             How we collect, use, and protect your personal data and business
                             information.
                         </p>
-                        <a href="#" class="access-link" data-i18n="legal.view_document">View Document →</a>
+                        <a href="#" class="access-link">View Document â†’</a>
                     </div>
                     <div class="access-card">
-                        <div class="access-icon">ℹ️</div>
-                        <h3 class="access-title" data-i18n="legal.compliance_title">Compliance Guide</h3>
-                        <p class="access-description" data-i18n="legal.compliance_description">
+                        <div class="access-icon">â„¹ï¸</div>
+                        <h3 class="access-title">Compliance Guide</h3>
+                        <p class="access-description">
                             Environmental and business compliance requirements for green
                             economy participation.
                         </p>
-                        <a href="#" class="access-link" data-i18n="legal.view_document">View Document →</a>
+                        <a href="#" class="access-link">View Document â†’</a>
                     </div>
                 </div>
             </section>
             <section class="regulations-section">
-                <h2 class="section-title" data-i18n="legal.regulations_title">Environmental Regulations</h2>
+                <h2 class="section-title">Environmental Regulations</h2>
                 <div class="regulation-card">
                     <div class="regulation-header">
                         <div class="regulation-content">
-                            <div class="regulation-category" data-i18n="legal.eia_category">Environmental Law</div>
-                            <h3 class="regulation-title" data-i18n="legal.eia_title">Environmental Impact Assessment (EIA) Requirements</h3>
-                            <p class="regulation-description" data-i18n="legal.eia_description">
+                            <div class="regulation-category">Environmental Law</div>
+                            <h3 class="regulation-title">Environmental Impact Assessment (EIA) Requirements</h3>
+                            <p class="regulation-description">
                                 Guidelines for conducting environmental assessments for business
                                 projects. This comprehensive framework outlines the mandatory
                                 processes for evaluating environmental impacts, stakeholder
@@ -964,107 +958,107 @@
                                 sustainable development projects.
                             </p>
                         </div>
-                        <button class="read-more-btn" data-regulation-id="eia-requirements" data-i18n="legal.read_more">Read More</button>
+                        <button class="read-more-btn" data-regulation-id="eia-requirements">Read More</button>
                     </div>
                 </div>
                 <div class="regulation-card">
                     <div class="regulation-header">
                         <div class="regulation-content">
-                            <div class="regulation-category" data-i18n="legal.carbon_category">Climate Regulation</div>
-                            <h3 class="regulation-title" data-i18n="legal.carbon_title">Carbon Emission Standards and Reporting</h3>
-                            <p class="regulation-description" data-i18n="legal.carbon_description">
+                            <div class="regulation-category">Climate Regulation</div>
+                            <h3 class="regulation-title">Carbon Emission Standards and Reporting</h3>
+                            <p class="regulation-description">
                                 Mandatory reporting requirements for carbon emissions and
                                 reduction targets. Includes guidelines for measuring, reporting,
                                 and verifying greenhouse gas emissions, carbon credit trading,
                                 and compliance with national climate commitments.
                             </p>
                         </div>
-                        <button class="read-more-btn" data-regulation-id="carbon-standards" data-i18n="legal.read_more">Read More</button>
+                        <button class="read-more-btn" data-regulation-id="carbon-standards">Read More</button>
                     </div>
                 </div>
                 <div class="regulation-card">
                     <div class="regulation-header">
                         <div class="regulation-content">
-                            <div class="regulation-category" data-i18n="legal.waste_category">Waste Law</div>
-                            <h3 class="regulation-title" data-i18n="legal.waste_title">Waste Management and Recycling Legislation</h3>
-                            <p class="regulation-description" data-i18n="legal.waste_description">
+                            <div class="regulation-category">Waste Law</div>
+                            <h3 class="regulation-title">Waste Management and Recycling Legislation</h3>
+                            <p class="regulation-description">
                                 Legal framework for waste disposal, recycling, and circular
                                 economy practices. Covers waste classification, disposal
                                 permits, recycling obligations, and extended producer
                                 responsibility requirements for various industries.
                             </p>
                         </div>
-                        <button class="read-more-btn" data-regulation-id="waste-legislation" data-i18n="legal.read_more">Read More</button>
+                        <button class="read-more-btn" data-regulation-id="waste-legislation">Read More</button>
                     </div>
                 </div>
                 <div class="regulation-card">
                     <div class="regulation-header">
                         <div class="regulation-content">
-                            <div class="regulation-category" data-i18n="legal.energy_category">Energy Policy</div>
-                            <h3 class="regulation-title" data-i18n="legal.energy_title">Renewable Energy Incentives and Requirements</h3>
-                            <p class="regulation-description" data-i18n="legal.energy_description">
+                            <div class="regulation-category">Energy Policy</div>
+                            <h3 class="regulation-title">Renewable Energy Incentives and Requirements</h3>
+                            <p class="regulation-description">
                                 Legal incentives and mandatory renewable energy adoption
                                 policies. Details government incentives, feed-in tariffs, net
                                 metering regulations, and renewable energy procurement
                                 requirements for public and private sector entities.
                             </p>
                         </div>
-                        <button class="read-more-btn" data-regulation-id="renewable-incentives" data-i18n="legal.read_more">Read More</button>
+                        <button class="read-more-btn" data-regulation-id="renewable-incentives">Read More</button>
                     </div>
                 </div>
             </section>
             <section class="compliance-section">
-                <h2 class="section-title" data-i18n="legal.compliance_checklist_title">Business Compliance Checklist</h2>
+                <h2 class="section-title">Business Compliance Checklist</h2>
                 <div class="compliance-card">
                     <div class="checklist-item">
                         <div class="checkbox"></div>
-                        <span class="checklist-text" data-i18n="legal.checklist_ems">Environmental Management System (EMS) Implementation</span>
+                        <span class="checklist-text">Environmental Management System (EMS) Implementation</span>
                     </div>
                     <div class="checklist-item">
                         <div class="checkbox"></div>
-                        <span class="checklist-text" data-i18n="legal.checklist_certification">Green Certification and Accreditation</span>
+                        <span class="checklist-text">Green Certification and Accreditation</span>
                     </div>
                     <div class="checklist-item">
                         <div class="checkbox"></div>
-                        <span class="checklist-text" data-i18n="legal.checklist_reporting">Sustainability Reporting Requirements</span>
+                        <span class="checklist-text">Sustainability Reporting Requirements</span>
                     </div>
                     <div class="checklist-item">
                         <div class="checkbox"></div>
-                        <span class="checklist-text" data-i18n="legal.checklist_safety">Worker Safety in Green Operations</span>
+                        <span class="checklist-text">Worker Safety in Green Operations</span>
                     </div>
                     <div class="checklist-item">
                         <div class="checkbox"></div>
-                        <span class="checklist-text" data-i18n="legal.checklist_supply_chain">Supply Chain Environmental Standards</span>
+                        <span class="checklist-text">Supply Chain Environmental Standards</span>
                     </div>
                     <div class="checklist-item">
                         <div class="checkbox"></div>
-                        <span class="checklist-text" data-i18n="legal.checklist_community">Community Engagement and Social Impact</span>
+                        <span class="checklist-text">Community Engagement and Social Impact</span>
                     </div>
-                    <button class="download-guide-btn" data-i18n="legal.download_guide">Download Complete Compliance Guide</button>
+                    <button class="download-guide-btn">Download Complete Compliance Guide</button>
                 </div>
             </section>
             <section class="contact-section">
-                <h2 class="section-title" data-i18n="legal.contact_title">Legal Support & Contact</h2>
+                <h2 class="section-title">Legal Support & Contact</h2>
                 <div class="contact-grid">
                     <div class="contact-card">
-                        <h3 class="contact-title" data-i18n="legal.legal_questions_title">Legal Questions?</h3>
-                        <p class="contact-description" data-i18n="legal.legal_questions_description">
+                        <h3 class="contact-title">Legal Questions?</h3>
+                        <p class="contact-description">
                             For questions about legal compliance, regulations, or policy
                             interpretation, contact our legal support team.
                         </p>
                         <div class="contact-info">
-                            <strong data-i18n="legal.email_label">Email:</strong> legal@greeneconomytoolkit.com<br />
-                            <strong data-i18n="legal.phone_label">Phone:</strong> +27 (0) 11 123 4567<br />
-                            <strong data-i18n="legal.hours_label">Hours:</strong> Monday - Friday, 8:00 AM - 5:00 PM SAST
+                            <strong>Email:</strong> legal@greeneconomytoolkit.com<br />
+                            <strong>Phone:</strong> +27 (0) 11 123 4567<br />
+                            <strong>Hours:</strong> Monday - Friday, 8:00 AM - 5:00 PM SAST
                         </div>
                     </div>
                     <div class="contact-card">
-                        <h3 class="contact-title" data-i18n="legal.updates_title">Document Updates</h3>
-                        <p class="contact-description" data-i18n="legal.updates_description">
+                        <h3 class="contact-title">Document Updates</h3>
+                        <p class="contact-description">
                             Stay informed about changes to legal documents and regulations.
                             Subscribe to our legal updates newsletter.
                         </p>
-                        <button class="subscribe-btn" data-i18n="legal.subscribe_button">Subscribe to Updates</button>
+                        <button class="subscribe-btn">Subscribe to Updates</button>
                     </div>
                 </div>
             </section>
@@ -1084,3 +1078,5 @@
     <script type="module" src="/scripts/aienhancedsearch.js"></script>
 </body>
 </html>
+
+

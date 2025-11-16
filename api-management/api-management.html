@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 
@@ -43,7 +43,7 @@
         const translating = targetLang === 'en' ? 'English' :
                             targetLang === 'zu' ? 'isiZulu' :
                             'Setswana';
-        selector.options[selector.selectedIndex].text = `Translating to ${translating}…`;
+        selector.options[selector.selectedIndex].text = `Translating to ${translating}â€¦`;
 
         const walker = document.createTreeWalker(
           document.body,
@@ -83,7 +83,7 @@
         }
         translatePage(lang).catch(err => {
           console.error(err);
-          alert('Translation failed – check your internet connection.');
+          alert('Translation failed â€“ check your internet connection.');
         });
       }
     </script>
@@ -235,3 +235,4 @@
     <script src="../scripts/api-management.js"></script>
 </body>
 </html>
+

@@ -40,7 +40,7 @@ try {
             console.error("Error setting auth persistence:", error);
             const errorMessage = document.getElementById('error-message');
             if (errorMessage) {
-                errorMessage.textContent = i18next.t('signup.error_message', { defaultValue: "Failed to initialize session: " + error.message });
+                errorMessage.textContent = "Failed to initialize session: " + error.message;
                 errorMessage.classList.remove('hidden');
                 setTimeout(() => errorMessage.classList.add('hidden'), 5000);
             }
@@ -102,7 +102,7 @@ try {
                 action: action,
                 label: label,
                 timestamp: serverTimestamp(),
-                language: i18next.language || 'en',
+                language: 'en' || 'en',
                 userAgent: navigator.userAgent
             });
             console.log("Interaction tracked:", { tempUserId, category, action, label });
@@ -152,7 +152,7 @@ try {
             await trackInteraction('signup', 'failure', `Error: ${error.message}`);
             const errorMessage = document.getElementById('error-message');
             if (errorMessage) {
-                errorMessage.textContent = i18next.t('signup.error_message', { defaultValue: error.message || "Failed to send verification code. Please try again." });
+                errorMessage.textContent = error.message || "Failed to send verification code. Please try again.";
                 errorMessage.classList.remove('hidden');
                 setTimeout(() => errorMessage.classList.add('hidden'), 5000);
             }
@@ -184,7 +184,7 @@ try {
                 }
 
                 if (password !== confirmPassword) {
-                    errorMessage.textContent = i18next.t('signup.password_mismatch', { defaultValue: "Passwords do not match." });
+                    errorMessage.textContent = "Passwords do not match.";
                     errorMessage.classList.remove('hidden');
                     setTimeout(() => errorMessage.classList.add('hidden'), 5000);
                     isProcessing = false;
@@ -217,14 +217,14 @@ try {
                             userId: user.uid,
                             email: user.email,
                             isAdmin: false,
-                            language: i18next.language || 'en',
+                            language: 'en' || 'en',
                             createdAt: serverTimestamp()
                         }, { merge: true });
 
                         console.log("User created and email verification sent to VerifyEmail.html");
                         await trackInteraction('signup', 'success', `Email: ${email}`);
                         hideLoader();
-                        errorMessage.textContent = i18next.t('signup.success_message', { defaultValue: "Account created! Please verify your email." });
+                        errorMessage.textContent = "Account created! Please verify your email.";
                         errorMessage.classList.remove('hidden');
                         setTimeout(() => {
                             errorMessage.classList.add('hidden');
@@ -237,7 +237,7 @@ try {
                     console.error("Sign-up error:", error);
                     // Track failure (may fallback to local log if not authenticated)
                     await trackInteraction('signup', 'failure', error.message);
-                    errorMessage.textContent = i18next.t('signup.error_message', { defaultValue: error.message });
+                    errorMessage.textContent = error.message;
                     errorMessage.classList.remove('hidden');
                     setTimeout(() => errorMessage.classList.add('hidden'), 5000);
                 }
@@ -261,7 +261,7 @@ try {
                         userId: user.uid,
                         email: user.email,
                         isAdmin: user.email === 'nbigreeneconomy@gmail.com',
-                        language: i18next.language || 'en',
+                        language: 'en' || 'en',
                         createdAt: serverTimestamp()
                     }, { merge: true });
 
@@ -305,7 +305,7 @@ try {
                     await trackInteraction('signup', 'failure', error.message);
                     const errorMessage = document.getElementById('error-message');
                     if (errorMessage) {
-                        errorMessage.textContent = i18next.t('signup.error_message', { defaultValue: error.message });
+                        errorMessage.textContent = error.message;
                         errorMessage.classList.remove('hidden');
                         setTimeout(() => errorMessage.classList.add('hidden'), 5000);
                     }
@@ -315,14 +315,14 @@ try {
         }
 
         if (typeof updateLanguage === 'function') {
-            updateLanguage(i18next.language || 'en');
+            updateLanguage('en' || 'en');
         }
     });
 } catch (error) {
     console.error("Firebase initialization failed:", error);
     const errorMessage = document.getElementById('error-message');
     if (errorMessage) {
-        errorMessage.textContent = i18next.t('signup.error_message', { defaultValue: "Firebase initialization failed: " + error.message });
+        errorMessage.textContent = "Firebase initialization failed: " + error.message;
         errorMessage.classList.remove('hidden');
         setTimeout(() => errorMessage.classList.add('hidden'), 5000);
     }

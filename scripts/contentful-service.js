@@ -1,4 +1,4 @@
-// Contentful Service for fetching content
+﻿// Contentful Service for fetching content
 const CONTENTFUL_SPACE_ID = 'zerelkd70urg';
 const CONTENTFUL_ACCESS_TOKEN = '5YmyLiRoDo7XRXolU5C-UVgMRnf9I5FF_6zaN3iAjFs';
 const CONTENTFUL_ENVIRONMENT = 'master';
@@ -88,8 +88,6 @@ class ContentfulService {
         const data = await this.fetchContent(query);
         return data.items[0] ? this.processEntry(data.items[0]) : null;
     }
-
-
 
     // Add these methods to your existing ContentfulService class
 
@@ -193,5 +191,4 @@ window.contentfulService.initialize().then(() => {
 }).catch(error => {
     console.error('Failed to initialize Contentful service:', error);
 });
-
-
+

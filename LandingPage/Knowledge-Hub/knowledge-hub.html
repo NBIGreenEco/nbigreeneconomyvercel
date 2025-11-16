@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <!-- Fix for Google Translate proxy: when translate serves a proxied page, root-relative URLs (starting with /) point to the proxy origin and break asset loading. -->
@@ -52,7 +52,7 @@
           '.goog-te-combo:hover { background-color: #4ec3b0 !important; } ' +
           '.goog-te-banner-frame { display: none !important; }';
         document.head.appendChild(protectiveStyle);
-        console.log('Applied Google Translate proxy asset fix — using origin:', refOrigin);
+        console.log('Applied Google Translate proxy asset fix â€” using origin:', refOrigin);
       } catch (e) {
         console.warn('Translate proxy fix failed:', e);
       }
@@ -68,87 +68,8 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title data-i18n="knowledgehub.title">Green Economy Toolkit</title>
-  <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
-  <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
-  <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
-  
-  <!-- Translation System (Unofficial Google Translate API) -->
-  <script>
-    let currentLanguage = 'en';
-
-    // Translate a single piece of text
-    async function translateText(text, targetLang) {
-      const sourceLang = currentLanguage || 'en';
-      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-        return data[0].map(seg => seg[0]).join('');
-      } catch (e) {
-        console.error('Translation error:', e);
-        return text;
-      }
-    }
-
-    // Translate the whole page (all text nodes)
-    async function translatePage(targetLang) {
-      const selector = document.getElementById('langSelect');
-      if (!selector) return;
-      
-      const original = selector.dataset.original || selector.options[selector.selectedIndex].text;
-      selector.dataset.original = original;
-
-      const translating = targetLang === 'en' ? 'English' :
-                          targetLang === 'zu' ? 'isiZulu' :
-                          'Setswana';
-      selector.options[selector.selectedIndex].text = `Translating to ${translating}…`;
-
-      const walker = document.createTreeWalker(
-        document.body,
-        NodeFilter.SHOW_TEXT,
-        {
-          acceptNode: node => {
-            const p = node.parentNode;
-            if (!p) return NodeFilter.FILTER_REJECT;
-            const tag = p.tagName;
-            if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'NOSCRIPT') return NodeFilter.FILTER_REJECT;
-            return node.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
-          }
-        }
-      );
-
-      const nodes = [];
-      let n;
-      while (n = walker.nextNode()) nodes.push(n);
-
-      const BATCH = 15;
-      for (let i = 0; i < nodes.length; i += BATCH) {
-        const batch = nodes.slice(i, i + BATCH);
-        const promises = batch.map(node => translateText(node.nodeValue, targetLang));
-        const results = await Promise.all(promises);
-        batch.forEach((node, idx) => node.nodeValue = results[idx]);
-      }
-
-      selector.options[selector.selectedIndex].text = original;
-      currentLanguage = targetLang;
-    }
-
-    function onLangChange() {
-      const lang = this.value;
-      if (lang === 'en') {
-        location.reload();
-        return;
-      }
-      translatePage(lang).catch(err => {
-        console.error(err);
-        alert('Translation failed – check your internet connection.');
-      });
-    }
-  </script>
-  
+  <title>Green Economy Toolkit</title>
   <script src="https://cdn.jsdelivr.net/npm/contentful@latest/dist/contentful.browser.min.js"></script>
-  <script type="module" src="/Trans.js"></script>
   <script type="module" src="/Master Page(Header and Footer)/MasterPage.js"></script>
   <script src="https://unpkg.com/lunr@2/lunr.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -205,13 +126,15 @@
       }
       
       body.loading {
-          visibility: hidden;
-          opacity: 0;
+          visibility: visible;
+          opacity: 1;
+          pointer-events: none;
       }
       
       body.loaded {
           visibility: visible;
           opacity: 1;
+          pointer-events: auto;
           transition: opacity 0.3s;
       }
       
@@ -851,13 +774,10 @@
           // You can add static fallback content here if needed
       }
   </script>
-  <script type="module">
-      import { updateContent } from '/Trans.js';
-
-      // Initialize i18next
+  <script type="module">      // Initialize i18next
       i18next
-          .use(i18nextHttpBackend)
-          .use(i18nextBrowserLanguageDetector)
+          .use()
+          .use()
           .init({
               fallbackLng: 'en',
               supportedLngs: ['en', 'zu', 'tn'],
@@ -870,165 +790,11 @@
               }
           }, (err, t) => {
               if (err) {
-                  console.error('i18next initialization error:', err);
-                  applyFallbackTranslations();
-                  return;
+                  console.error('i18next initialization error:', err);                  return;
               }
               console.log('i18next initialized for knowledgehub.html at', new Date().toLocaleString('en-ZA'), 'language:', i18next.language);
               finalizeLoading();
-          });
-
-      function applyFallbackTranslations() {
-          document.querySelectorAll('[data-i18n]').forEach(elem => {
-              const key = elem.getAttribute('data-i18n');
-              try {
-                  if (key.startsWith('[')) {
-                      const match = key.match(/\[(\w+)\](.+)/);
-                      if (match) {
-                          const [, attr, i18nKey] = match;
-                          const fallback = elem.getAttribute(attr) || 'Content not available';
-                          elem.setAttribute(attr, fallback);
-                      }
-                  } else {
-                      const fallback = elem.textContent.trim() || 'Content not available';
-                      elem.textContent = fallback;
-                  }
-              } catch (error) {
-                  console.error(`Error applying fallback for key ${key}:`, error);
-              }
-          });
-          finalizeLoading();
-      }
-
-      function finalizeLoading() {
-          try {
-              i18next.loadResources(() => {
-                  updateContent();
-                  document.body.classList.remove('loading');
-                  document.body.classList.add('loaded');
-                  const loadingOverlay = document.querySelector('.loading-overlay');
-                  if (loadingOverlay) {
-                      loadingOverlay.style.display = 'none';
-                  }
-                  
-                  // Load Contentful content after translations are loaded
-                  setTimeout(loadKnowledgeHubContent, 500);
-              });
-          } catch (error) {
-              console.error('Error loading translations:', error);
-              applyFallbackTranslations();
-          }
-      }
-
-      i18next.on('languageChanged', () => {
-          updateContent();
-      });
-
-      // Fallback timeout
-      setTimeout(() => {
-          if (document.body.classList.contains('loading')) {
-              applyFallbackTranslations();
-              document.body.classList.remove('loading');
-              document.body.classList.add('loaded');
-              const loadingOverlay = document.querySelector('.loadingOverlay');
-              if (loadingOverlay) {
-                  loadingOverlay.style.display = 'none';
-              }
-          }
-      }, 10000);
-
-      document.addEventListener('DOMContentLoaded', () => {
-          console.log('DOM fully loaded for knowledgehub.html at', new Date().toLocaleString('en-ZA'));
-          
-          // Digital Human Widget Logic
-          const pulsingIcon = document.querySelector('.pulsing-icon');
-          const videoOverlay = document.querySelector('.video-overlay');
-          const closeVideo = document.querySelector('.close-video');
-          const floatingVideo = document.getElementById('floatingVideo');
-          const langButtons = document.querySelectorAll('.lang-btn');
-          const videoSources = {
-              'eng': '/Videos/KnowledgeHub_Eng.mp4',
-              'zulu': '/Videos/KnowledgeHub_Zulu.mp4',
-              'tswana': '/Videos/KnowledgeHub_Tswana.mp4'
-          };
-          let currentLang = 'eng';
-
-          if (pulsingIcon) {
-              pulsingIcon.addEventListener('click', function(e) {
-                  e.preventDefault();
-                  videoOverlay.classList.toggle('active');
-                  if (videoOverlay.classList.contains('active')) {
-                      playCurrentVideo();
-                      pulsingIcon.style.opacity = '0.7';
-                  } else {
-                      floatingVideo.pause();
-                      pulsingIcon.style.opacity = '1';
-                  }
-              });
-          }
-
-          if (closeVideo) {
-              closeVideo.addEventListener('click', function(e) {
-                  e.stopPropagation();
-                  closeVideoPlayer();
-              });
-          }
-
-          if (videoOverlay) {
-              videoOverlay.addEventListener('click', function(e) {
-                  if (e.target === videoOverlay) {
-                      closeVideoPlayer();
-                  }
-              });
-          }
-
-          langButtons.forEach(button => {
-              button.addEventListener('click', function(e) {
-                  e.stopPropagation();
-                  const lang = this.getAttribute('data-lang');
-                  if (lang !== currentLang) {
-                      langButtons.forEach(btn => btn.classList.remove('active'));
-                      this.classList.add('active');
-                      currentLang = lang;
-                      playCurrentVideo();
-                  }
-              });
-          });
-
-          if (floatingVideo) {
-              floatingVideo.addEventListener('ended', function() {
-                  closeVideoPlayer();
-              });
-          }
-
-          function playCurrentVideo() {
-              const source = videoSources[currentLang];
-              if (source && floatingVideo) {
-                  const currentTime = floatingVideo.currentTime;
-                  floatingVideo.src = source;
-                  floatingVideo.load();
-                  floatingVideo.currentTime = currentTime;
-                  floatingVideo.play().catch(e => console.log('Video play failed:', e));
-                  floatingVideo.addEventListener('canplaythrough', function onCanPlay() {
-                      floatingVideo.play().catch(e => console.log('Video auto-play failed:', e));
-                      floatingVideo.removeEventListener('canplaythrough', onCanPlay);
-                  });
-              }
-          }
-
-          function closeVideoPlayer() {
-              if (videoOverlay && floatingVideo && pulsingIcon) {
-                  videoOverlay.classList.remove('active');
-                  floatingVideo.pause();
-                  pulsingIcon.style.opacity = '1';
-              }
-          }
-
-          document.addEventListener('keydown', function(e) {
-              if (e.key === 'Escape' && videoOverlay && videoOverlay.classList.contains('active')) {
-                  closeVideoPlayer();
-              }
-          });
+          });});
       });
   </script>
   <!-- Translation system is now in MasterPage header -->
@@ -1043,18 +809,18 @@
             <section class="hero">
                 <div class="hero-content">
                     <div class="hero-image-section">
-                        <img src="" alt="Hero Image" class="hero-img" data-i18n="[alt]knowledgehub.hero_image">
+                        <img src="/Images/Knowledge-Hub_2023-10-04-145730_tkxt_a91a4f7cf12b2095b100c24cf6024d38.png" alt="Hero Image" class="hero-img" style="width: 100%; height: auto; max-width: 100%; display: block;">
                     </div>
                     <div class="hero-text">
-                        <h1 data-i18n="knowledgehub.hero_title">WELCOME TO OUR KNOWLEDGE HUB</h1>
+                        <h1>WELCOME TO OUR KNOWLEDGE HUB</h1>
                     </div>
                 </div>
             </section>
             <section class="first-section" style="background: #2b9589;">
-                <h2 data-i18n="knowledgehub.learning_opportunities">Access to learning opportunities</h2>
+                <h2>Access to learning opportunities</h2>
                 <div class="first-section-flex">
                     <div class="news-rect-box">
-                        <div class="rect-text" style="color: #2b9589;" data-i18n="knowledgehub.learning_description">
+                        <div class="rect-text" style="color: #2b9589;">
                             The National Business Initiative (NBI) has created an online application to improve the learning experience for technical and business-related topics.
                             <br><br>
                             Key features of the app include offline access to content; the ability to download and complete content activities with outcomes logged on the learning management system when connected; interactive engagement; self-paced self-learning; the option to register and manage your profile; and tracking of learning progress.
@@ -1063,11 +829,11 @@
                         </div>
                         <div class="button-container">
                             <a href="https://apps.apple.com/za/app/irm-learning/id1631527849" target="_blank" class="rect-button" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">
-                                <img src="https://th.bing.com/th/id/OIP.KzOFPzLnbMPTb4zlzxi8PgHaHa?w=170&h=180&c=7&r=0&a=7&dpr=1.4&pid=1.7&rm=3" alt="App Store Icon" data-i18n="[alt]knowledgehub.app_store_icon">
+                                <img src="https://th.bing.com/th/id/OIP.KzOFPzLnbMPTb4zlzxi8PgHaHa?w=170&h=180&c=7&r=0&a=7&dpr=1.4&pid=1.7&rm=3" alt="App Store Icon">
                                 App Store
                             </a>
                             <a href="https://play.google.com/store/apps/details?id=za.co.irmlearning.elpapp&hl=en_ZA" target="_blank" class="rect-button" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">
-                                <img src="https://th.bing.com/th/id/R.de4427dacc47b73d4011df21a6a87aa9?rik=RBSaO7eOfvnTrg&pid=ImgRaw&r=0" alt="Google Play Icon" data-i18n="[alt]knowledgehub.google_play_icon">
+                                <img src="https://th.bing.com/th/id/R.de4427dacc47b73d4011df21a6a87aa9?rik=RBSaO7eOfvnTrg&pid=ImgRaw&r=0" alt="Google Play Icon">
                                 Google Play
                             </a>
                         </div>
@@ -1075,29 +841,29 @@
                 </div>
             </section>
             <section class="news-header">
-                <h2 data-i18n="knowledgehub.business_opportunities">Access to business opportunities</h2>
+                <h2>Access to business opportunities</h2>
                 <div class="news-header-flex">
                     <div class="news-rect-box">
-                        <div class="rect-text" style="color: #2b9589;" data-i18n="knowledgehub.business_description">
+                        <div class="rect-text" style="color: #2b9589;">
                             The IRM Initiative hub is a platform that provides access to various opportunities including procurement, access to market, capacity building, training and enterprise development support.
                             <br><br>
                             To gain access to the various opportunities, click the link below, register and complete the application form, which will give you access to various opportunities under the "Opportunities" tab on the hub.
                         </div>
                         <div class="button-container">
-                            <button class="reg-button" data-i18n="knowledgehub.register_button">Register</button>
+                            <button class="reg-button">Register</button>
                         </div>
                     </div>
                 </div>
             </section>
             <section class="section3" style="background: #2b9589;">
-                <h2 data-i18n="knowledgehub.market_opportunities">Access to market opportunities</h2>
+                <h2>Access to market opportunities</h2>
                 <div class="section3-flex">
                     <div class="news-rect-box">
-                        <div class="rect-text" style="color: #2b9589;" data-i18n="knowledgehub.market_description">
+                        <div class="rect-text" style="color: #2b9589;">
                             Our business development support services are designed to help you thrive in today's competitive market. Through our hubs, we assist township-based SMMEs in identifying opportunities, and equipping them with the skills and tools to ensure that they adapt to market trends. We also help them create networks and partnerships.
                         </div>
                         <div class="button-container">
-                            <button class="reg-button" data-i18n="knowledgehub.register_button">Register</button>
+                            <button class="reg-button">Register</button>
                         </div>
                     </div>
                 </div>
@@ -1111,7 +877,7 @@
             <script id="messenger-widget-b" src="https://cdn.botpenguin.com/website-bot.js" defer>6912ee821c29f29c0d7d6882,6912edf6e9437105db53226c,agent</script>
             <section class="login-section">
                 <div style="position: relative; max-width: 700px; margin: 0 auto;">
-                    <h2 style="color: white; font-size: 20px; margin-bottom: 25px; max-width: 600px; margin-left: auto; margin-right: auto;" data-i18n="knowledgehub.newsletter_title">
+                    <h2 style="color: white; font-size: 20px; margin-bottom: 25px; max-width: 600px; margin-left: auto; margin-right: auto;">
                         Subscribe to our newsletter to get the latest information
                     </h2>
                     <form style="position: relative; padding-bottom: 20px;">
@@ -1119,15 +885,15 @@
                             type="email"
                             placeholder="Your email"
                             style="width: 100%; padding: 18px 50px 18px 25px; border: none; border-radius: 4px; font-size: 16px; color: #333; background: white;"
-                            data-i18n="[placeholder]knowledgehub.newsletter_email"
+                           
                         >
                         <button
                             type="submit"
                             style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 22px; color: #009381; cursor: pointer;"
-                            data-i18n="[title]knowledgehub.newsletter_submit"
+                           
                             title="Submit"
                         >
-                            →
+                            â†’
                         </button>
                     </form>
                 </div>
@@ -1137,9 +903,9 @@
                 <div class="video-container">
                     <span class="close-video">&times;</span>
                     <div class="language-toggles">
-                        <button class="lang-btn active" data-lang="eng" data-i18n="knowledgehub.lang_english">English</button>
-                        <button class="lang-btn" data-lang="zulu" data-i18n="knowledgehub.lang_zulu">Zulu</button>
-                        <button class="lang-btn" data-lang="tswana" data-i18n="knowledgehub.lang_tswana">Tswana</button>
+                        <button class="lang-btn active" data-lang="eng">English</button>
+                        <button class="lang-btn" data-lang="zulu">Zulu</button>
+                        <button class="lang-btn" data-lang="tswana">Tswana</button>
                     </div>
                     <video
                         id="floatingVideo"
@@ -1163,3 +929,5 @@
     <script type="module" src="/scripts/chatbot.js"></script>
 </body>
 </html>
+
+

@@ -1,5 +1,4 @@
-
-require('dotenv').config();
+﻿require('dotenv').config();
 const contentful = require('contentful-management');
 
 const spaceId = process.env.CONTENTFUL_SPACE_ID || 'zerelkd70urg';
@@ -35,13 +34,13 @@ async function updateFocusAreas() {
     const space = await client.getSpace(spaceId);
     const environment = await space.getEnvironment('master');
 
-    console.log('✅ Connected to space and environment');
+    console.log('âœ… Connected to space and environment');
 
     // Step 1: Check if linkUrl field exists, add if not
     let contentType;
     try {
       contentType = await environment.getContentType('focusArea');
-      console.log('✅ Found focusArea content type');
+      console.log('âœ… Found focusArea content type');
       
       const hasLinkField = contentType.fields.some(field => field.id === 'linkUrl');
       
@@ -58,9 +57,9 @@ async function updateFocusAreas() {
         await contentType.update();
         contentType = await environment.getContentType('focusArea');
         await contentType.publish();
-        console.log('✅ Added linkUrl field to focusArea content type');
+        console.log('âœ… Added linkUrl field to focusArea content type');
       } else {
-        console.log('✅ linkUrl field already exists in focusArea content type');
+        console.log('âœ… linkUrl field already exists in focusArea content type');
       }
     } catch (error) {
       console.error('Error with content type:', error.message);
@@ -117,9 +116,9 @@ async function updateFocusAreas() {
       try {
         const updatedEntry = await entry.update();
         await updatedEntry.publish();
-        console.log(`✅ Updated: ${entry.fields.title['en-US']} → ${linkUrl}`);
+        console.log(`âœ… Updated: ${entry.fields.title['en-US']} â†’ ${linkUrl}`);
       } catch (updateError) {
-        console.error(`❌ Failed to update ${entry.fields.title['en-US']}:`, updateError.message);
+        console.error(`âŒ Failed to update ${entry.fields.title['en-US']}:`, updateError.message);
       }
     }
 

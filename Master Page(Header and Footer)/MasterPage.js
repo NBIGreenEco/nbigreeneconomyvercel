@@ -1,6 +1,5 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
 import { getAuth, browserLocalPersistence, setPersistence } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
-import { updateContent } from '/Trans.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCfa827mvCLf1ETts6B_DmCfb7owTohBxk",
@@ -136,37 +135,34 @@ class GreenEconomyHeader extends HTMLElement {
           <nav class="nav" id="main-nav">
             <div class="nav-links">
               ${isDashboard ? '<a href="/index.html">Home</a>' : `
-                <a href="/LandingPage/About Page/about.html" data-i18n="nav.about">About the green economy</a>
-                <a href="/LandingPage/Opportunities/opportunities.html" data-i18n="nav.opportunities">Opportunities</a>
-                <a href="/LandingPage/IRM-Sector/IRMSector.html" data-i18n="nav.irm">IRM sector</a>
-                <a href="/LandingPage/Knowledge-Hub/knowledge-hub.html" data-i18n="nav.knowledge">Knowledge hub</a>
+                <a href="/LandingPage/About Page/about.html">About the green economy</a>
+                <a href="/LandingPage/Opportunities/opportunities.html">Opportunities</a>
+                <a href="/LandingPage/IRM-Sector/IRMSector.html">IRM sector</a>
+                <a href="/LandingPage/Knowledge-Hub/knowledge-hub.html">Knowledge hub</a>
               `}
             </div>
             <div class="nav-utils">
-              <select class="language-selector" id="custom_language_select" disabled>
-                <option value="" disabled selected data-i18n="nav.languageSelect">Select</option>
-                <option value="en" data-i18n="nav.languageEn">English</option>
-                <option value="zu" data-i18n="nav.languageZu">Isizulu</option>
-                <option value="tn" data-i18n="nav.languageTn">Setswana</option>
+              <select class="language-selector" id="langSelect" style="background-color: #207e74; color: white; border: none; padding: 0 15px; height: 70px; font-size: 0.9rem; font-weight: 700; cursor: pointer; border-radius: 0; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;" onchange="onLangChange.call(this)">
+                <option value="en">English</option>
+                <option value="zu">isiZulu</option>
+                <option value="tn">Setswana</option>
               </select>
-              <div id="google_translate_element" style="display: none;"></div>
               <div id="error-message" class="translation-error"></div>
               <i class="fas fa-search search-icon" id="search-toggle"></i>
             </div>
-            <div class="blue-section"></div>
           </nav>
         </header>
         <section class="search-section" id="search-popup" style="display: none;">
           <div class="search-container">
             <div class="search-header">
-              <h3 data-i18n="search.title">AI Enhanced Search</h3>
+              <h3>AI Enhanced Search</h3>
               <span class="search-close" id="search-close">×</span>
             </div>
             <div class="search-input-wrapper">
               <svg class="search-input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
               </svg>
-              <input type="text" class="search-input" id="smartSearch" data-i18n="[placeholder]search.placeholder" placeholder="Search green funding, businesses, tools...">
+              <input type="text" class="search-input" id="smartSearch" placeholder="Search green funding, businesses, tools...">
             </div>
             <div id="search-results" class="search-results max-h-96 overflow-y-auto"></div>
           </div>
@@ -174,7 +170,6 @@ class GreenEconomyHeader extends HTMLElement {
       </div>
     `;
 
-    this.setupDelayedTranslation();
     this.setupSearchFunctionality();
     this.setupMobileMenu();
 
@@ -201,187 +196,6 @@ class GreenEconomyHeader extends HTMLElement {
         }
       });
     }
-  }
-
-  setupDelayedTranslation() {
-    const getTimestamp = () => new Date().toLocaleString('en-ZA', { timeZone: 'Africa/Johannesburg' });
-    const errorMessage = this.querySelector('#error-message');
-    const customSelect = this.querySelector('#custom_language_select');
-
-    const showError = (message) => {
-      errorMessage.style.display = 'block';
-      errorMessage.textContent = message;
-      setTimeout(() => {
-        errorMessage.style.display = 'none';
-        errorMessage.textContent = '';
-      }, 5000);
-    };
-
-    // 🚀 CRITICAL: Wait for FULL page load
-    const initTranslation = () => {
-      console.log(`[${getTimestamp()}] FULL PAGE READY - Initializing translation`);
-      this.initializeTranslation(customSelect, showError, getTimestamp);
-      // Start monitoring Google Translate alignment IMMEDIATELY
-      this.enforceGoogleTranslateAlignment();
-    };
-
-    // Load script but NO auto-init
-    if (!document.querySelector('script[src*="translate.google.com"]')) {
-      const script = document.createElement('script');
-      script.src = 'https://translate.google.com/translate_a/element.js';
-      script.async = true;
-      script.onload = () => console.log(`[${getTimestamp()}] Google Translate script loaded`);
-      document.head.appendChild(script);
-    }
-
-    window.addEventListener('load', () => {
-      setTimeout(initTranslation, 500); // Extra buffer
-    });
-  }
-
-  enforceGoogleTranslateAlignment() {
-    /**
-     * CRITICAL FIX: Google Translate injects CSS that breaks alignment on refresh
-     * This MutationObserver watches for any changes and immediately fixes them
-     */
-    
-    const fixGoogleTranslateAlignment = () => {
-      const googleTranslateElement = document.querySelector('#google_translate_element');
-      const googTeCombo = document.querySelector('.goog-te-combo');
-      const googTeGadgetSimple = document.querySelector('.goog-te-gadget-simple');
-
-      if (googTeCombo) {
-        // Force strict alignment properties
-        googTeCombo.style.cssText = `
-          height: 70px !important;
-          line-height: 70px !important;
-          padding: 0 2rem !important;
-          margin: 0 !important;
-          background-color: transparent !important;
-          color: white !important;
-          border: none !important;
-          display: flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-          box-sizing: border-box !important;
-          width: 100% !important;
-        `;
-      }
-
-      if (googleTranslateElement) {
-        googleTranslateElement.style.cssText = `
-          display: flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-          height: 70px !important;
-          width: 150px !important;
-          background-color: #207e74 !important;
-          padding: 0 !important;
-          margin: 0 !important;
-          flex-shrink: 0 !important;
-        `;
-      }
-
-      if (googTeGadgetSimple) {
-        googTeGadgetSimple.style.cssText = `
-          display: flex !important;
-          align-items: center !important;
-          height: 70px !important;
-          width: 100% !important;
-          background: transparent !important;
-          padding: 0 !important;
-          margin: 0 !important;
-        `;
-      }
-    };
-
-    // Initial fix
-    fixGoogleTranslateAlignment();
-
-    // Use MutationObserver to watch for Google Translate changes
-    const observer = new MutationObserver(() => {
-      fixGoogleTranslateAlignment();
-    });
-
-    // Watch the entire document for attribute changes
-    observer.observe(document.body, {
-      attributes: true,
-      attributeFilter: ['style'],
-      subtree: true,
-      characterData: false
-    });
-
-    // Also run fixes on interval (backup)
-    setInterval(fixGoogleTranslateAlignment, 500);
-
-    console.log('✅ Google Translate alignment enforcement ACTIVE - monitoring for changes');
-  }
-
-  initializeTranslation(customSelect, showError, getTimestamp) {
-    window.googleTranslateElementInit = () => {
-      try {
-        new google.translate.TranslateElement({
-          pageLanguage: 'en',
-          includedLanguages: 'en,tn,zu',
-          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-          autoDisplay: false, // 🚀 NO AUTO TRANSLATE
-          gaTrack: false
-        }, 'google_translate_element');
-
-        setTimeout(() => {
-          const googleSelect = document.querySelector('.goog-te-combo');
-          if (!googleSelect) {
-            showError('Translation failed. Using fallback.');
-            customSelect.disabled = false;
-            updateContent();
-            return;
-          }
-
-          console.log(`[${getTimestamp()}] Google Translate ACTIVE`);
-
-          // 🚀 Default English - NO auto translation
-          googleSelect.value = 'en';
-          customSelect.value = 'en';
-          customSelect.disabled = false;
-
-          const syncLanguage = (lang) => {
-            try {
-              googleSelect.value = lang;
-              googleSelect.dispatchEvent(new Event('change', { bubbles: true }));
-              i18next.changeLanguage(lang, () => {
-                setTimeout(updateContent, 200);
-                console.log(`[${getTimestamp()}] Language ${lang} applied`);
-              });
-            } catch (e) {
-              showError('Language change failed.');
-              updateContent();
-            }
-          };
-
-          customSelect.addEventListener('change', (e) => {
-            if (e.target.value) syncLanguage(e.target.value);
-          });
-
-          googleSelect.addEventListener('change', (e) => {
-            customSelect.value = e.target.value || 'en';
-            syncLanguage(e.target.value || 'en');
-          });
-
-          // Hide banner
-          const banner = document.querySelector('.goog-te-banner-frame');
-          if (banner) banner.classList.add('hide-translate-banner');
-
-          updateContent(); // Initial static content
-
-        }, 300);
-      } catch (e) {
-        showError('Translation init failed.');
-        customSelect.disabled = false;
-        updateContent();
-      }
-    };
-
-    setTimeout(() => window.googleTranslateElementInit && window.googleTranslateElementInit(), 800);
   }
 
   preventLayoutShift() {
@@ -692,55 +506,53 @@ class GreenEconomyFooter extends HTMLElement {
         <div class="container">
           <div class="footer-content">
             <div class="footer-logo">
-              <img src="${imagePath}Images/GET.png" alt="Green Economy Toolkit Logo" class="footer-logo-img" data-i18n="[alt]footer.logo_alt">
-              <p class="footer-tagline" data-i18n="footer.tagline">Empowering sustainable growth through green economy solutions</p>
+              <img src="${imagePath}Images/GET.png" alt="Green Economy Toolkit Logo" class="footer-logo-img">
+              <p class="footer-tagline">Empowering sustainable growth through green economy solutions</p>
             </div>
             <div class="footer-column">
-              <h4 data-i18n="footer.contact_title">Contact Details</h4>
+              <h4>Contact Details</h4>
               <ul>
-                <li><i class="fas fa-phone"></i> <span data-i18n="[html]footer.phone">+27 (0)11 544 6000</span></li>
-                <li><i class="fas fa-envelope"></i> <span data-i18n="[html]footer.email">info@nbi.org.za</span></li>
+                <li><i class="fas fa-phone"></i> <span>+27 (0)11 544 6000</span></li>
+                <li><i class="fas fa-envelope"></i> <span>info@nbi.org.za</span></li>
               </ul>
             </div>
             <div class="footer-column">
-              <h4 data-i18n="footer.address_title">Address</h4>
+              <h4>Address</h4>
               <address>
-                <p data-i18n="footer.physical_address">Physical Address:</p>
-                <p data-i18n="footer.street">61 Katherine Street, Dennehof</p>
-                <p data-i18n="footer.city">Sandton, 2196</p>
-                <p data-i18n="footer.postal_address">Postal Address:</p>
-                <p data-i18n="footer.postal_street">PO Box 294, Auckland Park</p>
-                <p data-i18n="footer.postal_city">Johannesburg, 2006</p>
+                <p>Physical Address:</p>
+                <p>61 Katherine Street, Dennehof</p>
+                <p>Sandton, 2196</p>
+                <p>Postal Address:</p>
+                <p>PO Box 294, Auckland Park</p>
+                <p>Johannesburg, 2006</p>
               </address>
             </div>
             <div class="footer-column">
-              <h4 data-i18n="footer.quick_links">Quick Links</h4>
+              <h4>Quick Links</h4>
               <ul>
-                <li><a href="${basePath}index.html" data-i18n="footer.home">Home</a></li>
-                <li><a href="${basePath}LandingPage/About Page/about.html" data-i18n="footer.about">About Us</a></li>
-                <li><a href="${basePath}LandingPage/IRM-Sector/IRMSector.html" data-i18n="footer.irm_sector">IRM Sector</a></li>
-                <li><a href="${basePath}LandingPage/Knowledge-Hub/knowledge-hub.html" data-i18n="footer.knowledge_hub">Knowledge Hub</a></li>
-                <li><a href="${basePath}LandingPage/Opportunities/opportunities.html" data-i18n="footer.opportunities">Opportunities</a></li>
+                <li><a href="${basePath}index.html">Home</a></li>
+                <li><a href="${basePath}LandingPage/About Page/about.html">About Us</a></li>
+                <li><a href="${basePath}LandingPage/IRM-Sector/IRMSector.html">IRM Sector</a></li>
+                <li><a href="${basePath}LandingPage/Knowledge-Hub/knowledge-hub.html">Knowledge Hub</a></li>
+                <li><a href="${basePath}LandingPage/Opportunities/opportunities.html">Opportunities</a></li>
               </ul>
             </div>
             <div class="footer-column">
-              <h4 data-i18n="footer.information">Information</h4>
+              <h4>Information</h4>
               <ul>
-                <li><a href="https://nbi.org.za/" data-i18n="footer.faq">FAQ</a></li>
-                <li><a href="https://nbi.org.za/" data-i18n="footer.terms">Terms & Conditions</a></li>
-                <li><a href="https://nbi.org.za/" data-i18n="footer.privacy">Privacy Policy</a></li>
-                <li><a href="https://nbi.org.za/" data-i18n="footer.help">Help</a></li>
+                <li><a href="https://nbi.org.za/">FAQ</a></li>
+                <li><a href="https://nbi.org.za/">Terms & Conditions</a></li>
+                <li><a href="https://nbi.org.za/">Privacy Policy</a></li>
+                <li><a href="https://nbi.org.za/">Help</a></li>
               </ul>
             </div>
           </div>
           <div class="footer-bottom">
-            <p data-i18n="[html]footer.copyright">© ${new Date().getFullYear()} Green Economy Network. All rights reserved.</p>
+            <p>© ${new Date().getFullYear()} Green Economy Network. All rights reserved.</p>
           </div>
         </div>
       </footer>
     `;
-
-    setTimeout(updateContent, 0);
 
     this.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function(e) {
@@ -901,7 +713,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  setTimeout(updateContent, 0);
 });
 
 function setupGlobalSearchFunctionality() {
@@ -1009,3 +820,76 @@ window.testSearch = function() {
   const searchToggle = document.querySelector('#search-toggle');
   if (searchToggle) searchToggle.click();
 };
+
+// ========== TRANSLATION SYSTEM ==========
+let currentLanguage = 'en';
+
+// Translate a single piece of text
+async function translateText(text, targetLang) {
+  const sourceLang = currentLanguage || 'en';
+  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  return data[0].map(seg => seg[0]).join('');
+}
+
+// Translate the whole page (all text nodes)
+async function translatePage(targetLang) {
+  const selector = document.getElementById('langSelect');
+  if (!selector) return;
+  
+  const original = selector.dataset.original || selector.options[selector.selectedIndex].text;
+  selector.dataset.original = original;
+
+  const translating = targetLang === 'en' ? 'English' :
+                      targetLang === 'zu' ? 'isiZulu' :
+                      'Setswana';
+  selector.options[selector.selectedIndex].text = `Translating to ${translating}...`;
+
+  const walker = document.createTreeWalker(
+    document.body,
+    NodeFilter.SHOW_TEXT,
+    {
+      acceptNode: node => {
+        const p = node.parentNode;
+        if (!p) return NodeFilter.FILTER_REJECT;
+        const tag = p.tagName;
+        if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'NOSCRIPT') return NodeFilter.FILTER_REJECT;
+        return node.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      }
+    }
+  );
+
+  const nodes = [];
+  let n;
+  while (n = walker.nextNode()) nodes.push(n);
+
+  const BATCH = 15;
+  for (let i = 0; i < nodes.length; i += BATCH) {
+    const batch = nodes.slice(i, i + BATCH);
+    const promises = batch.map(node => translateText(node.nodeValue, targetLang));
+    const results = await Promise.all(promises);
+    batch.forEach((node, idx) => node.nodeValue = results[idx]);
+  }
+
+  selector.options[selector.selectedIndex].text = original;
+  currentLanguage = targetLang;
+}
+
+// Dropdown change handler
+function onLangChange() {
+  const lang = this.value;
+  if (lang === 'en') {
+    location.reload();
+    return;
+  }
+  translatePage(lang).catch(err => {
+    console.error(err);
+    alert('Translation failed - check your internet connection.');
+  });
+}
+
+// Make functions globally accessible
+window.onLangChange = onLangChange;
+window.translateText = translateText;
+window.translatePage = translatePage;

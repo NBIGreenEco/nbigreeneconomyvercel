@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Water Management – Translate Page</title>
+  <title>Water Management â€“ Translate Page</title>
 
   <!-- Google Translate unofficial API (no key) -->
   <script>
@@ -29,11 +29,11 @@
       const original = selector.dataset.original || selector.options[selector.selectedIndex].text;
       selector.dataset.original = original;
 
-      // show "Translating…"
+      // show "Translatingâ€¦"
       const translating = targetLang === 'en' ? 'English' :
                           targetLang === 'zu' ? 'isiZulu' :
                           'Setswana';
-      selector.options[selector.selectedIndex].text = `Translating to ${translating}…`;
+      selector.options[selector.selectedIndex].text = `Translating to ${translating}â€¦`;
 
       // collect every text node that is NOT inside script/style/noscript
       const walker = document.createTreeWalker(
@@ -80,7 +80,7 @@
       }
       translatePage(lang).catch(err => {
         console.error(err);
-        alert('Translation failed – check your internet connection.');
+        alert('Translation failed â€“ check your internet connection.');
       });
     }
   </script>
@@ -227,3 +227,4 @@
 
 </body>
 </html>
+

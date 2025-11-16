@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <!-- Fix for Google Translate proxy: when translate serves a proxied page, root-relative URLs (starting with /) point to the proxy origin and break asset loading. -->
@@ -52,7 +52,7 @@
             '.goog-te-combo:hover { background-color: #4ec3b0 !important; } ' +
             '.goog-te-banner-frame { display: none !important; }';
           document.head.appendChild(protectiveStyle);
-          console.log('Applied Google Translate proxy asset fix — using origin:', refOrigin);
+          console.log('Applied Google Translate proxy asset fix â€” using origin:', refOrigin);
         } catch (e) {
           console.warn('Translate proxy fix failed:', e);
         }
@@ -60,10 +60,7 @@
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title data-i18n="irmsector.title">Green Economy Toolkit</title>
-    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
-    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
-    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
+    <title>Green Economy Toolkit</title>
     
   <!-- Translation System (Unofficial Google Translate API) -->
   <script>
@@ -94,7 +91,7 @@
       const translating = targetLang === 'en' ? 'English' :
                           targetLang === 'zu' ? 'isiZulu' :
                           'Setswana';
-      selector.options[selector.selectedIndex].text = `Translating to ${translating}…`;
+      selector.options[selector.selectedIndex].text = `Translating to ${translating}â€¦`;
 
       const walker = document.createTreeWalker(
         document.body,
@@ -132,12 +129,12 @@
         }
         translatePage(lang).catch(err => {
           console.error(err);
-          alert('Translation failed – check your internet connection.');
+          alert('Translation failed â€“ check your internet connection.');
         });
       }
     </script>
     
-    <script type="module" src="/Trans.js"></script>
+    <!-- Trans.js removed -->
     <script type="module" src="/Master Page(Header and Footer)/MasterPage.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
@@ -196,8 +193,10 @@
         .hero-image-section img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            object-position: center;
             display: block;
+            max-width: 100%;
         }
         
         .hero-text {
@@ -545,7 +544,8 @@
             
             .hero-image-section {
                 order: 2;
-                height: 300px;
+                height: 400px;
+                max-height: 500px;
             }
             
             .hero-text {
@@ -770,13 +770,10 @@
         }
     </style>
     <script src="../../../scripts/enhancedsearch.js"></script>
-    <script type="module">
-        import { updateContent } from '/Trans.js';
-
-        // Initialize i18next
+    <script type="module">        // Initialize i18next
         i18next
-            .use(i18nextHttpBackend)
-            .use(i18nextBrowserLanguageDetector)
+            .use()
+            .use()
             .init({
                 fallbackLng: 'en',
                 supportedLngs: ['en', 'zu', 'tn'],
@@ -793,9 +790,7 @@
                     setTimeout(() => {
                         i18next.loadResources((loadErr) => {
                             if (loadErr) {
-                                console.error('Retry failed:', loadErr);
-                                applyFallbackTranslations();
-                            } else {
+                                console.error('Retry failed:', loadErr);                            } else {
                                 console.log('i18next retry successful, language:', i18next.language);
                                 finalizeLoading();
                             }
@@ -805,50 +800,12 @@
                 }
                 console.log('i18next initialized for irmsector.html at', new Date().toLocaleString('en-ZA'), 'language:', i18next.language);
                 finalizeLoading();
-            });
-
-        function applyFallbackTranslations() {
-            document.querySelectorAll('[data-i18n]').forEach(elem => {
-                const key = elem.getAttribute('data-i18n');
-                try {
-                    if (key.startsWith('[')) {
-                        const match = key.match(/\[(\w+)\](.+)/);
-                        if (match) {
-                            const [, attr, i18nKey] = match;
-                            const fallback = elem.getAttribute(attr) || 'Content not available';
-                            elem.setAttribute(attr, fallback);
-                        }
-                    } else {
-                        const fallback = elem.textContent.trim() || 'Content not available';
-                        elem.textContent = fallback;
-                    }
-                } catch (error) {
-                    console.error(`Error applying fallback for key ${key}:`, error);
-                }
-            });
-            finalizeLoading();
-        }
-
-        function finalizeLoading() {
-            try {
-                i18next.loadResources(() => {
-                    updateContent();
-                    document.body.classList.remove('loading');
-                    document.body.classList.add('loaded');
-                    const loadingOverlay = document.querySelector('.loading-overlay');
-                    if (loadingOverlay) {
-                        loadingOverlay.style.display = 'none';
-                    }
-                });
+            });});
             } catch (error) {
-                console.error('Error loading translations:', error);
-                applyFallbackTranslations();
-            }
+                console.error('Error loading translations:', error);            }
         }
 
-        i18next.on('languageChanged', () => {
-            updateContent();
-        });
+        i18next.on('languageChanged', () => {        });
 
         // Firebase initialization
         const firebaseConfig = {
@@ -864,9 +821,7 @@
 
         // Fallback timeout
         setTimeout(() => {
-            if (document.body.classList.contains('loading')) {
-                applyFallbackTranslations();
-                document.body.classList.remove('loading');
+            if (document.body.classList.contains('loading')) {                document.body.classList.remove('loading');
                 document.body.classList.add('loaded');
                 const loadingOverlay = document.querySelector('.loading-overlay');
                 if (loadingOverlay) {
@@ -886,34 +841,34 @@
     <section class="hero">
         <div class="hero-content">
             <div class="hero-image-section">
-                <img src="/Images/IRMSector.png" alt="Hero Image" class="hero-img" data-i18n="[alt]irmsector.hero_image" />
+                <img src="/Images/IRMSector.png" alt="Hero Image" class="hero-img" />
             </div>
             <div class="hero-text">
-                <h1 data-i18n="irmsector.hero_title">Installation, repair and maintenance sector</h1>
-                <p data-i18n="irmsector.hero_description1">
+                <h1>Installation, repair and maintenance sector</h1>
+                <p>
                     Since 2019, the National Business Initiative has been spearheading multifaceted and multisector partnerships focused on growing pathways for young people to access installation, repair and maintenance (IRM) occupations.
                 </p>
-                <p data-i18n="irmsector.hero_description2">
+                <p>
                     Artisanal skills can be useful in supporting the journey and transition to a green economy. Through various industry and sector opportunities, tradespeople and small, micro and medium enterprises (SMMEs) in the IRM space can take advantage of this move to a green economy. There are opportunities to support the below focus areas outlined by the South African government.
                 </p>
-                <a href="https://www.nbi.org.za/focus-areas/economic-inclusion/installation-repair-and-maintenance-irm-initiative/" class="getInvolved-button" target="_blank" rel="noopener noreferrer" data-i18n="irmsector.get_involved_button">Get Involved</a>
+                <a href="https://www.nbi.org.za/focus-areas/economic-inclusion/installation-repair-and-maintenance-irm-initiative/" class="getInvolved-button" target="_blank" rel="noopener noreferrer">Get Involved</a>
             </div>
         </div>
     </section>
 
     <section class="first-section">
         <div class="section-content">
-            <h2 data-i18n="irmsector.agriculture_title">Agriculture</h2>
+            <h2>Agriculture</h2>
             <div class="first-section-flex">
                 <div class="news-rect-box">
-                    <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.agriculture_fit_title">Where do I fit in?</div>
-                    <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.agriculture_fit_description">
+                    <div class="rect-heading" style="color: #2b9589;">Where do I fit in?</div>
+                    <div class="rect-text" style="color: #2b9589;">
                         In sustainable agriculture, you can play a crucial role by providing installation, repair and maintenance services for energy-efficient and environmentally friendly farming equipment such as electric tractors, solar-powered irrigation systems and precision farming technology. In addition, you can educate farmers about the benefits of eco-friendly practices and equipment.
                     </div>
                 </div>
                 <div class="news-rect-box">
-                    <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.agriculture_involved_title">How do I get involved?</div>
-                    <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.agriculture_involved_description">
+                    <div class="rect-heading" style="color: #2b9589;">How do I get involved?</div>
+                    <div class="rect-text" style="color: #2b9589;">
                         To get involved, consider attending workshops and training programmes that are focused on green agricultural equipment installation, repair and maintenance. Collaborate with agricultural organisations and eco-conscious farmers to understand their specific needs and offer customised installation, repair and maintenance solutions. Promote your services through channels that reach the farming community, emphasising their environmental benefits.
                     </div>
                 </div>
@@ -923,17 +878,17 @@
 
     <section class="news-header">
         <div class="section-content">
-            <h2 data-i18n="irmsector.energy_title">Energy (clean and efficient)</h2>
+            <h2>Energy (clean and efficient)</h2>
             <div class="news-header-flex">
                 <div class="news-rect-box">
-                    <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.energy_fit_title">Where do I fit in?</div>
-                    <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.energy_fit_description">
+                    <div class="rect-heading" style="color: #2b9589;">Where do I fit in?</div>
+                    <div class="rect-text" style="color: #2b9589;">
                         You can specialise in the installation, repair and maintenance of clean energy infrastructure, such as solar panels, wind turbines and energy-efficient heating, ventilation and air-conditioning (HVAC) systems. By ensuring these systems operate optimally, you contribute to the broader goal of clean energy adoption.
                     </div>
                 </div>
                 <div class="news-rect-box">
-                    <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.energy_involved_title">How do I get involved?</div>
-                    <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.energy_involved_description">
+                    <div class="rect-heading" style="color: #2b9589;">How do I get involved?</div>
+                    <div class="rect-text" style="color: #2b9589;">
                         Seek certification or training in clean energy technology installation, repair and maintenance. Partner with renewable energy installation companies to provide ongoing maintenance services. Stay updated on the latest advancements in clean energy technologies to offer cutting-edge repair solutions.
                     </div>
                 </div>
@@ -943,17 +898,17 @@
 
     <section class="section3">
         <div class="section-content">
-            <h2 data-i18n="irmsector.resource_conservation_title">Natural resource conservation and management (including mining)</h2>
+            <h2>Natural resource conservation and management (including mining)</h2>
             <div class="section3-flex">
                 <div class="news-rect-box">
-                    <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.resource_fit_title">Where do I fit in?</div>
-                    <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.resource_fit_description">
+                    <div class="rect-heading" style="color: #2b9589;">Where do I fit in?</div>
+                    <div class="rect-text" style="color: #2b9589;">
                         Your role can involve advocating for and implementing sustainable installation, repair and maintenance practices in the mining industry. Focus on equipment used in responsible mining, such as energy-efficient conveyor systems and environmentally friendly drilling equipment.
                     </div>
                 </div>
                 <div class="news-rect-box">
-                    <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.resource_involved_title">How do I get involved?</div>
-                    <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.resource_involved_description">
+                    <div class="rect-heading" style="color: #2b9589;">How do I get involved?</div>
+                    <div class="rect-text" style="color: #2b9589;">
                         Collaborate with mining companies committed to sustainable practices and learn about their specific needs. Stay informed about industry guidelines for eco-friendly mining equipment maintenance. Consider joining or partnering with organisations dedicated to responsible resource management.
                     </div>
                 </div>
@@ -963,17 +918,17 @@
 
     <section class="news-header4">
         <div class="section-content">
-            <h2 data-i18n="irmsector.transport_title">Sustainable transport and infrastructure</h2>
+            <h2>Sustainable transport and infrastructure</h2>
             <div class="news-header-flex">
                 <div class="news-rect-box">
-                    <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.transport_fit_title">Where do I fit in?</div>
-                    <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.transport_fit_description">
+                    <div class="rect-heading" style="color: #2b9589;">Where do I fit in?</div>
+                    <div class="rect-text" style="color: #2b9589;">
                         You can specialise in the installation, repair and maintenance of eco-friendly transportation infrastructure, such as electric vehicle (EV) charging stations, bike-sharing systems or public transport transit systems that are powered by clean energy.
                     </div>
                 </div>
                 <div class="news-rect-box">
-                    <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.transport_involved_title">How do I get involved?</div>
-                    <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.transport_involved_description">
+                    <div class="rect-heading" style="color: #2b9589;">How do I get involved?</div>
+                    <div class="rect-text" style="color: #2b9589;">
                         Acquire training and certifications for EV charging station installation, repair and maintenance. Collaborate with local governments and transportation authorities to maintain sustainable transportation infrastructure. Offer your expertise to businesses and municipalities interested in expanding their eco-friendly transport options.
                     </div>
                 </div>
@@ -983,17 +938,17 @@
 
     <section class="section3">
         <div class="section-content">
-            <h2 data-i18n="irmsector.sustainability_title">Environmental sustainability, including tourism education</h2>
+            <h2>Environmental sustainability, including tourism education</h2>
             <div class="section3-flex">
                 <div class="news-rect-box">
-                    <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.sustainability_fit_title">Where do I fit in?</div>
-                    <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.sustainability_fit_description">
+                    <div class="rect-heading" style="color: #2b9589;">Where do I fit in?</div>
+                    <div class="rect-text" style="color: #2b9589;">
                         Your role can involve installing, maintaining and repairing eco-friendly tourism facilities, such as eco-lodges, nature reserves, and sustainable tourism attractions. Additionally, you can offer training programmes on eco-conscious installation, repair and maintenance techniques.
                     </div>
                 </div>
                 <div class="news-rect-box">
-                    <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.sustainability_involved_title">How do I get involved?</div>
-                    <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.sustainability_involved_description">
+                    <div class="rect-heading" style="color: #2b9589;">How do I get involved?</div>
+                    <div class="rect-text" style="color: #2b9589;">
                         Partner with eco-conscious tourism businesses to provide installation, repair and maintenance services for their facilities. Develop educational materials and workshops on responsible tourism and eco-friendly installation, repair and maintenance practices. Collaborate with environmental NGOs to promote sustainable tourism in your region.
                     </div>
                 </div>
@@ -1003,17 +958,17 @@
 
     <section class="news-header6">
         <div class="section-content">
-            <h2 data-i18n="irmsector.green_building_title">Green building and the built environment</h2>
+            <h2>Green building and the built environment</h2>
             <div class="news-header-flex">
                 <div class="news-rect-box">
-                    <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.green_building_fit_title">Where do I fit in?</div>
-                    <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.green_building_fit_description">
+                    <div class="rect-heading" style="color: #2b9589;">Where do I fit in?</div>
+                    <div class="rect-text" style="color: #2b9589;">
                         Focus on installing, repairing and maintaining energy-efficient systems within green buildings, such as solar panels, energy-efficient heating, ventilation and air-conditioning (HVAC) systems, and smart building technologies.
                     </div>
                 </div>
                 <div class="news-rect-box">
-                    <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.green_building_involved_title">How do I get involved?</div>
-                    <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.green_building_involved_description">
+                    <div class="rect-heading" style="color: #2b9589;">How do I get involved?</div>
+                    <div class="rect-text" style="color: #2b9589;">
                         Seek certifications in green building equipment installation, repair and maintenance. Collaborate with environmentally conscious green building construction firms to offer post-construction repair and maintenance services. Stay informed about the latest green building standards and technologies.
                     </div>
                 </div>
@@ -1023,17 +978,17 @@
 
     <section class="section3">
         <div class="section-content">
-            <h2 data-i18n="irmsector.waste_management_title">Sustainable waste management and recycling</h2>
+            <h2>Sustainable waste management and recycling</h2>
             <div class="section3-flex">
                 <div class="news-rect-box">
-                    <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.waste_management_fit_title">Where do I fit in?</div>
-                    <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.waste_management_fit_description">
+                    <div class="rect-heading" style="color: #2b9589;">Where do I fit in?</div>
+                    <div class="rect-text" style="color: #2b9589;">
                         Specialise in installing, repairing and maintaining recycling machinery and equipment to support waste reduction and recycling efforts.
                     </div>
                 </div>
                 <div class="news-rect-box">
-                    <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.waste_management_involved_title">How do I get involved?</div>
-                    <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.waste_management_involved_description">
+                    <div class="rect-heading" style="color: #2b9589;">How do I get involved?</div>
+                    <div class="rect-text" style="color: #2b9589;">
                         Collaborate with recycling facilities and waste management companies to offer repair and maintenance services for their equipment, and to install new equipment. Stay updated on recycling industry trends and any regulations related to eco-friendly equipment maintenance.
                     </div>
                 </div>
@@ -1045,17 +1000,17 @@
 
     <section class="news-header8">
         <div class="section-content">
-            <h2 data-i18n="irmsector.water_management_title">Water management</h2>
+            <h2>Water management</h2>
             <div class="news-header-flex">
                 <div class="news-rect-box">
-                    <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.water_management_fit_title">Where do I fit in?</div>
-                    <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.water_management_fit_description">
+                    <div class="rect-heading" style="color: #2b9589;">Where do I fit in?</div>
+                    <div class="rect-text" style="color: #2b9589;">
                         Focus on installing, repairing and maintaining water-saving technologies, such as efficient irrigation systems and water purification equipment.
                     </div>
                 </div>
                 <div class="news-rect-box">
-                    <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.water_management_involved_title">How do I get involved?</div>
-                    <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.water_management_involved_description">
+                    <div class="rect-heading" style="color: #2b9589;">How do I get involved?</div>
+                    <div class="rect-text" style="color: #2b9589;">
                         Seek certifications or training programmes for water management equipment installation, repair and maintenance. Partner with water treatment facilities and businesses involved in water conservation to provide your services. Stay informed about water quality regulations and conservation techniques.
                     </div>
                 </div>
@@ -1065,17 +1020,17 @@
 
     <section class="section3">
         <div class="section-content">
-            <h2 data-i18n="irmsector.production_title">Sustainable production and consumption</h2>
+            <h2>Sustainable production and consumption</h2>
             <div class="section3-flex">
                 <div class="news-rect-box">
-                    <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.production_fit_title">Where do I fit in?</div>
-                    <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.production_fit_description">
+                    <div class="rect-heading" style="color: #2b9589;">Where do I fit in?</div>
+                    <div class="rect-text" style="color: #2b9589;">
                         Advocate for the repair and refurbishment of electronics and appliances to promote sustainable consumption. Encourage clients to choose repair over replacement.
                     </div>
                 </div>
                 <div class="news-rect-box">
-                    <div class="rect-heading" style="color: #2b9589;" data-i18n="irmsector.production_involved_title">How do I get involved?</div>
-                    <div class="rect-text" style="color: #2b9589;" data-i18n="irmsector.production_involved_description">
+                    <div class="rect-heading" style="color: #2b9589;">How do I get involved?</div>
+                    <div class="rect-text" style="color: #2b9589;">
                         Collaborate with eco-conscious manufacturers and retailers to provide repair and maintenance services for their products. Educate consumers about the benefits of repairing and maintaining their belongings instead of throwing them away and buying new ones. Participate in local sustainability initiatives to raise awareness about sustainable consumption practices.
                     </div>
                 </div>
@@ -1085,17 +1040,17 @@
 
     <section class="partners">
         <div class="partners-content">
-            <img src="/Images/giz-logo_2024-11-11-133203_nara.jpg" alt="Partner Logo 1" class="partner-logo" data-i18n="[alt]irmsector.partner_logo1">
-            <img src="/Images/SECO-Logo.jpg" alt="Partner Logo 2" class="partner-logo" data-i18n="[alt]irmsector.partner_logo2">
-            <img src="/Images/GDED-Logo.jpg" alt="Partner Logo 3" class="partner-logo" data-i18n="[alt]irmsector.partner_logo3">
-            <img src="/Images/LMS-Platform-Logo.png" alt="Partner Logo 4" class="partner-logo" data-i18n="[alt]irmsector.partner_logo4">
-            <img src="/Images/NBI-Logo.jpg" alt="Partner Logo 5" class="partner-logo" data-i18n="[alt]irmsector.partner_logo5">
+            <img src="/Images/giz-logo_2024-11-11-133203_nara.jpg" alt="Partner Logo 1" class="partner-logo">
+            <img src="/Images/SECO-Logo.jpg" alt="Partner Logo 2" class="partner-logo">
+            <img src="/Images/GDED-Logo.jpg" alt="Partner Logo 3" class="partner-logo">
+            <img src="/Images/LMS-Platform-Logo.png" alt="Partner Logo 4" class="partner-logo">
+            <img src="/Images/NBI-Logo.jpg" alt="Partner Logo 5" class="partner-logo">
         </div>
     </section>
 
     <section class="login-section">
         <div class="section-content">
-            <h2 style="color: white; font-size: 20px; margin-bottom: 25px;" data-i18n="irmsector.newsletter_title">
+            <h2 style="color: white; font-size: 20px; margin-bottom: 25px;">
                 Subscribe to our newsletter to get the latest information
             </h2>
             <form class="newsletter-form">
@@ -1103,15 +1058,15 @@
                     type="email"
                     placeholder="Your email"
                     class="newsletter-input"
-                    data-i18n="[placeholder]irmsector.newsletter_email"
+                   
                 >
                 <button
                     type="submit"
                     class="newsletter-submit"
-                    data-i18n="[title]irmsector.newsletter_submit"
+                   
                     title="Submit"
                 >
-                    →
+                    â†’
                 </button>
             </form>
         </div>
@@ -1152,3 +1107,5 @@
     <green-economy-footer></green-economy-footer>
 </body>
 </html>
+
+

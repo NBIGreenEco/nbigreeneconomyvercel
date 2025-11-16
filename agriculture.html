@@ -1,9 +1,9 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title data-i18n="title.agriculture">Agriculture - Green Economy Toolkit</title>
+    <title>Agriculture - Green Economy Toolkit</title>
     <!-- Translation System (Unofficial Google Translate API) -->
     <script>
       let currentLanguage = 'en';
@@ -33,7 +33,7 @@
         const translating = targetLang === 'en' ? 'English' :
                             targetLang === 'zu' ? 'isiZulu' :
                             'Setswana';
-        selector.options[selector.selectedIndex].text = `Translating to ${translating}…`;
+        selector.options[selector.selectedIndex].text = `Translating to ${translating}â€¦`;
 
         const walker = document.createTreeWalker(
           document.body,
@@ -73,22 +73,15 @@
         }
         translatePage(lang).catch(err => {
           console.error(err);
-          alert('Translation failed – check your internet connection.');
+          alert('Translation failed â€“ check your internet connection.');
         });
       }
     </script>
 
     <script id="messenger-widget-b" src="https://cdn.botpenguin.com/website-bot.js" defer>6912ee821c29f29c0d7d6882,6912edf6e9437105db53226c,agent</script>
 
-    <!-- Load i18next scripts -->
-    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
-    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
-    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
-    
     <!-- Load other scripts -->
     <script type="module" src="../Master Page(Header and Footer)/MasterPage.js"></script>
-    <script type="module" src="../Master Page(Header and Footer)/translation.js"></script>
-    <script type="module" src="../Trans.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
@@ -476,7 +469,7 @@
     <section class="hero">
       <div class="hero-image" style="background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200&h=400&fit=crop');"></div>
       <div class="hero-overlay">
-        <h1 class="hero-title" data-i18n="agriculture.title">Agriculture</h1>
+        <h1 class="hero-title">Agriculture</h1>
       </div>
     </section>
 
@@ -484,14 +477,14 @@
     <section class="content-section">
       <div class="content-container container">
         <div class="content-description">
-          <h2 data-i18n="agriculture.subtitle">Green Agriculture</h2>
-          <p data-i18n="agriculture.description">
+          <h2>Green Agriculture</h2>
+          <p>
             Green agriculture means farming in a way that doesn't harm the environment. 
             It includes using fewer chemicals, saving water and protecting wildlife 
             while growing our food. This approach ensures sustainable food production 
             while preserving natural resources for future generations.
           </p>
-          <p data-i18n="agriculture.importance">
+          <p>
             In South Africa, agriculture plays a vital role in the economy and food security. 
             Transitioning to green agricultural practices helps address climate change challenges, 
             conserve biodiversity, and create sustainable livelihoods for rural communities.
@@ -505,8 +498,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
               </svg>
             </div>
-            <h3 data-i18n="agriculture.point1.title">Sustainable Practices</h3>
-            <p data-i18n="agriculture.point1.description">
+            <h3>Sustainable Practices</h3>
+            <p>
               Implementing crop rotation, organic farming, and integrated pest management 
               to reduce environmental impact while maintaining productivity.
             </p>
@@ -518,8 +511,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
               </svg>
             </div>
-            <h3 data-i18n="agriculture.point2.title">Water Conservation</h3>
-            <p data-i18n="agriculture.point2.description">
+            <h3>Water Conservation</h3>
+            <p>
               Utilizing efficient irrigation systems, rainwater harvesting, and soil 
               moisture management to optimize water usage in agricultural operations.
             </p>
@@ -531,8 +524,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
               </svg>
             </div>
-            <h3 data-i18n="agriculture.point3.title">Biodiversity Protection</h3>
-            <p data-i18n="agriculture.point3.description">
+            <h3>Biodiversity Protection</h3>
+            <p>
               Preserving natural habitats, promoting pollinator-friendly practices, 
               and maintaining genetic diversity in crops and livestock.
             </p>
@@ -553,7 +546,7 @@
               d="M10 19l-7-7m0 0l7-7m-7 7h18"
             />
           </svg>
-          <span data-i18n="navigation.backToFocusAreas">Back to all focus areas</span>
+          <span>Back to all focus areas</span>
         </a>
       </div>
     </section>
@@ -562,7 +555,7 @@
     <section class="newsletter-section">
       <div class="newsletter-container">
         <!-- Title -->
-        <h2 class="newsletter-title" data-i18n="login.subscribe">
+        <h2 class="newsletter-title">
           Subscribe to our newsletter to get the latest information
         </h2>
         
@@ -571,14 +564,14 @@
           <input 
             type="email" 
             placeholder="Your email" 
-            data-i18n="[placeholder]login.emailPlaceholder"
+           
             class="newsletter-input"
           >
-          <span class="newsletter-arrow">→</span>
+          <span class="newsletter-arrow">â†’</span>
         </div>
         
         <!-- Disclaimer Text -->
-        <p class="newsletter-disclaimer" data-i18n="login.noSpam">
+        <p class="newsletter-disclaimer">
           *Only relevant information, no spam
         </p>
       </div>
@@ -613,10 +606,10 @@
     <script src="/digital_human/digital-human.js" defer></script>
     <!-- Digital Human Widget End -->
 
-  
         <script id="messenger-widget-b" src="https://cdn.botpenguin.com/website-bot.js" defer>6912ee821c29f29c0d7d6882,6912edf6e9437105db53226c,agent</script>
 
     <script src="../scripts/chatbot.js"></script>
     <green-economy-footer></green-economy-footer>
   </body>
 </html>
+

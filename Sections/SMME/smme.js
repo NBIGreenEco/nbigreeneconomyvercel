@@ -1,5 +1,4 @@
-
-// Firebase Config
+﻿// Firebase Config
 const firebaseConfig = {
     apiKey: "AIzaSyAIlr8Y249Yu_1JPbUjNX7cQtJYlkbV3eY",
     authDomain: "nbi-database.firebaseapp.com",
@@ -33,7 +32,7 @@ const translations = {
         "ai-assistant-title": "AI Business Finder",
         "ai-welcome": "Hello! I can help you find green businesses in your area. What type of sustainable business are you looking for?",
         "ai-input-placeholder": "Ask about green businesses...",
-        "ai-suggestions-title": "🤖 AI Recommendations Based on Your Search:",
+        "ai-suggestions-title": "ðŸ¤– AI Recommendations Based on Your Search:",
         "ai-error": "Sorry, I encountered an error. Please try again.",
         "ai-fallback": "What type of green business are you looking for? Try mentioning solar, waste, farm, water, or construction!"
     },
@@ -47,7 +46,7 @@ const translations = {
         "ai-assistant-title": "Umsizi Wokuthola Amabhizinisi Nge-AI",
         "ai-welcome": "Sawubona! Ngingakusiza ukuthola amabhizinisi aluhlaza endaweni yakho. Ulufuna luluphi uhlobo lwebhizinisi olusimeme?",
         "ai-input-placeholder": "Buza mayelana namabhizinisi aluhlaza...",
-        "ai-suggestions-title": "🤖 Izincomo ze-AI Ezisekelwe Ekusesheni Kwakho:",
+        "ai-suggestions-title": "ðŸ¤– Izincomo ze-AI Ezisekelwe Ekusesheni Kwakho:",
         "ai-error": "Uxolo, ngihlangabezane nenkinga. Sicela uzame futhi.",
         "ai-fallback": "Ulufuna luluphi uhlobo lwebhizinisi eliluhlaza? Zama ukusho i-solar, waste, farm, water, noma construction!"
     },
@@ -61,7 +60,7 @@ const translations = {
         "ai-assistant-title": "Mothusi wa go Tshola Dikgwebo ka AI",
         "ai-welcome": "Dumela! Ke ka go thusa go bona dikgwebo tse tala mo kgaolong ya gago. O batla kgwebo e e tswelang pele ya mofuta ofe?",
         "ai-input-placeholder": "Botsa ka dikgwebo tse tala...",
-        "ai-suggestions-title": "🤖 Ditlhagiso tsa AI tse di Theilweng mo go Batsweng ga Gago:",
+        "ai-suggestions-title": "ðŸ¤– Ditlhagiso tsa AI tse di Theilweng mo go Batsweng ga Gago:",
         "ai-error": "Tshwarelo, ke kopane le phoso. Tsweetswee leka gape.",
         "ai-fallback": "O batla kgwebo ya mofuta ofe e e tala? Leka go bolela solar, waste, farm, water, kgotsa construction!"
     }
@@ -75,7 +74,7 @@ const businessesData = [
         description: {
             en: "Professional solar panel installation and maintenance services for residential and commercial properties. Certified B-BBEE Level 1 contractor with ISO 14001 environmental management certification. Specializes in community-based renewable energy projects.",
             zu: "Izinsizakalo zokufaka kanye nokulungisa amaphaneli elanga kwezindawo zokuhlala nezohwebo. Isikontraka se-B-BBEE Level 1 esiqinisekisiwe nge-ISO 14001 yezokulawulwa kwemvelo. Igxile emaphrojekthini kagesi avuselelekayo asuselwe emphakathini.",
-            tn: "Ditirelo tsa go tsenya le go hlokomela diphanele tsa letsatsi tsa magae le tsa kgwebo. Mokonteraka wa B-BBEE Level 1 yo o netefaditsweng ka ISO 14001 ya taolo ya tikologo. E ikgethe ka diporojeke tsa matla a a ka dirisiwang gape a a theilweng mo setšhabeng."
+            tn: "Ditirelo tsa go tsenya le go hlokomela diphanele tsa letsatsi tsa magae le tsa kgwebo. Mokonteraka wa B-BBEE Level 1 yo o netefaditsweng ka ISO 14001 ya taolo ya tikologo. E ikgethe ka diporojeke tsa matla a a ka dirisiwang gape a a theilweng mo setÅ¡habeng."
         },
         certifications: ["iso14001", "bbbee", "green-certified"],
         location: "western-cape",
@@ -372,11 +371,11 @@ function renderBusinesses() {
         `<p style="text-align: center; color: #666;">No businesses match your filters.</p>` :
         filteredBusinesses.map(business => `
             <div class="business-card" data-persona="${business.persona}" data-certification="${business.certifications.join(',')}">
-                <div class="verified-badge">✓ Verified</div>
+                <div class="verified-badge">âœ“ Verified</div>
                 <div class="business-header">
                     <div class="business-logo">${business.name.slice(0, 2).toUpperCase()}</div>
                     <div class="business-metrics">
-                        <div class="business-rating"><span class="star">★</span><span>${business.rating}</span><span style="margin-left: 0.5rem; color: var(--muted-foreground)">(${business.reviews} reviews)</span></div>
+                        <div class="business-rating"><span class="star">â˜…</span><span>${business.rating}</span><span style="margin-left: 0.5rem; color: var(--muted-foreground)">(${business.reviews} reviews)</span></div>
                         <div class="completion-score">Program: ${business.programCompletion}% Complete</div>
                         <div class="program-progress"><div class="progress-bar" style="width: ${business.programCompletion}%"></div></div>
                     </div>
@@ -385,9 +384,9 @@ function renderBusinesses() {
                 <p class="business-description">${business.description[currentFilters.language]}</p>
                 <div class="certifications">${business.certifications.map(cert =>
                     `<span class="cert-badge ${cert}">${
-                        cert === "iso14001" ? "🏆 ISO 14001" :
-                        cert === "bbbee" ? "🎯 B-BBEE L1" :
-                        cert === "green-certified" ? "🌱 Green Certified" : "✓ Fair Trade"
+                        cert === "iso14001" ? "ðŸ† ISO 14001" :
+                        cert === "bbbee" ? "ðŸŽ¯ B-BBEE L1" :
+                        cert === "green-certified" ? "ðŸŒ± Green Certified" : "âœ“ Fair Trade"
                     }</span>`
                 ).join("")}</div>
                 <div class="business-location">
@@ -508,12 +507,12 @@ async function generateBusinessResponse(userMessage) {
             "Yisiphi isifundazwe osesiphi? Ngingakusiza khona."
         ],
         tn: [
-            "Ke hweditše dikgwebo tša matla a solar tša kang Green Solar Solutions tše di nang le maemo a godimo.",
-            "EcoRecycle Innovations e fana ka ditharollo tša taolo ya matlakala.",
-            "Organic Fresh Farms e fana ka dijalo tše di tšwela pele.",
-            "GreenBuild Construction e ikanetse mo go ahweng ka tsela e e tšwela pele.",
-            "AquaWise Systems e fana ka paballo ya metsí.",
-            "O mo profenseng mang? Ke ka go thuša moo."
+            "Ke hweditÅ¡e dikgwebo tÅ¡a matla a solar tÅ¡a kang Green Solar Solutions tÅ¡e di nang le maemo a godimo.",
+            "EcoRecycle Innovations e fana ka ditharollo tÅ¡a taolo ya matlakala.",
+            "Organic Fresh Farms e fana ka dijalo tÅ¡e di tÅ¡wela pele.",
+            "GreenBuild Construction e ikanetse mo go ahweng ka tsela e e tÅ¡wela pele.",
+            "AquaWise Systems e fana ka paballo ya metsÃ­.",
+            "O mo profenseng mang? Ke ka go thuÅ¡a moo."
         ]
     };
 
@@ -719,3 +718,4 @@ function handleModalClick(e) {
         closeAIAssistant();
     }
 }
+

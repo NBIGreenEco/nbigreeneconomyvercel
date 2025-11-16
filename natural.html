@@ -1,9 +1,9 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title data-i18n="title.natural">Natural Resources - Green Economy Toolkit</title>
+    <title>Natural Resources - Green Economy Toolkit</title>
     <!-- Fix for Google Translate proxy: when translate serves a proxied page, root-relative URLs (starting with /) point to the proxy origin and break asset loading. -->
     <script>
       (function() {
@@ -55,7 +55,7 @@
             '.goog-te-combo:hover { background-color: #4ec3b0 !important; } ' +
             '.goog-te-banner-frame { display: none !important; }';
           document.head.appendChild(protectiveStyle);
-          console.log('Applied Google Translate proxy asset fix — using origin:', refOrigin);
+          console.log('Applied Google Translate proxy asset fix â€” using origin:', refOrigin);
         } catch (e) {
           console.warn('Translate proxy fix failed:', e);
         }
@@ -90,7 +90,7 @@
         const translating = targetLang === 'en' ? 'English' :
                             targetLang === 'zu' ? 'isiZulu' :
                             'Setswana';
-        selector.options[selector.selectedIndex].text = `Translating to ${translating}…`;
+        selector.options[selector.selectedIndex].text = `Translating to ${translating}â€¦`;
 
         const walker = document.createTreeWalker(
           document.body,
@@ -130,19 +130,13 @@
         }
         translatePage(lang).catch(err => {
           console.error(err);
-          alert('Translation failed – check your internet connection.');
+          alert('Translation failed â€“ check your internet connection.');
         });
       }
     </script>
 
-    <!-- Load i18next as global scripts -->
-    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
-    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
-    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
     <!-- Load other scripts -->
     <script type="module" src="../Master Page(Header and Footer)/MasterPage.js"></script>
-    <script type="module" src="../Master Page(Header and Footer)/translation.js"></script>
-    <script type="module" src="../Trans.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
@@ -531,7 +525,7 @@
     <section class="hero">
       <div class="hero-image" style="background-image: url('https://static.vecteezy.com/system/resources/previews/006/037/285/large_2x/close-up-hand-holding-young-green-tree-sprout-and-planting-in-soil-free-photo.JPG');"></div>
       <div class="hero-overlay">
-        <h1 class="hero-title" data-i18n="naturalResource.title">Natural Resource Conservation & Management</h1>
+        <h1 class="hero-title">Natural Resource Conservation & Management</h1>
       </div>
     </section>
 
@@ -539,14 +533,14 @@
     <section class="content-section">
       <div class="content-container container">
         <div class="content-description">
-          <h2 data-i18n="naturalResource.subtitle">Sustainable Resource Management</h2>
-          <p data-i18n="naturalResource.description">
+          <h2>Sustainable Resource Management</h2>
+          <p>
             Natural resource conservation and management is about being careful with our land 
             and other natural resources. When we mine, we should do it in a way that minimizes 
             damage to nature, and we should use resources wisely so they last a long time, 
             ensuring their availability for future generations.
           </p>
-          <p data-i18n="naturalResource.importance">
+          <p>
             South Africa is rich in natural resources, but unsustainable practices threaten 
             their long-term viability. Responsible management balances economic development 
             with environmental protection, creating sustainable livelihoods while preserving 
@@ -561,8 +555,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
               </svg>
             </div>
-            <h3 data-i18n="naturalResource.point1.title">Ecosystem Protection</h3>
-            <p data-i18n="naturalResource.point1.description">
+            <h3>Ecosystem Protection</h3>
+            <p>
               Preserving biodiversity, protecting endangered species, and maintaining 
               healthy ecosystems through conservation areas and sustainable land use practices.
             </p>
@@ -574,8 +568,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
               </svg>
             </div>
-            <h3 data-i18n="naturalResource.point2.title">Sustainable Mining</h3>
-            <p data-i18n="naturalResource.point2.description">
+            <h3>Sustainable Mining</h3>
+            <p>
               Implementing responsible mining practices that minimize environmental impact, 
               ensure worker safety, and contribute to local community development.
             </p>
@@ -587,8 +581,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
               </svg>
             </div>
-            <h3 data-i18n="naturalResource.point3.title">Community Engagement</h3>
-            <p data-i18n="naturalResource.point3.description">
+            <h3>Community Engagement</h3>
+            <p>
               Involving local communities in resource management decisions, recognizing 
               traditional knowledge, and ensuring equitable benefit sharing from natural resources.
             </p>
@@ -609,7 +603,7 @@
               d="M10 19l-7-7m0 0l7-7m-7 7h18"
             />
           </svg>
-          <span data-i18n="navigation.backToFocusAreas">Back to all focus areas</span>
+          <span>Back to all focus areas</span>
         </a>
       </div>
     </section>
@@ -620,7 +614,7 @@
     <section class="newsletter-section">
       <div class="newsletter-container">
         <!-- Title -->
-        <h2 class="newsletter-title" data-i18n="login.subscribe">
+        <h2 class="newsletter-title">
           Subscribe to our newsletter to get the latest information
         </h2>
         
@@ -629,14 +623,14 @@
           <input 
             type="email" 
             placeholder="Your email" 
-            data-i18n="[placeholder]login.emailPlaceholder"
+           
             class="newsletter-input"
           >
-          <span class="newsletter-arrow">→</span>
+          <span class="newsletter-arrow">â†’</span>
         </div>
         
         <!-- Disclaimer Text -->
-        <p class="newsletter-disclaimer" data-i18n="login.noSpam">
+        <p class="newsletter-disclaimer">
           *Only relevant information, no spam
         </p>
       </div>
@@ -677,3 +671,4 @@
     <green-economy-footer></green-economy-footer>
   </body>
 </html>
+

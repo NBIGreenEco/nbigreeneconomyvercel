@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const password = verificationCodeInput.value.trim();
     if (!password) {
       console.log('DEBUG: No admin code entered');
-      errorMessage.textContent = i18next.t('verifycode.error_message', { defaultValue: 'Please enter the admin code.' });
+      errorMessage.textContent = 'Please enter the admin code.';
       errorMessage.classList.remove('hidden');
       await trackInteraction(`anonymous_${Date.now()}`, 'verify_code', 'no_password_entered', 'Empty admin code');
       return;
@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log('DEBUG: Admin code verification successful');
         sessionStorage.setItem('verified', 'true');
         sessionStorage.setItem('sessionStart', Date.now().toString()); // Set session start time
-        verificationMessage.textContent = i18next.t('verifycode.success_message', { defaultValue: 'Admin code verified successfully! Redirecting to dashboard...' });
+        verificationMessage.textContent = 'Admin code verified successfully! Redirecting to dashboard...';
         verificationMessage.classList.remove('hidden');
         await trackInteraction(`anonymous_${Date.now()}`, 'verify_code', 'success', 'Admin code verified');
         setTimeout(() => {
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }, 1500);
       } else {
         console.log('DEBUG: Invalid admin code');
-        errorMessage.textContent = i18next.t('verifycode.error_message', { defaultValue: 'Invalid admin code.' });
+        errorMessage.textContent = 'Invalid admin code.';
         errorMessage.classList.remove('hidden');
         await trackInteraction(`anonymous_${Date.now()}`, 'verify_code', 'invalid_password', 'Admin code mismatch');
       }

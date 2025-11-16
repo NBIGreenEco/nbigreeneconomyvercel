@@ -1,18 +1,14 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title data-i18n="database_management.title">Database Management | NBI Green Economy</title>
+  <title>Database Management | NBI Green Economy</title>
   <script type="module" src="/ADMIN/scripts/adminAuthCheck.js"></script>
   <link rel="stylesheet" href="/Master%20Page(Header%20and%20Footer)/MasterPage.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
-  <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
-  <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
-  <script src="/Master%20Page(Header%20and%20Footer)/Trans.js"></script>
   <style>
     /* [Inline styles unchanged from original, included for completeness] */
     :root {
@@ -431,24 +427,24 @@
     <div class="container">
       <div id="errorMessage" class="error-message d-none"></div>
       <div class="dashboard-header">
-        <h1 class="dashboard-title" data-i18n="database_management.title">Project Database Management</h1>
+        <h1 class="dashboard-title">Project Database Management</h1>
         <div class="action-buttons">
           <div class="search-container">
-            <input type="text" id="searchInput" class="search-input" data-i18n="[placeholder]database_management.search_placeholder" placeholder="Search projects...">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search projects...">
           </div>
-          <button id="exportBtn" class="btn btn-primary" data-i18n="[html]database_management.export_button">
-            <i class="bi bi-download"></i> <span data-i18n="database_management.export_button_text">Export Data</span>
+          <button id="exportBtn" class="btn btn-primary">
+            <i class="bi bi-download"></i> <span>Export Data</span>
           </button>
-          <button id="refreshBtn" class="btn btn-secondary" data-i18n="[html]database_management.refresh_button">
-            <i class="bi bi-arrow-clockwise"></i> <span data-i18n="database_management.refresh_button_text">Refresh</span>
+          <button id="refreshBtn" class="btn btn-secondary">
+            <i class="bi bi-arrow-clockwise"></i> <span>Refresh</span>
           </button>
-          <button id="logoutBtn" class="btn btn-danger" data-i18n="database_management.logout_button">
+          <button id="logoutBtn" class="btn btn-danger">
             <i class="bi bi-box-arrow-right"></i> <span>Logout</span>
           </button>
         </div>
       </div>
       <div class="category-selector">
-        <h3 data-i18n="database_management.category_selector_title">Select Data Categories to Display</h3>
+        <h3>Select Data Categories to Display</h3>
         <div class="category-tabs" id="categoryTabs"></div>
       </div>
       <div class="data-table-container">
@@ -456,7 +452,7 @@
           <thead id="tableHeader"></thead>
           <tbody id="tableBody"></tbody>
         </table>
-        <div id="noResults" class="no-results" style="display: none;" data-i18n="database_management.no_results">No projects found matching your criteria.</div>
+        <div id="noResults" class="no-results" style="display: none;">No projects found matching your criteria.</div>
       </div>
       <div class="pagination" id="pagination"></div>
     </div>
@@ -464,7 +460,7 @@
   <div class="modal-overlay" id="projectModal">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="modal-title" data-i18n="database_management.modal_title">Project Details</h2>
+        <h2 class="modal-title">Project Details</h2>
         <button class="modal-close" id="closeModal">&times;</button>
       </div>
       <div class="modal-body" id="projectDetails"></div>
@@ -477,8 +473,8 @@
 
     // Initialize i18next
     i18next
-      .use(i18nextHttpBackend)
-      .use(i18nextBrowserLanguageDetector)
+      .use()
+      .use()
       .init({
         fallbackLng: 'en',
         supportedLngs: ['en', 'zu', 'tn'],
@@ -491,101 +487,17 @@
         }
       }, (err, t) => {
         if (err) {
-          console.error('i18next initialization error:', err);
-          applyFallbackTranslations();
-          finalizeLoading();
+          console.error('i18next initialization error:', err);          finalizeLoading();
           return;
         }
         console.log('i18next initialized for database.html at', new Date().toLocaleString('en-ZA'), ':', i18next.language);
         finalizeLoading();
-      });
-
-    function applyFallbackTranslations() {
-      document.querySelectorAll('[data-i18n]').forEach(elem => {
-        const key = elem.getAttribute('data-i18n');
-        if (key.startsWith('[')) {
-          const match = key.match(/\[(\w+)\](.+)/);
-          if (match) {
-            const [, attr, i18nKey] = match;
-            const fallback = elem.getAttribute(attr) || 'Content not available';
-            elem.setAttribute(attr, fallback);
-          }
-        } else {
-          const fallback = elem.textContent.trim() || 'Content not available';
-          elem.textContent = fallback;
-        }
-      });
-      console.warn('Applied fallback translations due to loading failure');
-    }
-
-    function updateContent() {
-      const missingKeys = [];
-      document.querySelectorAll('[data-i18n]').forEach(element => {
-        const key = element.getAttribute('data-i18n');
-        try {
-          if (key.startsWith('[')) {
-            const match = key.match(/\[(\w+)\](.+)/);
-            if (match) {
-              const [, attr, translationKey] = match;
-              const translation = i18next.t(translationKey, { defaultValue: element.getAttribute(attr) || 'Content not available' });
-              if (translation === translationKey) {
-                missingKeys.push(translationKey);
-              }
-              element.setAttribute(attr, translation);
-            }
-          } else {
-            const translation = i18next.t(key, { defaultValue: element.textContent.trim() || 'Content not available' });
-            if (translation === key) {
-              missingKeys.push(key);
-            }
-            element.textContent = translation;
-          }
-        } catch (error) {
-          console.error(`Error translating key ${key}:`, error);
-        }
-      });
-      if (missingKeys.length > 0) {
-        console.warn('Missing translations:', missingKeys);
-      }
-    }
-
-    function finalizeLoading() {
-      try {
-        i18next.loadResources(() => {
-          updateContent();
-          document.body.classList.remove('loading');
-          document.body.classList.add('loaded');
-          document.querySelector('.loading-overlay').style.display = 'none';
-          console.log('Translations loaded, content displayed');
-          initializeDashboard();
-        });
-      } catch (error) {
-        console.error('Error loading translations:', error);
-        applyFallbackTranslations();
-        document.body.classList.remove('loading');
-        document.body.classList.add('loaded');
-        document.querySelector('.loading-overlay').style.display = 'none';
-        showErrorMessage(i18next.t('database_management.alert_load_error', { defaultValue: 'Failed to load translations. Displaying default content.' }));
-        initializeDashboard();
-      }
-    }
-
-    function showErrorMessage(message) {
-      const errorDiv = document.getElementById('errorMessage');
-      if (errorDiv) {
-        errorDiv.textContent = message;
-        errorDiv.classList.remove('d-none');
-      }
-    }
+      });}
 
     i18next.on('languageChanged', () => {
-      console.log('Language changed to:', i18next.language);
-      updateContent();
-    });
+      console.log('Language changed to:', i18next.language);    });
 
-    i18next.on('loaded', () => {
-      updateContent();
-    });
+    i18next.on('loaded', () => {    });
 
     // Column categories
     const columnCategories = {
@@ -685,7 +597,7 @@
     async function initializeDashboard() {
       try {
         const response = await fetch('../projects.json');
-        if (!response.ok) throw new Error(i18next.t('database_management.error_loading_projects', { defaultValue: 'Failed to load projects.json' }));
+        if (!response.ok) throw new Error('Failed to load projects.json');
         allProjects = await response.json();
         filteredProjects = [...allProjects];
         console.log('Projects loaded:', filteredProjects.length);
@@ -693,7 +605,7 @@
         displayProjects();
       } catch (error) {
         console.error('Error loading projects:', error);
-        showErrorMessage(i18next.t('database_management.error_loading_projects', { defaultValue: 'Error loading projects: ' + error.message }));
+        showErrorMessage('Error loading projects: ');
       }
     }
 
@@ -710,9 +622,7 @@
         tab.dataset.category = category;
         tab.addEventListener('click', toggleCategory);
         categoryTabs.appendChild(tab);
-      }
-      updateContent();
-    }
+      }    }
 
     // Toggle category visibility
     function toggleCategory(e) {
@@ -765,14 +675,12 @@
         const viewBtn = document.createElement('button');
         viewBtn.className = 'btn btn-primary';
         viewBtn.style.padding = '5px 10px';
-        viewBtn.innerHTML = '<i class="bi bi-eye"></i> <span data-i18n="database_management.view_button">View</span>';
+        viewBtn.innerHTML = '<i class="bi bi-eye"></i> <span>View</span>';
         viewBtn.addEventListener('click', () => viewProjectDetails(project["Project Code"] || project["New project name"] || project["Oroginal Project name"]));
         actionCell.appendChild(viewBtn);
         row.appendChild(actionCell);
         tableBody.appendChild(row);
-      });
-      updateContent();
-      generatePagination(totalPages);
+      });      generatePagination(totalPages);
     }
 
     // Update table header
@@ -789,9 +697,7 @@
       actionTh.setAttribute('data-i18n', 'database_management.table_actions');
       actionTh.textContent = 'Actions'; // Fallback
       headerRow.appendChild(actionTh);
-      tableHeader.appendChild(headerRow);
-      updateContent();
-    }
+      tableHeader.appendChild(headerRow);    }
 
     // View project details in modal
     function viewProjectDetails(projectCode) {
@@ -818,7 +724,7 @@
         if (!hasData) continue;
         detailsHTML += `
           <div class="detail-section">
-            <h3 data-i18n="database_management.category_${category.toLowerCase().replace(/\s+/g, '_')}">${category}</h3>
+            <h3>${category}</h3>
             <div class="detail-grid">
         `;
         categoryColumns.forEach(col => {
@@ -834,9 +740,7 @@
         detailsHTML += `</div></div>`;
       }
       projectDetails.innerHTML = detailsHTML;
-      projectModal.classList.add('active');
-      updateContent();
-    }
+      projectModal.classList.add('active');    }
 
     // Generate pagination controls
     function generatePagination(totalPages) {
@@ -919,10 +823,10 @@
     function exportData() {
       console.log('Exporting data');
       if (filteredProjects.length === 0) {
-        alert(i18next.t('database_management.alert_no_data', { defaultValue: 'No data to export' }));
+        alert('No data to export');
         return;
       }
-      let csvContent = currentColumns.join(',') + `,${i18next.t('database_management.table_actions', { defaultValue: 'Actions' })}\n`;
+      let csvContent = currentColumns.join(',') + `,${'Actions'}\n`;
       filteredProjects.forEach(project => {
         const row = currentColumns.map(col => {
           let value = project[col] || '';
@@ -998,12 +902,10 @@
     // Fallback timeout
     setTimeout(() => {
       if (document.body.classList.contains('loading')) {
-        console.warn('Loading timeout reached, forcing content display');
-        applyFallbackTranslations();
-        document.body.classList.remove('loading');
+        console.warn('Loading timeout reached, forcing content display');        document.body.classList.remove('loading');
         document.body.classList.add('loaded');
         document.querySelector('.loading-overlay').style.display = 'none';
-        showErrorMessage(i18next.t('database_management.alert_timeout', { defaultValue: 'Page load timeout. Displaying default content.' }));
+        showErrorMessage('Page load timeout. Displaying default content.');
         initializeDashboard();
       }
     }, 10000);
@@ -1013,3 +915,5 @@
   </script>
 </body>
 </html>
+
+

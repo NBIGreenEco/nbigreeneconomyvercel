@@ -1,15 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title data-i18n="admin_dashboard.title">Admin Dashboard - Green Economy Toolkit</title>
+    <title>Admin Dashboard - Green Economy Toolkit</title>
     <script type="module" src="/ADMIN/scripts/adminAuthCheck.js"></script>
 <link rel="stylesheet" href="/Master%20Page(Header%20and%20Footer)/MasterPage.css">
-    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
-    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
-    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
-    <script src="/Master Page(Header and Footer)/Trans.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"></script>
@@ -196,45 +192,45 @@
         <green-economy-header></green-economy-header>
     <section class="hero">
       <div class="hero-content">
-        <h1 data-i18n="admin_dashboard.hero_title">Admin Dashboard</h1>
-        <button class="logout-btn" id="logoutBtn" data-i18n="admin_dashboard.logout_button">Logout</button>
+        <h1>Admin Dashboard</h1>
+        <button class="logout-btn" id="logoutBtn">Logout</button>
       </div>
     </section>
     <section class="dashboard-grid">
       <div class="dashboard-card" id="manage-events">
         <i class="fas fa-calendar-alt card-icon"></i>
-        <h3 class="card-title" data-i18n="admin_dashboard.events_title">Manage Events</h3>
-        <p class="card-description" data-i18n="admin_dashboard.events_desc">Add or edit events for the index page.</p>
+        <h3 class="card-title">Manage Events</h3>
+        <p class="card-description">Add or edit events for the index page.</p>
       </div>
       <div class="dashboard-card" id="manage-news">
         <i class="fas fa-newspaper card-icon"></i>
-        <h3 class="card-title" data-i18n="admin_dashboard.news_title">Manage News</h3>
-        <p class="card-description" data-i18n="admin_dashboard.news_desc">Update the news section on the index page.</p>
+        <h3 class="card-title">Manage News</h3>
+        <p class="card-description">Update the news section on the index page.</p>
       </div>
       <div class="dashboard-card" id="manage-database">
         <i class="fas fa-database card-icon"></i>
-        <h3 class="card-title" data-i18n="admin_dashboard.database_title">Manage Database</h3>
-        <p class="card-description" data-i18n="admin_dashboard.database_desc">Access and manage the database.</p>
+        <h3 class="card-title">Manage Database</h3>
+        <p class="card-description">Access and manage the database.</p>
       </div>
       <div class="dashboard-card" id="manage-funding">
         <i class="fas fa-money-check-alt card-icon"></i>
-        <h3 class="card-title" data-i18n="admin_dashboard.funding_title">Manage Funding</h3>
-        <p class="card-description" data-i18n="admin_dashboard.funding_desc">Add or update funding opportunities.</p>
+        <h3 class="card-title">Manage Funding</h3>
+        <p class="card-description">Add or update funding opportunities.</p>
       </div>
       <div class="dashboard-card" id="manage-opportunities">
         <i class="fas fa-briefcase card-icon"></i>
-        <h3 class="card-title" data-i18n="admin_dashboard.opportunities_title">Manage Opportunities</h3>
-        <p class="card-description" data-i18n="admin_dashboard.opportunities_desc">Add or update opportunities for users.</p>
+        <h3 class="card-title">Manage Opportunities</h3>
+        <p class="card-description">Add or update opportunities for users.</p>
       </div>
       <div class="dashboard-card" id="manage-translations">
         <i class="fas fa-language card-icon"></i>
-        <h3 class="card-title" data-i18n="admin_dashboard.translations_title">Manage Translations</h3>
-        <p class="card-description" data-i18n="admin_dashboard.translations_desc">Run translation scripts to update language files.</p>
+        <h3 class="card-title">Manage Translations</h3>
+        <p class="card-description">Run translation scripts to update language files.</p>
       </div>
       <div class="dashboard-card" id="manage-analytics">
         <i class="fas fa-chart-line card-icon"></i>
-        <h3 class="card-title" data-i18n="admin_dashboard.analytics_title">Manage Analytics</h3>
-        <p class="card-description" data-i18n="admin_dashboard.analytics_desc">View how users interact with the website.</p>
+        <h3 class="card-title">Manage Analytics</h3>
+        <p class="card-description">View how users interact with the website.</p>
       </div>
     </section>
         <green-economy-footer></green-economy-footer>
@@ -259,8 +255,8 @@
       const auth = getAuth(app);
 
       i18next
-        .use(i18nextHttpBackend)
-        .use(i18nextBrowserLanguageDetector)
+        .use()
+        .use()
         .init({
           fallbackLng: 'en',
           supportedLngs: ['en', 'zu', 'tn'],
@@ -277,9 +273,7 @@
             setTimeout(() => {
               i18next.loadResources((loadErr) => {
                 if (loadErr) {
-                  console.error('Retry failed:', loadErr);
-                  applyFallbackTranslations();
-                } else {
+                  console.error('Retry failed:', loadErr);                } else {
                   console.log('i18next retry successful, language:', i18next.language);
                   finalizeLoading();
                 }
@@ -289,133 +283,10 @@
           }
           console.log('i18next initialized for admin-dashboard.html at', new Date().toLocaleString('en-ZA'), ':', i18next.language);
           finalizeLoading();
-        });
-
-      function applyFallbackTranslations() {
-        document.querySelectorAll('[data-i18n]').forEach(elem => {
-          const key = elem.getAttribute('data-i18n');
-          if (key.startsWith('[')) {
-            const match = key.match(/\[(\w+)\](.+)/);
-            if (match) {
-              const [, attr, i18nKey] = match;
-              const fallback = elem.getAttribute(attr) || 'Content not available';
-              elem.setAttribute(attr, fallback);
-            }
-          } else {
-            const fallback = elem.textContent.trim() || 'Content not available';
-            elem.textContent = fallback;
-          }
-        });
-        console.warn('Applied fallback translations due to loading failure');
-        finalizeLoading();
-      }
-
-      function updateContent() {
-        const missingKeys = [];
-        document.querySelectorAll('[data-i18n]').forEach(element => {
-          const key = element.getAttribute('data-i18n');
-          try {
-            if (key.startsWith('[')) {
-              const match = key.match(/\[(\w+)\](.+)/);
-              if (match) {
-                const [, attr, translationKey] = match;
-                const translation = i18next.t(translationKey, { defaultValue: element.getAttribute(attr) || 'Content not available' });
-                if (translation === translationKey) {
-                  missingKeys.push(translationKey);
-                }
-                element.setAttribute(attr, translation);
-              }
-            } else {
-              const translation = i18next.t(key, { defaultValue: element.textContent.trim() || 'Content not available' });
-              if (translation === key) {
-                missingKeys.push(key);
-              }
-              element.innerHTML = translation;
-            }
-          } catch (error) {
-            console.error(`Error translating key ${key}:`, error);
-          }
-        });
-        if (missingKeys.length > 0) {
-          console.warn('Missing translations:', missingKeys);
-        }
-      }
-
-      function finalizeLoading() {
-        i18next.loadResources(() => {
-          updateContent();
-          document.body.classList.remove('loading');
-          document.body.classList.add('loaded');
-          document.querySelector('.loading-overlay').style.display = 'none';
-          console.log('Translations loaded, content displayed');
-        });
-      }
-
-      i18next.on('languageChanged', () => {
-        console.log('Language changed to:', i18next.language);
-        updateContent();
-      });
-
-      i18next.on('loaded', () => {
-        updateContent();
-      });
-
-      document.addEventListener('DOMContentLoaded', () => {
-        console.log('DEBUG: DOM fully loaded for admin-dashboard.html at', new Date().toLocaleString('en-ZA'));
-
-        onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                console.log('DEBUG: No user signed in, redirecting to VerifyCode.html');
-                sessionStorage.removeItem('verified');
-                sessionStorage.removeItem('sessionStart');
-                window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html');
-                return;
-            }
-
-            // Initialize dashboard buttons with session persistence
-            const buttons = {
-                'manage-events': '/ADMIN/ManageEvents.html',
-                'manage-news': '/ADMIN/ManageNews.html',
-                'manage-database': '/ADMIN/database.html',
-                'manage-funding': '/ADMIN/ManageFunding.html',
-                'manage-opportunities': '/ADMIN/ManageOpprtunities.html',
-                'manage-translations': '/ADMIN/TranslationManager.html',
-                'manage-analytics': '/ADMIN/analytics.html'
-            };
-
-            Object.entries(buttons).forEach(([id, href]) => {
-                const button = document.getElementById(id);
-                if (button) {
-                    console.log(`DEBUG: Attaching click listener to ${id} for navigation to ${href}`);
-                    button.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        console.log(`DEBUG: Button ${id} clicked, setting sessionStorage`);
-                        sessionStorage.setItem('verified', 'true');
-                        sessionStorage.setItem('sessionStart', Date.now().toString());
-                        console.log('DEBUG: sessionStorage set, verified:', sessionStorage.getItem('verified'), 'sessionStart:', sessionStorage.getItem('sessionStart'));
-                        // Add slight delay to ensure sessionStorage is written
-                        setTimeout(() => {
-                            console.log(`DEBUG: Navigating to ${href}`);
-                            window.location.assign(href);
-                        }, 100);
-                    });
-                } else {
-                    console.error(`DEBUG: Button with ID ${id} not found`);
-                }
-            });
-
-            // Logout button
-            const logoutBtn = document.getElementById('logoutBtn');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', () => {
-                    console.log('DEBUG: Logout button clicked');
-                    resetAdminSession();
-                });
-            }
-
-            console.log('DEBUG: Admin dashboard initialized');
-        });
+        }););
       });
     </script>
 </body>
 </html>
+
+

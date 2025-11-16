@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title data-i18n="fundingHub.title">Green Economy Toolkit - Funding Hub</title>
+    <title>Green Economy Toolkit - Funding Hub</title>
     
     <!-- Translation System (Unofficial Google Translate API) -->
     <script>
@@ -37,7 +37,7 @@
         const translating = targetLang === 'en' ? 'English' :
                             targetLang === 'zu' ? 'isiZulu' :
                             'Setswana';
-        selector.options[selector.selectedIndex].text = `Translating to ${translating}…`;
+        selector.options[selector.selectedIndex].text = `Translating to ${translating}â€¦`;
 
         const walker = document.createTreeWalker(
           document.body,
@@ -77,7 +77,7 @@
         }
         translatePage(lang).catch(err => {
           console.error(err);
-          alert('Translation failed – check your internet connection.');
+          alert('Translation failed â€“ check your internet connection.');
         });
       }
 
@@ -103,10 +103,6 @@
     <link rel="stylesheet" href="Funding-Hub.css">
     <link rel="stylesheet" href="../digital_human/digital-human.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
-    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
-    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
-    <script type="module" src="../Trans.js"></script>
     <script type="module" src="../Master Page(Header and Footer)/MasterPage.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"></script>
@@ -147,7 +143,7 @@
             background-color: #2e7d32;
         }
         .check-indicator::before {
-            content: "✔";
+            content: "âœ”";
             color: #2e7d32;
             visibility: hidden;
         }
@@ -197,9 +193,7 @@
             font-weight: 500;
         }
     </style>
-    <script type="module">
-        import { updateContent } from '../Trans.js';
-        import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
+    <script type="module">        import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
         import { getAuth, onAuthStateChanged, setPersistence, browserSessionPersistence } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
         import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
 
@@ -543,8 +537,8 @@
                 // Initialize i18next
                 if (!i18next.isInitialized) {
                     i18next
-                        .use(i18nextHttpBackend)
-                        .use(i18nextBrowserLanguageDetector)
+                        .use()
+                        .use()
                         .init({
                             fallbackLng: 'en',
                             supportedLngs: ['en', 'zu', 'tn'],
@@ -585,7 +579,7 @@
                     option.addEventListener('click', function() {
                         this.classList.toggle('selected');
                         const indicator = this.querySelector('.check-indicator');
-                        indicator.textContent = this.classList.contains('selected') ? '✓' : '';
+                        indicator.textContent = this.classList.contains('selected') ? 'âœ“' : '';
                         trackUserInteraction(auth.currentUser?.uid || 'anonymous', 'filter', 'select', this.dataset.value);
                     });
                 });
@@ -599,9 +593,7 @@
 
             function finalizePageLoad() {
                 try {
-                    i18next.loadResources(() => {
-                        updateContent();
-                        document.body.classList.remove('loading');
+                    i18next.loadResources(() => {                        document.body.classList.remove('loading');
                         document.body.classList.add('loaded');
                         if (loadingOverlay) {
                             loadingOverlay.style.display = 'none';
@@ -721,20 +713,20 @@
         <main>
             <section class="relative min-h-[400px] flex items-center">
                 <div class="absolute inset-0">
-                    <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40" alt="Financial documents" class="w-full h-full object-cover" data-i18n="[alt]fundingHub.hero_image">
+                    <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40" alt="Financial documents" class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-black/20"></div>
                 </div>
                 <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <div class="funding-hub-gradient p-8 lg:p-12 rounded-lg text-white animate-fade-in max-w-4xl mx-auto">
-                        <h1 class="text-3xl lg:text-4xl font-bold mb-6 leading-tight" data-i18n="fundingHub.hero_title">FUNDING HUB</h1>
-                        <p class="text-lg lg:text-xl mb-8 leading-relaxed opacity-95" data-i18n="fundingHub.hero_description">
+                        <h1 class="text-3xl lg:text-4xl font-bold mb-6 leading-tight">FUNDING HUB</h1>
+                        <p class="text-lg lg:text-xl mb-8 leading-relaxed opacity-95">
                             Discover the latest green funding opportunities tailored to your needs. Our dynamic repository provides real-time updates on grants, loans, and investment programs to support your transition to a sustainable economy.
                         </p>
                     </div>
                 </div>
             </section>
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
-                <button class="back-btn flex items-center" onclick="window.location.href='/Dashboard/dashboard.html'" data-i18n="fundingHub.back_to_dashboard">
+                <button class="back-btn flex items-center" onclick="window.location.href='/Dashboard/dashboard.html'">
                     <i class="bi bi-arrow-left mr-2"></i>
                     Back to Dashboard
                 </button>
@@ -743,78 +735,78 @@
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="funding-hub-form">
                         <div class="flex items-center mb-6 gap-4 flex-wrap">
-                            <h2 class="flex items-center text-white text-xl font-semibold" data-i18n="fundingHub.search_title">
+                            <h2 class="flex items-center text-white text-xl font-semibold">
                                 <i class="bi bi-search mr-3"></i>
                                 Find Funding Opportunities
                             </h2>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                             <div>
-                                <h3 data-i18n="fundingHub.sector_filter">Sector</h3>
+                                <h3>Sector</h3>
                                 <div class="filter-group">
                                     <div class="filter-option" data-category="sector" data-value="energy">
-                                        <span data-i18n="fundingHub.sector_energy">Energy</span>
+                                        <span>Energy</span>
                                         <span class="check-indicator"></span>
                                     </div>
                                     <div class="filter-option" data-category="sector" data-value="agriculture">
-                                        <span data-i18n="fundingHub.sector_agriculture">Agriculture</span>
+                                        <span>Agriculture</span>
                                         <span class="check-indicator"></span>
                                     </div>
                                     <div class="filter-option" data-category="sector" data-value="building">
-                                        <span data-i18n="fundingHub.sector_climate_finance">Climate Finance</span>
+                                        <span>Climate Finance</span>
                                         <span class="check-indicator"></span>
                                     </div>
                                     <div class="filter-option" data-category="sector" data-value="waste">
-                                        <span data-i18n="fundingHub.sector_waste">Waste</span>
+                                        <span>Waste</span>
                                         <span class="check-indicator"></span>
                                     </div>
                                     <div class="filter-option" data-category="sector" data-value="water">
-                                        <span data-i18n="fundingHub.sector_water">Water & Sanitation</span>
+                                        <span>Water & Sanitation</span>
                                         <span class="check-indicator"></span>
                                     </div>
                                 </div>
                             </div>
                             <div>
-                                <h3 data-i18n="fundingHub.funding_type_filter">Funding Type</h3>
+                                <h3>Funding Type</h3>
                                 <div class="filter-group">
                                     <div class="filter-option" data-category="type" data-value="grant">
-                                        <span data-i18n="fundingHub.type_grant">Grants</span>
+                                        <span>Grants</span>
                                         <span class="check-indicator"></span>
                                     </div>
                                     <div class="filter-option" data-category="type" data-value="loan">
-                                        <span data-i18n="fundingHub.type_debt">Debt</span>
+                                        <span>Debt</span>
                                         <span class="check-indicator"></span>
                                     </div>
                                     <div class="filter-option" data-category="type" data-value="equity">
-                                        <span data-i18n="fundingHub.type_equity">Equity</span>
+                                        <span>Equity</span>
                                         <span class="check-indicator"></span>
                                     </div>
                                     <div class="filter-option" data-category="type" data-value="working capital">
-                                        <span data-i18n="fundingHub.type_working_capital">Working Capital</span>
+                                        <span>Working Capital</span>
                                         <span class="check-indicator"></span>
                                     </div>
                                 </div>
                             </div>
                             <div>
-                                <h3 data-i18n="fundingHub.target_filter">Target</h3>
+                                <h3>Target</h3>
                                 <div class="filter-group">
                                     <div class="filter-option" data-category="target" data-value="smme">
-                                        <span data-i18n="fundingHub.target_smme">SMME's</span>
+                                        <span>SMME's</span>
                                         <span class="check-indicator"></span>
                                     </div>
                                     <div class="filter-option" data-category="target" data-value="non-smme">
-                                        <span data-i18n="fundingHub.target_non_smme">Non-SMME's</span>
+                                        <span>Non-SMME's</span>
                                         <span class="check-indicator"></span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="flex justify-between items-center pt-4 border-t border-white/20 mt-6">
-                            <button onclick="applyFilters()" class="apply-btn flex items-center" data-i18n="fundingHub.apply_filters">
+                            <button onclick="applyFilters()" class="apply-btn flex items-center">
                                 <i class="bi bi-funnel mr-2"></i>
                                 Apply Filters
                             </button>
-                            <button onclick="resetFilters()" class="reset-btn flex items-center" data-i18n="fundingHub.reset_filters">
+                            <button onclick="resetFilters()" class="reset-btn flex items-center">
                                 <i class="bi bi-arrow-counterclockwise mr-1"></i>
                                 Reset Filters
                             </button>
@@ -826,7 +818,7 @@
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="funding-hub-form">
                         <div class="flex justify-between items-center mb-8">
-                            <h2 class="text-2xl font-bold text-white" data-i18n="fundingHub.results_title">Available Funding Opportunities</h2>
+                            <h2 class="text-2xl font-bold text-white">Available Funding Opportunities</h2>
                         </div>
                         <div id="funding-results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         </div>
@@ -836,28 +828,28 @@
             <section class="py-16 bg-white">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="funding-hub-form">
-                        <h2 class="text-2xl font-bold text-gray-900 mb-12 text-center" style="color: white;" data-i18n="fundingHub.apply_title">How to Apply for Funding</h2>
+                        <h2 class="text-2xl font-bold text-gray-900 mb-12 text-center" style="color: white;">How to Apply for Funding</h2>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                             <div class="text-center">
                                 <div class="w-16 h-16 bg-teal-50 rounded-full flex items-center justify-center mx-auto mb-4">
                                     <span class="text-teal-700 text-2xl font-bold">1</span>
                                 </div>
-                                <h3 class="text-xl font-bold mb-2 text-gray-900" style="color: white;" data-i18n="fundingHub.apply_step1_title">Find Suitable Opportunities</h3>
-                                <p class="text-gray-600" style="color: white;" data-i18n="fundingHub.apply_step1_description">Use our filters to identify funding programs that match your project type, sector, and financial needs.</p>
+                                <h3 class="text-xl font-bold mb-2 text-gray-900" style="color: white;">Find Suitable Opportunities</h3>
+                                <p class="text-gray-600" style="color: white;">Use our filters to identify funding programs that match your project type, sector, and financial needs.</p>
                             </div>
                             <div class="text-center">
                                 <div class="w-16 h-16 bg-teal-50 rounded-full flex items-center justify-center mx-auto mb-4">
                                     <span class="text-teal-700 text-2xl font-bold">2</span>
                                 </div>
-                                <h3 class="text-xl font-bold mb-2 text-gray-900" style="color: white;" data-i18n="fundingHub.apply_step2_title">Review Requirements</h3>
-                                <p class="text-gray-600" style="color: white;" data-i18n="fundingHub.apply_step2_description">Carefully read the eligibility criteria and application requirements for each funding opportunity.</p>
+                                <h3 class="text-xl font-bold mb-2 text-gray-900" style="color: white;">Review Requirements</h3>
+                                <p class="text-gray-600" style="color: white;">Carefully read the eligibility criteria and application requirements for each funding opportunity.</p>
                             </div>
                             <div class="text-center">
                                 <div class="w-16 h-16 bg-teal-50 rounded-full flex items-center justify-center mx-auto mb-4">
                                     <span class="text-teal-700 text-2xl font-bold">3</span>
                                 </div>
-                                <h3 class="text-xl font-bold mb-2 text-gray-900" style="color: white;" data-i18n="fundingHub.apply_step3_title">Prepare & Submit</h3>
-                                <p class="text-gray-600" style="color: white;" data-i18n="fundingHub.apply_step3_description">Gather necessary documents and submit your application before the deadline.</p>
+                                <h3 class="text-xl font-bold mb-2 text-gray-900" style="color: white;">Prepare & Submit</h3>
+                                <p class="text-gray-600" style="color: white;">Gather necessary documents and submit your application before the deadline.</p>
                             </div>
                         </div>
                     </div>
@@ -893,3 +885,5 @@
     <script type="module" src="../scripts/chatbot.js"></script>
 </body>
 </html>
+
+

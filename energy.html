@@ -1,9 +1,9 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title data-i18n="title.energy">Energy - Green Economy Toolkit</title>
+    <title>Energy - Green Economy Toolkit</title>
 
     <!-- Translation System (Unofficial Google Translate API) -->
     <script>
@@ -34,7 +34,7 @@
         const translating = targetLang === 'en' ? 'English' :
                             targetLang === 'zu' ? 'isiZulu' :
                             'Setswana';
-        selector.options[selector.selectedIndex].text = `Translating to ${translating}…`;
+        selector.options[selector.selectedIndex].text = `Translating to ${translating}â€¦`;
 
         const walker = document.createTreeWalker(
           document.body,
@@ -74,19 +74,13 @@
         }
         translatePage(lang).catch(err => {
           console.error(err);
-          alert('Translation failed – check your internet connection.');
+          alert('Translation failed â€“ check your internet connection.');
         });
       }
     </script>
 
-    <!-- Load i18next scripts -->
-    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
-    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
-    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
     <!-- Load other scripts -->
     <script type="module" src="../Master Page(Header and Footer)/MasterPage.js"></script>
-    <script type="module" src="../Master Page(Header and Footer)/translation.js"></script>
-    <script type="module" src="../Trans.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
@@ -474,7 +468,7 @@
     <section class="hero">
       <div class="hero-image" style="background-image: url('https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=1200&h=400&fit=crop');"></div>
       <div class="hero-overlay">
-        <h1 class="hero-title" data-i18n="energy.title">Energy (Clean and Efficient)</h1>
+        <h1 class="hero-title">Energy (Clean and Efficient)</h1>
       </div>
     </section>
 
@@ -482,14 +476,14 @@
     <section class="content-section">
       <div class="content-container container">
         <div class="content-description">
-          <h2 data-i18n="energy.subtitle">Clean and Efficient Energy</h2>
-          <p data-i18n="energy.description">
+          <h2>Clean and Efficient Energy</h2>
+          <p>
             Clean and efficient energy means using power sources like the sun and wind, 
             which don't cause pollution. It also means using less energy by making our 
             machines and buildings work better, reducing our carbon footprint while 
             meeting our energy needs.
           </p>
-          <p data-i18n="energy.importance">
+          <p>
             South Africa has abundant renewable energy resources, particularly solar 
             and wind. Transitioning to clean energy sources reduces reliance on fossil 
             fuels, creates jobs in the green energy sector, and contributes to global 
@@ -504,8 +498,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707" />
               </svg>
             </div>
-            <h3 data-i18n="energy.point1.title">Renewable Sources</h3>
-            <p data-i18n="energy.point1.description">
+            <h3>Renewable Sources</h3>
+            <p>
               Harnessing solar, wind, hydro, and geothermal energy to generate electricity 
               without greenhouse gas emissions or environmental degradation.
             </p>
@@ -517,8 +511,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
-            <h3 data-i18n="energy.point2.title">Energy Efficiency</h3>
-            <p data-i18n="energy.point2.description">
+            <h3>Energy Efficiency</h3>
+            <p>
               Implementing technologies and practices that reduce energy consumption 
               in buildings, transportation, and industrial processes without 
               compromising performance.
@@ -531,8 +525,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
               </svg>
             </div>
-            <h3 data-i18n="energy.point3.title">Smart Grids</h3>
-            <p data-i18n="energy.point3.description">
+            <h3>Smart Grids</h3>
+            <p>
               Developing intelligent electricity networks that optimize energy distribution, 
               integrate renewable sources, and enable consumer participation in energy management.
             </p>
@@ -553,7 +547,7 @@
               d="M10 19l-7-7m0 0l7-7m-7 7h18"
             />
           </svg>
-          <span data-i18n="navigation.backToFocusAreas">Back to all focus areas</span>
+          <span>Back to all focus areas</span>
         </a>
       </div>
     </section>
@@ -562,7 +556,7 @@
     <section class="newsletter-section">
       <div class="newsletter-container">
         <!-- Title -->
-        <h2 class="newsletter-title" data-i18n="login.subscribe">
+        <h2 class="newsletter-title">
           Subscribe to our newsletter to get the latest information
         </h2>
         
@@ -571,14 +565,14 @@
           <input 
             type="email" 
             placeholder="Your email" 
-            data-i18n="[placeholder]login.emailPlaceholder"
+           
             class="newsletter-input"
           >
-          <span class="newsletter-arrow">→</span>
+          <span class="newsletter-arrow">â†’</span>
         </div>
         
         <!-- Disclaimer Text -->
-        <p class="newsletter-disclaimer" data-i18n="login.noSpam">
+        <p class="newsletter-disclaimer">
           *Only relevant information, no spam
         </p>
       </div>
@@ -633,3 +627,4 @@
     <green-economy-footer></green-economy-footer>
   </body>
 </html>
+

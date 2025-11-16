@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <!-- Firebase Email Verification Redirect -->
@@ -84,7 +84,7 @@
             '.goog-te-combo:hover { background-color: #4ec3b0 !important; } ' +
             '.goog-te-banner-frame { display: none !important; }';
           document.head.appendChild(protectiveStyle);
-          console.log('Applied Google Translate proxy asset fix — using origin:', refOrigin);
+          console.log('Applied Google Translate proxy asset fix â€” using origin:', refOrigin);
         } catch (e) {
           console.warn('Translate proxy fix failed:', e);
         }
@@ -95,7 +95,7 @@
     <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title data-i18n="signup.title">Green Economy Toolkit - Sign Up</title>
+    <title>Green Economy Toolkit - Sign Up</title>
     
   <!-- Translation System (Unofficial Google Translate API) -->
   <script>
@@ -126,7 +126,7 @@
       const translating = targetLang === 'en' ? 'English' :
                           targetLang === 'zu' ? 'isiZulu' :
                           'Setswana';
-      selector.options[selector.selectedIndex].text = `Translating to ${translating}…`;
+      selector.options[selector.selectedIndex].text = `Translating to ${translating}â€¦`;
 
       const walker = document.createTreeWalker(
         document.body,
@@ -164,17 +164,13 @@
         }
         translatePage(lang).catch(err => {
           console.error(err);
-          alert('Translation failed – check your internet connection.');
+          alert('Translation failed â€“ check your internet connection.');
         });
       }
     </script>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lunr@2/lunr.min.js"></script>
-    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
-    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
-    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
-    <script type="module" src="../../Trans.js"></script>
     <script type="module" src="../../Master Page(Header and Footer)/MasterPage.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"></script>
@@ -275,9 +271,7 @@
             background-color: #059669;
         }
     </style>
-    <script type="module">
-        import { updateContent } from '../../Trans.js';
-        import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
+    <script type="module">        import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
         import { getAuth, onAuthStateChanged, setPersistence, browserSessionPersistence } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
         import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
 
@@ -363,9 +357,7 @@
 
             if (i18next.isInitialized) {
                 i18next.loadResources(() => {
-                    try {
-                        updateContent();
-                        clearTimeout(timeout);
+                    try {                        clearTimeout(timeout);
                         finalizePageLoad();
                     } catch (e) {
                         console.error('Error during content loading:', e);
@@ -376,9 +368,7 @@
             } else {
                 i18next.on('initialized', () => {
                     i18next.loadResources(() => {
-                        try {
-                            updateContent();
-                            clearTimeout(timeout);
+                        try {                            clearTimeout(timeout);
                             finalizePageLoad();
                         } catch (e) {
                             console.error('Error during content loading:', e);
@@ -430,43 +420,43 @@
                 <div class="flex justify-center mb-4">
                     <i class="fas fa-user-plus text-4xl text-green-primary"></i>
                 </div>
-                <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center" data-i18n="signup.header">Create Admin Account</h2>
+                <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">Create Admin Account</h2>
                 <div class="space-y-6">
                     <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700" data-i18n="signup.email_label">Email Address</label>
-                        <input id="email" type="email" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-primary focus:border-green-primary" placeholder="you@example.com" data-i18n="[placeholder]signup.email_placeholder">
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                        <input id="email" type="email" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-primary focus:border-green-primary" placeholder="you@example.com">
                     </div>
                     <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700" data-i18n="signup.password_label">Password</label>
-                        <input id="password" type="password" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-primary focus:border-green-primary" placeholder="••••••••" data-i18n="[placeholder]signup.password_placeholder">
+                        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <input id="password" type="password" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-primary focus:border-green-primary" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢">
                     </div>
                     <div>
-                        <label for="confirm-password" class="block text-sm font-medium text-gray-700" data-i18n="signup.confirm_password_label">Confirm Password</label>
-                        <input id="confirm-password" type="password" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-primary focus:border-green-primary" placeholder="••••••••" data-i18n="[placeholder]signup.confirm_password_placeholder">
+                        <label for="confirm-password" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                        <input id="confirm-password" type="password" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-primary focus:border-green-primary" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢">
                     </div>
                     <div id="error-message" class="error-message hidden"></div>
-                    <button id="sign-up-btn" class="w-full sign-up-btn font-semibold py-2 px-4 rounded-md transition-all duration-300" data-i18n="signup.sign_up_button">Sign Up</button>
+                    <button id="sign-up-btn" class="w-full sign-up-btn font-semibold py-2 px-4 rounded-md transition-all duration-300">Sign Up</button>
                     <div class="relative">
                         <div class="absolute inset-0 flex items-center">
                             <div class="w-full border-t border-gray-300"></div>
                         </div>
                         <div class="relative flex justify-center text-sm">
-                            <span class="px-2 bg-white text-gray-500" data-i18n="signup.or_continue">Or continue with</span>
+                            <span class="px-2 bg-white text-gray-500">Or continue with</span>
                         </div>
                     </div>
-                    <!-- <button id="google-sign-up-btn" class="google-btn" data-i18n="signup.google_button">
+                    <!-- <button id="google-sign-up-btn" class="google-btn">
                         <img src="https://www.google.com/favicon.ico" alt="Google logo">
                         Sign up with Google
                     </button> -->
                 </div>
                 <p class="mt-6 text-center text-sm text-gray-600">
-                    <span data-i18n="signup.have_account">Already have an account?</span> <a href="SignIn.html" class="text-green-primary hover:underline inline-link" data-i18n="signup.sign_in_link">Sign In</a>
+                    <span>Already have an account?</span> <a href="SignIn.html" class="text-green-primary hover:underline inline-link">Sign In</a>
                 </p>
             </div>
             <div id="verification-modal-overlay" class="hidden"></div>
             <div id="verification-modal" class="hidden">
-                <p class="text-lg font-medium text-gray-900 mb-4" data-i18n="signup.verification_message">You Have Been Sent Link On Email For Verification</p>
-                <button id="modal-ok-btn" data-i18n="signup.ok_button">Okay</button>
+                <p class="text-lg font-medium text-gray-900 mb-4">You Have Been Sent Link On Email For Verification</p>
+                <button id="modal-ok-btn">Okay</button>
             </div>
         </main>
         <green-economy-footer></green-economy-footer>
@@ -474,3 +464,5 @@
     <script type="module" src="../../scripts/signup.js"></script>
 </body>
 </html>
+
+
