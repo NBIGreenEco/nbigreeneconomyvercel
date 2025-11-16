@@ -365,10 +365,9 @@
         import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
         import { getFirestore, doc, getDoc, setDoc, addDoc, collection, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
 
-        // Environment detection
-        const isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
-        const baseUrl = isProduction ? 'http://greeneconomytoolkit.com' : 'http://127.0.0.1:5501';
-        console.log(`DEBUG: Environment: ${isProduction ? 'production' : 'development'}, Base URL: ${baseUrl}`);
+        // Use the current domain dynamically - works on any deployment
+        const baseUrl = window.location.origin;
+        console.log(`DEBUG: Base URL: ${baseUrl}`);
 
         // Firebase Config
         const firebaseConfig = {

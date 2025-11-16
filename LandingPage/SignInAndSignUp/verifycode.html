@@ -423,8 +423,8 @@
     }
   </style>
   <script>
-    // Always use production server
-    const SERVER_URL = 'https://greeneconomytoolkit.com';
+    // Use the current domain dynamically - works on any deployment
+    const SERVER_URL = window.location.origin;
 
     i18next
       .use()

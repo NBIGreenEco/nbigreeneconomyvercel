@@ -12,9 +12,10 @@ const firebaseConfig = {
     measurementId: "G-37VRZ5CGE4"
 };
 
-// Configuration for baseUrl (browser-compatible replacement for process.env)
+// Configuration for baseUrl - use current domain dynamically
+// This allows the code to work on any deployment (localhost, vercel, custom domain)
 const config = {
-    baseUrl: 'https://greeneconomytoolkit.com'
+    baseUrl: window.location.origin
 };
 
 console.log("Initializing Firebase for SignUp at", new Date().toLocaleString('en-ZA'));

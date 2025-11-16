@@ -16,7 +16,9 @@ const firebaseConfig = {
     measurementId: "G-37VRZ5CGE4"
 };
 
-const baseUrl = 'https://greeneconomytoolkit.com';
+// Use the current domain dynamically instead of hardcoded URL
+// This allows the code to work on any deployment (localhost, vercel, custom domain)
+const baseUrl = window.location.origin;
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 const auth = getAuth(app);
 const db = getFirestore(app);
