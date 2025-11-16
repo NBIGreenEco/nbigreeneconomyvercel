@@ -773,27 +773,13 @@
           // You can add static fallback content here if needed
       }
   </script>
-  <script type="module">      // Initialize i18next
-      i18next
-          .use()
-          .use()
-          .init({
-              fallbackLng: 'en',
-              supportedLngs: ['en', 'zu', 'tn'],
-              backend: { 
-                  loadPath: '/locales/{{lng}}.json?v=' + new Date().getTime()
-              },
-              detection: {
-                  order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
-                  caches: ['localStorage', 'cookie']
-              }
-          }, (err, t) => {
-              if (err) {
-                  console.error('i18next initialization error:', err);                  return;
-              }
-              console.log('i18next initialized for knowledgehub.html at', new Date().toLocaleString('en-ZA'), 'language:', i18next.language);
-              finalizeLoading();
-          });});
+  <script type="module">      // Initialize page
+      function initializePageContent() {
+          finalizeLoading();
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+          initializePageContent();
       });
   </script>
   <!-- Translation system is now in MasterPage header -->

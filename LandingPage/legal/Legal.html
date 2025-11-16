@@ -642,7 +642,7 @@
                     action,
                     label,
                     timestamp: serverTimestamp(),
-                    language: i18next.language || 'en',
+                    language:  || 'en',
                     userAgent: navigator.userAgent
                 });
                 console.log("DEBUG: Interaction tracked:", { tempUserId, category, action, label });
@@ -837,10 +837,8 @@
             });
 
             function initializePage() {
-                if (!i18next.isInitialized) {
-                    i18next
-                        .use()
-                        .use()
+                if (!) {
+                    i18next.use().use()
                         .init({
                             fallbackLng: 'en',
                             supportedLngs: ['en', 'zu', 'tn'],
@@ -856,7 +854,7 @@
                                 finalizePageLoad();
                                 return;
                             }
-                            console.log('DEBUG: i18next initialized at', new Date().toLocaleString('en-ZA'), 'language:', i18next.language);
+                            console.log('DEBUG: i18next initialized at', new Date().toLocaleString('en-ZA'), 'language:', );
                             finalizePageLoad();
                         });
                 } else {
@@ -868,7 +866,7 @@
                     finalizePageLoad();
                 }, 5000);
 
-                i18next.on('failedLoading', (lng, ns, msg) => {
+                 => {
                     console.error(`DEBUG: Failed to load ${lng}.json: ${msg}`);
                     displayErrorMessage(`Failed to load ${lng} translations.`);
                     clearTimeout(timeout);
@@ -878,7 +876,7 @@
 
             function finalizePageLoad() {
                 try {
-                    i18next.loadResources(() => {                        document.body.classList.remove('loading');
+                     => {                        document.body.classList.remove('loading');
                         document.body.classList.add('loaded');
                         hideLoader();
                         console.log('DEBUG: Content displayed, loading overlay hidden');

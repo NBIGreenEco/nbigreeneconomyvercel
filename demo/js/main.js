@@ -1,25 +1,11 @@
-﻿i18next
-  .use()
-  .use()
-  .init({
-    debug: true,
-    fallbackLng: 'en',
-    backend: {
-      loadPath: 'lang/{{lng}}.json',
-    }
-  }, function(err, t) {
-    if (err) return console.error(err);
-    updateContent();
-  });
+﻿// Translation stub - i18next removed
+// All content is in English by default
 
 function updateContent() {
-  document.querySelectorAll('[data-i18n]').forEach(elem => {
-    const key = elem.getAttribute('data-i18n');
-    elem.innerText = i18next.t(key);
-  });
+  // No-op: content translations disabled
 }
 
 function changeLanguage(lng) {
-  i18next.changeLanguage(lng, updateContent);
+  console.log('Language selection disabled:', lng);
 }
 

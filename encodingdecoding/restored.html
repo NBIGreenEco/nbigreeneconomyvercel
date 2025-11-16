@@ -543,8 +543,7 @@
   </div>
   <script>
     // Translation initialization
-    i18next
-      .use()
+    i18next.use()
       .init({
         fallbackLng: 'en',
         debug: false,
@@ -1061,7 +1060,7 @@
         }
       } catch (error) {
         console.error('Error uploading Excel:', error);
-        alert(i18next.t('errorUploadingExcel', { message: error.message }));
+        alert('Text: errorUploadingExcel');
       } finally {
         loadingIndicator.style.display = 'none';
         excelUpload.value = '';

@@ -303,7 +303,7 @@
                 console.error("Error setting auth persistence:", error);
                 const errorMessage = document.getElementById('error-message');
                 if (errorMessage) {
-                    errorMessage.textContent = i18next.t('signup.error_message', { defaultValue: "Failed to initialize session: " + error.message });
+                    errorMessage.textContent = "Failed to initialize session: " + error.message;
                     errorMessage.classList.remove('hidden');
                     setTimeout(() => errorMessage.classList.add('hidden'), 5000);
                 }
@@ -330,7 +330,7 @@
                         action: action,
                         label: label,
                         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                        language: i18next.language || 'en',
+                        language: 'en',
                         userAgent: navigator.userAgent
                     });
                     console.log("Interaction tracked:", { tempUserId, category, action, label });
@@ -351,38 +351,17 @@
             };
 
             const timeout = setTimeout(() => {
-                console.warn('i18next initialization timed out');
+                console.warn('Page initialization timed out');
                 finalizePageLoad();
             }, 5000);
 
-            if (i18next.isInitialized) {
-                i18next.loadResources(() => {
-                    try {                        clearTimeout(timeout);
+            try {                        clearTimeout(timeout);
                         finalizePageLoad();
                     } catch (e) {
                         console.error('Error during content loading:', e);
                         clearTimeout(timeout);
                         finalizePageLoad();
                     }
-                });
-            } else {
-                i18next.on('initialized', () => {
-                    i18next.loadResources(() => {
-                        try {                            clearTimeout(timeout);
-                            finalizePageLoad();
-                        } catch (e) {
-                            console.error('Error during content loading:', e);
-                            clearTimeout(timeout);
-                            finalizePageLoad();
-                        }
-                    });
-                });
-                i18next.on('failedLoading', (lng, ns, msg) => {
-                    console.error(`Failed to load ${lng}.json: ${msg}`);
-                    clearTimeout(timeout);
-                    finalizePageLoad();
-                });
-            }
 
             // Modified onAuthStateChanged to prevent redirect to VerifyEmail.html
             onAuthStateChanged(auth, (user) => {

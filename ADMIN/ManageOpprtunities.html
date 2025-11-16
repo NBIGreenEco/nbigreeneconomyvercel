@@ -619,9 +619,7 @@
         }
 
         // Initialize i18next
-        i18next
-            .use()
-            .use()
+        i18next.use().use()
             .init({
                 fallbackLng: 'en',
                 supportedLngs: ['en', 'zu', 'tn'],
@@ -637,9 +635,9 @@
                     console.error('i18next initialization error:', err);                    setTimeout(finalizeLoading, 3000);
                     return;
                 }
-                console.log('i18next initialized for ManageOpportunities.html at 03:23 AM SAST, Aug 24, 2025:', i18next.language);
+                console.log('i18next initialized for ManageOpportunities.html at 03:23 AM SAST, Aug 24, 2025:', );
                 finalizeLoading();
-            }););
+            });
                 });
                 renderOpportunities(allOpportunities);
                 loadingIndicator.classList.add('d-none');

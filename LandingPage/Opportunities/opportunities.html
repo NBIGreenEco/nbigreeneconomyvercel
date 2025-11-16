@@ -617,45 +617,14 @@
     }
   </style>
   <script>
-    // Initialize i18next
-    i18next
-      .use()
-      .use()
-      .init({
-        fallbackLng: 'en',
-        supportedLngs: ['en', 'zu', 'tn'],
-        backend: { 
-          loadPath: '/locales/{{lng}}.json?v=' + new Date().getTime()
-        },
-        detection: {
-          order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
-          caches: ['localStorage', 'cookie']
-        }
-      }, (err, t) => {
-        if (err) {
-          console.error('i18next initialization error:', err);
-          setTimeout(() => {
-            i18next.loadResources((loadErr) => {
-              if (loadErr) {
-                console.error('Retry failed:', loadErr);              } else {
-                console.log('i18next retry successful, language:', i18next.language);
-                finalizeLoading();
-              }
-            });
-          }, 2000);
-          return;
-        }
-        console.log('i18next initialized for Opportunities.html at', new Date().toLocaleString('en-ZA'), 'language:', i18next.language);
-        finalizeLoading();
-      }););
-      } catch (error) {
-        console.error('Error loading translations:', error);      }
+    // Initialize page
+    function initializePageContent() {
+      finalizeLoading();
     }
 
-    i18next.on('languageChanged', () => {
-      console.log('Language changed to:', i18next.language);    });
-
-    i18next.on('loaded', () => {    });
+    document.addEventListener('DOMContentLoaded', () => {
+      initializePageContent();
+    });
   </script>
   <!-- Translation system is now in MasterPage header -->
 </head>
@@ -820,7 +789,7 @@
         .catch((error) => {
           console.error("Error getting opportunities: ", error);
           loadingSpinner.style.display = 'none';
-          alert(i18next.t('opportunities.error-loading', { defaultValue: 'Error loading opportunities. Please try again.' }));
+          alert('Error loading opportunities. Please try again.');
         });
     }
 
@@ -861,8 +830,8 @@
             </div>
             <div class="card-footer bg-transparent">
               ${opportunity.link ?
-                `<a href="${opportunity.link}" target="_blank" class="btn btn-green btn-sm">${i18next.t('opportunities.view-details', { defaultValue: opportunity.linkText || 'View Details' })}</a>` :
-                `<span class="text-muted">${i18next.t('opportunities.no-link-available', { defaultValue: 'No link available' })}</span>`}
+                `<a href="${opportunity.link}" target="_blank" class="btn btn-green btn-sm">${opportunity.linkText || 'View Details'}</a>` :
+                `<span class="text-muted">No link available</span>`}
             </div>
           </div>
         `;
@@ -875,7 +844,7 @@
       if (totalPages <= 1) return;
       const prevLi = document.createElement('li');
       prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
-      prevLi.innerHTML = `<a class="page-link" href="#" aria-label="Previous">${i18next.t('opportunities.pagination-previous', { defaultValue: '&laquo;' })}</a>`;
+      prevLi.innerHTML = `<a class="page-link" href="#" aria-label="Previous">&laquo;</a>`;
       prevLi.addEventListener('click', (e) => {
         e.preventDefault();
         if (currentPage > 1) {
@@ -945,7 +914,7 @@
       }
       const nextLi = document.createElement('li');
       nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
-      nextLi.innerHTML = `<a class="page-link" href="#" aria-label="Next">${i18next.t('opportunities.pagination-next', { defaultValue: '&raquo;' })}</a>`;
+      nextLi.innerHTML = `<a class="page-link" href="#" aria-label="Next">&raquo;</a>`;
       nextLi.addEventListener('click', (e) => {
         e.preventDefault();
         if (currentPage < totalPages) {
@@ -981,13 +950,13 @@
         console.warn('Loading timeout reached, forcing content display');        document.body.classList.remove('loading');
         document.body.classList.add('loaded');
         document.querySelector('.loading-overlay').style.display = 'none';
-        alert(i18next.t('opportunities.alert-timeout', { defaultValue: 'Page load timeout. Displaying default content.' }));
+        alert('Page load timeout. Displaying default content.');
       }
     }, 10000);
 
     document.querySelectorAll('.business-card-button').forEach((button) => {
       button.addEventListener('click', function () {
-        alert(i18next.t('opportunities.feature-coming-soon', { defaultValue: 'Feature coming soon!' }));
+        alert('Feature coming soon!');
       });
     });
 

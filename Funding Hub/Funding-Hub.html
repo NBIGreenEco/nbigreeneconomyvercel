@@ -534,45 +534,8 @@
             });
 
             function initializePage() {
-                // Initialize i18next
-                if (!i18next.isInitialized) {
-                    i18next
-                        .use()
-                        .use()
-                        .init({
-                            fallbackLng: 'en',
-                            supportedLngs: ['en', 'zu', 'tn'],
-                            backend: { 
-                                loadPath: '/locales/{{lng}}.json?v=' + new Date().getTime()
-                            },
-                            detection: {
-                                order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
-                                caches: ['localStorage', 'cookie']
-                            }
-                        }, (err) => {
-                            if (err) {
-                                console.error('i18next initialization error:', err);
-                                finalizePageLoad();
-                                return;
-                            }
-                            console.log('i18next initialized for Funding-Hub.html at', new Date().toLocaleString('en-ZA'), 'language:', i18next.language);
-                            finalizePageLoad();
-                        });
-                } else {
-                    finalizePageLoad();
-                }
-
-                // Fallback if i18next initialization takes too long
-                const timeout = setTimeout(() => {
-                    console.warn('i18next initialization timed out');
-                    finalizePageLoad();
-                }, 5000);
-
-                i18next.on('failedLoading', (lng, ns, msg) => {
-                    console.error(`Failed to load ${lng}.json: ${msg}`);
-                    clearTimeout(timeout);
-                    finalizePageLoad();
-                });
+                // Initialize page
+                finalizePageLoad();
 
                 // Set up filter option click handlers
                 document.querySelectorAll('.filter-option').forEach(option => {
@@ -593,15 +556,14 @@
 
             function finalizePageLoad() {
                 try {
-                    i18next.loadResources(() => {                        document.body.classList.remove('loading');
-                        document.body.classList.add('loaded');
-                        if (loadingOverlay) {
-                            loadingOverlay.style.display = 'none';
-                        }
-                        console.log('Content displayed, loading overlay hidden');
-                    });
+                    document.body.classList.remove('loading');
+                    document.body.classList.add('loaded');
+                    if (loadingOverlay) {
+                        loadingOverlay.style.display = 'none';
+                    }
+                    console.log('Content displayed, loading overlay hidden');
                 } catch (error) {
-                    console.error('Error loading translations:', error);
+                    console.error('Error finalizing page load:', error);
                     document.body.classList.remove('loading');
                     document.body.classList.add('loaded');
                     if (loadingOverlay) {

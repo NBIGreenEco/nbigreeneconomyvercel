@@ -542,37 +542,33 @@
         };
         firebase.initializeApp(firebaseConfig);
 
-        // Initialize i18next
-        i18next
-            .use()
-            .use()
-            .init({
-                fallbackLng: 'en',
-                supportedLngs: ['en', 'zu', 'tn'],
-                backend: { 
-                    loadPath: '/locales/{{lng}}.json?v=' + new Date().getTime()
-                },
-                detection: {
-                    order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
-                    caches: ['localStorage', 'cookie']
-                }
-            }, (err, t) => {
-                if (err) {
-                    console.error('i18next initialization error:', err);
-                    setTimeout(() => {
-                        i18next.loadResources((loadErr) => {
-                            if (loadErr) {
-                                console.error('Retry failed:', loadErr);                            } else {
-                                console.log('i18next retry successful, language:', i18next.language);
-                                finalizeLoading();
-                            }
-                        });
-                    }, 2000);
-                    return;
-                }
-                console.log('i18next initialized for about.html at', new Date().toLocaleString('en-ZA'), 'language:', i18next.language);
-                finalizeLoading();
-            });</h3>
+        // Initialize page
+        function initializePageContent() {
+            finalizeLoading();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initializePageContent();
+        });
+
+        // Focus areas loading
+        async function loadFocusAreas() {
+            try {
+                const response = await fetch('/api/focus-areas');
+                if (!response.ok) throw new Error('Failed to fetch focus areas');
+                const focusAreas = await response.json();
+                const grid = document.getElementById('about-priority-areas');
+                if (!grid) return;
+                grid.innerHTML = '';
+                
+                focusAreas.forEach(area => {
+                    const focusItem = document.createElement('a');
+                    focusItem.href = area.link;
+                    focusItem.className = 'focus-item';
+                    focusItem.style.backgroundImage = `url('${area.image || getFallbackImage(area.title)}')`;
+                    focusItem.innerHTML = `
+                        <div class="focus-content">
+                            <h3>${area.title}</h3>
                         </div>
                     `;
                     

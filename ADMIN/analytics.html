@@ -259,9 +259,7 @@
     import { resetAdminSession } from '/ADMIN/scripts/adminAuthCheck.js';
 
     // Initialize i18next
-    i18next
-      .use()
-      .use()
+    i18next.use().use()
       .init({
         fallbackLng: 'en',
         supportedLngs: ['en', 'zu', 'tn'],
@@ -276,17 +274,17 @@
         if (err) {
           console.error('i18next initialization error:', err);
           setTimeout(() => {
-            i18next.loadResources((loadErr) => {
+             => {
               if (loadErr) {
                 console.error('Retry failed:', loadErr);              } else {
-                console.log('i18next retry successful, language:', i18next.language);
+                console.log('i18next retry successful, language:', );
                 finalizeLoading();
               }
             });
           }, 2000);
           return;
         }
-        console.log('i18next initialized for analytics.html at', new Date().toLocaleString('en-ZA'), ':', i18next.language);
+        console.log('i18next initialized for analytics.html at', new Date().toLocaleString('en-ZA'), ':', );
         finalizeLoading();
       });}, 10000);
   </script>

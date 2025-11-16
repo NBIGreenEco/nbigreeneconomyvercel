@@ -770,42 +770,14 @@
         }
     </style>
     <script type="module" src="../../../scripts/enhancedsearch.js"></script>
-    <script type="module">        // Initialize i18next
-        i18next
-            .use()
-            .use()
-            .init({
-                fallbackLng: 'en',
-                supportedLngs: ['en', 'zu', 'tn'],
-                backend: {
-                    loadPath: '/locales/{{lng}}.json?v=' + new Date().getTime()
-                },
-                detection: {
-                    order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
-                    caches: ['localStorage', 'cookie']
-                }
-            }, (err, t) => {
-                if (err) {
-                    console.error('i18next initialization error:', err);
-                    setTimeout(() => {
-                        i18next.loadResources((loadErr) => {
-                            if (loadErr) {
-                                console.error('Retry failed:', loadErr);                            } else {
-                                console.log('i18next retry successful, language:', i18next.language);
-                                finalizeLoading();
-                            }
-                        });
-                    }, 2000);
-                    return;
-                }
-                console.log('i18next initialized for irmsector.html at', new Date().toLocaleString('en-ZA'), 'language:', i18next.language);
-                finalizeLoading();
-            });});
-            } catch (error) {
-                console.error('Error loading translations:', error);            }
+    <script type="module">        // Initialize page
+        function initializePageContent() {
+            finalizeLoading();
         }
 
-        i18next.on('languageChanged', () => {        });
+        document.addEventListener('DOMContentLoaded', () => {
+            initializePageContent();
+        });
 
         // Firebase initialization
         const firebaseConfig = {

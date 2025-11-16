@@ -265,7 +265,7 @@
                         action: action,
                         label: label,
                         timestamp: serverTimestamp(),
-                        language: i18next.language || 'en',
+                        language: 'en',
                         userAgent: navigator.userAgent
                     });
                     console.log("Interaction tracked:", { tempUserId, category, action, label });
@@ -286,38 +286,17 @@
             };
 
             const timeout = setTimeout(() => {
-                console.warn('i18next initialization timed out');
+                console.warn('Page initialization timed out');
                 finalizePageLoad();
             }, 5000);
 
-            if (i18next.isInitialized) {
-                i18next.loadResources(() => {
-                    try {                        clearTimeout(timeout);
+            try {                        clearTimeout(timeout);
                         finalizePageLoad();
                     } catch (e) {
                         console.error('Error during content loading:', e);
                         clearTimeout(timeout);
                         finalizePageLoad();
                     }
-                });
-            } else {
-                i18next.on('initialized', () => {
-                    i18next.loadResources(() => {
-                        try {                            clearTimeout(timeout);
-                            finalizePageLoad();
-                        } catch (e) {
-                            console.error('Error during content loading:', e);
-                            clearTimeout(timeout);
-                            finalizePageLoad();
-                        }
-                    });
-                });
-                i18next.on('failedLoading', (lng, ns, msg) => {
-                    console.error(`Failed to load ${lng}.json: ${msg}`);
-                    clearTimeout(timeout);
-                    finalizePageLoad();
-                });
-            }
 
             onAuthStateChanged(auth, (user) => {
                 if (user) {

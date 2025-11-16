@@ -534,48 +534,12 @@
             });
 
             function initializePage() {
-                if (!i18next.isInitialized) {
-                    i18next
-                        .use()
-                        .use()
-                        .init({
-                            fallbackLng: 'en',
-                            supportedLngs: ['en', 'zu', 'tn'],
-                            backend: { 
-                                loadPath: '/locales/{{lng}}.json?v=' + new Date().getTime()
-                            },
-                            detection: {
-                                order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
-                                caches: ['localStorage', 'cookie']
-                            }
-                        }, (err) => {
-                            if (err) {
-                                console.error('DEBUG: i18next initialization error:', err);
-                                finalizePageLoad();
-                                return;
-                            }
-                            console.log('DEBUG: i18next initialized for dashboard.html at', new Date().toLocaleString('en-ZA'), 'language:', i18next.language);
-                            finalizePageLoad();
-                        });
-                } else {
-                    finalizePageLoad();
-                }
-
-                const timeout = setTimeout(() => {
-                    console.warn('DEBUG: i18next initialization timed out');
-                    finalizePageLoad();
-                }, 5000);
-
-                i18next.on('failedLoading', (lng, ns, msg) => {
-                    console.error(`DEBUG: Failed to load ${lng}.json: ${msg}`);
-                    clearTimeout(timeout);
-                    finalizePageLoad();
-                });
+                finalizePageLoad();
             }
 
             function finalizePageLoad() {
                 try {
-                    i18next.loadResources(() => {                        document.body.classList.remove('loading');
+                     => {                        document.body.classList.remove('loading');
                         document.body.classList.add('loaded');
                         if (loadingOverlay) {
                             loadingOverlay.style.display = 'none';
@@ -766,11 +730,7 @@
                     newsItem.addEventListener('click', () => showItemModal(item, itemKey));
                     newsGrid.appendChild(newsItem);
 
-                    i18next.addResourceBundle(i18next.language, 'translation', {
-                        [`${itemKey}.title`]: item.title,
-                        [`${itemKey}.desc`]: item.description,
-                        [`${itemKey}.source`]: item.source,
-                        [`${itemKey}.time`]: formatTimeSince(item.date),
+                    ,
                         [`dashboard.news.category.${item.category.toLowerCase()}`]: item.category
                     }, true, true);
                 });
@@ -784,10 +744,10 @@
                     const itemDate = new Date(date);
                     const diffInMs = now - itemDate;
                     const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
-                    if (diffInHours < 1) return i18next.t('dashboard.news.time.just_now', 'Just now');
-                    if (diffInHours < 24) return i18next.t('dashboard.news.time.hours_ago', { count: diffInHours }, `${diffInHours}h ago`);
+                    if (diffInHours < 1) return 'Text: dashboard.news.time.just_now';
+                    if (diffInHours < 24) return 'Text: dashboard.news.time.hours_ago';
                     const diffInDays = Math.floor(diffInHours / 24);
-                    return i18next.t('dashboard.news.time.days_ago', { count: diffInDays }, `${diffInDays}d ago`);
+                    return 'Text: dashboard.news.time.days_ago';
                 } catch (error) {
                     console.error('DEBUG: Error formatting time:', error);
                     return date;
@@ -1011,11 +971,7 @@
                     opportunityItem.addEventListener('click', () => showOpportunityModal(opportunity, itemKey));
                     opportunitiesGrid.appendChild(opportunityItem);
 
-                    i18next.addResourceBundle(i18next.language, 'translation', {
-                        [`${itemKey}.title`]: opportunity.title,
-                        [`${itemKey}.desc`]: opportunity.desc,
-                        [`${itemKey}.detailsText`]: opportunity.detailsText,
-                        [`dashboard.opportunities.category.${opportunity.category.toLowerCase()}`]: opportunity.category
+                    }`]: opportunity.category
                     }, true, true);
                 });
 
@@ -1058,12 +1014,7 @@
                 modal.style.display = 'flex';
                 setTimeout(() => modal.classList.add('show'), 10);
 
-                i18next.addResourceBundle(i18next.language, 'translation', {
-                    [`${itemKey}.date`]: item.date,
-                    'dashboard.news.modal.date_label': 'Date',
-                    'dashboard.news.modal.description_label': item.type === 'event' ? 'Details' : 'Description',
-                    'dashboard.news.modal.source_label': 'Source'
-                }, true, true);            }
+                ;            }
 
             function showOpportunityModal(opportunity, itemKey) {
                 const existingModal = document.getElementById('opportunity-details-modal');
@@ -1100,10 +1051,7 @@
                 modal.style.display = 'flex';
                 setTimeout(() => modal.classList.add('show'), 10);
 
-                i18next.addResourceBundle(i18next.language, 'translation', {
-                    'dashboard.opportunities.modal.description_label': 'Description',
-                    'dashboard.opportunities.modal.link_label': 'Details'
-                }, true, true);            }
+                ;            }
 
             function closeModal(modalId) {
                 const modal = document.getElementById(modalId);

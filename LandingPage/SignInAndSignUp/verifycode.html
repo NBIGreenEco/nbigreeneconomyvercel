@@ -426,36 +426,14 @@
     // Use the current domain dynamically - works on any deployment
     const SERVER_URL = window.location.origin;
 
-    i18next
-      .use()
-      .use()
-      .init({
-        fallbackLng: 'en',
-        supportedLngs: ['en', 'zu', 'tn'],
-        backend: {
-          loadPath: `${SERVER_URL}/locales/{{lng}}.json?v=${new Date().getTime()}`
-        },
-        detection: {
-          order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
-          caches: ['localStorage', 'cookie']
-        }
-      }, (err, t) => {
-        if (err) {
-          console.error('i18next initialization error:', err);
-          setTimeout(() => {
-            i18next.loadResources((loadErr) => {
-              if (loadErr) {
-                console.error('Retry failed:', loadErr);              } else {
-                console.log('i18next retry successful, language:', i18next.language);
-                finalizeLoading();
-              }
-            });
-          }, 2000);
-          return;
-        }
-        console.log('i18next initialized for VerifyCode.html at', new Date().toLocaleString('en-ZA'), ':', i18next.language);
-        finalizeLoading();
-      });}
+    // Initialize page
+    function initializePageContent() {
+      finalizeLoading();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initializePageContent();
+    });
   </script>
   <!-- Google Translate Script (initializes the google_translate_element used by MasterPage.js) -->
   <script type="text/javascript">

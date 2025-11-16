@@ -472,9 +472,7 @@
     import { resetAdminSession } from '/ADMIN/scripts/adminAuthCheck.js';
 
     // Initialize i18next
-    i18next
-      .use()
-      .use()
+    i18next.use().use()
       .init({
         fallbackLng: 'en',
         supportedLngs: ['en', 'zu', 'tn'],
@@ -490,14 +488,14 @@
           console.error('i18next initialization error:', err);          finalizeLoading();
           return;
         }
-        console.log('i18next initialized for database.html at', new Date().toLocaleString('en-ZA'), ':', i18next.language);
+        console.log('i18next initialized for database.html at', new Date().toLocaleString('en-ZA'), ':', );
         finalizeLoading();
       });}
 
-    i18next.on('languageChanged', () => {
-      console.log('Language changed to:', i18next.language);    });
+     => {
+      console.log('Language changed to:', );    });
 
-    i18next.on('loaded', () => {    });
+     => {    });
 
     // Column categories
     const columnCategories = {
