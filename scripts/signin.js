@@ -13,10 +13,10 @@ const firebaseConfig = {
 };
 
 // Always use production URL
-const baseUrl = 'https://greeneconomytoolkit.org';
+const baseUrl = 'https://greeneconomytoolkit.com';
 
 console.log("DEBUG: Initializing Firebase for SignIn at", new Date().toLocaleString('en-ZA'));
-console.log(`DEBUG: Environment: ${isProduction ? 'production' : 'development'}, Base URL: ${baseUrl}`);
+console.log(`DEBUG: Base URL: ${baseUrl}`);
 
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 const auth = getAuth(app);
@@ -252,6 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const redirectUrl = questionnaireCompleted
                     ? `${baseUrl}/Dashboard/dashboard.html?userId=${user.uid}`
                     : `${baseUrl}/questionnaire/questionnaire.html?userId=${user.uid}`;
+                console.log("DEBUG: Redirecting to:", redirectUrl);
                 window.location.href = redirectUrl;
             } catch (error) {
                 hideLoader();
@@ -265,6 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else if (error.code === 'auth/invalid-email') {
                     errorMsg = "Invalid email address.";
                 }
+                console.error("DEBUG: Full error details:", error.message, error.code);
                 await trackInteraction(null, 'login', 'failure', errorMsg);
                 showError(errorMsg);
             }
