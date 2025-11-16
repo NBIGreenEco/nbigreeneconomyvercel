@@ -147,16 +147,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const signInBtn = document.getElementById('sign-in-btn');
     const googleSignInBtn = document.getElementById('google-sign-in-btn');
     if (!signInBtn) console.error("DEBUG: Sign-in button not found");
+    else console.log("DEBUG: Sign-in button FOUND and ready", signInBtn);
     if (!googleSignInBtn) console.error("DEBUG: Google sign-in button not found");
 
     let isProcessing = false;
 
     if (signInBtn) {
+        console.log("DEBUG: Attaching click listener to sign-in button");
         signInBtn.addEventListener('click', async (e) => {
-            if (isProcessing) return;
+            console.log("DEBUG: CLICK EVENT FIRED - Sign-in button clicked");
+            if (isProcessing) {
+                console.log("DEBUG: Already processing, ignoring click");
+                return;
+            }
             isProcessing = true;
             e.preventDefault();
-            console.log("DEBUG: Sign-in button clicked");
+            console.log("DEBUG: Sign-in button clicked - proceeding with validation");
 
             const email = document.getElementById('email')?.value?.trim();
             const password = document.getElementById('password')?.value;
@@ -174,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 showLoader();
                 setTimeout(() => {
                     hideLoader();
-                    window.location.href = `${baseUrl}/LandingPage/SignInAndSignUp/VerifyCode.html?email=${encodeURIComponent(email)}`;
+                    window.location.href = `${baseUrl}/LandingPage/SignInAndSignUp/verifycode.html?email=${encodeURIComponent(email)}`;
                 }, 1000);
                 isProcessing = false;
                 return;
@@ -299,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 await trackInteraction(user.uid, 'login', 'success', 'Google');
 
                 if (user.email === 'nbigreeneconomy@gmail.com') {
-                    window.location.href = `${baseUrl}/LandingPage/SignInAndSignUp/VerifyCode.html?email=${encodeURIComponent(user.email)}`;
+                    window.location.href = `${baseUrl}/LandingPage/SignInAndSignUp/verifycode.html?email=${encodeURIComponent(user.email)}`;
                 } else {
                     const questionnaireCompleted = await checkQuestionnaireCompletion(user);
                     const redirectUrl = questionnaireCompleted
