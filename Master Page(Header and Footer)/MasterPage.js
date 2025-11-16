@@ -16,7 +16,102 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 class GreenEconomyHeader extends HTMLElement {
+  injectCriticalCSS() {
+    /**
+     * NUCLEAR OPTION: Inject a <style> tag that will override Google Translate CSS
+     * This runs BEFORE Google Translate has a chance to inject its styles
+     */
+    const criticalStyle = document.createElement('style');
+    criticalStyle.id = 'critical-google-translate-fix';
+    criticalStyle.textContent = `
+      /* CRITICAL: Force alignment on ALL Google Translate elements */
+      .goog-te-combo {
+        height: 70px !important;
+        line-height: 70px !important;
+        padding: 0 2rem !important;
+        background-color: transparent !important;
+        color: white !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-sizing: border-box !important;
+        width: 100% !important;
+        margin: 0 !important;
+        border: none !important;
+        font-weight: 700 !important;
+        font-size: 0.9rem !important;
+        appearance: none !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        vertical-align: middle !important;
+      }
+
+      .goog-te-combo:hover {
+        background-color: #4ec3b0 !important;
+      }
+
+      #google_translate_element {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        height: 70px !important;
+        width: 150px !important;
+        background-color: #207e74 !important;
+        flex-shrink: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      .goog-te-gadget-simple {
+        display: flex !important;
+        align-items: center !important;
+        height: 70px !important;
+        width: 100% !important;
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      .goog-te-gadget {
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      /* Hide Google banner permanently */
+      .goog-te-banner-frame,
+      .goog-te-banner,
+      .goog-te-notifbar,
+      .goog-te-floating-button,
+      iframe.goog-te-banner-frame {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        width: 0 !important;
+      }
+    `;
+    
+    // Inject at the HEAD level, before any other styles
+    if (document.head) {
+      document.head.insertBefore(criticalStyle, document.head.firstChild);
+    } else {
+      // Fallback: inject as soon as head exists
+      const checkHead = setInterval(() => {
+        if (document.head) {
+          document.head.insertBefore(criticalStyle, document.head.firstChild);
+          clearInterval(checkHead);
+        }
+      }, 10);
+    }
+
+    console.log('✅ CRITICAL CSS injected - Google Translate alignment locked');
+  }
+
   connectedCallback() {
+    // CRITICAL: Inject override stylesheet FIRST before any HTML renders
+    this.injectCriticalCSS();
+    
     const currentPath = window.location.pathname;
     const isDashboard = currentPath === '/Dashboard/dashboard.html' || currentPath === '/ADMIN/admin-dashboard.html' || currentPath === '/ADMIN/manageevents.html'
       || currentPath === '/ADMIN/managefunding.html' || currentPath === '/ADMIN/ManageOpprtunities.html' || currentPath === '/ADMIN/managenews.html' 
@@ -126,6 +221,8 @@ class GreenEconomyHeader extends HTMLElement {
     const initTranslation = () => {
       console.log(`[${getTimestamp()}] FULL PAGE READY - Initializing translation`);
       this.initializeTranslation(customSelect, showError, getTimestamp);
+      // Start monitoring Google Translate alignment IMMEDIATELY
+      this.enforceGoogleTranslateAlignment();
     };
 
     // Load script but NO auto-init
@@ -140,6 +237,84 @@ class GreenEconomyHeader extends HTMLElement {
     window.addEventListener('load', () => {
       setTimeout(initTranslation, 500); // Extra buffer
     });
+  }
+
+  enforceGoogleTranslateAlignment() {
+    /**
+     * CRITICAL FIX: Google Translate injects CSS that breaks alignment on refresh
+     * This MutationObserver watches for any changes and immediately fixes them
+     */
+    
+    const fixGoogleTranslateAlignment = () => {
+      const googleTranslateElement = document.querySelector('#google_translate_element');
+      const googTeCombo = document.querySelector('.goog-te-combo');
+      const googTeGadgetSimple = document.querySelector('.goog-te-gadget-simple');
+
+      if (googTeCombo) {
+        // Force strict alignment properties
+        googTeCombo.style.cssText = `
+          height: 70px !important;
+          line-height: 70px !important;
+          padding: 0 2rem !important;
+          margin: 0 !important;
+          background-color: transparent !important;
+          color: white !important;
+          border: none !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          box-sizing: border-box !important;
+          width: 100% !important;
+        `;
+      }
+
+      if (googleTranslateElement) {
+        googleTranslateElement.style.cssText = `
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          height: 70px !important;
+          width: 150px !important;
+          background-color: #207e74 !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          flex-shrink: 0 !important;
+        `;
+      }
+
+      if (googTeGadgetSimple) {
+        googTeGadgetSimple.style.cssText = `
+          display: flex !important;
+          align-items: center !important;
+          height: 70px !important;
+          width: 100% !important;
+          background: transparent !important;
+          padding: 0 !important;
+          margin: 0 !important;
+        `;
+      }
+    };
+
+    // Initial fix
+    fixGoogleTranslateAlignment();
+
+    // Use MutationObserver to watch for Google Translate changes
+    const observer = new MutationObserver(() => {
+      fixGoogleTranslateAlignment();
+    });
+
+    // Watch the entire document for attribute changes
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ['style'],
+      subtree: true,
+      characterData: false
+    });
+
+    // Also run fixes on interval (backup)
+    setInterval(fixGoogleTranslateAlignment, 500);
+
+    console.log('✅ Google Translate alignment enforcement ACTIVE - monitoring for changes');
   }
 
   initializeTranslation(customSelect, showError, getTimestamp) {
