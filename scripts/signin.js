@@ -19,17 +19,26 @@ const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 
 function showLoader() {
-    document.getElementById('loader').style.display = 'block';
-    document.getElementById('loader-overlay').style.display = 'block';
+    const loader = document.getElementById('loader');
+    const overlay = document.getElementById('loader-overlay');
+    if (loader && overlay) {
+        loader.style.display = 'block';
+        overlay.style.display = 'block';
+    }
 }
 
 function hideLoader() {
-    document.getElementById('loader').style.display = 'none';
-    document.getElementById('loader-overlay').style.display = 'none';
+    const loader = document.getElementById('loader');
+    const overlay = document.getElementById('loader-overlay');
+    if (loader && overlay) {
+        loader.style.display = 'none';
+        overlay.style.display = 'none';
+    }
 }
 
 function showError(message) {
     const el = document.getElementById('error-message');
+    if (!el) return;
     const final = (window.i18next?.t) ? i18next.t('signin.error_message', { defaultValue: message }) : message;
     el.textContent = final;
     el.classList.remove('hidden');
@@ -37,12 +46,19 @@ function showError(message) {
 }
 
 function showVerificationModal() {
-    document.getElementById('verification-modal').style.display = 'block';
-    document.getElementById('verification-modal-overlay').style.display = 'block';
-    document.getElementById('modal-ok-btn').onclick = () => {
-        document.getElementById('verification-modal').style.display = 'none';
-        document.getElementById('verification-modal-overlay').style.display = 'none';
-    };
+    const modal = document.getElementById('verification-modal');
+    const overlay = document.getElementById('verification-modal-overlay');
+    if (modal && overlay) {
+        modal.style.display = 'block';
+        overlay.style.display = 'block';
+    }
+    const okBtn = document.getElementById('modal-ok-btn');
+    if (okBtn) {
+        okBtn.onclick = () => {
+            modal.style.display = 'none';
+            overlay.style.display = 'none';
+        };
+    }
 }
 
 async function trackInteraction(userId, category, action, label = "") {
@@ -55,7 +71,9 @@ async function trackInteraction(userId, category, action, label = "") {
             language: (window.i18next?.language) || 'en',
             userAgent: navigator.userAgent
         });
-    } catch (e) { console.error("Track error:", e); }
+    } catch (e) {
+        console.error("Track error:", e);
+    }
 }
 
 async function checkQuestionnaireCompletion(user) {
@@ -73,6 +91,8 @@ async function checkQuestionnaireCompletion(user) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    console.log("DEBUG: signin.js loaded and DOM ready");
+
     const emailInput = document.getElementById('email');
     const passwordField = document.getElementById('password-field');
     const signInBtn = document.getElementById('sign-in-btn');
@@ -82,6 +102,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
+    console.log("Sign-in button found and attaching listener");
+
+    // Admin email: hide password
     emailInput?.addEventListener('blur', () => {
         if (emailInput.value.trim() === 'nbigreeneconomy@gmail.com') {
             passwordField.style.display = 'none';
@@ -101,10 +124,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const email = emailInput.value.trim();
         const password = document.getElementById('password')?.value;
 
-        if (!email) { showError("Enter email."); isProcessing = false; signInBtn.disabled = false; return; }
+        if (!email) {
+            showError("Enter email.");
+            signInBtn.disabled = false;
+            isProcessing = false;
+            return;
+        }
 
         await trackInteraction(null, 'login', 'attempt', email);
 
+        // Admin bypass
         if (email === 'nbigreeneconomy@gmail.com') {
             showLoader();
             setTimeout(() => {
@@ -114,7 +143,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        if (!password) { showError("Password required."); hideLoader(); signInBtn.disabled = false; isProcessing = false; return; }
+        if (!password) {
+            showError("Password required.");
+            signInBtn.disabled = false;
+            isProcessing = false;
+            return;
+        }
 
         showLoader();
         try {
@@ -159,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (err.code === 'auth/user-not-found') msg = "No account found.";
             else if (err.code === 'auth/invalid-email') msg = "Invalid email.";
             showError(msg);
-            await trackInteraction(null, 'login', 'failure', err.code);
+            await trackInteraction(null, 'login', 'failure', err.code || err.message);
         } finally {
             hideLoader();
             signInBtn.disabled = false;
