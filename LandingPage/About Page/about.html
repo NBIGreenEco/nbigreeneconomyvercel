@@ -541,40 +541,14 @@
             measurementId: "G-37VRZ5CGE4"
         };
         firebase.initializeApp(firebaseConfig);
-
-        // Initialize i18next
-        i18next
-            .use()
-            .use()
-            .init({
-                fallbackLng: 'en',
-                supportedLngs: ['en', 'zu', 'tn'],
-                backend: { 
-                    loadPath: '/locales/{{lng}}.json?v=' + new Date().getTime()
-                },
-                detection: {
-                    order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
-                    caches: ['localStorage', 'cookie']
-                }
-            }, (err, t) => {
-                if (err) {
-                    console.error('i18next initialization error:', err);
-                    setTimeout(() => {
-                        i18next.loadResources((loadErr) => {
-                            if (loadErr) {
-                                console.error('Retry failed:', loadErr);                            } else {
-                                console.log('i18next retry successful, language:', i18next.language);
-                                finalizeLoading();
-                            }
-                        });
-                    }, 2000);
-                    return;
-                }
-                console.log('i18next initialized for about.html at', new Date().toLocaleString('en-ZA'), 'language:', i18next.language);
-                finalizeLoading();
-            });</h3>
-                        </div>
-                    `;
+        
+        // Page loaded
+        document.addEventListener('DOMContentLoaded', () => {
+          document.body.classList.remove('loading');
+          document.body.classList.add('loaded');
+          const overlay = document.querySelector('.loading-overlay');
+          if (overlay) overlay.style.display = 'none';
+        });
                     
                     grid.appendChild(focusItem);
                 });
@@ -777,6 +751,24 @@
                 }
             });
         });
+    </script>
+    <script>
+        // Immediately remove loading state when page is ready
+        function removeLoading() {
+            document.body.classList.remove('loading');
+            document.body.classList.add('loaded');
+            const overlay = document.querySelector('.loading-overlay');
+            if (overlay) overlay.style.display = 'none';
+        }
+        
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', removeLoading);
+        } else {
+            removeLoading();
+        }
+        
+        // Fallback: force remove after 3 seconds
+        setTimeout(removeLoading, 3000);
     </script>
 </head>
 <body class="loading">

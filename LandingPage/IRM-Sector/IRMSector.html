@@ -135,13 +135,13 @@
     </script>
     
     <!-- Trans.js removed -->
-    <script type="module" src="/Master Page(Header and Footer)/MasterPage.js"></script>
+    <script type="module" src="../../Master Page(Header and Footer)/MasterPage.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="/Master Page(Header and Footer)/MasterPage.css">
-    <link rel="stylesheet" href="/digital_human/digital-human.css">
+    <link rel="stylesheet" href="../../Master Page(Header and Footer)/MasterPage.css">
+    <link rel="stylesheet" href="../../digital_human/digital-human.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         /* Reset and base styles */
@@ -769,7 +769,7 @@
             background: #2b9589 !important;
         }
     </style>
-    <script src="../../../scripts/enhancedsearch.js"></script>
+    <script src="../../scripts/enhancedsearch.js"></script>
     <script type="module">        // Initialize i18next
         i18next
             .use()
@@ -806,30 +806,27 @@
         }
 
         i18next.on('languageChanged', () => {        });
-
-        // Firebase initialization
-        const firebaseConfig = {
-            apiKey: "AIzaSyCfa827mvCLf1ETts6B_DmCfb7owTohBxk",
-            authDomain: "nbi-green-economy.firebaseapp.com",
-            projectId: "nbi-green-economy",
-            storageBucket: "nbi-green-economy.appspot.com",
-            messagingSenderId: "53732340059",
-            appId: "1:53732340059:web:3fb3f086c6662e1e9baa7e",
-            measurementId: "G-37VRZ5CGE4"
-        };
-        firebase.initializeApp(firebaseConfig);
-
-        // Fallback timeout
-        setTimeout(() => {
-            if (document.body.classList.contains('loading')) {                document.body.classList.remove('loading');
-                document.body.classList.add('loaded');
-                const loadingOverlay = document.querySelector('.loading-overlay');
-                if (loadingOverlay) {
-                    loadingOverlay.style.display = 'none';
-                }
-            }
-        }, 10000);
     </script>
+    <script>
+        // Immediately remove loading state when page is ready
+        function removeLoading() {
+            document.body.classList.remove('loading');
+            document.body.classList.add('loaded');
+            const overlay = document.querySelector('.loading-overlay');
+            if (overlay) overlay.style.display = 'none';
+        }
+        
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', removeLoading);
+        } else {
+            removeLoading();
+        }
+        
+        // Fallback: force remove after 3 seconds
+        setTimeout(removeLoading, 3000);
+    </script>
+
+       
     <!-- Translation system is now in MasterPage header -->
 </head>
 <body class="loading">
