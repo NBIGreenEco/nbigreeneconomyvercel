@@ -619,12 +619,7 @@
         }
 
         // Initialize i18next
-        i18next.use().use()
-            .init({
-                fallbackLng: 'en',
-                supportedLngs: ['en', 'zu', 'tn'],
-                backend: {
-                    loadPath: '/locales/{{lng}}.json?v=' + new Date().getTime()
+        .getTime()
                 },
                 detection: {
                     order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
@@ -673,7 +668,7 @@
                 return `
                     <tr>
                         <td data-label="${'Title'}" class="fw-semibold">${opportunity.name || 'Untitled'}</td>
-                        <td data-label="${'Category'}"><span class="badge-category">${i18next.t(`manage_opportunities.category_${opportunity.category}`, { defaultValue: formatCategory(opportunity.category) })}</span></td>
+                        <td data-label="${'Category'}"><span class="badge-category">${formatCategory(opportunity.category)}</span></td>
                         <td data-label="${'Description'}" title="${opportunity.description || ''}">${description}</td>
                         <td data-label="${'Link'}">
                             ${opportunity.link ? 
@@ -745,7 +740,7 @@
         // Show add modal
         function showAddModal() {
             currentOpportunityId = null;
-            modalTitle.setAttribute('data-i18n', 'manage_opportunities.add_modal_title');            if (opportunityForm) opportunityForm.reset();
+            modalTitle.if (opportunityForm) opportunityForm.reset();
             opportunityModal.show();
         }
 
@@ -758,7 +753,7 @@
             }
             
             currentOpportunityId = id;
-            modalTitle.setAttribute('data-i18n', 'manage_opportunities.edit_modal_title');            document.getElementById('opportunityId').value = id;
+            modalTitle.document.getElementById('opportunityId').value = id;
             document.getElementById('opportunityTitle').value = opportunity.name || '';
             document.getElementById('opportunityCategory').value = opportunity.category || '';
             document.getElementById('opportunityDescription').value = opportunity.description || '';
@@ -789,7 +784,7 @@
                 return;
             }
             
-            submitButtonText.setAttribute('data-i18n', 'manage_opportunities.saving_button_text');            submitSpinner.classList.remove('d-none');
+            submitButtonText.submitSpinner.classList.remove('d-none');
             
             try {
                 const opportunityData = {
@@ -816,7 +811,7 @@
                 console.error("Error saving opportunity: ", error);
                 alert('Error saving opportunity. Please try again.');
             } finally {
-                submitButtonText.setAttribute('data-i18n', 'manage_opportunities.save_button_text');                submitSpinner.classList.add('d-none');
+                submitButtonText.submitSpinner.classList.add('d-none');
             }
         });
 

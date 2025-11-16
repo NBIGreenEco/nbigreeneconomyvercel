@@ -259,12 +259,7 @@
     import { resetAdminSession } from '/ADMIN/scripts/adminAuthCheck.js';
 
     // Initialize i18next
-    i18next.use().use()
-      .init({
-        fallbackLng: 'en',
-        supportedLngs: ['en', 'zu', 'tn'],
-        backend: {
-          loadPath: '/locales/{{lng}}.json?v=' + new Date().getTime()
+    .getTime()
         },
         detection: {
           order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],

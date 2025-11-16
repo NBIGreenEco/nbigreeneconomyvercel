@@ -726,8 +726,8 @@
             
             const details = regulationDetails[regulationId];
             if (details && modal && modalTitle && modalDescription && modalLink) {
-                modalTitle.textContent = i18next.t(details.titleKey, { defaultValue: details.title });
-                modalDescription.textContent = i18next.t(details.descKey, { defaultValue: details.description });
+                modalTitle.textContent = details.title;
+                modalDescription.textContent = details.description;
                 modalLink.href = details.link;
                 modalLink.download = `${regulationId}.pdf`;
                 modalLink.textContent = 'View Full Document';
@@ -838,11 +838,7 @@
 
             function initializePage() {
                 if (!) {
-                    i18next.use().use()
-                        .init({
-                            fallbackLng: 'en',
-                            supportedLngs: ['en', 'zu', 'tn'],
-                            backend: { loadPath: '/locales/{{lng}}.json?v=' + new Date().getTime() },
+                    .getTime() },
                             detection: {
                                 order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
                                 caches: ['localStorage', 'cookie']

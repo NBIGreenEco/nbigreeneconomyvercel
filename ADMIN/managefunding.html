@@ -573,12 +573,7 @@
         fundingRef = collection(db, "funding");
 
         // Initialize i18next
-        i18next.use().use()
-            .init({
-                fallbackLng: 'en',
-                supportedLngs: ['en', 'zu', 'tn'],
-                backend: {
-                    loadPath: '/locales/{{lng}}.json?v=' + new Date().getTime()
+        .getTime()
                 },
                 detection: {
                     order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
@@ -790,8 +785,7 @@
                         }
                     }
                 });
-                elements.modalTitle.setAttribute('data-i18n', 'manage_funding.edit_modal_title');
-                elements.submitBtn.setAttribute('data-i18n', '[html]manage_funding.update_button');                toggleModal();
+                elements.modalTitle.elements.submitBtn.toggleModal();
             } catch (error) {
                 console.error('Error retrieving funding opportunity:', error);
                 showErrorMessage('Error loading funding opportunity. Please try again.');
@@ -1000,9 +994,7 @@
                 elements.fundingForm.reset();
                 elements.fundingForm.querySelector('#doc-id').value = '';
                 elements.logoPreview.style.display = 'none';
-                elements.modalTitle.setAttribute('data-i18n', 'manage_funding.add_modal_title');
-                elements.submitBtn.setAttribute('data-i18n', '[html]manage_funding.save_button');
-                document.querySelectorAll('.checkbox-item.selected').forEach(item => {
+                elements.modalTitle.elements.submitBtn.document.querySelectorAll('.checkbox-item.selected').forEach(item => {
                     item.classList.remove('selected');
                 });
                 document.querySelectorAll('.checkbox-item input').forEach(input => {

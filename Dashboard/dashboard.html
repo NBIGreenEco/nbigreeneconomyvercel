@@ -539,15 +539,14 @@
 
             function finalizePageLoad() {
                 try {
-                     => {                        document.body.classList.remove('loading');
-                        document.body.classList.add('loaded');
-                        if (loadingOverlay) {
-                            loadingOverlay.style.display = 'none';
-                        }
-                        console.log('DEBUG: Content displayed, loading overlay hidden');
-                        loadNewsAndEvents();
-                        loadOpportunities();
-                    });
+                    document.body.classList.remove('loading');
+                    document.body.classList.add('loaded');
+                    if (loadingOverlay) {
+                        loadingOverlay.style.display = 'none';
+                    }
+                    console.log('DEBUG: Content displayed, loading overlay hidden');
+                    loadNewsAndEvents();
+                    loadOpportunities();
                 } catch (error) {
                     console.error('DEBUG: Error loading translations:', error);
                     document.body.classList.remove('loading');
@@ -727,16 +726,13 @@
                             </div>
                         </div>
                     `;
-                    newsItem.addEventListener('click', () => showItemModal(item, itemKey));
-                    newsGrid.appendChild(newsItem);
-
-                    ,
-                        [`dashboard.news.category.${item.category.toLowerCase()}`]: item.category
-                    }, true, true);
-                });
-
-                prevBtn.disabled = currentNewsPage === 1;
-                nextBtn.disabled = currentNewsPage === Math.ceil(filteredItems.length / newsItemsPerPage) || filteredItems.length === 0;            }
+                        newsItem.addEventListener('click', () => showItemModal(item, itemKey));
+                        newsGrid.appendChild(newsItem);
+                    });
+    
+                    prevBtn.disabled = currentNewsPage === 1;
+                    nextBtn.disabled = currentNewsPage === Math.ceil(filteredItems.length / newsItemsPerPage) || filteredItems.length === 0;
+                }
 
             function formatTimeSince(date) {
                 try {
@@ -970,9 +966,6 @@
                     `;
                     opportunityItem.addEventListener('click', () => showOpportunityModal(opportunity, itemKey));
                     opportunitiesGrid.appendChild(opportunityItem);
-
-                    }`]: opportunity.category
-                    }, true, true);
                 });
 
                 prevBtn.disabled = currentOpportunitiesPage === 1;

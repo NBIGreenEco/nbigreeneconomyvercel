@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     heroButtons.forEach(button => {
         button.addEventListener('click', function() {
             const buttonText = this.textContent.trim().toLowerCase();
-            const translatedLogin = i18next.t('buttons.login').toLowerCase();
+            const translatedLogin = 'buttons.login'.toLowerCase();
             switch(buttonText) {
                 case 'get funding':
                     window.location.href = '/Funding Hub/Funding-Hub.html';

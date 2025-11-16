@@ -34,7 +34,7 @@ async function trackInteraction(category, action, label = "") {
             action: action,
             label: label,
             timestamp: serverTimestamp(),
-            language: i18next.language || 'en',
+            language: 'en' || 'en',
             userAgent: navigator.userAgent
         });
     } catch (error) {
@@ -258,7 +258,7 @@ function updateProgressUI(progress) {
     const percentage = Math.min((progress.completedScenarios.length / 10) * 100, 100);
     progressBar.style.width = `${percentage}%`;
     const level = progress.level === 1 ? 'Beginner' : progress.level === 2 ? 'Intermediate' : 'Expert';
-    progressText.textContent = i18next.t('gamified.progress_text', { defaultValue: `Level ${progress.level}: ${level}` });
+    progressText.textContent = 'gamified.progress_text';
 }
 
 function updateBadgesUI(badges) {
@@ -270,8 +270,8 @@ function updateBadgesUI(badges) {
         badgeElement.innerHTML = `
             <i class="${badge.icon} text-2xl text-green-primary mr-2"></i>
             <div>
-                <p class="font-semibold">${i18next.t(badge.nameKey, { defaultValue: badge.nameDefault })}</p>
-                <p class="text-sm text-gray-600">${i18next.t(badge.descriptionKey, { defaultValue: badge.descriptionDefault })}</p>
+                <p class="font-semibold">${badge.nameDefault}</p>
+                <p class="text-sm text-gray-600">${badge.descriptionDefault}</p>
             </div>
         `;
         badgesContainer.appendChild(badgeElement);
@@ -286,9 +286,9 @@ function updateRewardsUI(progress) {
         const rewardElement = document.createElement('div');
         rewardElement.className = `p-2 bg-gray-100 rounded-md ${isUnlocked ? '' : 'opacity-50'}`;
         rewardElement.innerHTML = `
-            <p class="font-semibold">${i18next.t(reward.nameKey, { defaultValue: reward.nameDefault })}</p>
-            <p class="text-sm text-gray-600">${i18next.t(reward.descriptionKey, { defaultValue: reward.descriptionDefault })}</p>
-            ${isUnlocked ? `<button class="mt-2 text-green-primary hover:underline claim-reward-btn" data-reward-id="${reward.id}" data-i18n="gamified.claim_reward">Claim Reward</button>` : `<p class="text-sm text-gray-600" data-i18n="gamified.locked_reward">Unlock at Level ${reward.unlockedAtLevel}</p>`}
+            <p class="font-semibold">${reward.nameDefault}</p>
+            <p class="text-sm text-gray-600">${reward.descriptionDefault}</p>
+            ${isUnlocked ? `<button class="mt-2 text-green-primary hover:underline claim-reward-btn" data-reward-id="${reward.id}">Claim Reward</button>` : `<p class="text-sm text-gray-600">Unlock at Level ${reward.unlockedAtLevel}</p>`}
         `;
         rewardsContainer.appendChild(rewardElement);
     });
@@ -309,14 +309,14 @@ function renderScenario(scenario) {
     const feedbackMessage = document.getElementById('feedback-message');
     const scenarioFeedback = document.getElementById('scenario-feedback');
 
-    challengeText.textContent = i18next.t(scenario.textKey, { defaultValue: scenario.textDefault });
+    challengeText.textContent = scenario.textDefault;
     challengeOptions.innerHTML = '';
     scenario.options.forEach((option, index) => {
         const optionElement = document.createElement('div');
         optionElement.className = 'flex items-center';
         optionElement.innerHTML = `
             <input type="radio" name="scenario-option" id="option-${index}" value="${index}" class="mr-2">
-            <label for="option-${index}" class="text-gray-700">${i18next.t(option.textKey, { defaultValue: option.textDefault })}</label>
+            <label for="option-${index}" class="text-gray-700">${option.textDefault}</label>
         `;
         challengeOptions.appendChild(optionElement);
     });
@@ -334,7 +334,7 @@ async function handleAnswerSubmission(scenario, progress, userId) {
     const nextButton = document.getElementById('next-challenge');
 
     if (!selectedOption) {
-        feedbackMessage.textContent = i18next.t('gamified.no_selection', { defaultValue: 'Please select an option.' });
+        feedbackMessage.textContent = 'Please select an option.';
         feedbackMessage.className = 'text-center text-lg font-medium text-red-600';
         feedbackMessage.classList.remove('hidden');
         return;
@@ -342,9 +342,7 @@ async function handleAnswerSubmission(scenario, progress, userId) {
 
     const optionIndex = parseInt(selectedOption.value);
     const isCorrect = scenario.options[optionIndex].correct;
-    feedbackMessage.textContent = i18next.t(isCorrect ? 'gamified.correct' : 'gamified.incorrect', {
-        defaultValue: isCorrect ? 'Correct!' : 'Incorrect.'
-    });
+    feedbackMessage.textContent = isCorrect ? 'Correct!' : 'Incorrect.';
     feedbackMessage.className = `text-center text-lg font-medium ${isCorrect ? 'text-green-600' : 'text-red-600'}`;
     feedbackMessage.classList.remove('hidden');
     scenarioFeedback.textContent = isCorrect ? scenario.feedbackCorrect : scenario.feedbackIncorrect;

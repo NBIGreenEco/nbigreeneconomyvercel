@@ -92,8 +92,6 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/i18next@23.11.5/dist/umd/i18next.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/i18next-browser-languagedetector@7.1.0/dist/umd/.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <style>
     * {
@@ -543,82 +541,14 @@
   </div>
   <script>
     // Translation initialization
-    i18next.use()
-      .init({
-        fallbackLng: 'en',
-        debug: false,
-        resources: {
-          en: {
-            translation: {
-              pageTitle: "Database Management | NBI Green Economy",
-              dashboardTitle: "Project Database Management",
-              searchPlaceholder: "Search projects...",
-              uploadButton: "<i class='bi bi-upload'></i> Upload Excel",
-              exportButton: "<i class='bi bi-download'></i> Export Data",
-              refreshButton: "<i class='bi bi-arrow-clockwise'></i> Refresh",
-              categorySelectorTitle: "Select Data Categories to Display",
-              loadingProjects: "Loading project data...",
-              noResults: "No projects found matching your criteria.",
-              projectDetailsTitle: "Project Details",
-              loadingText: "Loading...",
-              errorLoadingProjects: "Error loading projects",
-              noDataToExport: "No data to export",
-              noFileSelected: "No file selected",
-              confirmOverwrite: "Data already exists. Overwrite?",
-              uploadSuccess: "Successfully uploaded {count} projects",
-              uploadSuccessWithIds: "Successfully uploaded {count} projects, {idCount} with generated IDs",
-              errorUploadingExcel: "Error uploading Excel: {message}",
-              errorReadingFile: "Error reading file",
-              viewButton: "View",
-              actionsHeader: "Actions"
-            }
-          },
-          fr: {
-            translation: {
-              pageTitle: "Gestion de la base de donnÃ©es | NBI Ã‰conomie Verte",
-              dashboardTitle: "Gestion de la base de donnÃ©es des projets",
-              searchPlaceholder: "Rechercher des projets...",
-              uploadButton: "<i class='bi bi-upload'></i> TÃ©lÃ©charger Excel",
-              exportButton: "<i class='bi bi-download'></i> Exporter les donnÃ©es",
-              refreshButton: "<i class='bi bi-arrow-clockwise'></i> Actualiser",
-              categorySelectorTitle: "SÃ©lectionner les catÃ©gories de donnÃ©es Ã  afficher",
-              loadingProjects: "Chargement des donnÃ©es des projets...",
-              noResults: "Aucun projet trouvÃ© correspondant Ã  vos critÃ¨res.",
-              projectDetailsTitle: "DÃ©tails du projet",
-              loadingText: "Chargement...",
-              errorLoadingProjects: "Erreur lors du chargement des projets",
-              noDataToExport: "Aucune donnÃ©e Ã  exporter",
-              noFileSelected: "Aucun fichier sÃ©lectionnÃ©",
-              confirmOverwrite: "Des donnÃ©es existent dÃ©jÃ . Remplacer ?",
-              uploadSuccess: "{count} projets tÃ©lÃ©chargÃ©s avec succÃ¨s",
-              uploadSuccessWithIds: "{count} projets tÃ©lÃ©chargÃ©s avec succÃ¨s, {idCount} avec des ID gÃ©nÃ©rÃ©s",
-              errorUploadingExcel: "Erreur lors du tÃ©lÃ©chargement d'Excel : {message}",
-              errorReadingFile: "Erreur lors de la lecture du fichier",
-              viewButton: "Voir",
-              actionsHeader: "Actions"
-            }
-          }
-        }
-      }, function(err, t) {
-        if (err) console.error('i18next initialization failed:', err);      });
-
-    // Update content with translations
+    // Translation disabled
     function updateContent() {
-      document.querySelectorAll('[data-i18n]').forEach(element => {
-        const key = element.getAttribute('data-i18n');
-        if (key.includes('[html]')) {
-          element.innerHTML = i18next.t(key.replace('[html]', ''));
-        } else if (key.includes('[placeholder]')) {
-          element.placeholder = i18next.t(key.replace('[placeholder]', ''));
-        } else {
-          element.textContent = i18next.t(key);
-        }
-      });
+      // Translation disabled
     }
 
     // Language switcher
     document.getElementById('languageSelect').addEventListener('change', (e) => {
-      i18next.changeLanguage(e.target.value, () => {      });
+       => {      });
     });
 
     // Show loading overlay
@@ -1052,7 +982,7 @@
         });
         if (!response.ok) throw new Error('Failed to upload Excel');
         const result = await response.json();
-        alert(i18next.t(result.message, { count: result.count, idCount: result.idCount || 0 }));
+        alert(result.message);
         if (result.success) {
           uploadBtn.style.display = 'none';
           excelUpload.style.display = 'none';
@@ -1092,5 +1022,6 @@
   <script src="../public/Master Page(Header and Footer)/MasterPage.js"></script>
 </body>
 </html>
+
 
 

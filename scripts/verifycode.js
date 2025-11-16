@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       } else if (error.message === 'Password configuration not found') {
         errorText = 'Admin code configuration is missing. Contact support.';
       }
-      errorMessage.textContent = i18next.t('verifycode.error_message', { defaultValue: `Error verifying admin code: ${errorText}` });
+      errorMessage.textContent = 'verifycode.error_message';
       errorMessage.classList.remove('hidden');
       await trackInteraction(`anonymous_${Date.now()}`, 'verify_code', 'error', errorText);
     } finally {

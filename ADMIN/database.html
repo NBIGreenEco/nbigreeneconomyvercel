@@ -472,12 +472,7 @@
     import { resetAdminSession } from '/ADMIN/scripts/adminAuthCheck.js';
 
     // Initialize i18next
-    i18next.use().use()
-      .init({
-        fallbackLng: 'en',
-        supportedLngs: ['en', 'zu', 'tn'],
-        backend: {
-          loadPath: '/locales/{{lng}}.json?v=' + new Date().getTime()
+    .getTime()
         },
         detection: {
           order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
@@ -615,7 +610,7 @@
         const tab = document.createElement('div');
         tab.className = 'category-tab';
         if (category === "Project Information") tab.classList.add('active');
-        tab.setAttribute('data-i18n', `database_management.category_${category.toLowerCase().replace(/\s+/g, '_')}`);
+        tab..replace(/\s+/g, '_')}`);
         tab.textContent = category; // Fallback text
         tab.dataset.category = category;
         tab.addEventListener('click', toggleCategory);
@@ -692,8 +687,7 @@
         headerRow.appendChild(th);
       });
       const actionTh = document.createElement('th');
-      actionTh.setAttribute('data-i18n', 'database_management.table_actions');
-      actionTh.textContent = 'Actions'; // Fallback
+      actionTh.actionTh.textContent = 'Actions'; // Fallback
       headerRow.appendChild(actionTh);
       tableHeader.appendChild(headerRow);    }
 

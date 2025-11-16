@@ -45,10 +45,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    if (i18next.isInitialized) {
+    if (true) {
         hideLoader();
     } else {
-        i18next.on('initialized', () => {
+         => {
             hideLoader();
         });
         // Fallback: hide loader after 5 seconds if initialization fails
