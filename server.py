@@ -120,6 +120,19 @@ def serve_locales(filename):
         logger.error("Error serving locale file %s: %s", filename, str(e))
         return jsonify({'status': 'error', 'message': f"Error serving locale file: {str(e)}"}), 404
 
+@app.route('/search-index.json', methods=['GET', 'OPTIONS'])
+def serve_search_index():
+    logger.info("Received %s request to /search-index.json from origin: %s", request.method, request.headers.get('Origin'))
+    if request.method == 'OPTIONS':
+        return '', 204
+    try:
+        with open('search-index.json', 'r', encoding='utf-8') as f:
+            return jsonify(json.load(f))
+    except Exception as e:
+        logger.error("Error serving search index: %s", str(e))
+        return jsonify({'status': 'error', 'message': f"Error serving search index: {str(e)}"}), 404
+        return jsonify({'status': 'error', 'message': f"Error serving locale file: {str(e)}"}), 404
+
 @app.route('/update-cms', methods=['POST', 'OPTIONS'])
 def update_cms():
     if request.method == 'OPTIONS':

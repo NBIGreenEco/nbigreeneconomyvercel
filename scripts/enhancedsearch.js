@@ -247,27 +247,35 @@ if (typeof Fuse === 'undefined') {
     async init() {
         if (this.initialized) return;
         
+        console.log('🔍 Initializing search...');
+        
         // Check if Fuse.js is available
         if (typeof Fuse === 'undefined') {
-            console.error('Fuse.js is not loaded');
+            console.error('❌ Fuse.js is not loaded');
             this.showError('Search library not loaded. Please refresh the page.');
             return;
         }
+        
+        console.log('✅ Fuse.js loaded');
   
         try {
             // Show loading state
             const resultsDiv = document.getElementById('search-results');
             if (resultsDiv) {
                 resultsDiv.innerHTML = '<div class="p-4 text-gray-600"><i class="fas fa-spinner fa-spin"></i> Loading search...</div>';
+                console.log('📝 Showing loading state in results div');
             }
   
             // Load search index from root directory
+            console.log('📥 Fetching search index from /search-index.json');
             const response = await fetch('/search-index.json');
+            
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             
             this.index = await response.json();
+            console.log('✅ Search index loaded with', this.index.length, 'pages');
             
             // Initialize Fuse.js with lenient settings
             this.fuse = new Fuse(this.index, {
@@ -276,15 +284,15 @@ if (typeof Fuse === 'undefined') {
                     { name: 'description', weight: 0.3 },
                     { name: 'content.headings', weight: 0.1 },
                     { name: 'content.paragraphs', weight: 0.1 },
-                    { name: 'tags', weight: 0.2 } // Add this if your index has tags
+                    { name: 'tags', weight: 0.2 }
                 ],
                 includeScore: true,
-                threshold: 0.4, // Lower threshold for more lenient matching
+                threshold: 0.4,
                 minMatchCharLength: 2,
                 ignoreLocation: true,
                 shouldSort: true,
                 findAllMatches: true,
-                useExtendedSearch: true, // Enable extended search for better partial matching
+                useExtendedSearch: true,
                 ignoreFieldNorm: true,
                 fieldNormWeight: 0.1,
                 distance: 1000,
@@ -293,13 +301,17 @@ if (typeof Fuse === 'undefined') {
             });
   
             this.initialized = true;
-            console.log('Search initialized with', this.index.length, 'pages');
+            console.log('✅ Fuse.js initialized, search ready!');
   
             // Setup search input listener
             this.setupSearchListener();
+            console.log('✅ Search listener setup complete');
   
         } catch (error) {
-            console.error('Failed to load search index:', error);
+            console.error('❌ Failed to load search index:', error);
+            if (resultsDiv) {
+                resultsDiv.innerHTML = `<div class="p-4 text-red-600">Search error: ${error.message}</div>`;
+            }
             this.showError('Search temporarily unavailable');
         }
     }
@@ -322,7 +334,12 @@ if (typeof Fuse === 'undefined') {
         const resultsDiv = document.getElementById('search-results');
         const searchPopup = document.getElementById('search-popup');
   
-        if (!smartSearch || !resultsDiv) return;
+        if (!smartSearch || !resultsDiv) {
+            console.error('❌ Search elements not found. smartSearch:', !!smartSearch, 'resultsDiv:', !!resultsDiv);
+            return;
+        }
+        
+        console.log('✅ Setting up search listener');
   
         // Function to clean up URL for display
         const cleanUrlForDisplay = (url) => {
@@ -350,6 +367,7 @@ if (typeof Fuse === 'undefined') {
   
         smartSearch.addEventListener('input', debounce(async (e) => {
             const query = e.target.value.trim();
+            console.log('🔍 Search query:', query);
             resultsDiv.innerHTML = '';
             
             if (!query) {
@@ -358,19 +376,23 @@ if (typeof Fuse === 'undefined') {
             }
   
             if (!this.fuse) {
+                console.warn('⚠️ Fuse not initialized yet');
                 resultsDiv.innerHTML = '<div class="p-4 text-gray-600">Search not ready yet...</div>';
                 return;
             }
   
             // Use strict search with keyword extraction and synonym handling
             let results = this.strictSearch(query);
+            console.log('🔎 Strict search results:', results.length);
             
             // If no results, try direct term matching
             if (results.length === 0) {
                 results = this.directTermMatch(query);
+                console.log('🔎 Direct term match results:', results.length);
             }
   
             if (results.length === 0) {
+                console.log('📭 No results found');
                 const suggestions = this.getSearchSuggestions(query);
                 resultsDiv.innerHTML = `
                     <div class="p-4 text-gray-600">
@@ -388,6 +410,7 @@ if (typeof Fuse === 'undefined') {
                 return;
             }
   
+            console.log('✅ Displaying', results.length, 'results');
             this.displayEnhancedResults(results, query, cleanUrlForDisplay, resultsDiv, searchPopup);
         }, 300));
     }

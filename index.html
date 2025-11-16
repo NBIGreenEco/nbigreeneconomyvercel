@@ -248,12 +248,12 @@
       });
     </script>
 
+    <!-- MasterPage for header/footer/search -->
+    <script type="module" src="/Master Page(Header and Footer)/MasterPage.js"></script>
+    <link rel="stylesheet" href="/Master Page(Header and Footer)/MasterPage.css">
+
   </head>
   <body>
-    <!-- CRITICAL: Load MasterPage CSS and JavaScript at start of BODY before custom elements are used -->
-    <link rel="stylesheet" href="/Master%20Page(Header%20and%20Footer)/MasterPage.css">
-    <script type="module" src="/Master%20Page(Header%20and%20Footer)/MasterPage.js"></script>
-
     <!-- Wait for custom elements to load -->
     <script>
       Promise.all([

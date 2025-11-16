@@ -663,7 +663,8 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(() => console.log("Firebase auth persistence set to LOCAL"))
     .catch(error => console.error("Error setting auth persistence:", error));
 
-  setTimeout(() => setupGlobalSearchFunctionality(), 1000);
+  // DISABLED: setupGlobalSearchFunctionality is handled by custom element setupSearchFunctionality
+  // setTimeout(() => setupGlobalSearchFunctionality(), 1000);
 
   document.querySelectorAll('a[href]').forEach((anchor) => {
     anchor.addEventListener('click', async (e) => {
@@ -715,6 +716,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
+// DISABLED: This global search functionality conflicts with the custom element's setupSearchFunctionality
+// The custom element handles search setup properly, so this is no longer needed
+/*
 function setupGlobalSearchFunctionality() {
   console.log('Setting up global search functionality...');
   const searchToggle = document.querySelector('#search-toggle');
@@ -784,6 +788,7 @@ function setupGlobalSearchFunctionality() {
 
   console.log('Global search functionality setup complete');
 }
+*/
 
 window.logout = async function() {
   try {
