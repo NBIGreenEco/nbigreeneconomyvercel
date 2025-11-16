@@ -75,6 +75,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const passwordField = document.getElementById('password-field');
     const signInBtn = document.getElementById('sign-in-btn');
 
+    console.log("Sign-in button element:", signInBtn);
+    console.log("Email input element:", emailInput);
+    console.log("Password field element:", passwordField);
+
     if (!signInBtn) {
         console.error("SIGN-IN BUTTON NOT FOUND! ID: 'sign-in-btn'");
         return;
@@ -85,10 +89,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     let processing = false;
-    signInBtn.addEventListener('click', async (e) => {
-        e.preventDefault();
+    
+    // Main click handler
+    const handleSignIn = async (e) => {
+        console.log("Sign-in button clicked! Event:", e);
+        e?.preventDefault?.();
         if (processing) return;
-        processing = true; signInBtn.disabled = true;
+        processing = true; 
+        signInBtn.disabled = true;
 
         const email = emailInput.value.trim();
         const password = document.getElementById('password')?.value;
@@ -149,7 +157,26 @@ document.addEventListener('DOMContentLoaded', () => {
         } finally {
             hideLoader(); signInBtn.disabled = false; processing = false;
         }
+    };
+    
+    // Make the handler globally available as a backup
+    window.handleSignInClick = handleSignIn;
+    
+    // Attach the click handler
+    signInBtn.addEventListener('click', handleSignIn);
+    console.log('Sign-in button listener attached successfully');
+
+    // Fallback: If DOM change occurs, reattach listener
+    const observer = new MutationObserver(() => {
+        const btn = document.getElementById('sign-in-btn');
+        if (btn && !btn.__handlerAttached) {
+            btn.addEventListener('click', handleSignIn);
+            btn.__handlerAttached = true;
+            console.log('Reattached sign-in handler via MutationObserver');
+        }
     });
+    observer.observe(document.body, { childList: true, subtree: true });
+    signInBtn.__handlerAttached = true;
 
     trackInteraction(null, 'page', 'loaded', 'SignIn');
 });

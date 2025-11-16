@@ -25,8 +25,23 @@ function initializeSigninForm() {
     const signinBtn = document.getElementById('signin-btn');
     
     if (signinBtn) {
+        // Make the handler globally available as a backup
+        window.handleSigninClick = handleSignin;
+        
         signinBtn.addEventListener('click', handleSignin);
         console.log('Sign in button listener attached');
+        
+        // Fallback: If DOM changes, reattach listener
+        const observer = new MutationObserver(() => {
+            const btn = document.getElementById('signin-btn');
+            if (btn && !btn.__handlerAttached) {
+                btn.addEventListener('click', handleSignin);
+                btn.__handlerAttached = true;
+                console.log('Reattached sign-in handler via MutationObserver');
+            }
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+        signinBtn.__handlerAttached = true;
     } else {
         console.error('Sign in button not found');
     }
