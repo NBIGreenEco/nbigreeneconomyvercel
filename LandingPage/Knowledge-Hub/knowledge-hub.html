@@ -773,7 +773,21 @@
           // You can add static fallback content here if needed
       }
   </script>
-  <script type="module">      // Initialize page
+  <script type="module">
+      // Finalize loading - hide the loading overlay
+      function finalizeLoading() {
+          const loadingOverlay = document.querySelector('.loading-overlay');
+          const body = document.body;
+          
+          if (loadingOverlay) {
+              loadingOverlay.style.display = 'none';
+          }
+          
+          body.classList.remove('loading');
+          body.classList.add('loaded');
+      }
+
+      // Initialize page
       function initializePageContent() {
           finalizeLoading();
       }

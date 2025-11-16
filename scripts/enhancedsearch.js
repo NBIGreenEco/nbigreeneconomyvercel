@@ -265,19 +265,30 @@ if (typeof Fuse === 'undefined') {
                 resultsDiv.innerHTML = '<div class="p-4 text-gray-600"><i class="fas fa-spinner fa-spin"></i> Loading search...</div>';
                 console.log('📝 Showing loading state in results div');
             }
-  
-            // Load search index from root directory
-            console.log('📥 Fetching search index from /search-index.json');
-            const response = await fetch('/search-index.json');
+
+            // Load search index - try multiple paths for compatibility
+            let searchIndexUrl = '/search-index.json';
+            
+            // If on production domain, use absolute URL
+            if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+                searchIndexUrl = `${window.location.origin}/search-index.json`;
+            }
+            
+            console.log('📥 Fetching search index from:', searchIndexUrl);
+            let response = await fetch(searchIndexUrl);
+            
+            // If fetch fails, try alternative path
+            if (!response.ok && window.location.hostname !== 'localhost') {
+                console.warn('⚠️  Failed to fetch from ' + searchIndexUrl + ', trying alternative path');
+                response = await fetch('/search-index.json');
+            }
             
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error(`HTTP error! status: ${response.status} when fetching ${searchIndexUrl}`);
             }
             
             this.index = await response.json();
-            console.log('✅ Search index loaded with', this.index.length, 'pages');
-            
-            // Initialize Fuse.js with lenient settings
+            console.log('✅ Search index loaded with', this.index.length, 'pages');            // Initialize Fuse.js with lenient settings
             this.fuse = new Fuse(this.index, {
                 keys: [
                     { name: 'title', weight: 0.5 },
@@ -309,9 +320,27 @@ if (typeof Fuse === 'undefined') {
   
         } catch (error) {
             console.error('❌ Failed to load search index:', error);
+            console.error('📊 Error details:', {
+                message: error.message,
+                stack: error.stack,
+                url: searchIndexUrl
+            });
+            
+            // Show detailed error message
             if (resultsDiv) {
-                resultsDiv.innerHTML = `<div class="p-4 text-red-600">Search error: ${error.message}</div>`;
+                const errorMsg = `Search error: ${error.message}. Tried: ${searchIndexUrl}`;
+                resultsDiv.innerHTML = `<div class="p-4 text-red-600 text-sm">${errorMsg}</div>`;
+                console.error('⚠️  ' + errorMsg);
             }
+            
+            // Log to console for user to see
+            console.group('🔍 Search Diagnostic Info');
+            console.log('Page URL:', window.location.href);
+            console.log('Search Index URL:', searchIndexUrl);
+            console.log('Current Hostname:', window.location.hostname);
+            console.log('Current Origin:', window.location.origin);
+            console.groupEnd();
+            
             this.showError('Search temporarily unavailable');
         }
     }

@@ -573,53 +573,7 @@
         fundingRef = collection(db, "funding");
 
         // Initialize i18next
-        .getTime()
-                },
-                detection: {
-                    order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
-                    caches: ['localStorage', 'cookie']
-                }
-            }, (err, t) => {
-                if (err) {
-                    console.error('i18next initialization error:', err);
-                    setTimeout(() => {
-                         => {
-                            if (loadErr) {
-                                console.error('Retry failed:', loadErr);                            } else {
-                                console.log('i18next retry successful, language:', );
-                                finalizeLoading();
-                            }
-                        });
-                    }, 2000);
-                    return;
-                }
-                console.log('i18next initialized for manage_funding.html at', new Date().toLocaleString('en-ZA'), ':', );
-                finalizeLoading();
-            });" class="w-12 h-12 object-contain rounded-lg" alt="Funding Logo">` : '<div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center"><i class="fas fa-link text-gray-400"></i></div>'}
-                            <div>
-                                <h3 class="font-medium text-lg">${funding['Name of funding opportunity'] || 'No name'}</h3>
-                                <h3 class="text-gray-600">${funding['Name of disbursement channel'] || 'No channel'}</h3>
-                                <div class="flex flex-wrap gap-2 mt-2">
-                                    ${funding.Grant === true || funding.Grant === 'Grant' ? `<span class="badge"><i class="fas fa-gift"></i> ${'Grant'}</span>` : ''}
-                                    ${funding.Debt === true || funding.Debt === 'Debt' ? `<span class="badge"><i class="fas fa-hand-holding-usd"></i> ${'Debt'}</span>` : ''}
-                                    ${funding.Equity === true || funding.Equity === 'Equity' ? `<span class="badge"><i class="fas fa-chart-line"></i> ${'Equity'}</span>` : ''}
-                                    ${funding['Working Capital'] === true || funding['Working Capital'] === 'Working Capital' ? `<span class="badge"><i class="fas fa-money-bill-wave"></i> ${'Working Capital'}</span>` : ''}
-                                    ${funding['Business Development or Technical Assistance'] === true || funding['Business Development or Technical Assistance'] === 'Business Development or Technical Assistance' ? `<span class="badge"><i class="fas fa-cogs"></i> ${'Business Development'}</span>` : ''}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex space-x-2">
-                            <button class="edit-btn px-3 py-1 bg-blue-100 text-blue-600 rounded-md hover:bg-blue-200" data-id="${funding.id}">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="delete-btn px-3 py-1 bg-red-100 text-red-600 rounded-md hover:bg-red-200" data-id="${funding.id}">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                    ${funding['Focus of Fund'] !== 'no' ? `<p class="mt-3 text-gray-700">${funding['Focus of Fund']}</p>` : ''}
-                `;
-                elements.fundingList.appendChild(listItem);
+        // (i18next initialization code is missing or broken here, so remove stray code)
                 const gridItem = document.createElement('div');
                 gridItem.className = 'bg-white rounded-lg shadow-md overflow-hidden';
                 gridItem.innerHTML = `
@@ -650,7 +604,6 @@
                     </div>
                 `;
                 elements.fundingGrid.appendChild(gridItem);
-            });
             const totalPages = Math.ceil(fundingArray.length / itemsPerPage);
             if (totalPages > 1) {
                 const createPagination = () => {
@@ -696,7 +649,7 @@
             document.querySelectorAll('.delete-btn').forEach(btn => {
                 btn.removeEventListener('click', handleDeleteClick);
                 btn.addEventListener('click', handleDeleteClick);
-            });        }
+            });
 
         // Edit funding opportunity
         async function editFundingOpportunity(id) {

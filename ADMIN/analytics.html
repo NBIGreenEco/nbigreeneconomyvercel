@@ -258,30 +258,21 @@
   <script type="module">
     import { resetAdminSession } from '/ADMIN/scripts/adminAuthCheck.js';
 
-    // Initialize i18next
-    .getTime()
-        },
-        detection: {
-          order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
-          caches: ['localStorage', 'cookie']
+    // Finalize loading - hide the loading overlay
+    function finalizeLoading() {
+        const loadingOverlay = document.querySelector('.loading-overlay');
+        const body = document.body;
+        
+        if (loadingOverlay) {
+            loadingOverlay.style.display = 'none';
         }
-      }, (err, t) => {
-        if (err) {
-          console.error('i18next initialization error:', err);
-          setTimeout(() => {
-             => {
-              if (loadErr) {
-                console.error('Retry failed:', loadErr);              } else {
-                console.log('i18next retry successful, language:', );
-                finalizeLoading();
-              }
-            });
-          }, 2000);
-          return;
-        }
-        console.log('i18next initialized for analytics.html at', new Date().toLocaleString('en-ZA'), ':', );
-        finalizeLoading();
-      });}, 10000);
+        
+        body.classList.remove('loading');
+        body.classList.add('loaded');
+    }
+
+    // Initialize page
+    finalizeLoading();
   </script>
 </body>
 </html>

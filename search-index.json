@@ -1,5 +1,97 @@
 [
   {
+    "url": "/agriculture.html",
+    "title": "Agriculture - Green Economy Toolkit",
+    "description": "",
+    "content": {
+      "headings": [
+        "Agriculture",
+        "Green Agriculture",
+        "Sustainable Practices",
+        "Water Conservation",
+        "Biodiversity Protection",
+        "Subscribe to our newsletter to get the latest information"
+      ],
+      "paragraphs": [
+        "Green agriculture means farming in a way that doesn't harm the environment. \n            It includes using fewer chemicals, saving water and protecting wildlife \n            while growing our food. This approach ensures sustainable food production \n            while preserving natural resources for future generations.",
+        "In South Africa, agriculture plays a vital role in the economy and food security. \n            Transitioning to green agricultural practices helps address climate change challenges, \n            conserve biodiversity, and create sustainable livelihoods for rural communities.",
+        "Implementing crop rotation, organic farming, and integrated pest management \n              to reduce environmental impact while maintaining productivity.",
+        "Utilizing efficient irrigation systems, rainwater harvesting, and soil \n              moisture management to optimize water usage in agricultural operations.",
+        "Preserving natural habitats, promoting pollinator-friendly practices, \n              and maintaining genetic diversity in crops and livestock.",
+        "*Only relevant information, no spam"
+      ]
+    }
+  },
+  {
+    "url": "/building.html",
+    "title": "Green Buildings - Green Economy Toolkit",
+    "description": "",
+    "content": {
+      "headings": [
+        "Green Buildings & Built Environment",
+        "Sustainable Construction and Design",
+        "Energy Efficient Design",
+        "Water Conservation",
+        "Sustainable Materials",
+        "Subscribe to our newsletter to get the latest information"
+      ],
+      "paragraphs": [
+        "Green buildings are designed to save energy and use eco-friendly materials. \n            The built environment refers to human-made infrastructure and amenities. \n            Ensuring a green built environment is about building homes, offices and factories \n            that do as little harm as possible to Earth, and to the people who live and work in them.",
+        "With rapid urbanization in South Africa, green building practices offer significant \n            opportunities to reduce environmental impact, lower operating costs, and create \n            healthier living and working spaces while driving innovation in the construction sector.",
+        "Implementing passive solar design, high-performance insulation, energy-efficient \n              appliances, and renewable energy systems to minimize energy consumption in buildings.",
+        "Incorporating rainwater harvesting, greywater recycling, water-efficient fixtures, \n              and drought-resistant landscaping to reduce water usage in buildings and landscapes.",
+        "Using locally sourced, recycled, renewable, and non-toxic building materials \n              to reduce environmental impact and create healthier indoor environments.",
+        "*Only relevant information, no spam"
+      ]
+    }
+  },
+  {
+    "url": "/energy.html",
+    "title": "Energy - Green Economy Toolkit",
+    "description": "",
+    "content": {
+      "headings": [
+        "Energy (Clean and Efficient)",
+        "Clean and Efficient Energy",
+        "Renewable Sources",
+        "Energy Efficiency",
+        "Smart Grids",
+        "Subscribe to our newsletter to get the latest information"
+      ],
+      "paragraphs": [
+        "Clean and efficient energy means using power sources like the sun and wind, \n            which don't cause pollution. It also means using less energy by making our \n            machines and buildings work better, reducing our carbon footprint while \n            meeting our energy needs.",
+        "South Africa has abundant renewable energy resources, particularly solar \n            and wind. Transitioning to clean energy sources reduces reliance on fossil \n            fuels, creates jobs in the green energy sector, and contributes to global \n            climate change mitigation efforts.",
+        "Harnessing solar, wind, hydro, and geothermal energy to generate electricity \n              without greenhouse gas emissions or environmental degradation.",
+        "Implementing technologies and practices that reduce energy consumption \n              in buildings, transportation, and industrial processes without \n              compromising performance.",
+        "Developing intelligent electricity networks that optimize energy distribution, \n              integrate renewable sources, and enable consumer participation in energy management.",
+        "*Only relevant information, no spam"
+      ]
+    }
+  },
+  {
+    "url": "/environment.html",
+    "title": "Environmental Sustainability - Green Economy Toolkit",
+    "description": "",
+    "content": {
+      "headings": [
+        "Environmental Sustainability",
+        "Balancing Development and Conservation",
+        "Eco-Tourism Development",
+        "Environmental Education",
+        "Climate Resilience",
+        "Subscribe to our newsletter to get the latest information"
+      ],
+      "paragraphs": [
+        "We need to learn how to protect nature and teach others to do the same, especially \n            in the tourism industry. That way, we can enjoy beautiful places without harming them, \n            ensuring they remain for future generations to experience and appreciate.",
+        "South Africa's rich biodiversity and natural landscapes are major tourism assets. \n            Environmental sustainability ensures these resources are protected while creating \n            economic opportunities through responsible tourism and conservation initiatives.",
+        "Promoting responsible travel to natural areas that conserves the environment, \n              sustains the well-being of local people, and involves interpretation and education.",
+        "Developing educational programs and awareness campaigns to teach sustainable \n              practices, conservation principles, and environmental stewardship across all sectors.",
+        "Building capacity to adapt to climate change impacts through sustainable land use, \n              water management, and disaster risk reduction strategies.",
+        "*Only relevant information, no spam"
+      ]
+    }
+  },
+  {
     "url": "/index.html",
     "title": "Green Economy Toolkit",
     "description": "",
@@ -23,36 +115,662 @@
         "Opportunities",
         "Live Events Calendar",
         "Green economy news and updates",
-        "\n            Indalopreneur Climate-smart Cleantech Enterprise Support Programme\n          ",
-        "South African Pavilion at COP29",
-        "\n            JET Funding Platform to close first application window on Dec 15\n          ",
         "Events calendar",
-        "Upcoming Event",
-        "Past Events",
-        "\n      Subscribe to our newsletter to get the latest information\n    "
+        "Upcoming Event"
       ],
       "paragraphs": [
-        "\n            South Africa and the world are switching to green economy, and that\n            is creating a lot of opportunities for businesses in the renewable,\n            repair and remanufacturing sectors.\n          ",
-        "\n            We want to share these opportunities with you, so we help people who\n            are entrepreneurs grow their economy fund 10 x faster. The Green\n            Economy Toolkit helps governments and institutions to plan their\n            green economy transition. From insights, green business bank you\n            will find green information, support and development to transition\n            their conventional business models into green economy\n          ",
-        "\n            We help you together a step-by-step guide on how to access the\n            benefits of a green economy and position your business to operate in\n            a greener global\n          ",
+        "South Africa and the world are switching to green economy, and that\n            is creating a lot of opportunities for businesses in the renewable,\n            repair and remanufacturing sectors.",
+        "We want to share these opportunities with you, so we help people who\n            are entrepreneurs grow their economy fund 10 x faster. The Green\n            Economy Toolkit helps governments and institutions to plan their\n            green economy transition. From insights, green business bank you\n            will find green information, support and development to transition\n            their conventional business models into green economy",
+        "We help you together a step-by-step guide on how to access the\n            benefits of a green economy and position your business to operate in\n            a greener global",
         "(Green Economy Summit, 2010)",
-        "\n              The world is moving towards a green economy, and South Africa must\n              do so too if it is to continue trading internationally. Our\n              existing buildings and new projects must be designed, built,\n              operated, maintained, and owned and operated more sustainably, and\n              new infrastructure must be built according to green principles, so\n              it does not use too much energy and water, and the country's\n              quality of work needs to be done.\n            ",
-        "\n              This is where you come in. But how do you make sure you can get\n              some of this work?\n            ",
-        "\n              The South African government has chosen nine areas to focus on in\n              the switch to a green economy: agriculture, energy (clean and\n              efficient), natural resource conservation and management\n              (including mining), sustainable transport and infrastructure,\n              environmental sustainability (including tourism education), green\n              buildings and the built environment, sustainable waste management\n              and recycling, water management, and sustainable production and\n              consumption.\n            ",
+        "The world is moving towards a green economy, and South Africa must\n              do so too if it is to continue trading internationally. Our\n              existing buildings and new projects must be designed, built,\n              operated, maintained, and owned and operated more sustainably, and\n              new infrastructure must be built according to green principles, so\n              it does not use too much energy and water, and the country's\n              quality of work needs to be done.",
+        "This is where you come in. But how do you make sure you can get\n              some of this work?",
+        "The South African government has chosen nine areas to focus on in\n              the switch to a green economy: agriculture, energy (clean and\n              efficient), natural resource conservation and management\n              (including mining), sustainable transport and infrastructure,\n              environmental sustainability (including tourism education), green\n              buildings and the built environment, sustainable waste management\n              and recycling, water management, and sustainable production and\n              consumption.",
         "Find out about green economy opportunities in the IRM sector.",
-        "\n            Access opportunities for entrepreneurship within the green economy\n            value chains, to help connect entrepreneurs to each other and to\n            markets, as well as to finance, business training\n          ",
-        "\n            Find out the latest job opportunities as they become available\n            within the green economy space – from research and innovation to\n            production and services\n          ",
-        "\n            View the live events calendar and network with entrepreneurs and\n            experts within the green economy space via our events platform\n          ",
-        "\n            Access to funding support for small businesses and emerging\n            entrepreneurs to help grow their enterprises\n          ",
-        "\n            Updates on compensation for occupational injuries and diseases in\n            the green economy sector\n          ",
-        "\n            Important deadline approaching for green economy funding\n            applications\n          ",
-        "\n            View our live events calendar and network with entrepreneurs and\n            experts within the green economy space via our events platform\n          ",
-        "\n                    Event Details: 17 October - 17 October 202508:00 to\n                    16:00 (SAST)\n                  ",
-        "\n                    Event Details: 11 November-13 November 2025Full day\n                    conference (SAST)\n                  ",
-        "\n                    Event Details: 25 March-27 March 202509:00 to 16:00\n                    (SAST)\n                  ",
-        "\n                    Event Details: 11 November-13 November 2025Full day\n                    conference (SAST)\n                  ",
-        "\n    *Only relevant information, no spam\n  "
+        "Access opportunities for entrepreneurship within the green economy\n            value chains, to help connect entrepreneurs to each other and to\n            markets, as well as to finance, business training",
+        "Find out the latest job opportunities as they become available\n            within the green economy space â€“ from research and innovation to\n            production and services",
+        "View the live events calendar and network with entrepreneurs and\n            experts within the green economy space via our events platform",
+        "View our live events calendar and network with entrepreneurs and\n            experts within the green economy space via our events platform"
       ]
+    }
+  },
+  {
+    "url": "/natural.html",
+    "title": "Natural Resources - Green Economy Toolkit",
+    "description": "",
+    "content": {
+      "headings": [
+        "Natural Resource Conservation & Management",
+        "Sustainable Resource Management",
+        "Ecosystem Protection",
+        "Sustainable Mining",
+        "Community Engagement",
+        "Subscribe to our newsletter to get the latest information"
+      ],
+      "paragraphs": [
+        "Natural resource conservation and management is about being careful with our land \n            and other natural resources. When we mine, we should do it in a way that minimizes \n            damage to nature, and we should use resources wisely so they last a long time, \n            ensuring their availability for future generations.",
+        "South Africa is rich in natural resources, but unsustainable practices threaten \n            their long-term viability. Responsible management balances economic development \n            with environmental protection, creating sustainable livelihoods while preserving \n            our natural heritage.",
+        "Preserving biodiversity, protecting endangered species, and maintaining \n              healthy ecosystems through conservation areas and sustainable land use practices.",
+        "Implementing responsible mining practices that minimize environmental impact, \n              ensure worker safety, and contribute to local community development.",
+        "Involving local communities in resource management decisions, recognizing \n              traditional knowledge, and ensuring equitable benefit sharing from natural resources.",
+        "*Only relevant information, no spam"
+      ]
+    }
+  },
+  {
+    "url": "/practice.html",
+    "title": "Water Management â€“ Translate Page",
+    "description": "",
+    "content": {
+      "headings": [
+        "Water Management",
+        "Sustainable Water Solutions",
+        "Water Conservation",
+        "Water Quality Protection",
+        "Integrated Management",
+        "Subscribe to our newsletter to get the latest information"
+      ],
+      "paragraphs": [
+        "Using water wisely and keeping it clean is essential because without potable water \n          humanity cannot survive. Water is also critical for most industrial processes. \n          This means we should use water carefully in farming and industry and ensure our \n          rivers and lakes stay clean for future generations.",
+        "South Africa is a water-scarce country facing increasing water stress due to \n          climate change and growing demand. Sustainable water management is crucial for \n          economic development, food security, and environmental protection.",
+        "Implementing efficient irrigation systems, water-saving technologies, and \n            demand management strategies to reduce water consumption across all sectors.",
+        "Monitoring and maintaining water quality through pollution prevention, \n            wastewater treatment, and ecosystem protection to ensure safe water supplies.",
+        "Adopting holistic approaches to water resource management that balance \n            competing needs while protecting ecosystems and ensuring equitable access.",
+        "*Only relevant information, no spam"
+      ]
+    }
+  },
+  {
+    "url": "/production.html",
+    "title": "Production Management - Green Economy Toolkit",
+    "description": "",
+    "content": {
+      "headings": [
+        "Sustainable Production & Consumption",
+        "Circular Economy Transformation",
+        "Circular Design",
+        "Responsible Consumption",
+        "Supply Chain Sustainability",
+        "Subscribe to our newsletter to get the latest information"
+      ],
+      "paragraphs": [
+        "This involves making products and items that last longer and can be used again. \n            It also means buying only the things we really need, thus reducing waste and \n            minimizing environmental impact throughout product lifecycles.",
+        "Transitioning to sustainable production and consumption patterns is essential \n            for addressing resource depletion, climate change, and pollution. This shift \n            creates new business opportunities while reducing environmental footprints \n            and promoting social equity.",
+        "Creating products for durability, repairability, and recyclability while \n              using sustainable materials and minimizing resource use throughout production processes.",
+        "Promoting conscious consumer choices, sharing economy models, and product-service \n              systems that reduce overall resource consumption and waste generation.",
+        "Implementing green procurement policies, ethical sourcing practices, and \n              transparency throughout supply chains to ensure sustainable production systems.",
+        "*Only relevant information, no spam"
+      ]
+    }
+  },
+  {
+    "url": "/transport.html",
+    "title": "Transport Management - Green Economy Toolkit",
+    "description": "",
+    "content": {
+      "headings": [
+        "Sustainable Transport & Infrastructure",
+        "Green Mobility Solutions",
+        "Public Transport Systems",
+        "Electric Mobility",
+        "Smart Infrastructure",
+        "Subscribe to our newsletter to get the latest information"
+      ],
+      "paragraphs": [
+        "Sustainable transport means using greener ways to get around, such as electric cars \n            and public transport. Sustainable infrastructure means constructing roads and buildings \n            that are kinder to the environment, reducing carbon emissions while improving mobility.",
+        "South Africa faces significant transport challenges including congestion, pollution, \n            and inadequate public transport. Investing in sustainable transport infrastructure \n            creates jobs, reduces environmental impact, and improves quality of life for all citizens.",
+        "Developing efficient, affordable, and accessible public transportation networks \n              including buses, trains, and rapid transit systems to reduce private vehicle usage.",
+        "Promoting electric vehicles, charging infrastructure, and clean energy solutions \n              for transportation to reduce air pollution and greenhouse gas emissions.",
+        "Implementing intelligent transport systems, sustainable urban planning, and \n              green building standards to create efficient, resilient infrastructure networks.",
+        "*Only relevant information, no spam"
+      ]
+    }
+  },
+  {
+    "url": "/waste.html",
+    "title": "Waste Management - Green Economy Toolkit",
+    "description": "",
+    "content": {
+      "headings": [
+        "Sustainable Waste Management & Recycling",
+        "Circular Economy Solutions",
+        "Waste Reduction",
+        "Recycling Infrastructure",
+        "Energy Recovery",
+        "Subscribe to our newsletter to get the latest information"
+      ],
+      "paragraphs": [
+        "To protect our planet and humanity's future, we must responsibly manage and recycle waste. \n            Items we now throw away present opportunities for recovery and reuse. This includes \n            installation of public recycling bins labelled according to waste types, and the \n            rehabilitation of public signage promoting good recycling and waste management behaviour.",
+        "South Africa faces significant waste management challenges with growing urbanization \n            and consumption. Adopting circular economy principles creates economic opportunities \n            while reducing environmental pollution and conserving natural resources.",
+        "Implementing source reduction strategies, promoting reusable products, and \n              designing out waste through circular economy principles and sustainable packaging.",
+        "Developing comprehensive collection systems, sorting facilities, and processing \n              plants to recover valuable materials from waste streams and create recycling markets.",
+        "Implementing waste-to-energy technologies, composting organic waste, and \n              exploring advanced conversion processes to extract value from non-recyclable materials.",
+        "*Only relevant information, no spam"
+      ]
+    }
+  },
+  {
+    "url": "/water.html",
+    "title": "Water Management - Green Economy Toolkit",
+    "description": "",
+    "content": {
+      "headings": [
+        "Water Management",
+        "Sustainable Water Solutions",
+        "Water Conservation",
+        "Water Quality Protection",
+        "Integrated Management",
+        "Subscribe to our newsletter to get the latest information"
+      ],
+      "paragraphs": [
+        "Using water wisely and keeping it clean is essential because without potable water \n            humanity cannot survive. Water is also critical for most industrial processes. \n            This means we should use water carefully in farming and industry and ensure our \n            rivers and lakes stay clean for future generations.",
+        "South Africa is a water-scarce country facing increasing water stress due to \n            climate change and growing demand. Sustainable water management is crucial for \n            economic development, food security, and environmental protection.",
+        "Implementing efficient irrigation systems, water-saving technologies, and \n              demand management strategies to reduce water consumption across all sectors.",
+        "Monitoring and maintaining water quality through pollution prevention, \n              wastewater treatment, and ecosystem protection to ensure safe water supplies.",
+        "Adopting holistic approaches to water resource management that balance \n              competing needs while protecting ecosystems and ensuring equitable access.",
+        "*Only relevant information, no spam"
+      ]
+    }
+  },
+  {
+    "url": "/ADMIN/admin-dashboard.html",
+    "title": "Admin Dashboard - Green Economy Toolkit",
+    "description": "",
+    "content": {
+      "headings": [
+        "Admin Dashboard",
+        "Manage Events",
+        "Manage News",
+        "Manage Database",
+        "Manage Funding",
+        "Manage Opportunities",
+        "Manage Translations",
+        "Manage Analytics"
+      ],
+      "paragraphs": [
+        "Add or edit events for the index page.",
+        "Update the news section on the index page.",
+        "Access and manage the database.",
+        "Add or update funding opportunities.",
+        "Add or update opportunities for users.",
+        "Run translation scripts to update language files.",
+        "View how users interact with the website."
+      ]
+    }
+  },
+  {
+    "url": "/ADMIN/analytics.html",
+    "title": "NBI Green Economy - Analytics Dashboard",
+    "description": "",
+    "content": {
+      "headings": [
+        "Website Performance Metrics"
+      ],
+      "paragraphs": []
+    }
+  },
+  {
+    "url": "/ADMIN/database.html",
+    "title": "Database Management | NBI Green Economy",
+    "description": "",
+    "content": {
+      "headings": [
+        "Project Database Management",
+        "Select Data Categories to Display",
+        "Project Details"
+      ],
+      "paragraphs": []
+    }
+  },
+  {
+    "url": "/ADMIN/manageevents.html",
+    "title": "Manage Events - Green Economy Toolkit",
+    "description": "",
+    "content": {
+      "headings": [
+        "Manage Events",
+        "Add New Event",
+        "Edit Event"
+      ],
+      "paragraphs": []
+    }
+  },
+  {
+    "url": "/ADMIN/managefunding.html",
+    "title": "Manage Funding - Green Economy Toolkit",
+    "description": "",
+    "content": {
+      "headings": [
+        "Manage Funding Opportunities",
+        "Sector",
+        "Funding Type",
+        "Target",
+        "No funding opportunities found",
+        "Add New Funding Opportunity",
+        "Basic Information",
+        "Funding Type",
+        "Target",
+        "Sector",
+        "Additional Information"
+      ],
+      "paragraphs": [
+        "Add, edit, and manage funding opportunities in the database",
+        "Loading funding opportunities...",
+        "Try adjusting your search or filters"
+      ]
+    }
+  },
+  {
+    "url": "/ADMIN/managenews.html",
+    "title": "Manage News - Green Economy Toolkit",
+    "description": "",
+    "content": {
+      "headings": [
+        "Manage News",
+        "Add New News",
+        "Edit News"
+      ],
+      "paragraphs": []
+    }
+  },
+  {
+    "url": "/ADMIN/ManageOpprtunities.html",
+    "title": "Manage Opportunities",
+    "description": "",
+    "content": {
+      "headings": [
+        "Manage Opportunities",
+        "No opportunities found",
+        "Add New Opportunity",
+        "Confirm Delete"
+      ],
+      "paragraphs": [
+        "Loading opportunities...",
+        "Try adjusting your search or filters",
+        "Are you sure you want to delete this opportunity? This action cannot be undone."
+      ]
+    }
+  },
+  {
+    "url": "/api-management/api-management.html",
+    "title": "Green Economy Toolkit - API Management",
+    "description": "",
+    "content": {
+      "headings": [
+        "API Management",
+        "API Configurations"
+      ],
+      "paragraphs": [
+        "Manage and configure API integrations for the Green Economy Toolkit."
+      ]
+    }
+  },
+  {
+    "url": "/Dashboard/dashboard.html",
+    "title": "Green Economy Toolkit - Dashboard",
+    "description": "",
+    "content": {
+      "headings": [
+        "Dashboard Overview",
+        "AI-Enhanced Search",
+        "Funding Hub",
+        "Integrated Toolkits",
+        "Gamified Learning",
+        "News & Events",
+        "Opportunities",
+        "Built for Every Green Economy Participant",
+        "Township IRM Enterprises",
+        "Youth Communities",
+        "Stakeholders & Partners",
+        "Local Communities",
+        "TVET Colleges",
+        "Entrepreneurial Hubs"
+      ],
+      "paragraphs": [
+        "Welcome to your personalized Green Economy Toolkit dashboard",
+        "Explore green funding opportunities with real-time updates and eligibility filters.",
+        "Access green economy tools and seamless redirects to external applications.",
+        "Give It a Try, Enjoy The Gamified Learning.",
+        "Guided navigation and sector-specific green solutions",
+        "Gamified learning paths and AI-driven recommendations",
+        "Advanced analytics and collaboration tools",
+        "Community-focused resources and local opportunities",
+        "Educational resources and skills development programs",
+        "Support for startups and innovation in the green economy"
+      ]
+    }
+  },
+  {
+    "url": "/demo/index2.html",
+    "title": "My Website",
+    "description": "",
+    "content": {
+      "headings": [
+        "Hello!"
+      ],
+      "paragraphs": [
+        "Welcome to the site."
+      ]
+    }
+  },
+  {
+    "url": "/digital_human/digital-human.html",
+    "title": "",
+    "description": "",
+    "content": {
+      "headings": [],
+      "paragraphs": []
+    }
+  },
+  {
+    "url": "/encodingdecoding/restored.html",
+    "title": "Database Management | NBI Green Economy",
+    "description": "",
+    "content": {
+      "headings": [
+        "Project Database Management",
+        "Select Data Categories to Display",
+        "Project Details"
+      ],
+      "paragraphs": [
+        "Loading project data..."
+      ]
+    }
+  },
+  {
+    "url": "/Funding Hub/Funding-Hub.html",
+    "title": "Green Economy Toolkit - Funding Hub",
+    "description": "",
+    "content": {
+      "headings": [
+        "FUNDING HUB",
+        "Find Funding Opportunities",
+        "Sector",
+        "Funding Type",
+        "Target",
+        "Available Funding Opportunities",
+        "How to Apply for Funding",
+        "Find Suitable Opportunities",
+        "Review Requirements",
+        "Prepare & Submit"
+      ],
+      "paragraphs": [
+        "Discover the latest green funding opportunities tailored to your needs. Our dynamic repository provides real-time updates on grants, loans, and investment programs to support your transition to a sustainable economy.",
+        "Use our filters to identify funding programs that match your project type, sector, and financial needs.",
+        "Carefully read the eligibility criteria and application requirements for each funding opportunity.",
+        "Gather necessary documents and submit your application before the deadline."
+      ]
+    }
+  },
+  {
+    "url": "/Funding Hub/test.html",
+    "title": "",
+    "description": "",
+    "content": {
+      "headings": [],
+      "paragraphs": []
+    }
+  },
+  {
+    "url": "/LandingPage/VerifyEmail.html",
+    "title": "Email Verification - Green Economy Toolkit",
+    "description": "",
+    "content": {
+      "headings": [
+        "Email Verification"
+      ],
+      "paragraphs": [
+        "Processing your email verification..."
+      ]
+    }
+  },
+  {
+    "url": "/LandingPage/About Page/about.html",
+    "title": "Green Economy Toolkit - About",
+    "description": "",
+    "content": {
+      "headings": [
+        "ABOUT THE GREEN ECONOMY",
+        "Nine priority focus areas for the green economy in South Africa",
+        "Climate risks",
+        "How we can respond to climate change",
+        "Subscribe to our newsletter to get the latest information"
+      ],
+      "paragraphs": [
+        "A green economy is one which is socially inclusive and environmentally sustainable.\n                                It improves human well-being and builds social equity while reducing environmental\n                                risks and ecological scarcities. In simple terms, we can think of a green economy\n                                as one which is low carbon, resource efficient and socially inclusive.",
+        "(Green Economy Summit, 2010)",
+        "How will climate change affect your business?"
+      ]
+    }
+  },
+  {
+    "url": "/LandingPage/chatbot/chatbot.html",
+    "title": "",
+    "description": "",
+    "content": {
+      "headings": [],
+      "paragraphs": []
+    }
+  },
+  {
+    "url": "/LandingPage/Disclaimer/disclaimer.html",
+    "title": "Disclaimer | Green Economy Toolkit",
+    "description": "",
+    "content": {
+      "headings": [
+        "Disclaimer"
+      ],
+      "paragraphs": [
+        "The information provided by the Green Economy Toolkit is for general informational purposes only. All information on this site is provided in good faith; however, we make no representation or warranty of any kind, express or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any information on the site.",
+        "Under no circumstance shall we have any liability to you for any loss or damage of any kind incurred as a result of the use of the site or reliance on any information provided on the site. Your use of the site and your reliance on any information on the site is solely at your own risk.",
+        "The site may contain links to other websites or content belonging to or originating from third parties. Such external links are not investigated, monitored, or checked for accuracy, adequacy, validity, reliability, availability, or completeness by us.",
+        "We reserve the right to make additions, deletions, or modifications to the contents on the site at any time without prior notice.",
+        "If you require any more information or have any questions about our site's disclaimer, please feel free to contact us."
+      ]
+    }
+  },
+  {
+    "url": "/LandingPage/Focus-Area/focus-area.html",
+    "title": "Focus Areas - Green Economy Toolkit",
+    "description": "",
+    "content": {
+      "headings": [
+        "Nine priority focus areas for the green economy in South Africa (Green\n          Economy Summit, 2010)",
+        "Agriculture",
+        "Energy (clean and efficient)",
+        "Natural resource conservation and management (including mining)",
+        "Sustainable transport and infrastructure",
+        "Environmental sustainability, including tourism education",
+        "Green buildings and the built environment",
+        "Sustainable waste management and recycling",
+        "Water management",
+        "Sustainable production and consumption",
+        "Subscribe to our newsletter to get the latest information"
+      ],
+      "paragraphs": [
+        "Green agriculture means farming in a way that doesn't harm the\n                environment. It includes using fewer chemicals, saving water and\n                protecting wildlife while growing our food.",
+        "Clean and efficient energy means using power sources like the\n                sun and wind, which don't cause pollution. It also means using\n                less energy by making our machines and buildings work better.",
+        "Natural resource conservation and management is about being\n                careful with our land and other natural resources. When we mine,\n                we should do it in a way that minimizes damage to nature, and we\n                should use resources wisely so they last a long time.",
+        "Sustainable transport means using greener ways to get around,\n                such as electric cars and public transport. Sustainable\n                infrastructure means constructing roads and buildings that are\n                kinder to the environment.",
+        "We need to learn how to protect nature and teach others to do\n                the same, especially in the tourism industry. That way, we can\n                enjoy beautiful places without harming them.",
+        "Green buildings are designed to save energy and use eco-friendly\n                materials. The built environment refers to human-made\n                infrastructure and amenities. Ensuring a green built environment\n                is about building homes, offices and factories that do as little\n                harm as possible to Earth, and to the people who live and work\n                in them.",
+        "To protect our planet and humanity's future, we must responsibly\n                manage and recycle waste. Items we now throw away. Opportunities\n                include the installation of public recycling bins labelled\n                according to the waste collected in each bin (glass, paper,\n                plastic, etc.), and the rehabilitation of new, and the repair of\n                existing public signage promoting good recycling and waste\n                management behaviour.",
+        "Using water wisely and keeping it clean is important because\n                without potable water humanity will die. We also use water in\n                most industrial processes. This means that we should use water\n                carefully in farming and industry and make sure our rivers and\n                lakes stay clean.",
+        "This involves making products and items that last longer and can\n                be used again. It also means buying only the things we really\n                need, thus reducing waste.",
+        "*Only relevant information, no spam"
+      ]
+    }
+  },
+  {
+    "url": "/LandingPage/GamifiedLearning/Gamified.html",
+    "title": "Green Economy Toolkit - Green Quest",
+    "description": "",
+    "content": {
+      "headings": [
+        "Green Quest: SMME Success",
+        "Your Badges",
+        "Challenge",
+        "Your Rewards"
+      ],
+      "paragraphs": [
+        "Level 1: Beginner",
+        "Back to Dashboard"
+      ]
+    }
+  },
+  {
+    "url": "/LandingPage/IRM-Sector/IRMSector.html",
+    "title": "Green Economy Toolkit",
+    "description": "",
+    "content": {
+      "headings": [
+        "Installation, repair and maintenance sector",
+        "Agriculture",
+        "Energy (clean and efficient)",
+        "Natural resource conservation and management (including mining)",
+        "Sustainable transport and infrastructure",
+        "Environmental sustainability, including tourism education",
+        "Green building and the built environment",
+        "Sustainable waste management and recycling",
+        "Water management",
+        "Sustainable production and consumption",
+        "Subscribe to our newsletter to get the latest information"
+      ],
+      "paragraphs": [
+        "Since 2019, the National Business Initiative has been spearheading multifaceted and multisector partnerships focused on growing pathways for young people to access installation, repair and maintenance (IRM) occupations.",
+        "Artisanal skills can be useful in supporting the journey and transition to a green economy. Through various industry and sector opportunities, tradespeople and small, micro and medium enterprises (SMMEs) in the IRM space can take advantage of this move to a green economy. There are opportunities to support the below focus areas outlined by the South African government."
+      ]
+    }
+  },
+  {
+    "url": "/LandingPage/Knowledge-Hub/knowledge-hub.html",
+    "title": "Green Economy Toolkit",
+    "description": "",
+    "content": {
+      "headings": [
+        "WELCOME TO OUR KNOWLEDGE HUB",
+        "Access to learning opportunities",
+        "Access to business opportunities",
+        "Access to market opportunities",
+        "Subscribe to our newsletter to get the latest information"
+      ],
+      "paragraphs": []
+    }
+  },
+  {
+    "url": "/LandingPage/legal/Legal.html",
+    "title": "Legal & Policies - Green Economy Toolkit",
+    "description": "",
+    "content": {
+      "headings": [
+        "Legal Framework & Policies",
+        "Quick Access",
+        "Terms of Service",
+        "Privacy Policy",
+        "Compliance Guide",
+        "Environmental Regulations",
+        "Environmental Impact Assessment (EIA) Requirements",
+        "Carbon Emission Standards and Reporting",
+        "Waste Management and Recycling Legislation",
+        "Renewable Energy Incentives and Requirements",
+        "Business Compliance Checklist",
+        "Legal Support & Contact",
+        "Legal Questions?",
+        "Document Updates"
+      ],
+      "paragraphs": [
+        "Understand the legal requirements, policies, and regulations\n                        governing green economy initiatives and sustainable business\n                        practices.",
+        "Read our platform terms and conditions, user rights, and service\n                            limitations.",
+        "How we collect, use, and protect your personal data and business\n                            information.",
+        "Environmental and business compliance requirements for green\n                            economy participation.",
+        "Guidelines for conducting environmental assessments for business\n                                projects. This comprehensive framework outlines the mandatory\n                                processes for evaluating environmental impacts, stakeholder\n                                consultation requirements, and mitigation measures for\n                                sustainable development projects.",
+        "Mandatory reporting requirements for carbon emissions and\n                                reduction targets. Includes guidelines for measuring, reporting,\n                                and verifying greenhouse gas emissions, carbon credit trading,\n                                and compliance with national climate commitments.",
+        "Legal framework for waste disposal, recycling, and circular\n                                economy practices. Covers waste classification, disposal\n                                permits, recycling obligations, and extended producer\n                                responsibility requirements for various industries.",
+        "Legal incentives and mandatory renewable energy adoption\n                                policies. Details government incentives, feed-in tariffs, net\n                                metering regulations, and renewable energy procurement\n                                requirements for public and private sector entities.",
+        "For questions about legal compliance, regulations, or policy\n                            interpretation, contact our legal support team.",
+        "Stay informed about changes to legal documents and regulations.\n                            Subscribe to our legal updates newsletter."
+      ]
+    }
+  },
+  {
+    "url": "/LandingPage/Opportunities/opportunities.html",
+    "title": "Green Economy Opportunities",
+    "description": "",
+    "content": {
+      "headings": [
+        "Opportunities",
+        "No opportunities found",
+        "Subscribe to our newsletter to get the latest information"
+      ],
+      "paragraphs": [
+        "Find out about opportunities for procurement, market access, capacity building, training and enterprise development support in your area.",
+        "This page is your go-to hub for all the information you need, right at your fingertips. Use the filter to select resources tailored to your specific category of interest.",
+        "Try adjusting your search or filters"
+      ]
+    }
+  },
+  {
+    "url": "/LandingPage/SignInAndSignUp/SignIn.html",
+    "title": "Green Economy Toolkit - Login",
+    "description": "",
+    "content": {
+      "headings": [
+        "Login to Your Account"
+      ],
+      "paragraphs": [
+        "Don't have an account?",
+        "Sign Up",
+        "Please verify your email to continue.",
+        "Check your inbox for a verification link."
+      ]
+    }
+  },
+  {
+    "url": "/LandingPage/SignInAndSignUp/SignIn2.html",
+    "title": "Green Economy Toolkit - Sign In",
+    "description": "",
+    "content": {
+      "headings": [
+        "Welcome Back"
+      ],
+      "paragraphs": [
+        "Sign in to your account"
+      ]
+    }
+  },
+  {
+    "url": "/LandingPage/SignInAndSignUp/SignUp.html",
+    "title": "Green Economy Toolkit - Sign Up",
+    "description": "",
+    "content": {
+      "headings": [
+        "Create Admin Account"
+      ],
+      "paragraphs": [
+        "Already have an account?",
+        "Sign In",
+        "You Have Been Sent Link On Email For Verification"
+      ]
+    }
+  },
+  {
+    "url": "/LandingPage/SignInAndSignUp/verifycode.html",
+    "title": "Verify Admin Code - Green Economy Toolkit",
+    "description": "",
+    "content": {
+      "headings": [
+        "Verify Admin Access"
+      ],
+      "paragraphs": []
+    }
+  },
+  {
+    "url": "/Master Page(Header and Footer)/MasterPage.html",
+    "title": "Green Economy Toolkit",
+    "description": "",
+    "content": {
+      "headings": [],
+      "paragraphs": []
     }
   },
   {
@@ -69,138 +787,26 @@
     }
   },
   {
-    "url": "/Sections/ToolKits/toolkits.html",
-    "title": "Legal & Policies - Green Economy Toolkit",
+    "url": "/Sections/SMME/smme.html",
+    "title": "SMME Directory - Green Economy Toolkit",
     "description": "",
     "content": {
       "headings": [
-        "Legal Framework & Policies",
-        "Quick Access",
-        "Terms of Service",
-        "Privacy Policy",
-        "Compliance Guide",
-        "Environmental Regulations",
-        "\n                Environmental Impact Assessment (EIA) Requirements\n              ",
-        "\n                Carbon Emission Standards and Reporting\n              ",
-        "\n                Waste Management and Recycling Legislation\n              ",
-        "\n                Renewable Energy Incentives and Requirements\n              ",
-        "Business Compliance Checklist",
-        "Legal Support & Contact",
-        "Legal Questions?",
-        "Document Updates",
-        "AI Legal Assistant"
+        "Green Business Directory",
+        "AI-Enhanced Business Discovery",
+        "ðŸ¤– AI Recommendations Based on Your Search:",
+        "Business Categories",
+        "Solar Energy",
+        "Recycling",
+        "Organic Farming",
+        "Green Construction",
+        "Water Management",
+        "Eco Tourism",
+        "Featured Green Businesses",
+        "AI Business Finder"
       ],
       "paragraphs": [
-        "\n            Understand the legal requirements, policies, and regulations\n            governing green economy initiatives and sustainable business\n            practices.\n          ",
-        "\n              Read our platform terms and conditions, user rights, and service\n              limitations.\n            ",
-        "\n              How we collect, use, and protect your personal data and business\n              information.\n            ",
-        "\n              Environmental and business compliance requirements for green\n              economy participation.\n            ",
-        "\n                Guidelines for conducting environmental assessments for business\n                projects. This comprehensive framework outlines the mandatory\n                processes for evaluating environmental impacts, stakeholder\n                consultation requirements, and mitigation measures for\n                sustainable development projects.\n              ",
-        "\n                Mandatory reporting requirements for carbon emissions and\n                reduction targets. Includes guidelines for measuring, reporting,\n                and verifying greenhouse gas emissions, carbon credit trading,\n                and compliance with national climate commitments.\n              ",
-        "\n                Legal framework for waste disposal, recycling, and circular\n                economy practices. Covers waste classification, disposal\n                permits, recycling obligations, and extended producer\n                responsibility requirements for various industries.\n              ",
-        "\n                Legal incentives and mandatory renewable energy adoption\n                policies. Details government incentives, feed-in tariffs, net\n                metering regulations, and renewable energy procurement\n                requirements for public and private sector entities.\n              ",
-        "\n              For questions about legal compliance, regulations, or policy\n              interpretation, contact our legal support team.\n            ",
-        "\n              Stay informed about changes to legal documents and regulations.\n              Subscribe to our legal updates newsletter.\n            "
-      ]
-    }
-  },
-  {
-    "url": "/LandingPage/About Page/about.html",
-    "title": "Green Economy Toolkit - About",
-    "description": "",
-    "content": {
-      "headings": [
-        "ABOUT THE GREEN ECONOMY",
-        "Nine priority focus areas for the green economy in South Africa",
-        "Agriculture",
-        "Energy (clean and efficient)",
-        "Natural resource conservation and management (including mining)",
-        "Sustainable transport and infrastructure",
-        "Environmental sustainability, including tourism education",
-        "Green buildings and the built environment",
-        "Sustainable waste management and recycling",
-        "Water management",
-        "Sustainable production and consumption",
-        "Climate risks",
-        "Risk of physical damage & disruption",
-        "Risk of increased operating costs",
-        "Risk of supply chain disruptions",
-        "Reputation risk",
-        "Regulatory risk",
-        "How we can respond to climate change",
-        "Adaptation",
-        "Mitigation",
-        "Climate finance",
-        "Climate resilience",
-        "\n      Subscribe to our newsletter to get the latest information\n    "
-      ],
-      "paragraphs": [
-        "\n                                A green economy is one which is socially inclusive and environmentally sustainable. \n                                It improves human well-being and builds social equity while reducing environmental \n                                risks and ecological scarcities. In simple terms, we can think of a green economy \n                                as one which is low carbon, resource efficient and socially inclusive.\n                            ",
-        "(Green Economy Summit, 2010)",
-        "How will climate change affect your business?",
-        "Climate change can cause extreme weather events like floods and wildfires. These events can damage buildings, roads and farms, which can make it harder for people to do their jobs and for businesses to operate smoothly.",
-        "As the climate gets hotter, businesses might need more energy to cool down their buildings. Also, if water becomes scarce, some industries might have to pay more for the water they use. These extra expenses can make it more expensive for businesses to run.",
-        "Sometimes, companies in South Africa get the materials they need from other countries. However, climate change can disrupt this by causing problems like hurlingness that affect shipping or extreme weather that stops production in other places. This can lead to delays and higher costs for businesses.",
-        "If a company appears not to show care or concern about the environment or has business practices and operations that are detrimental to the environment, people (consumers) might not want to buy their products or support them. This can hurt a company's image and make it harder for them to perform well in their respective industry or stay competitive in the market.",
-        "Governments are making stricter rules to protect the environment from climate change. Businesses in South Africa need to know these rules, and sometimes it can be expensive to do so. If they do not follow the rules, they can get fired or face legal implications.",
-        "Adaptation means keeping abreast of and staying ready to adapt to changes caused by climate change. It's about making plans and changes to deal with events like droughts or floods that might happen more often because of climate change.",
-        "An example: farmers in South Africa are changing the way in which they harvest and grow crops in order to use less water, due to a decrease in rainfall. This is an example of adapting to the changing climate.",
-        "Mitigation means trying to stop or reduce activities that make climate change worse. This may include reducing gas emissions that come from burning coal or oil, which release large amounts of carbon dioxide into the atmosphere, in turn causing climate change through an increase in temperature by trapping heat in the atmosphere.",
-        "An example: South Africa is building more wind and solar power plants to make electricity and generate alternative sources of energy without using as much coal, a fossil fuel. This aids in reducing the gases that cause climate change.",
-        "Climate finance refers to funds that help governments and organisations develop projects aimed at fighting climate change. These funds can be used to build and promote initiatives such as clean energy projects or to help communities prepare for climate impacts.",
-        "An example: South Africa might get money from a global fund to build solar panels in a town. This contributes to clean energy and reduces the effects of climate change. Climate finance helps pay for such projects.",
-        "Climate resilience means being strong and ready to handle the problems that are caused by climate change. It's about making sure communities and nature can \"bounce back\" after climate change effects such as floods or storms.",
-        "An example in South Africa: in areas where there is not much water, people might learn ways to save water and grow drought-resistant crops. This helps them survive and do well even when there is less rain due to a changing climate.",
-        "\n    *Only relevant information, no spam\n  "
-      ]
-    }
-  },
-  {
-    "url": "/LandingPage/Focus-Area/focus-area.html",
-    "title": "Focus Areas - Green Economy Toolkit",
-    "description": "",
-    "content": {
-      "headings": [
-        "\n          Nine priority focus areas for the green economy in South Africa (Green\n          Economy Summit, 2010)\n        ",
-        "Agriculture",
-        "Energy (clean and efficient)",
-        "\n                Natural resource conservation and management (including mining)\n              ",
-        "Sustainable transport and infrastructure",
-        "Environmental sustainability, including tourism education",
-        "Green buildings and the built environment",
-        "Sustainable waste management and recycling",
-        "Water management",
-        "Sustainable production and consumption",
-        "\n            Subscribe to our newsletter to get the latest information\n        "
-      ],
-      "paragraphs": [
-        "\n                Green agriculture means farming in a way that doesn't harm the\n                environment. It includes using fewer chemicals, saving water and\n                protecting wildlife while growing our food.\n              ",
-        "\n                Clean and efficient energy means using power sources like the\n                sun and wind, which don't cause pollution. It also means using\n                less energy by making our machines and buildings work better.\n              ",
-        "\n                Natural resource conservation and management is about being\n                careful with our land and other natural resources. When we mine,\n                we should do it in a way that minimizes damage to nature, and we\n                should use resources wisely so they last a long time.\n              ",
-        "\n                Sustainable transport means using greener ways to get around,\n                such as electric cars and public transport. Sustainable\n                infrastructure means constructing roads and buildings that are\n                kinder to the environment.\n              ",
-        "\n                We need to learn how to protect nature and teach others to do\n                the same, especially in the tourism industry. That way, we can\n                enjoy beautiful places without harming them.\n              ",
-        "\n                Green buildings are designed to save energy and use eco-friendly\n                materials. The built environment refers to human-made\n                infrastructure and amenities. Ensuring a green built environment\n                is about building homes, offices and factories that do as little\n                harm as possible to Earth, and to the people who live and work\n                in them.\n              ",
-        "\n                To protect our planet and humanity's future, we must responsibly\n                manage and recycle waste. Items we now throw away. Opportunities\n                include the installation of public recycling bins labelled\n                according to the waste collected in each bin (glass, paper,\n                plastic, etc.), and the rehabilitation of new, and the repair of\n                existing public signage promoting good recycling and waste\n                management behaviour.\n              ",
-        "\n                Using water wisely and keeping it clean is important because\n                without potable water humanity will die. We also use water in\n                most industrial processes. This means that we should use water\n                carefully in farming and industry and make sure our rivers and\n                lakes stay clean.\n              ",
-        "\n                This involves making products and items that last longer and can\n                be used again. It also means buying only the things we really\n                need, thus reducing waste.\n              ",
-        "\n            *Only relevant information, no spam\n        "
-      ]
-    }
-  },
-  {
-    "url": "/LandingPage/Opportunities/opportunities.html",
-    "title": "Green Economy Opportunities",
-    "description": "",
-    "content": {
-      "headings": [
-        "Opportunities",
-        "\n          Subscribe to our newsletter to get the latest information\n        "
-      ],
-      "paragraphs": [
-        "\n           Find out about opportunities for procurement, market access, capacity building, training and enterprise development support in your area.\n          ",
-        "\n            This page is your go-to hub for all the information you need, right at your fingertips. Use the filter to select resources tailored to your specific category of interest.\n          ",
-        "Try adjusting your search or filters",
-        "\n        *Only relevant information, no spam\n      "
+        "Connect with verified businesses that prioritize sustainability and environmental responsibility."
       ]
     }
   }

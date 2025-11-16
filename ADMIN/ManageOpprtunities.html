@@ -618,22 +618,12 @@
             showErrorMessage('Failed to initialize Firebase. Please check your configuration.');
         }
 
-        // Initialize i18next
-        .getTime()
-                },
-                detection: {
-                    order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
-                    caches: ['localStorage', 'cookie']
-                }
-            }, (err, t) => {
-                if (err) {
-                    console.error('i18next initialization error:', err);                    setTimeout(finalizeLoading, 3000);
-                    return;
-                }
-                console.log('i18next initialized for ManageOpportunities.html at 03:23 AM SAST, Aug 24, 2025:', );
-                finalizeLoading();
-            });
-                });
+        // Load opportunities from Firestore
+        async function loadOpportunities() {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            try {
+                const snapshot = await opportunitiesRef.get();
+                allOpportunities = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderOpportunities(allOpportunities);
                 loadingIndicator.classList.add('d-none');
             } catch (error) {
@@ -740,7 +730,8 @@
         // Show add modal
         function showAddModal() {
             currentOpportunityId = null;
-            modalTitle.if (opportunityForm) opportunityForm.reset();
+            modalTitle.textContent = 'Add New Opportunity';
+            if (opportunityForm) opportunityForm.reset();
             opportunityModal.show();
         }
 

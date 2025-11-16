@@ -456,6 +456,19 @@ if (!getApps().length) {
 db = getFirestore(app);
 auth = getAuth(app);
 
+// Finalize loading - hide the loading overlay
+function finalizeLoading() {
+    const loadingOverlay = document.querySelector('.loading-overlay');
+    const body = document.body;
+    
+    if (loadingOverlay) {
+        loadingOverlay.style.display = 'none';
+    }
+    
+    body.classList.remove('loading');
+    body.classList.add('loaded');
+}
+
 // Initialize i18next
 .getTime()
         },

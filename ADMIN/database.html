@@ -471,26 +471,21 @@
   <script type="module">
     import { resetAdminSession } from '/ADMIN/scripts/adminAuthCheck.js';
 
-    // Initialize i18next
-    .getTime()
-        },
-        detection: {
-          order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
-          caches: ['localStorage', 'cookie']
+    // Finalize loading - hide the loading overlay
+    function finalizeLoading() {
+        const loadingOverlay = document.querySelector('.loading-overlay');
+        const body = document.body;
+        
+        if (loadingOverlay) {
+            loadingOverlay.style.display = 'none';
         }
-      }, (err, t) => {
-        if (err) {
-          console.error('i18next initialization error:', err);          finalizeLoading();
-          return;
-        }
-        console.log('i18next initialized for database.html at', new Date().toLocaleString('en-ZA'), ':', );
-        finalizeLoading();
-      });}
+        
+        body.classList.remove('loading');
+        body.classList.add('loaded');
+    }
 
-     => {
-      console.log('Language changed to:', );    });
-
-     => {    });
+    // Initialize page
+    finalizeLoading();
 
     // Column categories
     const columnCategories = {
@@ -610,12 +605,14 @@
         const tab = document.createElement('div');
         tab.className = 'category-tab';
         if (category === "Project Information") tab.classList.add('active');
-        tab..replace(/\s+/g, '_')}`);
+        // use a safe id derived from the category name
+        tab.id = category.replace(/\s+/g, '_');
         tab.textContent = category; // Fallback text
         tab.dataset.category = category;
         tab.addEventListener('click', toggleCategory);
         categoryTabs.appendChild(tab);
-      }    }
+      }
+    }
 
     // Toggle category visibility
     function toggleCategory(e) {

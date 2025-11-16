@@ -448,12 +448,36 @@ if (!getApps().length) {
 db = getFirestore(app);
 auth = getAuth(app);
 
+// Finalize loading - hide the loading overlay
+function finalizeLoading() {
+    const loadingOverlay = document.querySelector('.loading-overlay');
+    const body = document.body;
+    
+    if (loadingOverlay) {
+        loadingOverlay.style.display = 'none';
+    }
+    
+    body.classList.remove('loading');
+    body.classList.add('loaded');
+}
+
 // Initialize page
 finalizeLoading();
+
+async function loadEvents() {
+    try {
+        const eventsList = document.querySelector('.events-list');
+        eventsList.innerHTML = '';
+        const querySnapshot = await getDocs(collection(db, 'events'));
+        querySnapshot.forEach((docSnap) => {
+            const event = docSnap.data();
+            const eventItem = document.createElement('div');
+            eventItem.className = 'event-item';
+            eventItem.dataset.id = docSnap.id;
             eventItem.innerHTML = `
                 <div class="event-details">
                     <h4>${event.title || 'No Title'}</h4>
-                    <p>${'Date: {date}'}</p>
+                    <p>Date: ${event.date || 'No Date'}</p>
                     <p>${event.details || 'No Details'}</p>
                 </div>
                 <div class="event-actions">
@@ -462,9 +486,10 @@ finalizeLoading();
                 </div>
             `;
             eventsList.appendChild(eventItem);
-        });    } catch (error) {
+        });
+    } catch (error) {
         console.error('Error loading events:', error.code, error.message);
-        showAlertModal('Error loading events: {message}', 'error');
+        showAlertModal(`Error loading events: ${error.message}`, 'error');
     }
 }
 
