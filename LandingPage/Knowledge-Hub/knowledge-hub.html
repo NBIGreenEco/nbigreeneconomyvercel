@@ -70,14 +70,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Green Economy Toolkit</title>
   <script src="https://cdn.jsdelivr.net/npm/contentful@latest/dist/contentful.browser.min.js"></script>
-  <script type="module" src="../../Master Page(Header and Footer)/MasterPage.js"></script>
+  <script type="module" src="/Master Page(Header and Footer)/MasterPage.js"></script>
   <script src="https://unpkg.com/lunr@2/lunr.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  <link rel="stylesheet" href="../../Master Page(Header and Footer)/MasterPage.css">
-  <link rel="stylesheet" href="../../digital_human/digital-human.css">
-  <script src="../../scripts/enhancedsearch.js"></script>
+  <link rel="stylesheet" href="/Master Page(Header and Footer)/MasterPage.css">
+  <link rel="stylesheet" href="/digital_human/digital-human.css">
+  <script src="../../../scripts/enhancedsearch.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../../Master Page(Header and Footer)/footer.css">
+    <link href="stylesheet" href="/Master Page(Header and Footer)/footer.css">
   <style>
       /* Reset and base styles */
       * {
@@ -771,26 +771,33 @@
 
       function renderKnowledgeHubStaticContent() {
           console.log('Rendering static knowledge hub content as fallback');
+          // You can add static fallback content here if needed
       }
   </script>
-  <!-- Translation system is now in MasterPage header -->
-  <script>
-    function removeLoading() {
-      document.body.classList.remove('loading');
-      document.body.classList.add('loaded');
-      const overlay = document.querySelector('.loading-overlay');
-      if (overlay) overlay.style.display = 'none';
-    }
-    
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', removeLoading);
-    } else {
-      removeLoading();
-    }
-    
-    // Fallback: force remove after 3 seconds
-    setTimeout(removeLoading, 3000);
+  <script type="module">      // Initialize i18next
+      i18next
+          .use()
+          .use()
+          .init({
+              fallbackLng: 'en',
+              supportedLngs: ['en', 'zu', 'tn'],
+              backend: { 
+                  loadPath: '/locales/{{lng}}.json?v=' + new Date().getTime()
+              },
+              detection: {
+                  order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
+                  caches: ['localStorage', 'cookie']
+              }
+          }, (err, t) => {
+              if (err) {
+                  console.error('i18next initialization error:', err);                  return;
+              }
+              console.log('i18next initialized for knowledgehub.html at', new Date().toLocaleString('en-ZA'), 'language:', i18next.language);
+              finalizeLoading();
+          });});
+      });
   </script>
+  <!-- Translation system is now in MasterPage header -->
 </head>
 <body class="loading">
     <div class="loading-overlay">
