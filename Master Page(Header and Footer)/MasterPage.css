@@ -73,20 +73,24 @@ body {
 .nav-links {
     display: flex;
     gap: 0;
+    align-items: center;
+    height: 70px;
 }
 
 .nav-utils {
     display: flex;
     align-items: center;
     gap: 0;
+    flex-wrap: nowrap;
+    height: 70px;
 }
 
-/* Navigation buttons - exact copy of language-selector styling */
+/* Navigation buttons - each independent like the dropdown */
 .nav-button {
     background-color: #2b9589;
     color: white;
     border: none;
-    padding: 0 2rem;
+    padding: 0 15px;
     height: 70px;
     font-size: 0.9rem;
     font-weight: 700;
@@ -95,16 +99,41 @@ body {
     align-items: center;
     justify-content: center;
     border-radius: 0;
-    width: auto;
-    margin-right: 0;
-    line-height: 1.2;
-    padding-top: 12px;
     text-decoration: none;
     transition: background-color 0.3s ease;
     box-sizing: border-box;
+    flex-shrink: 0;
+    white-space: nowrap;
+    line-height: 70px;
 }
 
 .nav-button:hover {
+    background-color: #4ec3b0;
+}
+
+/* Navigation links in nav-links (same as nav-button) */
+.nav-links a {
+    background-color: #2b9589;
+    color: white;
+    border: none;
+    padding: 0 15px;
+    height: 70px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    white-space: nowrap;
+    line-height: 70px;
+}
+
+.nav-links a:hover {
     background-color: #4ec3b0;
 }
 
@@ -158,8 +187,9 @@ body {
     border-radius: 0;
     width: 150px;
     margin-right: 0;
-    line-height: 1.2;
-    padding-top: 12px;
+    line-height: 70px;
+    box-sizing: border-box;
+    flex-shrink: 0;
 }
 
 .language-selector:hover {
@@ -686,6 +716,13 @@ html, body {
     color: white !important;
     visibility: visible !important;
     display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 70px !important;
+    line-height: 70px !important;
+    padding: 0 2rem !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
 }
 
 .language-selector:hover {
@@ -735,7 +772,6 @@ html, body {
     opacity: 1 !important;
     height: 70px !important;
     padding: 0 2rem !important;
-    padding-top: 12px !important;
     margin: 0 !important;
     border: none !important;
     border-radius: 0 !important;
@@ -744,13 +780,16 @@ html, body {
     font-size: 0.9rem !important;
     font-weight: 600 !important;
     cursor: pointer !important;
-    line-height: 1.2 !important;
+    line-height: 70px !important;
     vertical-align: middle !important;
     text-align: center !important;
     width: auto !important;
     appearance: none !important;
     -webkit-appearance: none !important;
     -moz-appearance: none !important;
+    display: flex !important;
+    align-items: center !important;
+    box-sizing: border-box !important;
 }
 
 /* Remove dropdown arrow styling and make text white */

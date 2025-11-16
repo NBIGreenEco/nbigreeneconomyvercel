@@ -1,7 +1,6 @@
-// MasterPage.js (only the changed part – everything else stays the same)
-import { updateContent } from '../Trans.js';
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
 import { getAuth, browserLocalPersistence, setPersistence } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+import { updateContent } from '/Trans.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCfa827mvCLf1ETts6B_DmCfb7owTohBxk",
@@ -21,7 +20,7 @@ class GreenEconomyHeader extends HTMLElement {
     const currentPath = window.location.pathname;
     const isDashboard = currentPath === '/Dashboard/dashboard.html' || currentPath === '/ADMIN/admin-dashboard.html' || currentPath === '/ADMIN/manageevents.html'
       || currentPath === '/ADMIN/managefunding.html' || currentPath === '/ADMIN/ManageOpprtunities.html' || currentPath === '/ADMIN/managenews.html' 
-      || currentPath === '/ADMIN/TranslationManager.html' || currentPath === '/ADMIN/database.html'|| currentPath === '/Fundimg-Hub/Funding-Hub.html' || currentPath === '/questionnaire/questionnaire.html' 
+      || currentPath === '/ADMIN/TranslationManager.html' || currentPath === '/ADMIN/database.html' || currentPath === '/Fundimg-Hub/Funding-Hub.html' || currentPath === '/questionnaire/questionnaire.html' 
       || currentPath === '/LandingPage/GamifiedLearning/Gamified.html';
 
     this.innerHTML = `
@@ -29,11 +28,10 @@ class GreenEconomyHeader extends HTMLElement {
         <header class="header">
           <div class="logo">
             <a href="/index.html" id="logo-link">
-              <img src="/Images/GET.png" data-i18n="[alt]header.logo_alt" alt="Green Economy Toolkit Logo" />
+              <img src="/Images/GET.png" alt="Green Economy Toolkit Logo" />
             </a>
           </div>
           
-          <!-- Mobile menu button -->
           <button class="mobile-menu-button" id="mobile-menu-toggle" aria-label="Toggle menu">
             <span class="menu-icon"></span>
             <span class="menu-icon"></span>
@@ -42,22 +40,22 @@ class GreenEconomyHeader extends HTMLElement {
           
           <nav class="nav" id="main-nav">
             <div class="nav-links">
-              ${isDashboard ? '<a href="/index.html" data-i18n="header.home">Home</a>' : ''}
+              ${isDashboard ? '<a href="/index.html">Home</a>' : `
+                <a href="/LandingPage/About Page/about.html" data-i18n="nav.about">About the green economy</a>
+                <a href="/LandingPage/Opportunities/opportunities.html" data-i18n="nav.opportunities">Opportunities</a>
+                <a href="/LandingPage/IRM-Sector/IRMSector.html" data-i18n="nav.irm">IRM sector</a>
+                <a href="/LandingPage/Knowledge-Hub/knowledge-hub.html" data-i18n="nav.knowledge">Knowledge hub</a>
+              `}
             </div>
             <div class="nav-utils">
-              <!-- Navigation Buttons -->
-              ${!isDashboard ? `
-                <a href="/LandingPage/About Page/about.html" class="nav-button" data-i18n="header.funding">About the green economy</a>
-                <a href="/LandingPage/Opportunities/opportunities.html" class="nav-button" data-i18n="header.opportunities">Opportunities</a>
-                <a href="/LandingPage/IRM-Sector/IRMSector.html" class="nav-button" data-i18n="header.find_a_job">IRM sector</a>
-                <a href="/LandingPage/Knowledge-Hub/knowledge-hub.html" class="nav-button" data-i18n="header.training">Knowledge hub</a>
-              ` : ''}
-              <!-- Language Selector Dropdown -->
-              <select id="langSelect" onchange="onLangChange.call(this)" style="padding: 0 2rem; height: 70px; border: none; font-size: 0.9rem; background-color: #2b9589; color: white; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; appearance: none; -webkit-appearance: none; -moz-appearance: none; padding-right: 35px; background-image: url('data:image/svg+xml;utf8,<svg fill=\'white\' height=\'24\' viewBox=\'0 0 24 24\' width=\'24\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M7 10l5 5 5-5z\'/></svg>'); background-repeat: no-repeat; background-position: right 8px center; background-size: 24px;">
-                <option value="en" style="background-color: #fff; color: #333;">English</option>
-                <option value="zu" style="background-color: #fff; color: #333;">isiZulu</option>
-                <option value="tn" style="background-color: #fff; color: #333;">Setswana</option>
+              <select class="language-selector" id="custom_language_select" disabled>
+                <option value="" disabled selected data-i18n="nav.languageSelect">Select</option>
+                <option value="en" data-i18n="nav.languageEn">English</option>
+                <option value="zu" data-i18n="nav.languageZu">Isizulu</option>
+                <option value="tn" data-i18n="nav.languageTn">Setswana</option>
               </select>
+              <div id="google_translate_element" style="display: none;"></div>
+              <div id="error-message" class="translation-error"></div>
               <i class="fas fa-search search-icon" id="search-toggle"></i>
             </div>
             <div class="blue-section"></div>
@@ -66,14 +64,14 @@ class GreenEconomyHeader extends HTMLElement {
         <section class="search-section" id="search-popup" style="display: none;">
           <div class="search-container">
             <div class="search-header">
-              <h3 data-i18n="header.ai-search-title">AI Enhanced Search</h3>
+              <h3 data-i18n="search.title">AI Enhanced Search</h3>
               <span class="search-close" id="search-close">×</span>
             </div>
             <div class="search-input-wrapper">
               <svg class="search-input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
               </svg>
-              <input type="text" class="search-input" id="smartSearch" data-i18n="[placeholder]header.search-placeholder" placeholder="Search green funding, businesses, tools...">
+              <input type="text" class="search-input" id="smartSearch" data-i18n="[placeholder]search.placeholder" placeholder="Search green funding, businesses, tools...">
             </div>
             <div id="search-results" class="search-results max-h-96 overflow-y-auto"></div>
           </div>
@@ -81,15 +79,9 @@ class GreenEconomyHeader extends HTMLElement {
       </div>
     `;
 
-    // Apply translations after rendering
-    setTimeout(updateContent, 0);
-
-    // Setup search functionality
-    setTimeout(() => {
-      this.setupSearchFunctionality();
-      this.setupMobileMenu();
-      this.preventLayoutShift();
-    }, 100);
+    this.setupDelayedTranslation();
+    this.setupSearchFunctionality();
+    this.setupMobileMenu();
 
     // Add event listener for logo click to handle logout
     const logoLink = this.querySelector('#logo-link');
@@ -114,6 +106,107 @@ class GreenEconomyHeader extends HTMLElement {
         }
       });
     }
+  }
+
+  setupDelayedTranslation() {
+    const getTimestamp = () => new Date().toLocaleString('en-ZA', { timeZone: 'Africa/Johannesburg' });
+    const errorMessage = this.querySelector('#error-message');
+    const customSelect = this.querySelector('#custom_language_select');
+
+    const showError = (message) => {
+      errorMessage.style.display = 'block';
+      errorMessage.textContent = message;
+      setTimeout(() => {
+        errorMessage.style.display = 'none';
+        errorMessage.textContent = '';
+      }, 5000);
+    };
+
+    // 🚀 CRITICAL: Wait for FULL page load
+    const initTranslation = () => {
+      console.log(`[${getTimestamp()}] FULL PAGE READY - Initializing translation`);
+      this.initializeTranslation(customSelect, showError, getTimestamp);
+    };
+
+    // Load script but NO auto-init
+    if (!document.querySelector('script[src*="translate.google.com"]')) {
+      const script = document.createElement('script');
+      script.src = 'https://translate.google.com/translate_a/element.js';
+      script.async = true;
+      script.onload = () => console.log(`[${getTimestamp()}] Google Translate script loaded`);
+      document.head.appendChild(script);
+    }
+
+    window.addEventListener('load', () => {
+      setTimeout(initTranslation, 500); // Extra buffer
+    });
+  }
+
+  initializeTranslation(customSelect, showError, getTimestamp) {
+    window.googleTranslateElementInit = () => {
+      try {
+        new google.translate.TranslateElement({
+          pageLanguage: 'en',
+          includedLanguages: 'en,tn,zu',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+          autoDisplay: false, // 🚀 NO AUTO TRANSLATE
+          gaTrack: false
+        }, 'google_translate_element');
+
+        setTimeout(() => {
+          const googleSelect = document.querySelector('.goog-te-combo');
+          if (!googleSelect) {
+            showError('Translation failed. Using fallback.');
+            customSelect.disabled = false;
+            updateContent();
+            return;
+          }
+
+          console.log(`[${getTimestamp()}] Google Translate ACTIVE`);
+
+          // 🚀 Default English - NO auto translation
+          googleSelect.value = 'en';
+          customSelect.value = 'en';
+          customSelect.disabled = false;
+
+          const syncLanguage = (lang) => {
+            try {
+              googleSelect.value = lang;
+              googleSelect.dispatchEvent(new Event('change', { bubbles: true }));
+              i18next.changeLanguage(lang, () => {
+                setTimeout(updateContent, 200);
+                console.log(`[${getTimestamp()}] Language ${lang} applied`);
+              });
+            } catch (e) {
+              showError('Language change failed.');
+              updateContent();
+            }
+          };
+
+          customSelect.addEventListener('change', (e) => {
+            if (e.target.value) syncLanguage(e.target.value);
+          });
+
+          googleSelect.addEventListener('change', (e) => {
+            customSelect.value = e.target.value || 'en';
+            syncLanguage(e.target.value || 'en');
+          });
+
+          // Hide banner
+          const banner = document.querySelector('.goog-te-banner-frame');
+          if (banner) banner.classList.add('hide-translate-banner');
+
+          updateContent(); // Initial static content
+
+        }, 300);
+      } catch (e) {
+        showError('Translation init failed.');
+        customSelect.disabled = false;
+        updateContent();
+      }
+    };
+
+    setTimeout(() => window.googleTranslateElementInit && window.googleTranslateElementInit(), 800);
   }
 
   preventLayoutShift() {
