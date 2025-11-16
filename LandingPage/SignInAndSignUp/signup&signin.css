@@ -11,11 +11,11 @@
 }
 
 .sign-in-btn, .sign-up-btn, .google-btn {
-  background-color: #000000; /* green-primary */
+  background-color: #10b981; /* green-primary */
   color: white;
 }
 .sign-in-btn:hover, .sign-up-btn:hover, .google-btn:hover {
-  background-color: #9CA3AF;
+  background-color: #059669; /* darker green */
 }
 .hidden {
   display: none;
@@ -78,12 +78,12 @@
             margin-right: 0.5rem;
         }
         .sign-up-btn {
-            background-color: #000000;
+            background-color: #10b981;
             color: #ffffff;
         }
         
         .sign-up-btn:hover {
-            background-color: #1a1a1a;
+            background-color: #059669;
             transform: scale(1.05);
         }
 
