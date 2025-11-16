@@ -1,5 +1,6 @@
 // /scripts/signin.js
 window.signinScriptLoaded = true;
+console.log("DEBUG: signin.js loaded at", new Date().toLocaleString('en-ZA'));
 
 import { getApps, initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
 import { getAuth, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
@@ -16,9 +17,6 @@ const firebaseConfig = {
 };
 
 const baseUrl = 'https://greeneconomytoolkit.com';
-console.log("DEBUG: Initializing Firebase for SignIn at", new Date().toLocaleString('en-ZA'));
-console.log(`DEBUG: Base URL: ${baseUrl}`);
-
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -41,7 +39,8 @@ function showError(msg) {
 function showVerificationModal() {
     const m = document.getElementById('verification-modal'), o = document.getElementById('verification-modal-overlay');
     if (m && o) { m.style.display = 'block'; o.style.display = 'block'; }
-    document.getElementById('modal-ok-btn').onclick = () => { m.style.display = 'none'; o.style.display = 'none'; };
+    const btn = document.getElementById('modal-ok-btn');
+    if (btn) btn.onclick = () => { m.style.display = 'none'; o.style.display = 'none'; };
 }
 
 async function trackInteraction(uid, cat, act, lbl = "") {
@@ -68,12 +67,14 @@ async function checkQuestionnaireCompletion(user) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    console.log("DOM ready – attaching sign-in logic");
+
     const emailInput = document.getElementById('email');
     const passwordField = document.getElementById('password-field');
     const signInBtn = document.getElementById('sign-in-btn');
 
     if (!signInBtn) {
-        console.error("SIGN-IN BUTTON NOT FOUND!");
+        console.error("SIGN-IN BUTTON NOT FOUND! ID: 'sign-in-btn'");
         return;
     }
 
@@ -117,13 +118,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!verified) {
                 await auth.signOut();
-                showVerificationModal(); showError("Verify your email first.");
+                showVerificationModal();
+                showError("Verify your email first.");
                 await trackInteraction(null, 'login', 'failure', 'unverified');
                 hideLoader(); signInBtn.disabled = false; processing = false;
                 return;
             }
 
-            await setDoc(doc(db, 'users', user.uid), { email: user.email, language: window.i18next?.language || 'en', emailVerified: true }, { merge: true });
+            await setDoc(doc(db, 'users', user.uid), {
+                email: user.email,
+                language: window.i18next?.language || 'en',
+                emailVerified: true
+            }, { merge: true });
+
             await trackInteraction(user.uid, 'login', 'success', email);
 
             const done = await checkQuestionnaireCompletion(user);
