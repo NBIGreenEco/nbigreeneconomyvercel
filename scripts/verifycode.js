@@ -127,7 +127,25 @@ document.addEventListener('DOMContentLoaded', async () => {
       const passwordHash = await hashCode(password);
       const storedHash = await getStoredPasswordHash();
       console.log('DEBUG: Comparing hashes:', { enteredHash: passwordHash, storedHash });
+
+      // Support for legacy or plaintext stored hash values (fallbacks)
+      // Expected: storedHash is a full SHA-256 hex string (64 chars). If not, try fallbacks
+      let verified = false;
       if (passwordHash === storedHash) {
+        verified = true;
+      } else if (storedHash === password) {
+        // Plaintext stored in Firestore (insecure) — accept for backwards compatibility
+        console.warn('DEBUG: Stored admin password appears to be plaintext. Consider updating to SHA-256.');
+        verified = true;
+        await trackInteraction(`anonymous_${Date.now()}`, 'verify_code', 'fallback_plaintext_used', 'Plaintext stored hash');
+      } else if (storedHash && storedHash.length < 64 && passwordHash.slice(0, storedHash.length) === storedHash) {
+        // Some older flows may have stored a truncated hash; allow match but encourage an update
+        console.warn('DEBUG: Stored admin password appears to be a truncated hash. Update to full SHA-256 for security.');
+        verified = true;
+        await trackInteraction(`anonymous_${Date.now()}`, 'verify_code', 'fallback_truncated_hash', 'Truncated stored hash');
+      }
+
+      if (verified) {
         console.log('DEBUG: Admin code verification successful');
         sessionStorage.setItem('verified', 'true');
         sessionStorage.setItem('sessionStart', Date.now().toString()); // Set session start time
