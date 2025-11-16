@@ -1,5 +1,8 @@
+// /scripts/signin.js
+window.signinScriptLoaded = true;
+
 import { getApps, initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
-import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+import { getAuth, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
 import { getFirestore, doc, setDoc, getDoc, addDoc, serverTimestamp, collection } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
 
 const firebaseConfig = {
@@ -13,127 +16,83 @@ const firebaseConfig = {
 };
 
 const baseUrl = 'https://greeneconomytoolkit.com';
+console.log("DEBUG: Initializing Firebase for SignIn at", new Date().toLocaleString('en-ZA'));
+console.log(`DEBUG: Base URL: ${baseUrl}`);
+
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 const auth = getAuth(app);
 const db = getFirestore(app);
-const googleProvider = new GoogleAuthProvider();
 
 function showLoader() {
-    const loader = document.getElementById('loader');
-    const overlay = document.getElementById('loader-overlay');
-    if (loader && overlay) {
-        loader.style.display = 'block';
-        overlay.style.display = 'block';
-    }
+    const l = document.getElementById('loader'), o = document.getElementById('loader-overlay');
+    if (l && o) { l.style.display = 'block'; o.style.display = 'block'; }
 }
-
 function hideLoader() {
-    const loader = document.getElementById('loader');
-    const overlay = document.getElementById('loader-overlay');
-    if (loader && overlay) {
-        loader.style.display = 'none';
-        overlay.style.display = 'none';
-    }
+    const l = document.getElementById('loader'), o = document.getElementById('loader-overlay');
+    if (l && o) { l.style.display = 'none'; o.style.display = 'none'; }
 }
-
-function showError(message) {
+function showError(msg) {
     const el = document.getElementById('error-message');
     if (!el) return;
-    const final = (window.i18next?.t) ? i18next.t('signin.error_message', { defaultValue: message }) : message;
-    el.textContent = final;
-    el.classList.remove('hidden');
+    const txt = window.i18next?.t ? i18next.t('signin.error_message', { defaultValue: msg }) : msg;
+    el.textContent = txt; el.classList.remove('hidden');
     setTimeout(() => el.classList.add('hidden'), 5000);
 }
-
 function showVerificationModal() {
-    const modal = document.getElementById('verification-modal');
-    const overlay = document.getElementById('verification-modal-overlay');
-    if (modal && overlay) {
-        modal.style.display = 'block';
-        overlay.style.display = 'block';
-    }
-    const okBtn = document.getElementById('modal-ok-btn');
-    if (okBtn) {
-        okBtn.onclick = () => {
-            modal.style.display = 'none';
-            overlay.style.display = 'none';
-        };
-    }
+    const m = document.getElementById('verification-modal'), o = document.getElementById('verification-modal-overlay');
+    if (m && o) { m.style.display = 'block'; o.style.display = 'block'; }
+    document.getElementById('modal-ok-btn').onclick = () => { m.style.display = 'none'; o.style.display = 'none'; };
 }
 
-async function trackInteraction(userId, category, action, label = "") {
-    console.log(`Track: ${category}/${action} - ${label}`);
+async function trackInteraction(uid, cat, act, lbl = "") {
     try {
         await addDoc(collection(db, 'interactions'), {
-            userId: userId || `anonymous_${Date.now()}`,
-            category, action, label,
+            userId: uid || `anonymous_${Date.now()}`,
+            category: cat, action: act, label: lbl,
             timestamp: serverTimestamp(),
-            language: (window.i18next?.language) || 'en',
+            language: window.i18next?.language || 'en',
             userAgent: navigator.userAgent
         });
-    } catch (e) {
-        console.error("Track error:", e);
-    }
+    } catch (e) { console.error("Track error:", e); }
 }
 
 async function checkQuestionnaireCompletion(user) {
     try {
-        const userDoc = await getDoc(doc(db, 'users', user.uid));
-        if (!userDoc.exists()) return false;
-        const data = userDoc.data();
-        if (!data.questionnaireCompleted || !data.questionnaireResponseId) return false;
-        const res = await getDoc(doc(db, 'questionnaire_responses', data.questionnaireResponseId));
-        return res.exists();
-    } catch (e) {
-        console.error("Questionnaire check error:", e);
-        return false;
-    }
+        const ud = await getDoc(doc(db, 'users', user.uid));
+        if (!ud.exists()) return false;
+        const d = ud.data();
+        if (!d.questionnaireCompleted || !d.questionnaireResponseId) return false;
+        const rd = await getDoc(doc(db, 'questionnaire_responses', d.questionnaireResponseId));
+        return rd.exists();
+    } catch (e) { return false; }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("DEBUG: signin.js loaded and DOM ready");
-
     const emailInput = document.getElementById('email');
     const passwordField = document.getElementById('password-field');
     const signInBtn = document.getElementById('sign-in-btn');
 
     if (!signInBtn) {
-        console.error("SIGN-IN BUTTON NOT FOUND! Check ID: 'sign-in-btn'");
+        console.error("SIGN-IN BUTTON NOT FOUND!");
         return;
     }
 
-    console.log("Sign-in button found and attaching listener");
-
-    // Admin email: hide password
     emailInput?.addEventListener('blur', () => {
-        if (emailInput.value.trim() === 'nbigreeneconomy@gmail.com') {
-            passwordField.style.display = 'none';
-        } else {
-            passwordField.style.display = 'block';
-        }
+        passwordField.style.display = emailInput.value.trim() === 'nbigreeneconomy@gmail.com' ? 'none' : 'block';
     });
 
-    let isProcessing = false;
-
+    let processing = false;
     signInBtn.addEventListener('click', async (e) => {
         e.preventDefault();
-        if (isProcessing) return;
-        isProcessing = true;
-        signInBtn.disabled = true;
+        if (processing) return;
+        processing = true; signInBtn.disabled = true;
 
         const email = emailInput.value.trim();
         const password = document.getElementById('password')?.value;
 
-        if (!email) {
-            showError("Enter email.");
-            signInBtn.disabled = false;
-            isProcessing = false;
-            return;
-        }
-
+        if (!email) { showError("Enter email."); processing = false; signInBtn.disabled = false; return; }
         await trackInteraction(null, 'login', 'attempt', email);
 
-        // Admin bypass
         if (email === 'nbigreeneconomy@gmail.com') {
             showLoader();
             setTimeout(() => {
@@ -143,61 +102,43 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        if (!password) {
-            showError("Password required.");
-            signInBtn.disabled = false;
-            isProcessing = false;
-            return;
-        }
+        if (!password) { showError("Password required."); processing = false; signInBtn.disabled = false; return; }
 
         showLoader();
         try {
             const cred = await signInWithEmailAndPassword(auth, email, password);
-            const user = cred.user;
-            await user.reload();
+            const user = cred.user; await user.reload();
 
             let verified = user.emailVerified;
             if (!verified) {
-                const vDoc = await getDoc(doc(db, 'email_verifications', email));
-                verified = vDoc.exists() && vDoc.data().isVerified;
+                const v = await getDoc(doc(db, 'email_verifications', email));
+                verified = v.exists() && v.data().isVerified;
             }
 
             if (!verified) {
                 await auth.signOut();
-                showVerificationModal();
-                showError("Verify your email first.");
+                showVerificationModal(); showError("Verify your email first.");
                 await trackInteraction(null, 'login', 'failure', 'unverified');
-                hideLoader();
-                signInBtn.disabled = false;
-                isProcessing = false;
+                hideLoader(); signInBtn.disabled = false; processing = false;
                 return;
             }
 
-            await setDoc(doc(db, 'users', user.uid), {
-                email: user.email,
-                language: (window.i18next?.language) || 'en',
-                emailVerified: true
-            }, { merge: true });
-
+            await setDoc(doc(db, 'users', user.uid), { email: user.email, language: window.i18next?.language || 'en', emailVerified: true }, { merge: true });
             await trackInteraction(user.uid, 'login', 'success', email);
 
             const done = await checkQuestionnaireCompletion(user);
-            const redirect = done
+            window.location.href = done
                 ? `${baseUrl}/Dashboard/dashboard.html?userId=${user.uid}`
                 : `${baseUrl}/questionnaire/questionnaire.html?userId=${user.uid}`;
-
-            window.location.href = redirect;
         } catch (err) {
             let msg = "Sign-in failed.";
             if (err.code === 'auth/wrong-password') msg = "Incorrect password.";
             else if (err.code === 'auth/user-not-found') msg = "No account found.";
             else if (err.code === 'auth/invalid-email') msg = "Invalid email.";
             showError(msg);
-            await trackInteraction(null, 'login', 'failure', err.code || err.message);
+            await trackInteraction(null, 'login', 'failure', err.code);
         } finally {
-            hideLoader();
-            signInBtn.disabled = false;
-            isProcessing = false;
+            hideLoader(); signInBtn.disabled = false; processing = false;
         }
     });
 
