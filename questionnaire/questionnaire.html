@@ -369,9 +369,10 @@
         import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
         import { getFirestore, doc, getDoc, setDoc, addDoc, collection, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
 
-        // Always use production URL
-        const baseUrl = 'https://greeneconomytoolkit.org';
-        console.log(`DEBUG: Using production base URL: ${baseUrl}`);
+        // Environment detection
+        const isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+        const baseUrl = isProduction ? 'http://greeneconomytoolkit.com' : 'http://127.0.0.1:5501';
+        console.log(`DEBUG: Environment: ${isProduction ? 'production' : 'development'}, Base URL: ${baseUrl}`);
 
         // Firebase Config
         const firebaseConfig = {
