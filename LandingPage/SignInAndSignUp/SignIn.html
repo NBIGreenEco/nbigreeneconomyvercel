@@ -3,95 +3,80 @@
 <head>
   <!-- Firebase Email Verification Redirect -->
   <script>
-    // Intercept Firebase email verification links and redirect to VerifyEmail.html
     (function() {
       const urlParams = new URLSearchParams(window.location.search);
       const mode = urlParams.get('mode');
       const oobCode = urlParams.get('oobCode');
       const continueUrl = urlParams.get('continueUrl');
-      
-      // If this is a Firebase email verification link, redirect to VerifyEmail.html
+     
       if (mode === 'verifyEmail' && oobCode) {
-        // Extract email from continueUrl if available
         let email = urlParams.get('email');
         if (!email && continueUrl) {
           const emailMatch = continueUrl.match(/email=([^&]+)/);
-          if (emailMatch) {
-            email = decodeURIComponent(emailMatch[1]);
-          }
+          if (emailMatch) email = decodeURIComponent(emailMatch[1]);
         }
-        
-        // Build the redirect URL
+       
         let verifyUrl = '/LandingPage/VerifyEmail.html?oobCode=' + encodeURIComponent(oobCode);
-        if (email) {
-          verifyUrl += '&email=' + encodeURIComponent(email);
-        }
-        
+        if (email) verifyUrl += '&email=' + encodeURIComponent(email);
+       
         console.log('Firebase email verification detected, redirecting to:', verifyUrl);
         window.location.href = verifyUrl;
       }
     })();
   </script>
 
-  <!-- Fix for Google Translate proxy: when translate serves a proxied page, root-relative URLs (starting with /) point to the proxy origin and break asset loading. -->
+  <!-- Google Translate Proxy Fix -->
   <script>
     (function() {
       try {
-        var ref = document.referrer || '';
+        const ref = document.referrer || '';
         if (!ref) return;
-        var refOrigin = new URL(ref).origin;
-        var hostname = window.location.hostname || '';
-        var isProxy = /translate|googleusercontent|goog/.test(hostname) && refOrigin.indexOf(hostname) === -1;
+        const refOrigin = new URL(ref).origin;
+        const hostname = window.location.hostname || '';
+        const isProxy = /translate|googleusercontent|goog/.test(hostname) && refOrigin.indexOf(hostname) === -1;
         if (!isProxy) return;
-        var map = [ ['link','href'], ['script','src'], ['img','src'], ['a','href'] ];
-        map.forEach(function(pair) {
-          var tag = pair[0], attr = pair[1];
-          var nodes = document.getElementsByTagName(tag);
-          for (var i = 0; i < nodes.length; i++) {
-            var el = nodes[i];
-            var v = el.getAttribute(attr);
+
+        const map = [['link','href'], ['script','src'], ['img','src'], ['a','href']];
+        map.forEach(([tag, attr]) => {
+          const nodes = document.getElementsByTagName(tag);
+          for (let i = 0; i < nodes.length; i++) {
+            const el = nodes[i];
+            let v = el.getAttribute(attr);
             if (!v) continue;
-            if (v.indexOf('/') === 0) {
-              el.setAttribute(attr, refOrigin + v);
-            } else if (v.indexOf('./') === 0) {
-              el.setAttribute(attr, refOrigin + v.slice(1));
-            }
+            if (v.startsWith('/')) el.setAttribute(attr, refOrigin + v);
+            else if (v.startsWith('./')) el.setAttribute(attr, refOrigin + v.slice(1));
           }
         });
-        var base = document.querySelector('base');
+
+        let base = document.querySelector('base');
         if (!base) {
           base = document.createElement('base');
           document.head.insertBefore(base, document.head.firstChild);
         }
         base.setAttribute('href', refOrigin + '/');
 
-        // Inject protective CSS to override Google Translate's hiding rules
-        var protectiveStyle = document.createElement('style');
+        const protectiveStyle = document.createElement('style');
         protectiveStyle.id = 'navbar-protection-css';
-        protectiveStyle.innerHTML = 
-          '.header-outer, .header, .nav, .nav-links, .nav-utils, ' +
-          '.nav a, .search-icon, .language-selector, #google_translate_element { ' +
-          'display: block !important; visibility: visible !important; opacity: 1 !important; } ' +
-          '.header { display: flex !important; } ' +
-          '.nav, .nav-links, .nav-utils { display: flex !important; } ' +
-          '.nav a { color: white !important; background-color: #2b9589 !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 0 2rem !important; padding-top: 0 !important; } ' +
-          '.nav a:nth-child(2), .nav a:nth-child(3), .nav a:nth-child(4) { padding-top: 12px !important; } ' +
-          '.search-icon { color: white !important; background-color: #2b9589 !important; display: flex !important; } ' +
-          '.language-selector { background-color: #207e74 !important; color: white !important; padding-top: 12px !important; } ' +
-          '#google_translate_element { display: inline-block !important; background: transparent !important; border: none !important; } ' +
-          '.goog-te-gadget { background-color: transparent !important; border: none !important; font-size: 0 !important; } ' +
-          '.goog-te-combo { display: inline-flex !important; align-items: center !important; justify-content: center !important; background-color: #2b9589 !important; color: white !important; border: none !important; height: 70px !important; padding: 0 2rem !important; padding-top: 12px !important; margin: 0 !important; font-size: 0.9rem !important; font-weight: 600 !important; line-height: 1.2 !important; } ' +
-          '.goog-te-combo:hover { background-color: #4ec3b0 !important; } ' +
-          '.goog-te-banner-frame { display: none !important; }';
+        protectiveStyle.innerHTML = `
+          .header-outer, .header, .nav, .nav-links, .nav-utils, .nav a, .search-icon, .language-selector, #google_translate_element {
+            display: block !important; visibility: visible !important; opacity: 1 !important;
+          }
+          .header, .nav, .nav-links, .nav-utils { display: flex !important; }
+          .nav a { color: white !important; background-color: #2b9589 !important; padding: 0 2rem !important; height: 70px !important; display: flex !important; align-items: center !important; justify-content: center !important; }
+          .search-icon { color: white !important; background-color: #2b9589 !important; }
+          .goog-te-combo { background-color: #2b9589 !important; color: white !important; height: 70px !important; padding: 0 2rem !important; border: none !important; font-size: 0.9rem !important; font-weight: 600 !important; }
+          .goog-te-combo:hover { background-color: #4ec3b0 !important; }
+          .goog-te-banner-frame { display: none !important; }
+        `;
         document.head.appendChild(protectiveStyle);
-        console.log('Applied Google Translate proxy asset fix — using origin:', refOrigin);
+        console.log('Google Translate proxy fix applied');
       } catch (e) {
         console.warn('Translate proxy fix failed:', e);
       }
     })();
   </script>
 
-  <!-- Google tag (gtag.js) -->
+  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-37VRZ5CGE4"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -99,329 +84,261 @@
     gtag('js', new Date());
     gtag('config', 'G-37VRZ5CGE4');
   </script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <title data-i18n="signin.title">Green Economy Toolkit - Login</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lunr@2/lunr.min.js"></script>
-    <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
-    <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
-    <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
-    
-  <!-- Translation System (Unofficial Google Translate API) -->
-  <script>
-    let currentLanguage = 'en';
 
-    // Translate a single piece of text
-    async function translateText(text, targetLang) {
-      const sourceLang = currentLanguage || 'en';
-      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-        return data[0].map(seg => seg[0]).join('');
-      } catch (e) {
-        console.error('Translation error:', e);
-        return text;
-      }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title data-i18n="signin.title">Green Economy Toolkit - Login</title>
+
+  <!-- Tailwind + Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+  <!-- i18next -->
+  <script src="https://unpkg.com/i18next@22/i18next.min.js"></script>
+  <script src="https://unpkg.com/i18next-http-backend@2.2.0/i18nextHttpBackend.min.js"></script>
+  <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
+
+  <!-- Master Page + Translation -->
+  <script type="module" src="/Trans.js"></script>
+  <script type="module" src="/Master Page(Header and Footer)/MasterPage.js"></script>
+  <link rel="stylesheet" href="/Master Page(Header and Footer)/MasterPage.css">
+  <link rel="stylesheet" href="/LandingPage/SignInAndSignUp/signup&signin.css">
+
+  <style>
+    :root {
+      --green-primary: #000000;
+      --green-dark: #000000;
+      --radius: 0.5rem;
     }
 
-    // Translate the whole page (all text nodes)
-    async function translatePage(targetLang) {
-      const selector = document.getElementById('langSelect');
-      if (!selector) return;
-      
-      const original = selector.dataset.original || selector.options[selector.selectedIndex].text;
-      selector.dataset.original = original;
+    .blurry-bg {
+      background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb');
+      background-size: cover;
+      background-position: center;
+      filter: blur(8px);
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: -1;
+    }
 
-      const translating = targetLang === 'en' ? 'English' :
-                          targetLang === 'zu' ? 'isiZulu' :
-                          'Setswana';
-      selector.options[selector.selectedIndex].text = `Translating to ${translating}…`;
+    .form-container {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: var(--radius);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      position: relative;
+      z-index: 5;
+      max-width: 28rem;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2rem;
+    }
 
-      const walker = document.createTreeWalker(
-        document.body,
-        NodeFilter.SHOW_TEXT,
-        {
-          acceptNode: node => {
-            const p = node.parentNode;
-            if (!p) return NodeFilter.FILTER_REJECT;
-            const tag = p.tagName;
-            if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'NOSCRIPT') return NodeFilter.FILTER_REJECT;
-            return node.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+    .sign-in-btn {
+      background-color: var(--green-primary);
+      color: white;
+      font-weight: 600;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius);
+      width: 100%;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .sign-in-btn:hover {
+      background-color: var(--green-dark);
+    }
+
+    .sign-in-btn:disabled {
+      background-color: #9CA3AF !important;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    .error-message {
+      color: #dc2626;
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+      text-align: center;
+    }
+
+    .error-message.hidden { display: none; }
+
+    .loader {
+      display: none;
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px; height: 80px;
+      border: 8px solid #e5e7eb;
+      border-top: 8px solid var(--green-primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      z-index: 1000;
+    }
+
+    .loader-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+
+    @keyframes spin {
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    #verification-modal,
+    #verification-modal-overlay {
+      display: none;
+      position: fixed;
+      z-index: 1001;
+    }
+
+    #verification-modal-overlay {
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+
+    #verification-modal {
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
+
+    #verification-modal button {
+      background-color: var(--green-primary);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 0.375rem;
+      font-weight: 600;
+      margin-top: 1rem;
+      width: 100%;
+    }
+
+    #verification-modal button:hover {
+      background-color: var(--green-dark);
+    }
+
+    @media (max-width: 768px) {
+      .form-container { padding: 1.5rem; }
+    }
+
+    @media (max-width: 480px) {
+      .form-container { padding: 1rem; }
+    }
+  </style>
+
+  <!-- i18next Init -->
+  <script>
+    i18next
+      .use(i18nextHttpBackend)
+      .use(i18nextBrowserLanguageDetector)
+      .init({
+        fallbackLng: 'en',
+        supportedLngs: ['en', 'zu', 'tn'],
+        backend: { loadPath: '/locales/{{lng}}.json?v=' + Date.now() },
+        detection: { order: ['querystring', 'cookie', 'localStorage', 'navigator'], caches: ['localStorage', 'cookie'] }
+      }, (err, t) => {
+        if (err) {
+          console.error('i18next init error:', err);
+          setTimeout(() => i18next.loadResources(() => updateContent()), 2000);
+        } else {
+          console.log('i18next ready:', i18next.language);
+          updateContent();
+        }
+      });
+
+    function updateContent() {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (key.startsWith('[')) {
+          const match = key.match(/\[(\w+)\](.+)/);
+          if (match) {
+            const [, attr, tKey] = match;
+            el.setAttribute(attr, i18next.t(tKey, { defaultValue: el.getAttribute(attr) }));
           }
+        } else {
+          el.textContent = i18next.t(key, { defaultValue: el.textContent.trim() });
         }
-      );
+      });
+    }
 
-      const nodes = [];
-      let n;
-      while (n = walker.nextNode()) nodes.push(n);
-
-      const BATCH = 15;
-      for (let i = 0; i < nodes.length; i += BATCH) {
-        const batch = nodes.slice(i, i + BATCH);
-        const promises = batch.map(node => translateText(node.nodeValue, targetLang));
-        const results = await Promise.all(promises);
-        batch.forEach((node, idx) => node.nodeValue = results[idx]);
-      }
-
-      selector.options[selector.selectedIndex].text = original;
-      currentLanguage = targetLang;
-    }      function onLangChange() {
-        const lang = this.value;
-        if (lang === 'en') {
-          location.reload();
-          return;
-        }
-        translatePage(lang).catch(err => {
-          console.error(err);
-          alert('Translation failed – check your internet connection.');
-        });
-      }
-    </script>
-    
-    <script type="module" src="/Trans.js"></script>
-    <script type="module" src="/Master Page(Header and Footer)/MasterPage.js"></script>
-    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"></script>
-    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"></script>
-    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="/Master Page(Header and Footer)/MasterPage.css">
-    <link rel="stylesheet" href="/LandingPage/SignInAndSignUp/signup&signin.css">
-    <style>
-        .loader {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80px;
-            height: 80px;
-            border: 8px solid #e5e7eb;
-            border-top: 8px solid #10b981;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            z-index: 1000;
-        }
-        .loader-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-        }
-        @keyframes spin {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-        #verification-modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 24px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 1001;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-        }
-        #verification-modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-        }
-        #verification-modal button {
-            background-color: #10b981;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-weight: 600;
-            transition: background-color 0.3s;
-        }
-        #verification-modal button:hover {
-            background-color: #059669;
-        }
-        .error-message {
-            color: #ef4444;
-            text-align: center;
-            font-size: 0.875rem;
-            margin-top: 0.5rem;
-        }
-        .error-message.hidden {
-            display: none;
-        }
-        .google-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            background-color: #fff;
-            color: #333;
-            border: 1px solid #ddd;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            font-weight: 500;
-            transition: background-color 0.2s;
-        }
-        .sign-in-btn {
-            background-color: #10b981;
-            color: white;
-            border: none;
-        }
-        .sign-in-btn:hover {
-            background-color: #059669;
-        }
-        .sign-in-btn:active {
-            background-color: #047857;
-        }
-        .google-btn:hover {
-            background-color: #f8f9fa;
-        }
-    </style>
-    <script>
-        i18next
-            .use(i18nextHttpBackend)
-            .use(i18nextBrowserLanguageDetector)
-            .init({
-                fallbackLng: 'en',
-                supportedLngs: ['en', 'zu', 'tn'],
-                backend: { loadPath: '/locales/{{lng}}.json?v=' + new Date().getTime() },
-                detection: {
-                    order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
-                    caches: ['localStorage', 'cookie']
-                }
-            }, (err, t) => {
-                if (err) {
-                    console.error('i18next initialization error:', err);
-                    setTimeout(() => {
-                        i18next.loadResources((loadErr) => {
-                            if (loadErr) {
-                                console.error('Retry failed:', loadErr);
-                                applyFallbackTranslations();
-                            } else {
-                                console.log('i18next retry successful, language:', i18next.language);
-                                updateContent();
-                            }
-                        });
-                    }, 2000);
-                    return;
-                }
-                console.log('i18next initialized for SignIn.html at', new Date().toLocaleString('en-ZA'), ':', i18next.language);
-                updateContent();
-            });
-
-        function applyFallbackTranslations() {
-            document.querySelectorAll('[data-i18n]').forEach(element => {
-                const key = element.getAttribute('data-i18n');
-                if (key.startsWith('[')) {
-                    const match = key.match(/\[(\w+)\](.+)/);
-                    if (match) {
-                        const [, attr, translationKey] = match;
-                        const fallback = element.getAttribute(attr) || 'Content not available';
-                        element.setAttribute(attr, fallback);
-                    }
-                } else {
-                    const fallback = element.textContent.trim() || 'Content not available';
-                    element.textContent = fallback;
-                }
-            });
-            console.warn('Applied fallback translations due to loading failure');
-        }
-
-        function updateContent() {
-            const missingKeys = [];
-            document.querySelectorAll('[data-i18n]').forEach(element => {
-                const key = element.getAttribute('data-i18n');
-                if (key.startsWith('[')) {
-                    const match = key.match(/\[(\w+)\](.+)/);
-                    if (match) {
-                        const [, attr, translationKey] = match;
-                        const translation = i18next.t(translationKey, { defaultValue: element.getAttribute(attr) || 'Content not available' });
-                        if (translation === translationKey) missingKeys.push(translationKey);
-                        element.setAttribute(attr, translation);
-                    }
-                } else {
-                    const translation = i18next.t(key, { defaultValue: element.textContent.trim() || 'Content not available' });
-                    if (translation === key) missingKeys.push(key);
-                    element.textContent = translation;
-                }
-            });
-            if (missingKeys.length > 0) {
-                console.warn('Missing translations:', missingKeys);
-            }
-        }
-
-        i18next.on('languageChanged', () => {
-            console.log('Language changed to:', i18next.language);
-            updateContent();
-        });
-
-        i18next.on('loaded', () => {
-            updateContent();
-        });
-    </script>
-    <!-- Translation system is now in MasterPage header -->
+    i18next.on('languageChanged loaded', updateContent);
+  </script>
 </head>
 <body>
-    <div id="root">
-        <green-economy-header></green-economy-header>
-        <main class="flex-grow flex items-center justify-center py-16 relative">
-            <div class="blurry-bg"></div>
-            <div class="form-container max-w-md w-full mx-4 p-8">
-                <div class="flex justify-center mb-4">
-                    <i class="fas fa-lock text-4xl text-green-primary"></i>
-                </div>
-                <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center" data-i18n="signin.header">Login to Your Account</h2>
-                <div class="space-y-6">
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700" data-i18n="signin.email_label">Email Address</label>
-                        <input id="email" type="email" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-primary focus:border-green-primary" placeholder="you@example.com" data-i18n="[placeholder]signin.email_placeholder">
-                    </div>
-                    <div id="password-field">
-                        <label for="password" class="block text-sm font-medium text-gray-700" data-i18n="signin.password_label">Password</label>
-                        <input id="password" type="password" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-primary focus:border-green-primary" placeholder="••••••••" data-i18n="[placeholder]signin.password_placeholder">
-                    </div>
-                    <div id="error-message" class="error-message hidden"></div>
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <input id="remember-me" type="checkbox" class="h-4 w-4 text-green-primary focus:ring-green-primary border-gray-300 rounded">
-                            <label for="remember-me" class="ml-2 text-sm text-gray-600" data-i18n="signin.remember_me">Remember me</label>
-                        </div>
-                    </div>
-                    <button id="sign-up-btn" class="w-full sign-up-btn font-semibold py-2 px-4 rounded-md transition-all duration-300" data-i18n="signin.sign_in_button">Sign In</button>
-                </div>
-                <p class="mt-6 text-center text-sm text-gray-600">
-                    <span data-i18n="signin.no_account">Don't have an account?</span> <a href="SignUp.html" class="text-green-primary hover:underline inline-link" data-i18n="signin.sign_up_link">Sign Up</a>
-                </p>
+  <div id="root">
+    <green-economy-header></green-economy-header>
+
+    <main class="flex-grow flex items-center justify-center py-16 relative">
+      <div class="blurry-bg"></div>
+
+      <div class="form-container">
+        <div class="flex justify-center mb-4">
+          <i class="fas fa-lock text-4xl text-green-primary"></i>
+        </div>
+        <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center" data-i18n="signin.header">Login to Your Account</h2>
+
+        <div class="space-y-6">
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700" data-i18n="signin.email_label">Email Address</label>
+            <input id="email" type="email" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-primary focus:border-green-primary" placeholder="you@example.com" data-i18n="[placeholder]signin.email_placeholder">
+          </div>
+
+          <div id="password-field">
+            <label for="password" class="block text-sm font-medium text-gray-700" data-i18n="signin.password_label">Password</label>
+            <input id="password" type="password" class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-primary focus:border-green-primary" placeholder="••••••••" data-i18n="[placeholder]signin.password_placeholder">
+          </div>
+
+          <div id="error-message" class="error-message hidden"></div>
+
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <input id="remember-me" type="checkbox" class="h-4 w-4 text-green-primary focus:ring-green-primary border-gray-300 rounded">
+              <label for="remember-me" class="ml-2 text-sm text-gray-600" data-i18n="signin.remember_me">Remember me</label>
             </div>
-            <div id="verification-modal-overlay" class="hidden"></div>
-            <div id="verification-modal" class="hidden">
-                <div class="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto">
-                    <p class="text-lg font-medium text-gray-900 mb-4" data-i18n="signin.verification_message">Please verify your email to continue.</p>
-                    <p class="text-sm text-gray-600 mb-6">Check your email inbox for a verification link. Click the link to verify your email address, then sign in again.</p>
-                    <button id="modal-ok-btn" class="w-full bg-green-primary text-white font-semibold py-2 px-4 rounded-md hover:bg-green-dark transition-all duration-300" data-i18n="signin.ok_button">Okay</button>
-                </div>
-            </div>
-        </main>
-        <green-economy-footer></green-economy-footer>
-    </div>
-    <div class="loader-overlay" id="loader-overlay"></div>
-    <div class="loader" id="loader"></div>
-    <script type="module" src="/scripts/signup.js"></script>
+          </div>
+
+          <button id="sign-in-btn" class="sign-in-btn" data-i18n="signin.sign_in_button">Sign In</button>
+        </div>
+
+        <p class="mt-6 text-center text-sm text-gray-600">
+          <span data-i18n="signin.no_account">Don't have an account?</span>
+          <a href="SignUp.html" class="text-green-primary hover:underline" data-i18n="signin.sign_up_link">Sign Up</a>
+        </p>
+      </div>
+
+      <!-- Verification Modal -->
+      <div id="verification-modal-overlay"></div>
+      <div id="verification-modal">
+        <div class="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto">
+          <p class="text-lg font-medium text-gray-900 mb-4" data-i18n="signin.verification_message">Please verify your email to continue.</p>
+          <p class="text-sm text-gray-600 mb-6">Check your inbox for a verification link.</p>
+          <button id="modal-ok-btn" class="bg-green-primary text-white font-semibold py-2 px-4 rounded-md hover:bg-green-dark w-full" data-i18n="signin.ok_button">Okay</button>
+        </div>
+      </div>
+    </main>
+
+    <green-economy-footer></green-economy-footer>
+  </div>
+
+  <div class="loader-overlay" id="loader-overlay"></div>
+  <div class="loader" id="loader"></div>
+
+  <!-- Firebase + Sign-In Logic -->
+  <script type="module" src="/scripts/signin.js"></script>
 </body>
 </html>
