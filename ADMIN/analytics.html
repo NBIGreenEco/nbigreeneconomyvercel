@@ -152,6 +152,26 @@
     .btn-danger:active {
       transform: translateY(0);
     }
+    /* Outline secondary button used for Back-to-Dashboard in admin pages */
+    .btn-outline-secondary {
+      background: transparent;
+      color: var(--secondary);
+      border: 1px solid var(--border);
+      padding: 0.56rem 1.25rem; /* slightly tighter than default btn */
+    }
+    .btn-outline-secondary i {
+      font-size: 0.95rem;
+      opacity: 0.9;
+    }
+    .btn-outline-secondary:hover {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+    .btn-outline-secondary:active {
+      transform: translateY(0);
+    }
     .analytics-iframe-container {
       width: 100%;
       border-radius: var(--radius);

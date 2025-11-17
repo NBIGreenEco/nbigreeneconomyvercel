@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Dashboard - Green Economy Toolkit</title>
     <script type="module" src="/ADMIN/scripts/adminAuthCheck.js"></script>
-<link rel="stylesheet" href="/Master%20Page(Header%20and%20Footer)/MasterPage.css">
+  <link rel="stylesheet" href="/Master%20Page(Header%20and%20Footer)/MasterPage.css">
+    <script type="module" src="/Master%20Page(Header%20and%20Footer)/MasterPage.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="/Master Page(Header and Footer)/MasterPage.css">
+    <!-- Removed duplicate/broken stylesheet link; using encoded path above -->
     <style>
       * {
         margin: 0;
@@ -301,6 +302,21 @@
       }
 
       setupDashboardNavigation();
+
+      // Wire logout button to reset admin session (defined in adminAuthCheck.js)
+      const logoutBtnEl = document.getElementById('logoutBtn');
+      if (logoutBtnEl) {
+        logoutBtnEl.addEventListener('click', () => {
+          try {
+            resetAdminSession();
+          } catch (err) {
+            console.warn('Logout failed:', err);
+            // As a fallback, clear sessionStorage and redirect to signin
+            try { sessionStorage.removeItem('adminSession'); } catch(e){}
+            window.location.assign('/ADMIN/Signin.html');
+          }
+        });
+      }
     </script>
 </body>
 </html>
