@@ -109,6 +109,7 @@ class GreenEconomyHeader extends HTMLElement {
   }
 
   connectedCallback() {
+    console.log('✅ [HEADER] connectedCallback - green-economy-header element connected');
     // CRITICAL: Inject override stylesheet FIRST before any HTML renders
     this.injectCriticalCSS();
     
@@ -171,7 +172,9 @@ class GreenEconomyHeader extends HTMLElement {
       </div>
     `;
 
+    console.log('🔍 [HEADER] HTML injected, calling setupSearchFunctionality...');
     this.setupSearchFunctionality();
+    console.log('🔍 [HEADER] Calling setupMobileMenu...');
     this.setupMobileMenu();
 
     // Add event listener for logo click to handle logout
@@ -215,16 +218,23 @@ class GreenEconomyHeader extends HTMLElement {
   }
 
   setupSearchFunctionality() {
-    console.log('Setting up search functionality...');
+    console.log('🔍 [SEARCH] Setting up search functionality...');
     const searchToggle = this.querySelector('#search-toggle');
     const searchPopup = this.querySelector('#search-popup');
     const searchClose = this.querySelector('#search-close');
     const searchInput = this.querySelector('#smartSearch');
 
+    console.log('🔍 [SEARCH] Toggle element:', searchToggle, 'ID:', searchToggle?.id, 'Class:', searchToggle?.className);
+    console.log('🔍 [SEARCH] Popup element:', searchPopup, 'ID:', searchPopup?.id);
+    console.log('🔍 [SEARCH] Close element:', searchClose, 'ID:', searchClose?.id);
+    console.log('🔍 [SEARCH] Input element:', searchInput, 'ID:', searchInput?.id);
+
     if (!searchToggle || !searchPopup || !searchClose) {
-      console.error('Critical search elements not found');
+      console.error('❌ [SEARCH] Critical search elements not found - Toggle:', !!searchToggle, 'Popup:', !!searchPopup, 'Close:', !!searchClose);
       return;
     }
+
+    console.log('✅ [SEARCH] All critical elements found');
 
     // Ensure search is hidden by default
     searchPopup.style.display = 'none';
@@ -233,16 +243,18 @@ class GreenEconomyHeader extends HTMLElement {
 
     // Helper function to toggle search popup
     const toggleSearchPopup = (e) => {
+      console.log('🔍 [SEARCH] toggleSearchPopup called', e);
       e?.preventDefault?.();
       e?.stopPropagation?.();
       const isHidden = searchPopup.style.display === 'none' || !searchPopup.style.display;
-      console.log('Search popup toggle called. Current state hidden:', isHidden);
+      console.log('🔍 [SEARCH] Current state hidden:', isHidden, 'Display value:', searchPopup.style.display);
       
       if (isHidden) {
         searchPopup.style.display = 'block';
         searchPopup.classList.add('animate-in');
         searchPopup.classList.remove('animate-out');
         document.body.style.overflow = 'hidden';
+        console.log('🔍 [SEARCH] Showing popup');
         setTimeout(() => {
           const input = document.getElementById('smartSearch');
           if (input) input.focus();
@@ -250,7 +262,7 @@ class GreenEconomyHeader extends HTMLElement {
         if (window.greenEconomySearch && !window.greenEconomySearch.initialized) {
           window.greenEconomySearch.init();
         }
-        console.log('Search popup OPENED');
+        console.log('🔍 [SEARCH] popup OPENED');
       } else {
         searchPopup.classList.add('animate-out');
         searchPopup.classList.remove('animate-in');
@@ -258,12 +270,13 @@ class GreenEconomyHeader extends HTMLElement {
           searchPopup.style.display = 'none';
           document.body.style.overflow = '';
         }, 300);
-        console.log('Search popup CLOSED');
+        console.log('🔍 [SEARCH] popup CLOSED');
       }
     };
 
     // Helper function to close search popup
     const closeSearchPopup = (e) => {
+      console.log('🔍 [SEARCH] closeSearchPopup called', e);
       e?.preventDefault?.();
       e?.stopPropagation?.();
       searchPopup.classList.add('animate-out');
@@ -272,40 +285,49 @@ class GreenEconomyHeader extends HTMLElement {
         searchPopup.style.display = 'none';
         document.body.style.overflow = '';
       }, 300);
-      console.log('Search popup CLOSED via close button');
+      console.log('🔍 [SEARCH] popup CLOSED via close button');
     };
 
     // Clone and replace to ensure fresh listeners
+    console.log('🔍 [SEARCH] Cloning toggle element to attach fresh listeners');
     const newSearchToggle = searchToggle.cloneNode(true);
     searchToggle.parentNode.replaceChild(newSearchToggle, searchToggle);
     
     // IMPORTANT: Set pointer-events to auto to ensure clicks work
     newSearchToggle.style.pointerEvents = 'auto';
     newSearchToggle.style.cursor = 'pointer';
+    console.log('🔍 [SEARCH] pointer-events set to auto, cursor set to pointer');
     
     // Attach click handler to cloned toggle
     newSearchToggle.addEventListener('click', (e) => {
-      console.log('Search icon clicked (direct handler on cloned element)');
+      console.log('🔍 [SEARCH] ✅ Search icon CLICKED (direct handler on cloned element)', e);
       toggleSearchPopup(e);
     });
+    console.log('🔍 [SEARCH] Direct click listener attached to cloned toggle');
 
     // Also use event delegation to catch clicks on search-icon anywhere
     if (!window._searchIconDelegateAttached) {
       document.addEventListener('click', (e) => {
         const target = e.target;
         if (target?.id === 'search-toggle' || target?.classList?.contains('search-icon') || target?.closest('#search-toggle')) {
-          console.log('Search icon clicked (delegated handler - capture phase)');
+          console.log('🔍 [SEARCH] ✅ Search icon CLICKED (delegated handler - capture phase)', e);
           toggleSearchPopup(e);
         }
       }, true); // Use capture phase to catch clicks early
+      console.log('🔍 [SEARCH] Delegated click listener attached (capture phase)');
       window._searchIconDelegateAttached = true;
-      console.log('Attached delegated search click handler to document');
+      console.log('🔍 [SEARCH] Attached delegated search click handler to document');
     }
 
     // Close search when clicking close button
+    console.log('🔍 [SEARCH] Cloning close button for fresh listeners');
     const newSearchClose = searchClose.cloneNode(true);
     searchClose.parentNode.replaceChild(newSearchClose, searchClose);
-    newSearchClose.addEventListener('click', closeSearchPopup);
+    newSearchClose.addEventListener('click', (e) => {
+      console.log('🔍 [SEARCH] ✅ Close button CLICKED', e);
+      closeSearchPopup(e);
+    });
+    console.log('🔍 [SEARCH] Close button listener attached');
 
     // Close search when clicking outside
     document.addEventListener('click', (e) => {
@@ -313,15 +335,17 @@ class GreenEconomyHeader extends HTMLElement {
           !searchPopup.contains(e.target) && 
           e.target.id !== 'search-toggle' &&
           !e.target.classList?.contains('search-icon')) {
-        closeSearchPopup();
+        console.log('🔍 [SEARCH] Clicked outside popup - closing');
+        closeSearchPopup(e);
       }
     });
+    console.log('🔍 [SEARCH] Outside-click listener attached');
 
     if (searchInput) {
       searchInput.style.willChange = 'transform';
     }
 
-    console.log('Search functionality setup complete - all handlers attached');
+    console.log('✅ [SEARCH] Setup COMPLETE - all handlers attached successfully');
   }
 
   setupMobileMenu() {

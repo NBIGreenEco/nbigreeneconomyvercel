@@ -1,23 +1,28 @@
 // EnhancedSearch.js - Standalone search functionality for Green Economy Toolkit
+console.log('✅ [SEARCH] enhancedsearch.js loaded');
 
 // Check if Fuse.js is available, load dynamically if needed
 if (typeof Fuse === 'undefined') {
-    console.log('Loading Fuse.js dynamically...');
+    console.log('🔍 [SEARCH] Fuse.js not found, loading dynamically...');
     const script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/npm/fuse.js@6.6.2';
     script.onload = () => {
-        console.log('Fuse.js loaded dynamically');
+        console.log('✅ [SEARCH] Fuse.js loaded dynamically');
         // Re-initialize search if needed
         if (window.greenEconomySearch && !window.greenEconomySearch.initialized) {
+            console.log('🔍 [SEARCH] Re-initializing search after Fuse.js load');
             window.greenEconomySearch.init();
         }
     };
     document.head.appendChild(script);
+  } else {
+    console.log('✅ [SEARCH] Fuse.js already available');
   }
   
   // Search functionality class with synonym support
   class GreenEconomySearch {
     constructor() {
+      console.log('🔍 [SEARCH] GreenEconomySearch class instantiated');
         this.index = null;
         this.fuse = null;
         this.initialized = false;
@@ -608,31 +613,47 @@ if (typeof Fuse === 'undefined') {
     // Initializer so pages can call it after the header is ready. Also auto-initialize
     // on DOMContentLoaded but only after the header custom element is defined.
     async function initializeSearch() {
-        if (window.greenEconomySearch) return window.greenEconomySearch;
+        console.log('🔍 [SEARCH-INIT] initializeSearch called');
+        if (window.greenEconomySearch) {
+            console.log('🔍 [SEARCH-INIT] greenEconomySearch already initialized');
+            return window.greenEconomySearch;
+        }
+        console.log('🔍 [SEARCH-INIT] Calling _initializeSearchModule...');
         await _initializeSearchModule();
+        console.log('🔍 [SEARCH-INIT] _initializeSearchModule complete, greenEconomySearch:', window.greenEconomySearch);
         return window.greenEconomySearch;
     }
 
     // Make available globally
     window.initializeSearch = initializeSearch;
+    console.log('✅ [SEARCH-INIT] window.initializeSearch registered globally');
 
     // Auto-init on DOMContentLoaded for pages that still load this script in the head
+    console.log('🔍 [SEARCH-INIT] Current document.readyState:', document.readyState);
     if (document.readyState === 'loading') {
+        console.log('🔍 [SEARCH-INIT] Document still loading, attaching DOMContentLoaded listener');
         document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🔍 [SEARCH-INIT] DOMContentLoaded event fired');
             // Wait for header custom element to be defined
             try {
                 if (typeof customElements !== 'undefined') {
+                    console.log('🔍 [SEARCH-INIT] Waiting for green-economy-header custom element...');
                     await customElements.whenDefined('green-economy-header');
+                    console.log('✅ [SEARCH-INIT] green-economy-header custom element defined');
                     // Give header a frame to upgrade
+                    console.log('🔍 [SEARCH-INIT] Waiting for next animation frame...');
                     await new Promise(r => requestAnimationFrame(r));
+                    console.log('✅ [SEARCH-INIT] Animation frame complete');
                 }
             } catch (e) {
-                console.warn('Waiting for custom element failed:', e);
+                console.warn('❌ [SEARCH-INIT] Waiting for custom element failed:', e);
             }
             // Don't block — call initialize but tolerate failures
-            initializeSearch().catch(err => console.warn('Search init error:', err));
+            console.log('🔍 [SEARCH-INIT] Calling initializeSearch...');
+            initializeSearch().catch(err => console.warn('❌ [SEARCH-INIT] Search init error:', err));
         });
     } else {
         // Page already loaded, initialize immediately
-        initializeSearch().catch(err => console.warn('Search init error:', err));
+        console.log('🔍 [SEARCH-INIT] Document already loaded, initializing immediately');
+        initializeSearch().catch(err => console.warn('❌ [SEARCH-INIT] Search init error:', err));
     }
