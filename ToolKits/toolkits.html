@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Economy Toolkit - Integrated Toolkits</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/Master Page(Header and Footer)/MasterPage.css">
+    <script type="module" src="/Master Page(Header and Footer)/MasterPage.js"></script>
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f8fffe 0%, #e8f8f5 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .coming-soon-container {
+            text-align: center;
+            max-width: 800px;
+            width: 100%;
+        }
+        
+        .coming-soon-icon {
+            font-size: 5rem;
+            color: #2b9589;
+            margin-bottom: 2rem;
+            animation: pulse-icon 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-icon {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #2b9589;
+            margin: 0 0 1rem 0;
+            animation: slideDown 0.8s ease-out;
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #4eb5a6;
+            margin-bottom: 2rem;
+            animation: slideUp 0.8s ease-out 0.2s both;
+        }
+        
+        .description {
+            font-size: 1.1rem;
+            color: #64748b;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+            animation: fadeIn 0.8s ease-out 0.4s both;
+        }
+        
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            animation: fadeIn 0.8s ease-out 0.6s both;
+        }
+        
+        .feature-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 15px rgba(43, 149, 137, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 4px solid #2b9589;
+        }
+        
+        .feature-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(43, 149, 137, 0.2);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: #2b9589;
+            margin-bottom: 0.75rem;
+        }
+        
+        .feature-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2b9589;
+            margin-bottom: 0.5rem;
+        }
+        
+        .feature-text {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeIn 0.8s ease-out 0.8s both;
+        }
+        
+        .btn {
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: #2b9589;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1f6b5f;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(43, 149, 137, 0.3);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #2b9589;
+            border: 2px solid #2b9589;
+        }
+        
+        .btn-secondary:hover {
+            background: #f0fffe;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(43, 149, 137, 0.2);
+        }
+        
+        .countdown {
+            margin: 2rem 0;
+            font-size: 0.95rem;
+            color: #4eb5a6;
+            font-weight: 500;
+            animation: fadeIn 0.8s ease-out 1s both;
+        }
+        
+        .dots {
+            display: inline-block;
+            margin-left: 0.5rem;
+        }
+        
+        .dot {
+            display: inline-block;
+            width: 0.5rem;
+            height: 0.5rem;
+            background: #2b9589;
+            border-radius: 50%;
+            margin: 0 0.25rem;
+            animation: bounce 1.4s ease-in-out infinite;
+        }
+        
+        .dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+        
+        .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-1rem);
+                opacity: 0.6;
+            }
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-2rem);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(2rem);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .description {
+                font-size: 1rem;
+            }
+            
+            .coming-soon-icon {
+                font-size: 3rem;
+            }
+            
+            .feature-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <green-economy-header></green-economy-header>
+    
+    <main>
+        <div class="coming-soon-container">
+            <div class="coming-soon-icon">
+                <i class="fas fa-toolbox"></i>
+            </div>
+            
+            <h1>Coming Soon</h1>
+            
+            <p class="subtitle">Integrated Toolkits</p>
+            
+            <p class="description">
+                We're preparing an exciting collection of green economy tools and resources to accelerate your sustainable business journey. Get ready to access powerful, integrated solutions designed for your success.
+            </p>
+            
+            <!--<div class="feature-list">
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="feature-title">Analytics Tools</div>
+                    <div class="feature-text">Track and measure your green impact metrics</div>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <div class="feature-title">Integration Modules</div>
+                    <div class="feature-text">Seamless connection with external platforms</div>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="feature-title">Resource Library</div>
+                    <div class="feature-text">Comprehensive guides and best practices</div>
+                </div>
+            </div>-->
+            
+            <div class="countdown">
+                Launch coming soon
+                <div class="dots">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+            
+            <div class="cta-buttons">
+                <button class="btn btn-primary" onclick="window.history.back()">
+                    <i class="fas fa-arrow-left" style="margin-right: 0.5rem;"></i>
+                    Go Back
+                </button>
+                <a href="/" class="btn btn-secondary">
+                    <i class="fas fa-home" style="margin-right: 0.5rem;"></i>
+                    Return Home
+                </a>
+            </div>
+        </div>
+    </main>
+    
+    <green-economy-footer></green-economy-footer>
+</body>
+</html>
