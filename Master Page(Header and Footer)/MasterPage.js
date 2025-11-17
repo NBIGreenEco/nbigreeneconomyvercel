@@ -150,7 +150,7 @@ class GreenEconomyHeader extends HTMLElement {
                 <option value="tn">Setswana</option>
               </select>
               <div id="error-message" class="translation-error"></div>
-              <i class="fas fa-search search-icon" id="search-toggle"></i>
+              <i class="fas fa-search search-icon" id="search-toggle" style="cursor: pointer; pointer-events: auto;" onclick="document.querySelector('green-economy-header').toggleSearchPopupPublic()"></i>
             </div>
           </nav>
         </header>
@@ -214,6 +214,38 @@ class GreenEconomyHeader extends HTMLElement {
       headerOuter.style.zIndex = '1000';
       headerOuter.style.position = 'relative';
       console.log('Header layout shift prevention applied');
+    }
+  }
+
+  // Public method for inline onclick handler - direct access to search popup
+  toggleSearchPopupPublic() {
+    console.log('🔍 [SEARCH] toggleSearchPopupPublic called (inline onclick handler)');
+    const searchPopup = this.querySelector('#search-popup');
+    if (!searchPopup) {
+      console.error('❌ [SEARCH] searchPopup not found in toggleSearchPopupPublic');
+      return;
+    }
+    const isHidden = searchPopup.style.display === 'none' || !searchPopup.style.display;
+    console.log('🔍 [SEARCH] Current hidden state:', isHidden);
+    
+    if (isHidden) {
+      searchPopup.style.display = 'block';
+      searchPopup.classList.add('animate-in');
+      searchPopup.classList.remove('animate-out');
+      document.body.style.overflow = 'hidden';
+      console.log('✅ [SEARCH] Popup shown');
+      setTimeout(() => {
+        const input = this.querySelector('#smartSearch');
+        if (input) input.focus();
+      }, 100);
+    } else {
+      searchPopup.classList.add('animate-out');
+      searchPopup.classList.remove('animate-in');
+      setTimeout(() => {
+        searchPopup.style.display = 'none';
+        document.body.style.overflow = '';
+      }, 300);
+      console.log('✅ [SEARCH] Popup hidden');
     }
   }
 
