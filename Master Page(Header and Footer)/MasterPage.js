@@ -178,6 +178,8 @@ class GreenEconomyHeader extends HTMLElement {
     this.setupSearchFunctionality();
     console.log('🔍 [HEADER] Calling setupMobileMenu...');
     this.setupMobileMenu();
+    // Ensure cookie consent banner is available on pages with the Master header
+    this.loadCookieConsent();
 
     // Add event listener for logo click to handle logout
     const logoLink = this.querySelector('#logo-link');
@@ -202,6 +204,19 @@ class GreenEconomyHeader extends HTMLElement {
         }
       });
     }
+  }
+
+  // Loads the shared cookie consent script once so the banner shows across pages
+  loadCookieConsent() {
+    if (window.cookieConsentManager) return; // already loaded
+    if (document.querySelector('script[src*="cookie-consent.js"]')) return; // already added
+
+    const script = document.createElement('script');
+    script.src = '/scripts/cookie-consent.js';
+    script.defer = true;
+    script.onload = () => console.log('✅ Cookie consent script loaded');
+    script.onerror = () => console.error('❌ Failed to load cookie consent script');
+    document.head.appendChild(script);
   }
 
   preventLayoutShift() {

@@ -74,6 +74,17 @@ class CookieConsentManager {
         }
       }
 
+      @keyframes slideDown {
+        from {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        to {
+          opacity: 0;
+          transform: translateY(50px);
+        }
+      }
+
       .cookie-consent-wrapper {
         max-width: 1400px;
         margin: 0 auto;
