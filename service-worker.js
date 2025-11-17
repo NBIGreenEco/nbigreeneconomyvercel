@@ -1,8 +1,9 @@
 ﻿// Service Worker for Caching Static Assets
-// This file caches CSS, JS, images, and fonts to improve load times
+// This file caches CSS, JS, images, fonts, and videos to improve load times
 
-const CACHE_VERSION = 'v1.0.1-search-fix-20251117';
+const CACHE_VERSION = 'v1.0.2-video-cache-20251117';
 const CACHE_NAME = `green-economy-${CACHE_VERSION}`;
+const VIDEO_CACHE = `green-economy-videos-${CACHE_VERSION}`;
 
 // Static assets to cache on install
 const STATIC_ASSETS = [
@@ -46,27 +47,49 @@ const STATIC_ASSETS = [
   '/locales/zu.json',
   '/lang/en.json',
   '/lang/tn.json',
-  '/lang/zu.json'
+  '/lang/zu.json',
+  
+  // Local Videos
+  '/Videos/idle.mp4'
 ];
 
-// Install event: Cache all static assets
+// Video URLs to cache (external and local)
+const VIDEO_URLS = [
+  'https://www.greeneconomytoolkit.com/uploads/files/Videos/Introduction-to-the-Green-Economy.mp4',
+  '/Videos/idle.mp4'
+];
+
+// Install event: Cache all static assets and videos
 self.addEventListener('install', (event) => {
-  console.log('[Service Worker] Installing and caching static assets...');
+  console.log('[Service Worker] Installing and caching static assets and videos...');
   
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('[Service Worker] Opened cache:', CACHE_NAME);
-        
-        // Cache all assets, but don't fail if some are unavailable
-        return Promise.allSettled(
-          STATIC_ASSETS.map(url => 
-            cache.add(url).catch(err => 
-              console.warn(`[Service Worker] Failed to cache: ${url}`, err)
+    Promise.all([
+      // Cache static assets
+      caches.open(CACHE_NAME)
+        .then((cache) => {
+          console.log('[Service Worker] Opened cache:', CACHE_NAME);
+          return Promise.allSettled(
+            STATIC_ASSETS.map(url => 
+              cache.add(url).catch(err => 
+                console.warn(`[Service Worker] Failed to cache: ${url}`, err)
+              )
             )
-          )
-        );
-      })
+          );
+        }),
+      // Cache videos separately
+      caches.open(VIDEO_CACHE)
+        .then((cache) => {
+          console.log('[Service Worker] Opened video cache:', VIDEO_CACHE);
+          return Promise.allSettled(
+            VIDEO_URLS.map(url => 
+              cache.add(url).catch(err => 
+                console.warn(`[Service Worker] Failed to cache video: ${url}`, err)
+              )
+            )
+          );
+        })
+    ])
       .then(() => self.skipWaiting()) // Activate immediately
       .catch((err) => console.error('[Service Worker] Install failed:', err))
   );
@@ -81,7 +104,8 @@ self.addEventListener('activate', (event) => {
       .then((cacheNames) => {
         return Promise.all(
           cacheNames.map((cacheName) => {
-            if (cacheName !== CACHE_NAME && cacheName.startsWith('green-economy-')) {
+            if ((cacheName !== CACHE_NAME && cacheName.startsWith('green-economy-')) ||
+                (cacheName !== VIDEO_CACHE && cacheName.includes('green-economy-videos'))) {
               console.log('[Service Worker] Deleting old cache:', cacheName);
               return caches.delete(cacheName);
             }
@@ -111,11 +135,12 @@ self.addEventListener('fetch', (event) => {
     url.hostname.includes('cdn.tailwindcss.com')
   );
 
-  // Strategy 1: Cache First for static assets (CSS, JS, images, fonts, etc.)
+  // Strategy 1: Cache First for static assets (CSS, JS, images, fonts, videos, etc.)
   if (request.destination === 'style' || 
       request.destination === 'script' || 
       request.destination === 'image' || 
       request.destination === 'font' ||
+      request.destination === 'video' ||
       isWhitelistedCDN) {
     
     event.respondWith(
@@ -136,7 +161,8 @@ self.addEventListener('fetch', (event) => {
 
               // Clone the response for caching
               const responseToCache = response.clone();
-              caches.open(CACHE_NAME)
+              const cacheName = request.destination === 'video' ? VIDEO_CACHE : CACHE_NAME;
+              caches.open(cacheName)
                 .then((cache) => {
                   cache.put(request, responseToCache);
                   console.log('[Service Worker] Cached from network:', request.url);

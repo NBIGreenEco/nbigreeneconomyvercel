@@ -253,7 +253,7 @@ body {
 /* Mobile styles - IMPROVED RESPONSIVENESS */
 @media (max-width: 1024px) {
     .mobile-menu-button {
-        display: flex;
+        display: flex !important;
         margin-right: 15px;
     }
 
@@ -267,90 +267,74 @@ body {
         top: 100%;
         left: 0;
         right: 0;
+        width: 100%;
         background-color: #ffffff;
         flex-direction: column;
-        padding: 0;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         z-index: 1000;
         max-height: 0;
         overflow: hidden;
-        transition: max-height 0.3s ease, opacity 0.2s ease, padding 0.3s ease;
+        transition: max-height 0.35s ease, padding 0.35s ease, opacity 0.3s ease;
         opacity: 0;
-        gap: 8px;
-        margin: 0;
+        padding: 0 15px !important;
         border-top: 1px solid #e2e8f0;
         border-radius: 0 0 8px 8px;
-        display: none; /* Will be set to flex when active */
+        /* Remove display: none/flex here — let JS control it directly */
     }
 
+    /* When active → full height, visible, padded */
     .nav.active {
-        max-height: 1000px; /* Adjust based on your content */
-        opacity: 1;
-        padding: 10px 15px 20px;
-        display: flex;
+        max-height: 90vh !important;     /* Better than fixed 1000px */
+        opacity: 1 !important;
+        padding: 20px 15px !important;
+        overflow-y: auto !important;
     }
 
-    .nav-links {
-        flex-direction: column;
+    /* Make items clearly visible and tappable */
+    .nav-links,
+    .nav-utils,
+    .nav-search {
         width: 100%;
-        gap: 0;
     }
 
-    .nav-utils {
-        flex-direction: column;
-        width: 100%;
-        gap: 1rem;
-        margin-top: 1rem;
-        padding-top: 1rem;
-        border-top: 1px solid #e2e8f0;
-    }
-
-    .nav a, .language-selector {
-        width: 100%;
-        text-align: left;
-        padding: 12px 16px;
-        border-radius: 6px;
-        margin: 2px 0;
-        height: auto;
-        background-color: #f8fafc;
-        color: #2b9589;
-        border: 1px solid #e2e8f0;
-        transition: all 0.2s ease;
-        font-size: 15px;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-    }
-
-    .nav a:hover {
-        background-color: #e6f7f5;
-    }
-
+    .nav a,
+    .language-selector,
     .search-icon {
-        margin: 5px 0;
-        width: 100%;
-        height: auto;
-        padding: 12px 16px;
-        justify-content: flex-start;
-        color: #2b9589;
-        background-color: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 4px;
+        width: 100% !important;
+        min-height: 45px !important;
+        padding: 12px 20px !important;
+        margin: 4px 0 !important;
+        border-radius: 0 !important;
+        font-size: 15px !important;
+        display: flex !important;
+        align-items: center !important;
+        background-color: #f8fafc !important;
+        color: #2b9589 !important;
+        border: 1px solid #e2e8f0 !important;
+        text-align: left !important;
+        box-sizing: border-box !important;
     }
 
+    .nav a:hover,
+    .language-selector:hover,
     .search-icon:hover {
-        background-color: #e6f7f5;
+        background-color: #e6f7f5 !important;
+        transform: none;
     }
 
-    .language-selector {
-        margin: 5px 0;
-        color: #2b9589;
-        border: 1px solid #e2e8f0;
-        background-color: #f8fafc;
-    }
-
-    .blue-section {
-        display: none;
+    /* Language selector specific */
+    #langSelect {
+        width: 100% !important;
+        min-height: 45px !important;
+        font-size: 15px !important;
+        padding: 12px 20px !important;
+        background-color: #f8fafc !important;
+        color: #2b9589 !important;
+        border: 1px solid #e2e8f0 !important;
+        margin: 4px 0 !important;
+        box-sizing: border-box !important;
+        -webkit-appearance: none !important;
+        appearance: none !important;
     }
 }
 

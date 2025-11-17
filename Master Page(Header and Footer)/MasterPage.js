@@ -150,6 +150,8 @@ class GreenEconomyHeader extends HTMLElement {
                 <option value="tn">Setswana</option>
               </select>
               <div id="error-message" class="translation-error"></div>
+            </div>
+            <div class="nav-search">
               <i class="fas fa-search search-icon" id="search-toggle" style="cursor: pointer; pointer-events: auto;" onclick="console.log('🔍 [CLICK] Search icon clicked'); if(window.toggleSearchGlobal) window.toggleSearchGlobal(); else console.error('toggleSearchGlobal not found');"></i>
             </div>
           </nav>
