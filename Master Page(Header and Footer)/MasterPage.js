@@ -1,4 +1,4 @@
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
+import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
 import { getAuth, browserLocalPersistence, setPersistence } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
 
 const firebaseConfig = {
@@ -11,7 +11,8 @@ const firebaseConfig = {
   measurementId: "G-37VRZ5CGE4"
 };
 
-const app = initializeApp(firebaseConfig);
+// Only initialize if no app exists
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 const auth = getAuth(app);
 
 class GreenEconomyHeader extends HTMLElement {

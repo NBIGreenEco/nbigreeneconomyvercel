@@ -469,34 +469,31 @@ function finalizeLoading() {
     body.classList.add('loaded');
 }
 
-// Initialize i18next
-.getTime()
-        },
-        detection: {
-            order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
-            caches: ['localStorage', 'cookie']
-        }
-    }, (err, t) => {
-        if (err) {
-            console.error('i18next initialization error:', err);
-            setTimeout(() => {
-                 => {
-                    if (loadErr) {
-                        console.error('Retry failed:', loadErr);                    } else {
-                        console.log('i18next retry successful, language:', );
-                        finalizeLoading();
-                    }
-                });
-            }, 2000);
-            return;
-        }
-        console.log('i18next initialized for manage_news.html at', new Date().toLocaleString('en-ZA'), ':', );
-        finalizeLoading();
-    });
+// Initialize page
+finalizeLoading();
+
+// Validate date format YYYY-MM-DD
+function validateDate(dateString) {
+    const regex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!regex.test(dateString)) return false;
+    const date = new Date(dateString);
+    return date instanceof Date && !isNaN(date);
+}
+
+async function loadNews() {
+    try {
+        const newsList = document.querySelector('.news-list');
+        newsList.innerHTML = '';
+        const querySnapshot = await getDocs(collection(db, 'news'));
+        querySnapshot.forEach((docSnap) => {
+            const news = docSnap.data();
+            const newsItem = document.createElement('div');
+            newsItem.className = 'news-item';
+            newsItem.dataset.id = docSnap.id;
             newsItem.innerHTML = `
                 <div class="news-details">
                     <h4>${news.title || 'No Title'}</h4>
-                    <p>${'Date: {date}'}</p>
+                    <p>Date: ${news.date || 'No Date'}</p>
                     <p>${news.description || 'No Description'}</p>
                 </div>
                 <div class="news-actions">
@@ -505,9 +502,10 @@ function finalizeLoading() {
                 </div>
             `;
             newsList.appendChild(newsItem);
-        });    } catch (error) {
+        });
+    } catch (error) {
         console.error('Error loading news:', error.code, error.message);
-        showAlertModal('Error loading news: {message}', 'error');
+        showAlertModal(`Error loading news: ${error.message}`, 'error');
     }
 }
 
@@ -518,7 +516,6 @@ function showModal(modalId) {
         setTimeout(() => modal.classList.add('show'), 10);
     } else {
         console.error(`Modal with ID ${modalId} not found`);
-        showAlertModal('Modal not found: {id}', 'error');
     }
 }
 
@@ -540,7 +537,7 @@ function showAlertModal(message, type = 'success') {
         <div class="alert-modal-content">
             <span class="alert-modal-close">&times;</span>
             <p>${message}</p>
-            <button class="alert-modal-btn">${'OK'}</button>
+            <button class="alert-modal-btn">OK</button>
         </div>
     `;
     document.body.appendChild(modal);
@@ -757,15 +754,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// Fallback timeout
+// Fallback timeout - force content display after 6 seconds
 setTimeout(() => {
     if (document.body.classList.contains('loading')) {
-        console.warn('Loading timeout reached, forcing content display');        document.body.classList.remove('loading');
+        console.warn('Loading timeout reached, forcing content display after 6s');
+        document.body.classList.remove('loading');
         document.body.classList.add('loaded');
-        document.querySelector('.loading-overlay').style.display = 'none';
-        showAlertModal('Page load timeout. Displaying default content.', 'error');
+        const loadingOverlay = document.querySelector('.loading-overlay');
+        if (loadingOverlay) loadingOverlay.style.display = 'none';
+        console.log('Content forcefully displayed due to timeout');
     }
-}, 10000);
+}, 6000);
     </script>
 </body>
 </html>

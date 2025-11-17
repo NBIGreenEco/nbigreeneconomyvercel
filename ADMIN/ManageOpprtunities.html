@@ -451,6 +451,11 @@
                 Failed to load content. Please check your connection or try again later.
             </div>
             <div class="page-header d-flex justify-content-between align-items-center">
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <a id="backToDashboard" class="btn btn-outline-secondary" href="/ADMIN/admin-dashboard.html" aria-label="Back to Admin Dashboard">
+                        <i class="bi bi-house me-1"></i> Back to Dashboard
+                    </a>
+                </div>
                 <h1 class="page-title">
                     <i class="bi bi-kanban-fill"></i>
                     <span>Manage Opportunities</span>
@@ -618,6 +623,48 @@
             showErrorMessage('Failed to initialize Firebase. Please check your configuration.');
         }
 
+        // DOM references and state
+        const opportunitiesTableBody = document.getElementById('opportunitiesTableBody');
+        const noResults = document.getElementById('noResults');
+        const searchInput = document.getElementById('searchInput');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const resetFiltersBtn = document.getElementById('resetFilters');
+        const addOpportunityBtn = document.getElementById('addOpportunityBtn');
+        const opportunityModalEl = document.getElementById('opportunityModal');
+        const deleteModalEl = document.getElementById('deleteModal');
+        const opportunityForm = document.getElementById('opportunityForm');
+        const modalTitle = document.getElementById('modalTitle');
+        const submitButtonText = {
+            submitText: document.getElementById('submitButtonText'),
+            submitSpinner: document.getElementById('submitSpinner')
+        };
+
+        // Bootstrap modal wrappers (if Bootstrap present)
+        let opportunityModal = null;
+        let deleteModal = null;
+        try {
+            if (window.bootstrap && opportunityModalEl) opportunityModal = new bootstrap.Modal(opportunityModalEl);
+            if (window.bootstrap && deleteModalEl) deleteModal = new bootstrap.Modal(deleteModalEl);
+        } catch (e) {
+            console.warn('Bootstrap modals not available:', e);
+        }
+
+        // Page state
+        let allOpportunities = [];
+        let currentOpportunityId = null;
+        let deleteOpportunityId = null;
+
+        // Simple page-level error display
+        function showErrorMessage(msg) {
+            const err = document.getElementById('errorMessage');
+            if (err) {
+                err.textContent = msg;
+                err.classList.remove('d-none');
+            } else {
+                console.error('showErrorMessage:', msg);
+            }
+        }
+
         // Load opportunities from Firestore
         async function loadOpportunities() {
             const loadingIndicator = document.getElementById('loadingIndicator');
@@ -744,7 +791,8 @@
             }
             
             currentOpportunityId = id;
-            modalTitle.document.getElementById('opportunityId').value = id;
+            const oppIdInput = document.getElementById('opportunityId');
+            if (oppIdInput) oppIdInput.value = id;
             document.getElementById('opportunityTitle').value = opportunity.name || '';
             document.getElementById('opportunityCategory').value = opportunity.category || '';
             document.getElementById('opportunityDescription').value = opportunity.description || '';

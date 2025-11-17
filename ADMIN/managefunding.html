@@ -11,7 +11,7 @@
     <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/ADMIN/Funding-Hub.css">
+    <link rel="stylesheet" href="/Funding%20Hub/Funding-Hub.css">
     <link rel="stylesheet" href="/Master%20Page(Header%20and%20Footer)/MasterPage.css">
     <style>
         :root {
@@ -573,83 +573,168 @@
         fundingRef = collection(db, "funding");
 
         // Initialize i18next
-        // (i18next initialization code is missing or broken here, so remove stray code)
-                const gridItem = document.createElement('div');
-                gridItem.className = 'bg-white rounded-lg shadow-md overflow-hidden';
-                gridItem.innerHTML = `
-                    <div class="p-4">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h3 class="font-medium">${funding['Name of funding opportunity'] || 'No name'}</h3>
-                                <p class="text-gray-600 text-sm">${funding['Name of disbursement channel'] || 'No channel'}</p>
-                            </div>
-                            ${funding.logo ? `<img src="${funding.logo}" class="w-12 h-12 object-contain rounded-lg" alt="Funding Logo">` : '<div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center"><i class="fas fa-link text-gray-400"></i></div>'}
-                        </div>
-                        ${funding['Focus of Fund'] !== 'no' ? `<p class="mt-3 text-gray-700 text-sm">${funding['Focus of Fund']}</p>` : ''}
-                        <div class="flex flex-wrap gap-2 mt-4">
-                            ${funding.Grant === true || funding.Grant === 'Grant' ? `<span class="badge"><i class="fas fa-gift"></i> ${'Grant'}</span>` : ''}
-                            ${funding.Debt === true || funding.Debt === 'Debt' ? `<span class="badge"><i class="fas fa-hand-holding-usd"></i> ${'Debt'}</span>` : ''}
-                            ${funding.Equity === true || funding.Equity === 'Equity' ? `<span class="badge"><i class="fas fa-chart-line"></i> ${'Equity'}</span>` : ''}
-                            ${funding['Working Capital'] === true || funding['Working Capital'] === 'Working Capital' ? `<span class="badge"><i class="fas fa-money-bill-wave"></i> ${'Working Capital'}</span>` : ''}
-                            ${funding['Business Development or Technical Assistance'] === true || funding['Business Development or Technical Assistance'] === 'Business Development or Technical Assistance' ? `<span class="badge"><i class="fas fa-cogs"></i> ${'Business Development'}</span>` : ''}
-                        </div>
-                        <div class="flex justify-end space-x-2 mt-4">
-                            <button class="edit-btn px-3 py-1 bg-blue-100 text-blue-600 rounded-md hover:bg-blue-200" data-id="${funding.id}">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="delete-btn px-3 py-1 bg-red-100 text-red-600 rounded-md hover:bg-red-200" data-id="${funding.id}">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-                elements.fundingGrid.appendChild(gridItem);
-            const totalPages = Math.ceil(fundingArray.length / itemsPerPage);
-            if (totalPages > 1) {
-                const createPagination = () => {
-                    const paginationDiv = document.createElement('div');
-                    paginationDiv.className = 'flex justify-center items-center mt-8 gap-4';
-                    if (currentPage > 0) {
-                        const prevButton = document.createElement('button');
-                        prevButton.className = 'px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700';
-                        prevButton.textContent = 'Previous';
-                        prevButton.addEventListener('click', () => {
-                            currentPage--;
-                            filterFunding();
-                        });
-                        paginationDiv.appendChild(prevButton);
-                    }
-                    const pageInfo = document.createElement('span');
-                    pageInfo.className = 'text-gray-700';
-                    pageInfo.textContent = `Page ${currentPage + 1} of ${totalPages}`;
-                    paginationDiv.appendChild(pageInfo);
-                    if (currentPage < totalPages - 1) {
-                        const nextButton = document.createElement('button');
-                        nextButton.className = 'px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700';
-                        nextButton.textContent = 'Next';
-                        nextButton.addEventListener('click', () => {
-                            currentPage++;
-                            filterFunding();
-                        });
-                        paginationDiv.appendChild(nextButton);
-                    }
-                    return paginationDiv;
-                };
-                const listViewActive = !elements.fundingList.classList.contains('hidden');
-                if (listViewActive) {
-                    elements.fundingList.appendChild(createPagination());
-                } else {
-                    elements.fundingGrid.appendChild(createPagination());
-                }
+        // Minimal funding list renderer and loader (replaces broken inline template)
+        const elements = {
+            fundingList: document.getElementById('list-view'),
+            fundingGrid: document.getElementById('grid-view'),
+            loadingDiv: document.getElementById('loading'),
+            noResults: document.getElementById('no-results'),
+            fundingModal: document.getElementById('funding-modal'),
+            fundingForm: document.getElementById('funding-form'),
+            websiteInput: document.getElementById('website'),
+            logoPreview: document.getElementById('logo-preview'),
+            logoUrlInput: document.getElementById('logo-url'),
+            fetchLogoBtn: document.getElementById('fetch-logo'),
+            applyFiltersBtn: document.getElementById('apply-filters'),
+            clearFiltersBtn: document.getElementById('clear-filters'),
+            filterBtn: document.getElementById('filter-btn'),
+            searchInput: document.getElementById('search-input'),
+            tabs: Array.from(document.querySelectorAll('.tab')),
+            addFundingBtn: document.getElementById('add-funding-btn'),
+            closeModalBtn: document.getElementById('close-modal'),
+            cancelBtn: document.getElementById('cancel-btn'),
+            logoutBtn: document.getElementById('logoutBtn'),
+            submitBtn: document.getElementById('submit-btn'),
+            modalTitle: document.getElementById('modal-title'),
+            filtersPanel: document.getElementById('filters-panel')
+        };
+
+        let fundingArray = [];
+        let filteredFunding = [];
+        const itemsPerPage = 10;
+        let currentPage = 0;
+        let activeFilters = { sector: [], type: [], target: [] };
+
+        function showErrorMessage(msg) {
+            const err = document.getElementById('errorMessage');
+            if (err) {
+                err.textContent = msg;
+                err.classList.remove('hidden');
+            } else {
+                console.error('showErrorMessage:', msg);
             }
-            document.querySelectorAll('.edit-btn').forEach(btn => {
-                btn.removeEventListener('click', handleEditClick);
-                btn.addEventListener('click', handleEditClick);
+        }
+
+        function createListItem(funding) {
+            const item = document.createElement('div');
+            item.className = 'funding-item bg-white p-4 rounded-lg shadow-md';
+            item.innerHTML = `
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-medium">${(funding['Name of funding opportunity']||'No name')}</h3>
+                        <p class="text-gray-600 text-sm">${(funding['Name of disbursement channel']||'No channel')}</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button class="edit-btn px-3 py-1 bg-blue-100 text-blue-600 rounded-md" data-id="${funding.id}"><i class="fas fa-edit"></i></button>
+                        <button class="delete-btn px-3 py-1 bg-red-100 text-red-600 rounded-md" data-id="${funding.id}"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `;
+            const editBtn = item.querySelector('.edit-btn');
+            const delBtn = item.querySelector('.delete-btn');
+            editBtn.addEventListener('click', () => editFundingOpportunity(funding.id));
+            delBtn.addEventListener('click', () => deleteFundingOpportunity(funding.id));
+            return item;
+        }
+
+        function createGridItem(funding) {
+            const gridItem = document.createElement('div');
+            gridItem.className = 'bg-white rounded-lg shadow-md overflow-hidden p-4';
+            gridItem.innerHTML = `
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-medium">${(funding['Name of funding opportunity']||'No name')}</h3>
+                        <p class="text-gray-600 text-sm">${(funding['Name of disbursement channel']||'No channel')}</p>
+                    </div>
+                    ${funding.logo ? `<img src="${funding.logo}" class="w-12 h-12 object-contain rounded-lg" alt="Funding Logo">` : '<div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center"><i class="fas fa-link text-gray-400"></i></div>'}
+                </div>
+                <div class="flex flex-wrap gap-2 mt-4">
+                    ${(funding.Grant===true||funding.Grant==='Grant')?'<span class="badge"><i class="fas fa-gift"></i> Grant</span>':''}
+                    ${(funding.Debt===true||funding.Debt==='Debt')?'<span class="badge"><i class="fas fa-hand-holding-usd"></i> Debt</span>':''}
+                    ${(funding.Equity===true||funding.Equity==='Equity')?'<span class="badge"><i class="fas fa-chart-line"></i> Equity</span>':''}
+                    ${(funding['Working Capital']===true||funding['Working Capital']==='Working Capital')?'<span class="badge"><i class="fas fa-money-bill-wave"></i> Working Capital</span>':''}
+                </div>
+                <div class="flex justify-end space-x-2 mt-4">
+                    <button class="edit-btn px-3 py-1 bg-blue-100 text-blue-600 rounded-md" data-id="${funding.id}"><i class="fas fa-edit"></i></button>
+                    <button class="delete-btn px-3 py-1 bg-red-100 text-red-600 rounded-md" data-id="${funding.id}"><i class="fas fa-trash"></i></button>
+                </div>
+            `;
+            gridItem.querySelector('.edit-btn').addEventListener('click', () => editFundingOpportunity(funding.id));
+            gridItem.querySelector('.delete-btn').addEventListener('click', () => deleteFundingOpportunity(funding.id));
+            return gridItem;
+        }
+
+        async function loadFundingOpportunities() {
+            if (elements.loadingDiv) elements.loadingDiv.style.display = 'block';
+            try {
+                const snapshot = await getDocs(fundingRef);
+                fundingArray = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+                filteredFunding = [...fundingArray];
+                currentPage = 0;
+                filterFunding();
+            } catch (err) {
+                console.error('Error loading funding:', err);
+                showErrorMessage('Error loading funding opportunities: ' + (err.message || err));
+            } finally {
+                if (elements.loadingDiv) elements.loadingDiv.style.display = 'none';
+            }
+        }
+
+        function filterFunding() {
+            const q = (elements.searchInput?.value || '').toLowerCase().trim();
+            filteredFunding = fundingArray.filter(f => {
+                if (q) {
+                    const name = (f['Name of funding opportunity']||'').toLowerCase();
+                    const channel = (f['Name of disbursement channel']||'').toLowerCase();
+                    if (!name.includes(q) && !channel.includes(q)) return false;
+                }
+                // TODO: apply activeFilters filters when needed
+                return true;
             });
-            document.querySelectorAll('.delete-btn').forEach(btn => {
-                btn.removeEventListener('click', handleDeleteClick);
-                btn.addEventListener('click', handleDeleteClick);
+            renderFunding();
+        }
+
+        function renderFunding() {
+            elements.fundingList.innerHTML = '';
+            elements.fundingGrid.innerHTML = '';
+            if (!filteredFunding.length) {
+                elements.noResults.classList.remove('hidden');
+                return;
+            }
+            elements.noResults.classList.add('hidden');
+            const totalPages = Math.ceil(filteredFunding.length / itemsPerPage);
+            const start = currentPage * itemsPerPage;
+            const pageItems = filteredFunding.slice(start, start + itemsPerPage);
+            pageItems.forEach(f => {
+                elements.fundingList.appendChild(createListItem(f));
+                elements.fundingGrid.appendChild(createGridItem(f));
             });
+            // Simple pagination UI
+            // remove existing pager
+            const existingPager = document.querySelector('.funding-pager');
+            if (existingPager) existingPager.remove();
+            if (totalPages > 1) {
+                const pager = document.createElement('div');
+                pager.className = 'funding-pager flex justify-center items-center mt-6 gap-4';
+                const prev = document.createElement('button');
+                prev.textContent = 'Previous';
+                prev.disabled = currentPage === 0;
+                prev.addEventListener('click', () => { currentPage = Math.max(0, currentPage-1); renderFunding(); });
+                const next = document.createElement('button');
+                next.textContent = 'Next';
+                next.disabled = currentPage >= totalPages-1;
+                next.addEventListener('click', () => { currentPage = Math.min(totalPages-1, currentPage+1); renderFunding(); });
+                const info = document.createElement('span');
+                info.textContent = `Page ${currentPage+1} of ${totalPages}`;
+                pager.appendChild(prev);
+                pager.appendChild(info);
+                pager.appendChild(next);
+                if (elements.fundingList) elements.fundingList.appendChild(pager);
+            }
+        }
+
+        // Kick off initial load
+        loadFundingOpportunities();
 
         // Edit funding opportunity
         async function editFundingOpportunity(id) {
@@ -738,7 +823,8 @@
                         }
                     }
                 });
-                elements.modalTitle.elements.submitBtn.toggleModal();
+                // Open modal after populating form
+                toggleModal();
             } catch (error) {
                 console.error('Error retrieving funding opportunity:', error);
                 showErrorMessage('Error loading funding opportunity. Please try again.');
@@ -947,12 +1033,10 @@
                 elements.fundingForm.reset();
                 elements.fundingForm.querySelector('#doc-id').value = '';
                 elements.logoPreview.style.display = 'none';
-                elements.modalTitle.elements.submitBtn.document.querySelectorAll('.checkbox-item.selected').forEach(item => {
-                    item.classList.remove('selected');
-                });
-                document.querySelectorAll('.checkbox-item input').forEach(input => {
-                    input.checked = false;
-                });                toggleModal();
+                // Clear selected checkbox UI and inputs inside the funding form
+                document.querySelectorAll('.checkbox-item.selected').forEach(item => item.classList.remove('selected'));
+                document.querySelectorAll('.checkbox-item input').forEach(input => input.checked = false);
+                toggleModal();
             });
             elements.closeModalBtn.addEventListener('click', toggleModal);
             elements.cancelBtn.addEventListener('click', toggleModal);

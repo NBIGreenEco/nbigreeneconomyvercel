@@ -140,6 +140,7 @@
       font-family: inherit;
       letter-spacing: 0.3px;
     }
+    /* Use site-wide .btn-secondary from master stylesheet for consistent admin buttons */
     .btn-danger {
       background-color: var(--danger);
       color: white;
@@ -238,6 +239,9 @@
           <i class="fas fa-chart-line"></i> Website Performance Metrics
         </h1>
         <div class="dashboard-actions">
+          <a id="backToDashboard" class="btn btn-outline-secondary" href="/ADMIN/admin-dashboard.html" aria-label="Back to Admin Dashboard">
+            <i class="bi bi-house me-1"></i> Back to Dashboard
+          </a>
           <button id="logoutBtn" class="btn btn-danger">
             <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
           </button>

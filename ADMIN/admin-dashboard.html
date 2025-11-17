@@ -222,11 +222,7 @@
         <h3 class="card-title">Manage Opportunities</h3>
         <p class="card-description">Add or update opportunities for users.</p>
       </div>
-      <div class="dashboard-card" id="manage-translations">
-        <i class="fas fa-language card-icon"></i>
-        <h3 class="card-title">Manage Translations</h3>
-        <p class="card-description">Run translation scripts to update language files.</p>
-      </div>
+
       <div class="dashboard-card" id="manage-analytics">
         <i class="fas fa-chart-line card-icon"></i>
         <h3 class="card-title">Manage Analytics</h3>
@@ -269,6 +265,42 @@
 
       // Initialize page
       finalizeLoading();
+
+      // Dashboard card nav - enable click and keyboard interaction
+      function setupDashboardNavigation() {
+        const navMap = {
+          'manage-events': '/ADMIN/manageevents.html',
+          'manage-news': '/ADMIN/managenews.html',
+          'manage-database': '/ADMIN/database.html',
+          'manage-funding': '/ADMIN/managefunding.html',
+          'manage-opportunities': '/ADMIN/ManageOpprtunities.html',
+          'manage-analytics': '/ADMIN/analytics.html'
+        };
+
+        Object.keys(navMap).forEach(id => {
+          const el = document.getElementById(id);
+          if (!el) return;
+
+          // Make the whole card keyboard focusable for accessibility
+          el.setAttribute('tabindex', '0');
+          el.setAttribute('role', 'button');
+
+          const navigate = () => {
+            console.log('DEBUG: Dashboard nav click, id:', id, ' =>', navMap[id]);
+            window.location.assign(navMap[id]);
+          };
+
+          el.addEventListener('click', navigate);
+          el.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              navigate();
+            }
+          });
+        });
+      }
+
+      setupDashboardNavigation();
     </script>
 </body>
 </html>

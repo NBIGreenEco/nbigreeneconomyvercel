@@ -464,6 +464,14 @@ function finalizeLoading() {
 // Initialize page
 finalizeLoading();
 
+// Validate date format YYYY-MM-DD
+function validateDate(dateString) {
+    const regex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!regex.test(dateString)) return false;
+    const date = new Date(dateString);
+    return date instanceof Date && !isNaN(date);
+}
+
 async function loadEvents() {
     try {
         const eventsList = document.querySelector('.events-list');
@@ -741,13 +749,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// Fallback timeout
+// Fallback timeout - force content display after 6 seconds
 setTimeout(() => {
     if (document.body.classList.contains('loading')) {
-        console.warn('Loading timeout reached, forcing content display');        document.body.classList.remove('loading');
+        console.warn('Loading timeout reached, forcing content display after 6s');
+        document.body.classList.remove('loading');
         document.body.classList.add('loaded');
-        document.querySelector('.loading-overlay').style.display = 'none';
-        showAlertModal('Page load timeout. Displaying default content.', 'error');
+        const loadingOverlay = document.querySelector('.loading-overlay');
+        if (loadingOverlay) loadingOverlay.style.display = 'none';
+        console.log('Content forcefully displayed due to timeout');
     }
 }, 10000);
     </script>
