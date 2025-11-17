@@ -617,7 +617,22 @@ if (typeof Fuse === 'undefined') {
     window.initializeSearch = initializeSearch;
 
     // Auto-init on DOMContentLoaded for pages that still load this script in the head
-    document.addEventListener('DOMContentLoaded', () => {
-        // Don't block — call initialize but tolerate failures
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Wait for header custom element to be defined
+            try {
+                if (typeof customElements !== 'undefined') {
+                    await customElements.whenDefined('green-economy-header');
+                    // Give header a frame to upgrade
+                    await new Promise(r => requestAnimationFrame(r));
+                }
+            } catch (e) {
+                console.warn('Waiting for custom element failed:', e);
+            }
+            // Don't block — call initialize but tolerate failures
+            initializeSearch().catch(err => console.warn('Search init error:', err));
+        });
+    } else {
+        // Page already loaded, initialize immediately
         initializeSearch().catch(err => console.warn('Search init error:', err));
-    });
+    }
