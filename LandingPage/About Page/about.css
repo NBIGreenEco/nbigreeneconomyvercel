@@ -108,55 +108,49 @@ body {
 
 .focus-item {
     position: relative;
-    height: 256px; /* Matches index page focus item height */
+    height: 256px;
+    overflow: hidden;
+    cursor: pointer;
     background-size: cover;
     background-position: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    transition: transform 0.3s;
     text-decoration: none;
-}
-
-.focus-item:hover {
-    transform: scale(1.05); /* Matches index page hover effect */
-    z-index: 1;
 }
 
 .focus-item::after {
     content: "";
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.4); /* Matches index page overlay */
+    background: rgba(0, 0, 0, 0.4);
     transition: background 0.3s;
 }
 
+.focus-item:hover {
+    transform: scale(1.05);
+}
+
 .focus-item:hover::after {
-    background: rgba(0, 0, 0, 0.5); /* Matches index page hover overlay */
+    background: rgba(0, 0, 0, 0.5);
 }
 
 .focus-content {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    position: relative;
+    z-index: 10;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(0, 0, 0, 0.5); /* Matches index page */
-    color: white;
-    padding: 24px; /* Matches index page padding */
+    padding: 24px;
+    font-weight: 800;
     text-align: center;
-    font-weight: 800; /* Extra-bold like index page */
 }
 
-/* Fix for Focus Area H3 text color */
 .focus-content h3 {
-    font-size: 18px; /* Matches index page focus area text size */
-    font-weight: 600; /* Semi-bold like index page */
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+    color: white;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 1.3;
     margin: 0;
-    line-height: 1.3; /* Matches index page line height */
-    color: white !important; /* Force white color for focus area titles */
 }
 
 /* Climate Risks Section - Updated Font Styles */
@@ -411,6 +405,10 @@ body {
         grid-template-columns: repeat(2, 1fr); /* Matches index page tablet grid */
     }
     
+    .focus-content h3 {
+        font-size: 16px;
+    }
+    
     .light-section h3 {
         font-size: 28px; /* Adjusted for tablet */
     }
@@ -490,11 +488,11 @@ body {
     }
     
     .focus-item {
-        height: 256px; /* Maintains standard height */
+        height: 200px;
     }
     
     .focus-content h3 {
-        font-size: 18px; /* Maintains standard size */
+        font-size: 16px; /* Matches index page mobile focus title size */
     }
     
     .climate-risks-section {
