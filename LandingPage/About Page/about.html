@@ -680,17 +680,9 @@
         }
 
         function initializeContentfulContent() {
-            if (window.contentfulService) {
-                window.contentfulService.initialize().then(() => {
-                    loadFocusAreas();
-                }).catch(error => {
-                    console.error('Contentful service initialization failed:', error);
-                    loadStaticFocusAreas();
-                });
-            } else {
-                console.warn('Contentful service not available, loading static focus areas');
-                loadStaticFocusAreas();
-            }
+            // Skip Contentful/API, directly load static focus areas
+            console.log('Loading static focus areas directly');
+            loadStaticFocusAreas();
         }
 
         document.addEventListener('DOMContentLoaded', () => {
