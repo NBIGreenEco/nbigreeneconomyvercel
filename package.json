@@ -3,7 +3,9 @@
     "axios": "^1.11.0",
     "contentful": "^11.7.15",
     "contentful-management": "^11.62.0",
+    "cors": "^2.8.5",
     "dotenv": "^17.2.1",
+    "express": "^5.1.0",
     "fs": "^0.0.1-security",
     "path": "^0.12.7"
   },

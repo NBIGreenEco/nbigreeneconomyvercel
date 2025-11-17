@@ -16,14 +16,18 @@ const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Sign in anonymously to satisfy Firestore rules
-signInAnonymously(auth)
-  .then(() => console.log('DEBUG: Anonymous authentication successful'))
+// Attempt anonymous sign-in and expose a promise so callers can wait for auth
+const authReady = signInAnonymously(auth)
+  .then(() => {
+    console.log('DEBUG: Anonymous authentication successful');
+    return true;
+  })
   .catch(error => {
     console.error('DEBUG: Anonymous authentication error:', error, {
       code: error.code,
       message: error.message
     });
+    return false;
   });
 
 async function hashCode(code) {
@@ -58,11 +62,11 @@ async function getStoredPasswordHash() {
   }
 }
 
-async function trackInteraction(userId, category, action, label = "") {
-  console.log('DEBUG: Tracking interaction:', { userId, category, action, label });
+async function trackInteraction(tempUserId, category, action, label = "") {
+  console.log('DEBUG: Tracking interaction:', { tempUserId, category, action, label });
   try {
     await addDoc(collection(db, 'interactions'), {
-      userId: userId || `anonymous_${Date.now()}`,
+      tempUserId: tempUserId || `anonymous_${Date.now()}`,
       category,
       action,
       label,
@@ -124,6 +128,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     errorMessage.classList.add('hidden');
     verificationMessage.classList.add('hidden');
     try {
+      // Ensure auth is available before reading protected configuration
+      const authAvailable = await authReady;
+      if (!authAvailable && !auth.currentUser) {
+        console.warn('DEBUG: Anonymous auth not available; attempting sign-in again');
+        try {
+          await signInAnonymously(auth);
+        } catch (e) {
+          console.warn('DEBUG: Retry anonymous sign-in failed', e);
+        }
+      }
       const passwordHash = await hashCode(password);
       const storedHash = await getStoredPasswordHash();
       console.log('DEBUG: Comparing hashes:', { enteredHash: passwordHash, storedHash });
