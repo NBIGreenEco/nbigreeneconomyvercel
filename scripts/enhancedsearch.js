@@ -603,49 +603,18 @@ if (typeof Fuse === 'undefined') {
         }
 
         window.greenEconomySearch = new GreenEconomySearch();
-    
-    // Setup search toggle functionality
-    const searchToggle = document.getElementById('search-toggle');
-    const searchPopup = document.getElementById('search-popup');
-    const searchClose = document.getElementById('search-close');
-    
-    if (searchToggle && searchPopup && searchClose) {
-        searchToggle.addEventListener('click', () => {
-            const isHidden = searchPopup.style.display === 'none';
-            searchPopup.style.display = isHidden ? 'block' : 'none';
-            if (isHidden) {
-                searchPopup.classList.add('animate-in');
-                searchPopup.classList.remove('animate-out');
-                // Initialize search when popup is opened
-                if (window.greenEconomySearch && !window.greenEconomySearch.initialized) {
-                    window.greenEconomySearch.init();
-                }
-            } else {
-                searchPopup.classList.add('animate-out');
-                searchPopup.classList.remove('animate-in');
-                setTimeout(() => {
-                    searchPopup.style.display = 'none';
-                }, 300);
-            }
-        });
-  
-        searchClose.addEventListener('click', () => {
-            searchPopup.classList.add('animate-out');
-            searchPopup.classList.remove('animate-in');
-            setTimeout(() => {
-                searchPopup.style.display = 'none';
-            }, 300);
-        });
-        }
     }
 
-    // Exported initializer so pages can call it after the header is ready. Also auto-initialize
+    // Initializer so pages can call it after the header is ready. Also auto-initialize
     // on DOMContentLoaded but only after the header custom element is defined.
-    export async function initializeSearch() {
+    async function initializeSearch() {
         if (window.greenEconomySearch) return window.greenEconomySearch;
         await _initializeSearchModule();
         return window.greenEconomySearch;
     }
+
+    // Make available globally
+    window.initializeSearch = initializeSearch;
 
     // Auto-init on DOMContentLoaded for pages that still load this script in the head
     document.addEventListener('DOMContentLoaded', () => {
