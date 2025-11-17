@@ -253,6 +253,62 @@
 
   </head>
   <body>
+    <!-- Global search popup toggle function -->
+    <script>
+      // Direct global function for search popup toggle - works without waiting for custom element
+      window.toggleSearchGlobal = function() {
+        console.log('🔍 [GLOBAL] toggleSearchGlobal called');
+        
+        // Try multiple ways to find and toggle the search popup
+        let searchPopup = document.getElementById('search-popup');
+        
+        if (!searchPopup) {
+          console.log('🔍 [GLOBAL] Searching within green-economy-header...');
+          const header = document.querySelector('green-economy-header');
+          if (header && header.shadowRoot) {
+            searchPopup = header.shadowRoot.getElementById('search-popup');
+            console.log('🔍 [GLOBAL] Found in shadowRoot:', !!searchPopup);
+          }
+        }
+        
+        if (!searchPopup) {
+          console.error('❌ [GLOBAL] search-popup element not found anywhere');
+          return;
+        }
+        
+        const isHidden = searchPopup.style.display === 'none' || !searchPopup.style.display;
+        console.log('🔍 [GLOBAL] Current hidden state:', isHidden);
+        
+        if (isHidden) {
+          searchPopup.style.display = 'block';
+          searchPopup.classList.add('animate-in');
+          searchPopup.classList.remove('animate-out');
+          document.body.style.overflow = 'hidden';
+          console.log('✅ [GLOBAL] Popup SHOWN');
+          
+          // Try to focus input
+          setTimeout(() => {
+            let input = document.getElementById('smartSearch');
+            if (!input) {
+              const header = document.querySelector('green-economy-header');
+              if (header && header.shadowRoot) {
+                input = header.shadowRoot.getElementById('smartSearch');
+              }
+            }
+            if (input) input.focus();
+          }, 100);
+        } else {
+          searchPopup.classList.add('animate-out');
+          searchPopup.classList.remove('animate-in');
+          setTimeout(() => {
+            searchPopup.style.display = 'none';
+            document.body.style.overflow = '';
+          }, 300);
+          console.log('✅ [GLOBAL] Popup HIDDEN');
+        }
+      };
+    </script>
+
     <!-- Wait for custom elements to load -->
     <script>
       Promise.all([

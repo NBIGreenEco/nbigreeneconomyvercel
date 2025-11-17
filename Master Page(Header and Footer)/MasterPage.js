@@ -150,7 +150,7 @@ class GreenEconomyHeader extends HTMLElement {
                 <option value="tn">Setswana</option>
               </select>
               <div id="error-message" class="translation-error"></div>
-              <i class="fas fa-search search-icon" id="search-toggle" style="cursor: pointer; pointer-events: auto;" onclick="document.querySelector('green-economy-header').toggleSearchPopupPublic()"></i>
+              <i class="fas fa-search search-icon" id="search-toggle" style="cursor: pointer; pointer-events: auto;" onclick="console.log('🔍 [CLICK] Search icon clicked'); if(window.toggleSearchGlobal) window.toggleSearchGlobal(); else console.error('toggleSearchGlobal not found');"></i>
             </div>
           </nav>
         </header>
@@ -158,7 +158,7 @@ class GreenEconomyHeader extends HTMLElement {
           <div class="search-container">
             <div class="search-header">
               <h3>AI Enhanced Search</h3>
-              <span class="search-close" id="search-close">×</span>
+              <span class="search-close" id="search-close" style="cursor: pointer;" onclick="if(window.toggleSearchGlobal) window.toggleSearchGlobal();">×</span>
             </div>
             <div class="search-input-wrapper">
               <svg class="search-input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
