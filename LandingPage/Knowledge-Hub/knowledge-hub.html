@@ -837,7 +837,7 @@
             <section class="hero">
                 <div class="hero-content">
                     <div class="hero-image-section">
-                        <img src="/Images/Knowledge-Hub_2023-10-04-145730_tkxt_a91a4f7cf12b2095b100c24cf6024d38.png" alt="Hero Image" class="hero-img" style="width: 100%; height: auto; max-width: 100%; display: block;">
+                        <img src="/Images/Knowledge-Hub_2023-10-04-145730_tkxt_a91a4f7cf12b2095b100c24cf6024d38.png" alt="Hero Image" class="hero-img" style="width: 100%; height: 100%; display: block; object-fit: cover;">
                     </div>
                     <div class="hero-text">
                         <h1>WELCOME TO OUR KNOWLEDGE HUB</h1>
@@ -898,7 +898,12 @@
             </section>
             <section class="partners">
                 <div class="partners-content">
-                    <!-- Partner logos will be populated by Contentful -->
+                    <!-- Partner logos - fallback to static images if Contentful data unavailable -->
+                    <img src="/Images/giz-logo_2024-11-11-133203_nara.jpg" alt="GIZ Partner Logo" class="partner-logo">
+                    <img src="/Images/SECO-Logo.jpg" alt="SECO Partner Logo" class="partner-logo">
+                    <img src="/Images/GDED-Logo.jpg" alt="GDED Partner Logo" class="partner-logo">
+                    <img src="/Images/LMS-Platform-Logo.png" alt="LMS Platform Logo" class="partner-logo">
+                    <img src="/Images/NBI-Logo.jpg" alt="NBI Partner Logo" class="partner-logo">
                 </div>
             </section>
 
