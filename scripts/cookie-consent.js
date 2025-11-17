@@ -83,15 +83,15 @@ class CookieConsentManager {
       .cookie-consent-content {
         display: grid;
         grid-template-columns: 1fr auto;
-        gap: 2rem;
+        gap: 1.5rem;
         align-items: center;
-        padding: 2rem 2.5rem;
+        padding: 1.2rem 2rem;
         border-top: 1px solid #e5e5e5;
       }
 
       .cookie-consent-text h3 {
-        font-size: 1.1rem;
-        margin: 0 0 0.75rem 0;
+        font-size: 0.95rem;
+        margin: 0 0 0.4rem 0;
         font-weight: 700;
         color: #1a1a1a;
         letter-spacing: 0.3px;
@@ -99,23 +99,23 @@ class CookieConsentManager {
 
       .cookie-consent-text p {
         margin: 0;
-        font-size: 0.95rem;
-        line-height: 1.6;
+        font-size: 0.9rem;
+        line-height: 1.4;
         color: #555;
       }
 
       .cookie-consent-buttons {
         display: flex;
-        gap: 1rem;
+        gap: 0.8rem;
         white-space: nowrap;
         flex-shrink: 0;
       }
 
       .cookie-btn {
-        padding: 0.85rem 1.8rem;
+        padding: 0.6rem 1.4rem;
         border: none;
         border-radius: 0.5rem;
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s cubic-bezier(.4,1.4,.6,1);
@@ -158,8 +158,8 @@ class CookieConsentManager {
       @media (max-width: 1024px) {
         .cookie-consent-content {
           grid-template-columns: 1fr;
-          gap: 1.5rem;
-          padding: 1.5rem 2rem;
+          gap: 1rem;
+          padding: 1rem 1.5rem;
         }
 
         .cookie-consent-buttons {
@@ -179,48 +179,49 @@ class CookieConsentManager {
 
         .cookie-consent-content {
           grid-template-columns: 1fr;
-          gap: 1rem;
-          padding: 1.25rem 1.5rem;
+          gap: 0.8rem;
+          padding: 1rem 1.2rem;
         }
 
         .cookie-consent-text h3 {
-          font-size: 1rem;
-          margin-bottom: 0.5rem;
+          font-size: 0.9rem;
+          margin-bottom: 0.3rem;
         }
 
         .cookie-consent-text p {
-          font-size: 0.9rem;
-          line-height: 1.5;
+          font-size: 0.85rem;
+          line-height: 1.3;
         }
 
         .cookie-consent-buttons {
           width: 100%;
           flex-direction: column;
-          gap: 0.75rem;
+          gap: 0.6rem;
         }
 
         .cookie-btn {
           width: 100%;
-          padding: 0.8rem 1.5rem;
+          padding: 0.55rem 1.2rem;
+          font-size: 0.85rem;
         }
       }
 
       @media (max-width: 480px) {
         .cookie-consent-content {
-          padding: 1rem 1.2rem;
+          padding: 0.8rem 1rem;
         }
 
         .cookie-consent-text h3 {
-          font-size: 0.95rem;
-        }
-
-        .cookie-consent-text p {
           font-size: 0.85rem;
         }
 
+        .cookie-consent-text p {
+          font-size: 0.8rem;
+        }
+
         .cookie-btn {
-          padding: 0.7rem 1.2rem;
-          font-size: 0.9rem;
+          padding: 0.5rem 1rem;
+          font-size: 0.8rem;
         }
       }
     `;
