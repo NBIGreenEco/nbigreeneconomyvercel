@@ -386,6 +386,7 @@ class GreenEconomyHeader extends HTMLElement {
     const menuToggle = this.querySelector('#mobile-menu-toggle');
     const nav = this.querySelector('#main-nav');
     const navLinks = this.querySelectorAll('.nav-links a, .nav-utils .search-icon, #google_translate_element');
+    const searchIcon = this.querySelector('#search-toggle');
     const header = this.querySelector('.header');
     const headerOuter = this.querySelector('.header-outer');
 
@@ -451,6 +452,23 @@ class GreenEconomyHeader extends HTMLElement {
           closeMenu();
         });
       });
+
+      // Specifically close menu when search icon is clicked on mobile
+      if (searchIcon) {
+        const originalOnClick = searchIcon.onclick;
+        searchIcon.addEventListener('click', (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          // First call the original search toggle
+          if (window.toggleSearchGlobal) {
+            window.toggleSearchGlobal();
+          }
+          // Then close the menu
+          setTimeout(() => {
+            closeMenu();
+          }, 100);
+        });
+      }
 
       let resizeTimer;
       window.addEventListener('resize', () => {
