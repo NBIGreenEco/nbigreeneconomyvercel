@@ -292,8 +292,9 @@
         let allFundingCards = [];
         let filteredFundingCards = [];
 
-        // Reset filters function
-        function resetFilters() {
+        // Reset filters function - GLOBAL
+        window.resetFilters = function() {
+            console.log('🔧 [RESET] resetFilters called');
             document.querySelectorAll('.filter-option.selected').forEach(option => {
                 option.classList.remove('selected');
                 option.querySelector('.check-indicator').textContent = '';
@@ -301,8 +302,9 @@
             filteredFundingCards = [...allFundingCards];
             currentPage = 0;
             displayFundingCards(currentPage);
+            console.log('✅ [RESET] Filters reset, displaying all cards');
             trackUserInteraction(auth.currentUser?.uid || 'anonymous', 'filter', 'reset');
-        }
+        };
 
         // Get selected filters
         function getSelectedFilters() {
@@ -317,10 +319,13 @@
             return selected;
         }
 
-        // Apply filters function
-        function applyFilters() {
+        // Apply filters function - GLOBAL
+        window.applyFilters = function() {
+            console.log('🔧 [APPLY] applyFilters called');
             const selectedFilters = getSelectedFilters();
+            console.log('🔧 [APPLY] Selected filters:', selectedFilters);
             if (Object.values(selectedFilters).every(arr => arr.length === 0)) {
+                console.log('🔧 [APPLY] No filters selected, showing all cards');
                 filteredFundingCards = [...allFundingCards];
                 displayFundingCards(0);
                 trackUserInteraction(auth.currentUser?.uid || 'anonymous', 'filter', 'apply', 'No filters');
@@ -357,9 +362,10 @@
             });
 
             currentPage = 0;
+            console.log('🔧 [APPLY] Filtered to', filteredFundingCards.length, 'cards');
             displayFundingCards(currentPage);
             trackUserInteraction(auth.currentUser?.uid || 'anonymous', 'filter', 'apply', JSON.stringify(selectedFilters));
-        }
+        };
 
         // Display funding cards with pagination
         function displayFundingCards(page) {
@@ -495,12 +501,13 @@
         function trackUserInteraction(userId, category, action, label = "") {
             if (db) {
                 getDocs(collection(db, 'interactions')).then(() => {
-                    return db.collection('interactions').add({
-                        userId: userId,
+                    return addDoc(collection(db, 'interactions'), {
+                        tempUserId: userId,
                         category: category,
                         action: action,
                         label: label,
                         timestamp: new Date(),
+                        language: currentLanguage || 'en',
                         userAgent: navigator.userAgent
                     });
                 }).catch(error => {
@@ -542,7 +549,7 @@
                     option.addEventListener('click', function() {
                         this.classList.toggle('selected');
                         const indicator = this.querySelector('.check-indicator');
-                        indicator.textContent = this.classList.contains('selected') ? 'âœ“' : '';
+                        indicator.textContent = this.classList.contains('selected') ? '✅' : '';
                         trackUserInteraction(auth.currentUser?.uid || 'anonymous', 'filter', 'select', this.dataset.value);
                     });
                 });
