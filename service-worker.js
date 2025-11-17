@@ -1,7 +1,7 @@
 ﻿// Service Worker for Caching Static Assets
 // This file caches CSS, JS, images, and fonts to improve load times
 
-const CACHE_VERSION = 'v1.0.0';
+const CACHE_VERSION = 'v1.0.1-search-fix-20251117';
 const CACHE_NAME = `green-economy-${CACHE_VERSION}`;
 
 // Static assets to cache on install
