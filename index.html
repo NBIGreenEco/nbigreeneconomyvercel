@@ -559,18 +559,19 @@
     <script src="/digital_human/digital-human.js" defer></script>
     <!-- Digital Human Widget End -->
     <script src="scripts/chatbot.js"></script>
+    <script src="/scripts/enhancedsearch.js"></script>
     <green-economy-chatbot></green-economy-chatbot>
     <green-economy-footer></green-economy-footer>
     <script type="module">
-      import { initializeSearch } from '/scripts/enhancedsearch.js';
-
       document.addEventListener('DOMContentLoaded', async () => {
         try {
           await customElements.whenDefined('green-economy-header');
           // Give header a frame to render internal DOM
           await new Promise(r => requestAnimationFrame(r));
           console.log('Initializing global search after header is ready');
-          await initializeSearch();
+          if (window.initializeSearch) {
+            await window.initializeSearch();
+          }
         } catch (e) {
           console.error('Failed to initialize search after header ready:', e);
         }
