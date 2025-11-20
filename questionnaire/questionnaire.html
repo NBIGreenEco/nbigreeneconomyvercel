@@ -351,7 +351,10 @@
                             <option value="intermediate">Intermediate</option>
                             <option value="advanced">Advanced</option>
                         </select>
-                        <button type="button" class="submit-btn" id="nextBtn" style="display: none;">Next</button>
+                        <div class="button-group">
+                            <button type="button" class="btn btn-secondary" id="nextBtn" style="display: none;">Back</button>
+                            <button type="button" class="btn btn-primary" id="continueBtn" style="display: none;">Continue</button>
+                        </div>
                     </div>
                     <div class="question-content" data-question="6">
                         <label class="form-label">Which green tools? (Select at least one)</label>
@@ -370,7 +373,10 @@
                             <option value="isiZulu">isiZulu</option>
                             <option value="Setswana">Setswana</option>
                         </select>
-                        <button type="submit" class="submit-btn" id="finishBtn" style="display: none;">Finish</button>
+                        <div class="button-group">
+                            <button type="button" class="btn btn-secondary" id="backBtn" style="display: none;">Back</button>
+                            <button type="submit" class="btn btn-primary" id="finishBtn" style="display: none;">Continue to Dashboard</button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -474,6 +480,8 @@
             const navItems = document.querySelectorAll('.nav-item');
             const questionContents = document.querySelectorAll('.question-content');
             const nextBtn = document.getElementById('nextBtn');
+            const continueBtn = document.getElementById('continueBtn');
+            const backBtn = document.getElementById('backBtn');
             const finishBtn = document.getElementById('finishBtn');
 
             function showQuestion(index) {
@@ -495,6 +503,8 @@
                     }
 
                     nextBtn.style.display = index === 5 ? 'block' : 'none';
+                    continueBtn.style.display = index > 1 && index < 7 ? 'block' : 'none';
+                    backBtn.style.display = index > 1 ? 'block' : 'none';
                     finishBtn.style.display = index === 7 && isFormComplete() ? 'block' : 'none';                    }, 400);
             }
 
@@ -580,6 +590,26 @@
                     });
                 }
 
+                // Continue button handler
+                if (continueBtn) {
+                    continueBtn.addEventListener('click', () => {
+                        if (currentQuestion < totalQuestions) {
+                            currentQuestion = Math.min(currentQuestion + 1, totalQuestions);
+                            showQuestion(currentQuestion);
+                        }
+                    });
+                }
+
+                // Back button handler
+                if (backBtn) {
+                    backBtn.addEventListener('click', () => {
+                        if (currentQuestion > 1) {
+                            currentQuestion = Math.max(currentQuestion - 1, 1);
+                            showQuestion(currentQuestion);
+                        }
+                    });
+                }
+
                 // Option button handlers
                 document.querySelectorAll('.option-button').forEach(button => {
                     button.addEventListener('click', function () {
@@ -612,7 +642,7 @@
 
                         if (finishBtn) {
                             finishBtn.disabled = true;
-                            finishBtn.innerHTML = `<span class="loading-spinner"></span> Submitting...`;
+                            finishBtn.innerHTML = `Proceeding to Dashboard...`;
                         }
                         showLoader();
 
