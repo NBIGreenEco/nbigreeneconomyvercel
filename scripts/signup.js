@@ -207,8 +207,9 @@ try {
                         await trackInteraction('signup', 'attempt', `Email: ${email}`);
                         
                         // Send verification email with proper continueUrl
+                        // Remove the full path - Firebase will use the default continue URL
                         const actionCodeSettings = {
-                            url: `${config.baseUrl}/LandingPage/VerifyEmail.html?email=${encodeURIComponent(email)}`,
+                            url: `${config.baseUrl}/LandingPage/SignUp.html`,
                             handleCodeInApp: true
                         };
                         await sendEmailVerification(user, actionCodeSettings);

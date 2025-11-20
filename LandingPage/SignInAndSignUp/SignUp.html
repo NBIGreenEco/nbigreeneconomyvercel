@@ -271,9 +271,10 @@
             background-color: #059669;
         }
     </style>
-    <script type="module">        import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
+    <script type="module">        
+        import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
         import { getAuth, onAuthStateChanged, setPersistence, browserSessionPersistence } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
-        import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+        import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyCfa827mvCLf1ETts6B_DmCfb7owTohBxk",
@@ -321,15 +322,15 @@
             document.body.classList.add('loading');
             const loadingOverlay = document.querySelector('.loading-overlay');
 
-            // Track page load (this is before auth, so if needed, handle via local log or update rules)
+            // Track page load using modular Firestore SDK
             async function trackInteraction(category, action, label = "") {
                 try {
-                    await db.collection('interactions').add({
+                    await addDoc(collection(db, 'interactions'), {
                         tempUserId: tempUserId,
                         category: category,
                         action: action,
                         label: label,
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                        timestamp: serverTimestamp(),
                         language: 'en',
                         userAgent: navigator.userAgent
                     });
