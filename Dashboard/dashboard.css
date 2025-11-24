@@ -143,10 +143,12 @@ height: 1.25rem;
 color: var(--muted-foreground);
 }
 .dashboard-grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-gap: 1.5rem;
-margin-bottom: 3rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+    width: 100%;
+    overflow-x: hidden;
 }
 .dashboard-card {
 background: var(--card);
@@ -193,11 +195,13 @@ color: var(--green-primary);
 font-weight: 500;
 }
 .news-section, .opportunities-section {
-background: var(--card);
-border-radius: var(--radius);
-padding: 2rem;
-margin-bottom: 3rem;
-box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    overflow: hidden;
 border: 1px solid var(--border);
 }
 .news-header, .opportunities-header {
@@ -742,26 +746,72 @@ background: #ffe6e6;
 border: 1px solid red;
 margin: 1rem;
 }
+@media (max-width: 480px) {
+    .hero h1 {
+        font-size: 1.5rem;
+    }
+    
+    .dashboard-grid {
+        padding: 0 0.75rem;
+    }
+    
+    .news-section, .opportunities-section {
+        padding: 1rem;
+        margin-bottom: 1.25rem;
+    }
+    
+    .news-item, .opportunity-item {
+        padding: 0.875rem;
+    }
+    
+    .news-section h2, .opportunities-section h2 {
+        font-size: 1.1rem;
+    }
+    
+    .news-item h3, .opportunity-item h3 {
+        font-size: 0.95rem;
+    }
+    
+    .news-item p, .opportunity-item p {
+        font-size: 0.8125rem;
+    }
+}
 @media (max-width: 768px) {
-.nav {
-display: none;
-}
-.hero h1 {
-font-size: 2rem;
-}
-.hero-content {
-padding: 1.5rem 2rem;
-}
-.dashboard-grid {
-grid-template-columns: 1fr;
-}
-.news-grid, .opportunities-grid {
-grid-template-columns: 1fr;
-}
-.ai-assistant-btn {
-width: 50px;
-height: 50px;
-bottom: 1rem;
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 0 1rem;
+    }
+    
+    .news-section, .opportunities-section {
+        padding: 1.25rem;
+        margin: 0 0 1.5rem 0;
+        border-radius: 0.75rem;
+    }
+    
+    .news-item, .opportunity-item {
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .news-item h3, .opportunity-item h3 {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .news-item p, .opportunity-item p {
+        font-size: 0.875rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .news-item .date, .opportunity-item .date {
+        font-size: 0.75rem;
+    }
+    
+    .news-section h2, .opportunities-section h2 {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
 right: 1rem;
 }
 .ai-assistant-btn svg {

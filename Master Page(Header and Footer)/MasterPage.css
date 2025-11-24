@@ -254,7 +254,8 @@ body {
 @media (max-width: 1024px) {
     .mobile-menu-button {
         display: flex !important;
-        margin-right: 15px;
+        margin-right: 10px;
+        order: 2;
     }
 
     .header {
@@ -263,8 +264,8 @@ body {
     }
 
     .nav {
-        position: absolute;
-        top: 100%;
+        position: fixed;
+        top: 70px;
         left: 0;
         right: 0;
         width: 100%;
@@ -273,21 +274,22 @@ body {
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         z-index: 1000;
         max-height: 0;
-        overflow: hidden;
+        overflow-y: auto;
         transition: max-height 0.35s ease, padding 0.35s ease, opacity 0.3s ease;
         opacity: 0;
         padding: 0 15px !important;
         border-top: 1px solid #e2e8f0;
         border-radius: 0 0 8px 8px;
-        /* Remove display: none/flex here — let JS control it directly */
+        -webkit-overflow-scrolling: touch;
     }
 
     /* When active → full height, visible, padded */
     .nav.active {
-        max-height: 90vh !important;     /* Better than fixed 1000px */
+        max-height: calc(100vh - 70px) !important;
         opacity: 1 !important;
-        padding: 20px 15px !important;
+        padding: 15px !important;
         overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
     }
 
     /* Make items clearly visible and tappable */
@@ -301,10 +303,10 @@ body {
     .language-selector,
     .search-icon {
         width: 100% !important;
-        min-height: 45px !important;
+        min-height: 50px !important;
         padding: 12px 20px !important;
-        margin: 4px 0 !important;
-        border-radius: 0 !important;
+        margin: 5px 0 !important;
+        border-radius: 8px !important;
         font-size: 15px !important;
         display: flex !important;
         align-items: center !important;
@@ -313,6 +315,7 @@ body {
         border: 1px solid #e2e8f0 !important;
         text-align: left !important;
         box-sizing: border-box !important;
+        transition: all 0.2s ease;
     }
 
     .nav a:hover,
@@ -325,44 +328,63 @@ body {
     /* Language selector specific */
     #langSelect {
         width: 100% !important;
-        min-height: 45px !important;
+        min-height: 50px !important;
         font-size: 15px !important;
         padding: 12px 20px !important;
         background-color: #f8fafc !important;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%232b9589' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+        background-repeat: no-repeat !important;
+        background-position: right 15px center !important;
+        background-size: 16px 16px !important;
         color: #2b9589 !important;
         border: 1px solid #e2e8f0 !important;
-        margin: 4px 0 !important;
+        border-radius: 8px !important;
+        margin: 5px 0 !important;
         box-sizing: border-box !important;
         -webkit-appearance: none !important;
         appearance: none !important;
+        padding-right: 45px !important;
     }
 }
 
 /* Small mobile improvements */
 @media (max-width: 480px) {
     .header {
-        padding: 5px 0;
+        padding: 8px 0;
+        height: 60px;
     }
     
     .logo {
-        padding: 0.5rem;
+        padding: 0.25rem;
     }
     
     .logo img {
-        max-width: 150px;
+        max-width: 130px;
+    }
+    
+    .nav {
+        top: 60px !important;
     }
     
     .nav.active {
-        padding: 8px 12px 15px;
+        padding: 10px !important;
+        max-height: calc(100vh - 60px) !important;
     }
     
-    .nav a, .language-selector, .search-icon {
-        padding: 10px 12px;
-        font-size: 14px;
+    .nav a, .language-selector, .search-icon, #langSelect {
+        padding: 12px 15px !important;
+        font-size: 15px !important;
+        min-height: 48px !important;
     }
     
     .mobile-menu-button {
-        margin-right: 10px;
+        margin-right: 8px;
+        width: 26px;
+        height: 18px;
+    }
+    
+    .menu-icon {
+        height: 2px;
     }
 }
 
