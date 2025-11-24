@@ -80,6 +80,7 @@
         .checkbox-item.selected {
             background-color: var(--green-primary);
             color: white;
+            box-shadow: 0 0 0 2px var(--green-primary), 0 0 8px rgba(43, 149, 137, 0.4);
         }
         .checkbox-item input {
             display: none;
@@ -127,6 +128,7 @@
             background-color: var(--green-light);
             color: var(--green-dark);
             font-weight: 500;
+            box-shadow: 0 0 0 2px var(--green-primary), 0 0 8px rgba(43, 149, 137, 0.4);
         }
         .tab {
             padding: 0.5rem 1rem;
@@ -198,6 +200,125 @@
                 box-shadow: none;
             }
         }
+        .success-message {
+            background-color: #d1fae5;
+            color: #065f46;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 16px 0;
+            border-left: 4px solid #10b981;
+        }
+        .logo-fetching {
+            opacity: 0.7;
+            pointer-events: none;
+            background-color: #e5e7eb !important;
+        }
+        .logo-preview.loading {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        /* Professional styling for funding items */
+        .funding-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        .funding-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+        .funding-logo {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            padding: 4px;
+        }
+        .funding-grid-item {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        .funding-grid-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+        .funding-grid-logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            border-radius: 10px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            padding: 6px;
+        }
+
+        /* Modal Styles */
+        .confirm-modal, .success-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .confirm-modal.show, .success-modal.show {
+            display: flex;
+            opacity: 1;
+        }
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+        .confirm-modal.show .modal-content,
+        .success-modal.show .modal-content {
+            transform: scale(1);
+        }
+        
+        /* Selection summary styles */
+        .selection-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .selection-tag {
+            display: inline-flex;
+            align-items: center;
+            background-color: var(--green-light);
+            color: var(--green-dark);
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .selection-tag i {
+            margin-right: 0.25rem;
+        }
     </style>
 </head>
 <body class="loading">
@@ -219,13 +340,14 @@
         </div>
         <div class="container mx-auto px-4 py-4">
             <a id="backToDashboard" class="btn btn-outline-secondary" href="/ADMIN/admin-dashboard.html" aria-label="Back to Admin Dashboard">
-                <i class="bi bi-house me-1"></i> Back to Dashboard
+                <i class="fas fa-house me-1"></i> Back to Dashboard
             </a>
         </div>
         <div class="container mx-auto px-4 py-8">
             <div id="errorMessage" class="error-message hidden">
                 Failed to load content. Please check your connection or try again later.
             </div>
+            <div id="successMessage" class="success-message hidden"></div>
             <div class="flex space-x-2 mb-6 bg-white p-1 rounded-lg shadow-sm">
                 <div class="tab active" data-tab="list">List View</div>
                 <div class="tab" data-tab="grid">Grid View</div>
@@ -236,7 +358,6 @@
                         type="text"
                         id="search-input"
                         class="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                       
                         placeholder="Search funding..."
                     >
                     <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
@@ -250,7 +371,6 @@
                     onmouseover="this.style.backgroundColor='#23786f'"
                     onmouseout="this.style.backgroundColor='#2b9589'"
                     class="text-white px-4 py-2 rounded-lg flex items-center"
-                   
                 >
                     <i class="fas fa-plus-circle mr-2"></i> Add New Funding
                 </button>
@@ -309,6 +429,9 @@
                             <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="target" data-value="no">
                                 <i class="fas fa-building mr-2"></i> Non-SMME's
                             </div>
+                            <div class="filter-option px-3 py-2 rounded cursor-pointer" data-filter="target" data-value="Non-specific">
+                                <i class="fas fa-globe mr-2"></i> Non-specific
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -330,6 +453,8 @@
             </div>
         </div>
     </div>
+
+    <!-- Funding Modal -->
     <div id="funding-modal" class="fixed inset-0 z-50 hidden">
         <div class="modal-overlay absolute inset-0"></div>
         <div class="flex items-center justify-center min-h-screen p-4">
@@ -351,7 +476,6 @@
                                         id="funding-name"
                                         class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                                         required
-                                       
                                         placeholder="Enter funding opportunity name"
                                     >
                                 </div>
@@ -362,7 +486,6 @@
                                         id="disbursement-channel"
                                         class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                                         required
-                                       
                                         placeholder="Enter disbursement channel name"
                                     >
                                 </div>
@@ -373,7 +496,6 @@
                                         id="channel-type"
                                         class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                                         required
-                                       
                                         placeholder="Enter channel type"
                                     >
                                 </div>
@@ -385,10 +507,9 @@
                                             id="website"
                                             class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 url-input"
                                             required
-                                           
                                             placeholder="www.example.com"
                                         >
-                                        <button type="button" id="fetch-logo" class="px-3 py-2 bg-gray-100 rounded-lg">
+                                        <button type="button" id="fetch-logo" class="px-3 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
                                             <i class="fas fa-image"></i>
                                         </button>
                                     </div>
@@ -399,7 +520,6 @@
                                         type="email"
                                         id="contact-email"
                                         class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                                       
                                         placeholder="Enter contact email"
                                     >
                                 </div>
@@ -409,7 +529,6 @@
                                         type="tel"
                                         id="contact-number"
                                         class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                                       
                                         placeholder="Enter contact number"
                                     >
                                 </div>
@@ -421,7 +540,6 @@
                                             type="text"
                                             id="logo-url"
                                             class="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                                           
                                             placeholder="Logo URL or leave blank to auto-fetch"
                                         >
                                     </div>
@@ -452,19 +570,25 @@
                                     <span><i class="fas fa-cogs mr-2"></i> Business Development</span>
                                 </label>
                             </div>
+                            <div class="selection-summary" id="funding-type-summary"></div>
                         </div>
                         <div class="bg-gray-50 p-4 rounded-lg">
                             <h3 class="text-lg font-medium text-gray-800 mb-4">Target</h3>
                             <div class="checkbox-container">
                                 <label class="checkbox-item">
-                                    <input type="radio" name="target" value="SMMEs">
+                                    <input type="checkbox" name="target" value="SMMEs">
                                     <span><i class="fas fa-store mr-2"></i> SMME's</span>
                                 </label>
                                 <label class="checkbox-item">
-                                    <input type="radio" name="target" value="no">
+                                    <input type="checkbox" name="target" value="no">
                                     <span><i class="fas fa-building mr-2"></i> Non-SMME's</span>
                                 </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="target" value="Non-specific">
+                                    <span><i class="fas fa-globe mr-2"></i> Non-specific</span>
+                                </label>
                             </div>
+                            <div class="selection-summary" id="target-summary"></div>
                         </div>
                         <div class="bg-gray-50 p-4 rounded-lg">
                             <h3 class="text-lg font-medium text-gray-800 mb-4">Sector</h3>
@@ -494,6 +618,7 @@
                                     <span><i class="fas fa-leaf mr-2"></i> Green Infrastructure</span>
                                 </label>
                             </div>
+                            <div class="selection-summary" id="sector-summary"></div>
                         </div>
                         <div class="bg-gray-50 p-4 rounded-lg">
                             <h3 class="text-lg font-medium text-gray-800 mb-4">Additional Information</h3>
@@ -504,7 +629,6 @@
                                         id="focus"
                                         rows="3"
                                         class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                                       
                                         placeholder="Enter fund focus"
                                     ></textarea>
                                 </div>
@@ -515,7 +639,6 @@
                                             type="text"
                                             id="keywords"
                                             class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                                           
                                             placeholder="Enter keywords"
                                         >
                                     </div>
@@ -525,7 +648,6 @@
                                             type="text"
                                             id="keywords2"
                                             class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                                           
                                             placeholder="Enter additional keywords"
                                         >
                                     </div>
@@ -535,7 +657,6 @@
                                             type="text"
                                             id="keywords3"
                                             class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                                           
                                             placeholder="Enter more keywords"
                                         >
                                     </div>
@@ -546,7 +667,6 @@
                                         type="text"
                                         id="ticket-size"
                                         class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                                       
                                         placeholder="Enter ticket size"
                                     >
                                 </div>
@@ -557,7 +677,6 @@
                                 type="button"
                                 id="cancel-btn"
                                 class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100"
-                               
                             >
                                 Cancel
                             </button>
@@ -565,7 +684,6 @@
                                 type="submit"
                                 id="submit-btn"
                                 class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center"
-                               
                             >
                                 <i class="fas fa-save mr-2"></i> Save Funding Opportunity
                             </button>
@@ -575,11 +693,52 @@
             </div>
         </div>
     </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirm-modal" class="confirm-modal hidden">
+        <div class="modal-overlay absolute inset-0"></div>
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-md relative">
+                <div class="p-6">
+                    <h3 id="confirm-title" class="text-xl font-bold text-gray-800 mb-4">Confirm Action</h3>
+                    <p id="confirm-message" class="text-gray-600 mb-6">Are you sure you want to proceed?</p>
+                    <div class="flex justify-end space-x-4">
+                        <button id="confirm-cancel" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100">
+                            Cancel
+                        </button>
+                        <button id="confirm-ok" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                            Confirm
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="success-modal hidden">
+        <div class="modal-overlay absolute inset-0"></div>
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-md relative">
+                <div class="p-6 text-center">
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-check text-green-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Success!</h3>
+                    <p id="success-message" class="text-gray-600 mb-6">Operation completed successfully.</p>
+                    <button id="success-ok" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                        OK
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <green-economy-footer></green-economy-footer>
     <script type="module">
         import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
         import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, query, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
-        import { getAuth } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
         import { resetAdminSession } from '/ADMIN/scripts/adminAuthCheck.js';
 
         const firebaseConfig = {
@@ -593,7 +752,7 @@
         };
 
         // Initialize Firebase
-        let app, db, fundingRef, auth;
+        let app, db, auth;
         if (!getApps().length) {
             app = initializeApp(firebaseConfig);
         } else {
@@ -601,41 +760,73 @@
         }
         db = getFirestore(app);
         auth = getAuth(app);
-        fundingRef = collection(db, "funding");
 
-        // Initialize i18next
-        // Minimal funding list renderer and loader (replaces broken inline template)
-        const elements = {
-            fundingList: document.getElementById('list-view'),
-            fundingGrid: document.getElementById('grid-view'),
-            loadingDiv: document.getElementById('loading'),
-            noResults: document.getElementById('no-results'),
-            fundingModal: document.getElementById('funding-modal'),
-            fundingForm: document.getElementById('funding-form'),
-            websiteInput: document.getElementById('website'),
-            logoPreview: document.getElementById('logo-preview'),
-            logoUrlInput: document.getElementById('logo-url'),
-            fetchLogoBtn: document.getElementById('fetch-logo'),
-            applyFiltersBtn: document.getElementById('apply-filters'),
-            clearFiltersBtn: document.getElementById('clear-filters'),
-            filterBtn: document.getElementById('filter-btn'),
-            searchInput: document.getElementById('search-input'),
-            tabs: Array.from(document.querySelectorAll('.tab')),
-            addFundingBtn: document.getElementById('add-funding-btn'),
-            closeModalBtn: document.getElementById('close-modal'),
-            cancelBtn: document.getElementById('cancel-btn'),
-            logoutBtn: document.getElementById('logoutBtn'),
-            submitBtn: document.getElementById('submit-btn'),
-            modalTitle: document.getElementById('modal-title'),
-            filtersPanel: document.getElementById('filters-panel')
-        };
+        // ========== MODAL MANAGEMENT ==========
+        function showConfirmModal(title, message, onConfirm) {
+            const modal = document.getElementById('confirm-modal');
+            const titleEl = document.getElementById('confirm-title');
+            const messageEl = document.getElementById('confirm-message');
+            const cancelBtn = document.getElementById('confirm-cancel');
+            const okBtn = document.getElementById('confirm-ok');
 
-        let fundingArray = [];
-        let filteredFunding = [];
-        const itemsPerPage = 10;
-        let currentPage = 0;
-        let activeFilters = { sector: [], type: [], target: [] };
+            titleEl.textContent = title;
+            messageEl.textContent = message;
 
+            const cleanup = () => {
+                modal.classList.remove('show');
+                setTimeout(() => modal.classList.add('hidden'), 300);
+                cancelBtn.removeEventListener('click', cancelHandler);
+                okBtn.removeEventListener('click', okHandler);
+            };
+
+            const cancelHandler = () => cleanup();
+            const okHandler = () => {
+                cleanup();
+                onConfirm();
+            };
+
+            cancelBtn.addEventListener('click', cancelHandler);
+            okBtn.addEventListener('click', okHandler);
+
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+
+        function showSuccessModal(message) {
+            const modal = document.getElementById('success-modal');
+            const messageEl = document.getElementById('success-message');
+            const okBtn = document.getElementById('success-ok');
+
+            messageEl.textContent = message;
+
+            const cleanup = () => {
+                modal.classList.remove('show');
+                setTimeout(() => modal.classList.add('hidden'), 300);
+                okBtn.removeEventListener('click', okHandler);
+            };
+
+            const okHandler = () => cleanup();
+
+            okBtn.addEventListener('click', okHandler);
+
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+
+        // Finalize loading
+        function finalizeLoading() {
+            const loadingOverlay = document.querySelector('.loading-overlay');
+            const body = document.body;
+            
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'none';
+            }
+            
+            body.classList.remove('loading');
+            body.classList.add('loaded');
+        }
+
+        // Show error message
         function showErrorMessage(msg) {
             const err = document.getElementById('errorMessage');
             if (err) {
@@ -646,63 +837,296 @@
             }
         }
 
+        // Show success message
+        function showSuccessMessage(msg) {
+            const success = document.getElementById('successMessage');
+            if (success) {
+                success.textContent = msg;
+                success.classList.remove('hidden');
+                setTimeout(() => {
+                    success.classList.add('hidden');
+                }, 3000);
+            }
+        }
+
+        // Get DOM elements
+        function getElements() {
+            return {
+                fundingList: document.getElementById('list-view'),
+                fundingGrid: document.getElementById('grid-view'),
+                loadingDiv: document.getElementById('loading'),
+                noResults: document.getElementById('no-results'),
+                fundingModal: document.getElementById('funding-modal'),
+                fundingForm: document.getElementById('funding-form'),
+                websiteInput: document.getElementById('website'),
+                logoPreview: document.getElementById('logo-preview'),
+                logoUrlInput: document.getElementById('logo-url'),
+                fetchLogoBtn: document.getElementById('fetch-logo'),
+                applyFiltersBtn: document.getElementById('apply-filters'),
+                clearFiltersBtn: document.getElementById('clear-filters'),
+                filterBtn: document.getElementById('filter-btn'),
+                searchInput: document.getElementById('search-input'),
+                tabs: Array.from(document.querySelectorAll('.tab')),
+                addFundingBtn: document.getElementById('add-funding-btn'),
+                closeModalBtn: document.getElementById('close-modal'),
+                cancelBtn: document.getElementById('cancel-btn'),
+                logoutBtn: document.getElementById('logoutBtn'),
+                submitBtn: document.getElementById('submit-btn'),
+                modalTitle: document.getElementById('modal-title'),
+                filtersPanel: document.getElementById('filters-panel')
+            };
+        }
+
+        let fundingArray = [];
+        let filteredFunding = [];
+        const itemsPerPage = 10;
+        let currentPage = 0;
+        let activeFilters = { sector: [], type: [], target: [] };
+        let currentDeleteId = null;
+
+        // ========== ENHANCED LOGO FETCHING FUNCTIONS ==========
+
+        // Normalize website URL format
+        function normalizeWebsite(url) {
+            // Remove protocol and www
+            url = url.replace(/(https?:\/\/)?(www\.)?/, '');
+            // Remove path and query parameters
+            url = url.split('/')[0];
+            // Remove port numbers
+            url = url.split(':')[0];
+            return url.toLowerCase();
+        }
+
+        // Check if domain is responsive
+        async function checkDomainResponse(domain) {
+            const protocols = ['https://', 'http://'];
+            const prefixes = ['', 'www.'];
+            
+            for (const protocol of protocols) {
+                for (const prefix of prefixes) {
+                    try {
+                        const testUrl = `${protocol}${prefix}${domain}`;
+                        const response = await fetch(testUrl, {
+                            method: 'HEAD',
+                            mode: 'no-cors',
+                            redirect: 'follow'
+                        });
+                        return true;
+                    } catch (error) {
+                        continue;
+                    }
+                }
+            }
+            return false;
+        }
+
+        // Enhanced logo fetching using reliable services (FIXED VERSION)
+        async function getCompanyLogo(domain) {
+            console.log('DEBUG: Fetching logo for domain:', domain);
+            
+            // Method 1: Google's favicon service (most reliable, not blocked)
+            try {
+                const googleFavicon = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+                console.log('DEBUG: Using Google favicon service:', googleFavicon);
+                // Return immediately - Google's service always works
+                return googleFavicon;
+            } catch (error) {
+                console.log('DEBUG: Google favicon service failed (unusual)');
+            }
+            
+            // Method 2: Try Favicon Grabber API (reliable fallback)
+            try {
+                const response = await fetch(`https://favicongrabber.com/api/grab/${domain}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.icons && data.icons.length > 0) {
+                        // Get the largest icon
+                        const icon = data.icons.sort((a, b) => (b.sizes || '0x0').split('x')[0] - (a.sizes || '0x0').split('x')[0])[0];
+                        console.log('DEBUG: Logo found via Favicon Grabber');
+                        return icon.src;
+                    }
+                }
+            } catch (error) {
+                console.log('DEBUG: Favicon Grabber failed:', error.message);
+            }
+            
+            // Method 3: Direct favicon from domain
+            const faviconSources = [
+                `https://${domain}/favicon.ico`,
+                `https://${domain}/apple-touch-icon.png`,
+                `https://${domain}/favicon.png`,
+            ];
+            
+            for (const faviconUrl of faviconSources) {
+                try {
+                    console.log('DEBUG: Trying direct favicon:', faviconUrl);
+                    const response = await fetch(faviconUrl, { mode: 'no-cors' });
+                    if (response.ok || response.type === 'opaque') {
+                        console.log('DEBUG: Favicon found at:', faviconUrl);
+                        return faviconUrl;
+                    }
+                } catch (error) {
+                    continue;
+                }
+            }
+            
+            console.log('DEBUG: No logo found for domain:', domain);
+            return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`; // Always return Google as final fallback
+        }
+
+        // Enhanced logo fetching with better error handling
+        async function fetchWebsiteLogo(url) {
+            const elements = getElements();
+            const fetchBtn = elements.fetchLogoBtn;
+            const originalHtml = fetchBtn.innerHTML;
+            
+            try {
+                // Show loading state
+                fetchBtn.classList.add('logo-fetching');
+                fetchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Fetching...';
+                fetchBtn.disabled = true;
+
+                // Normalize the URL to get the domain
+                let domain = normalizeWebsite(url);
+                
+                // Validate domain format
+                if (!domain || domain.length < 3) {
+                    throw new Error('Please enter a valid website URL');
+                }
+
+                // Check if domain is responsive first
+                const isDomainActive = await checkDomainResponse(domain);
+                if (!isDomainActive) {
+                    throw new Error('Website is not responding. Please check the URL and try again.');
+                }
+
+                // Try to get the logo using reliable services
+                const logoUrl = await getCompanyLogo(domain);
+                
+                if (logoUrl) {
+                    // Verify the logo actually loads
+                    return new Promise((resolve, reject) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            console.log('DEBUG: Logo loaded successfully:', logoUrl);
+                            resolve(logoUrl);
+                        };
+                        img.onerror = () => {
+                            console.log('DEBUG: Logo failed to load:', logoUrl);
+                            reject(new Error('Logo found but failed to load. The image may be blocked or invalid.'));
+                        };
+                        img.src = logoUrl;
+                        
+                        // Timeout after 5 seconds
+                        setTimeout(() => {
+                            if (!img.complete) {
+                                reject(new Error('Logo loading timed out. The image may be too large or unavailable.'));
+                            }
+                        }, 5000);
+                    });
+                } else {
+                    throw new Error('No logo found for this website. You can manually enter a logo URL.');
+                }
+                
+            } catch (error) {
+                console.error('Error fetching logo:', error);
+                throw error;
+            } finally {
+                // Restore button state
+                fetchBtn.classList.remove('logo-fetching');
+                fetchBtn.innerHTML = '<i class="fas fa-image"></i>';
+                fetchBtn.disabled = false;
+            }
+        }
+
+        // ========== FUNDING MANAGEMENT FUNCTIONS ==========
+
+        // Create list item for funding (professional styling)
         function createListItem(funding) {
             const item = document.createElement('div');
-            item.className = 'funding-item bg-white p-4 rounded-lg shadow-md';
+            item.className = 'funding-card p-4';
             item.innerHTML = `
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h3 class="font-medium">${(funding['Name of funding opportunity']||'No name')}</h3>
-                        <p class="text-gray-600 text-sm">${(funding['Name of disbursement channel']||'No channel')}</p>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        ${funding.logo ? 
+                            `<img src="${funding.logo}" class="funding-logo" alt="${funding['Name of funding opportunity'] || 'Funding'} logo" onerror="this.style.display='none'">` : 
+                            `<div class="funding-logo flex items-center justify-center bg-gray-100 text-gray-400">
+                                <i class="fas fa-link text-lg"></i>
+                            </div>`
+                        }
+                        <div>
+                            <h3 class="font-semibold text-lg text-gray-800">${funding['Name of funding opportunity'] || 'No name'}</h3>
+                            <div class="flex flex-wrap gap-2 mt-2">
+                                ${(funding.Grant === true || funding.Grant === 'Grant') ? '<span class="badge"><i class="fas fa-gift"></i> Grant</span>' : ''}
+                                ${(funding.Debt === true || funding.Debt === 'Debt') ? '<span class="badge"><i class="fas fa-hand-holding-usd"></i> Debt</span>' : ''}
+                                ${(funding.Equity === true || funding.Equity === 'Equity') ? '<span class="badge"><i class="fas fa-chart-line"></i> Equity</span>' : ''}
+                                ${(funding['Working Capital'] === true || funding['Working Capital'] === 'Working Capital') ? '<span class="badge"><i class="fas fa-money-bill-wave"></i> Working Capital</span>' : ''}
+                            </div>
+                        </div>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button class="edit-btn px-3 py-1 bg-blue-100 text-blue-600 rounded-md" data-id="${funding.id}"><i class="fas fa-edit"></i></button>
-                        <button class="delete-btn px-3 py-1 bg-red-100 text-red-600 rounded-md" data-id="${funding.id}"><i class="fas fa-trash"></i></button>
+                        <button class="edit-btn px-3 py-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors" data-id="${funding.id}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="delete-btn px-3 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors" data-id="${funding.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
                     </div>
                 </div>
             `;
-            const editBtn = item.querySelector('.edit-btn');
-            const delBtn = item.querySelector('.delete-btn');
-            editBtn.addEventListener('click', () => editFundingOpportunity(funding.id));
-            delBtn.addEventListener('click', () => deleteFundingOpportunity(funding.id));
             return item;
         }
 
+        // Create grid item for funding (professional styling)
         function createGridItem(funding) {
             const gridItem = document.createElement('div');
-            gridItem.className = 'bg-white rounded-lg shadow-md overflow-hidden p-4';
+            gridItem.className = 'funding-grid-item p-6';
             gridItem.innerHTML = `
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h3 class="font-medium">${(funding['Name of funding opportunity']||'No name')}</h3>
-                        <p class="text-gray-600 text-sm">${(funding['Name of disbursement channel']||'No channel')}</p>
+                <div class="flex flex-col items-center text-center">
+                    <div class="mb-4">
+                        ${funding.logo ? 
+                            `<img src="${funding.logo}" class="funding-grid-logo mx-auto" alt="${funding['Name of funding opportunity'] || 'Funding'} logo" onerror="this.style.display='none'">` : 
+                            `<div class="funding-grid-logo mx-auto flex items-center justify-center bg-gray-100 text-gray-400">
+                                <i class="fas fa-link text-2xl"></i>
+                            </div>`
+                        }
                     </div>
-                    ${funding.logo ? `<img src="${funding.logo}" class="w-12 h-12 object-contain rounded-lg" alt="Funding Logo">` : '<div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center"><i class="fas fa-link text-gray-400"></i></div>'}
-                </div>
-                <div class="flex flex-wrap gap-2 mt-4">
-                    ${(funding.Grant===true||funding.Grant==='Grant')?'<span class="badge"><i class="fas fa-gift"></i> Grant</span>':''}
-                    ${(funding.Debt===true||funding.Debt==='Debt')?'<span class="badge"><i class="fas fa-hand-holding-usd"></i> Debt</span>':''}
-                    ${(funding.Equity===true||funding.Equity==='Equity')?'<span class="badge"><i class="fas fa-chart-line"></i> Equity</span>':''}
-                    ${(funding['Working Capital']===true||funding['Working Capital']==='Working Capital')?'<span class="badge"><i class="fas fa-money-bill-wave"></i> Working Capital</span>':''}
-                </div>
-                <div class="flex justify-end space-x-2 mt-4">
-                    <button class="edit-btn px-3 py-1 bg-blue-100 text-blue-600 rounded-md" data-id="${funding.id}"><i class="fas fa-edit"></i></button>
-                    <button class="delete-btn px-3 py-1 bg-red-100 text-red-600 rounded-md" data-id="${funding.id}"><i class="fas fa-trash"></i></button>
+                    <h3 class="font-semibold text-xl text-gray-800 mb-3">${funding['Name of funding opportunity'] || 'No name'}</h3>
+                    <div class="flex flex-wrap gap-2 justify-center mb-4">
+                        ${(funding.Grant === true || funding.Grant === 'Grant') ? '<span class="badge"><i class="fas fa-gift"></i> Grant</span>' : ''}
+                        ${(funding.Debt === true || funding.Debt === 'Debt') ? '<span class="badge"><i class="fas fa-hand-holding-usd"></i> Debt</span>' : ''}
+                        ${(funding.Equity === true || funding.Equity === 'Equity') ? '<span class="badge"><i class="fas fa-chart-line"></i> Equity</span>' : ''}
+                        ${(funding['Working Capital'] === true || funding['Working Capital'] === 'Working Capital') ? '<span class="badge"><i class="fas fa-money-bill-wave"></i> Working Capital</span>' : ''}
+                    </div>
+                    <div class="flex justify-center space-x-2 mt-auto">
+                        <button class="edit-btn px-4 py-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors" data-id="${funding.id}">
+                            <i class="fas fa-edit mr-2"></i> Edit
+                        </button>
+                        <button class="delete-btn px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors" data-id="${funding.id}">
+                            <i class="fas fa-trash mr-2"></i> Delete
+                        </button>
+                    </div>
                 </div>
             `;
-            gridItem.querySelector('.edit-btn').addEventListener('click', () => editFundingOpportunity(funding.id));
-            gridItem.querySelector('.delete-btn').addEventListener('click', () => deleteFundingOpportunity(funding.id));
             return gridItem;
         }
 
+        // Load funding opportunities
         async function loadFundingOpportunities() {
+            console.log('DEBUG: Loading funding opportunities...');
+            const elements = getElements();
             if (elements.loadingDiv) elements.loadingDiv.style.display = 'block';
+            
             try {
+                const fundingRef = collection(db, "funding");
                 const snapshot = await getDocs(fundingRef);
+                console.log('DEBUG: Found', snapshot.docs.length, 'funding documents');
+                
                 fundingArray = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
                 filteredFunding = [...fundingArray];
                 currentPage = 0;
-                filterFunding();
+                renderFunding();
+                showSuccessMessage(`Loaded ${fundingArray.length} funding opportunities successfully.`);
             } catch (err) {
                 console.error('Error loading funding:', err);
                 showErrorMessage('Error loading funding opportunities: ' + (err.message || err));
@@ -711,68 +1135,92 @@
             }
         }
 
+        // Filter funding
         function filterFunding() {
+            const elements = getElements();
             const q = (elements.searchInput?.value || '').toLowerCase().trim();
+            
             filteredFunding = fundingArray.filter(f => {
+                // Search filter
                 if (q) {
-                    const name = (f['Name of funding opportunity']||'').toLowerCase();
-                    const channel = (f['Name of disbursement channel']||'').toLowerCase();
-                    if (!name.includes(q) && !channel.includes(q)) return false;
+                    const name = (f['Name of funding opportunity'] || '').toLowerCase();
+                    const channel = (f['Name of disbursement channel'] || '').toLowerCase();
+                    const channelType = (f['Type of Disbursement Channel'] || '').toLowerCase();
+                    if (!name.includes(q) && !channel.includes(q) && !channelType.includes(q)) {
+                        return false;
+                    }
                 }
-                // TODO: apply activeFilters filters when needed
+                
+                // Active filters
+                if (activeFilters.sector.length > 0) {
+                    const hasSector = activeFilters.sector.some(sector => f[sector] === true || f[sector] === sector);
+                    if (!hasSector) return false;
+                }
+                
+                if (activeFilters.type.length > 0) {
+                    const hasType = activeFilters.type.some(type => f[type] === true || f[type] === type);
+                    if (!hasType) return false;
+                }
+                
+                if (activeFilters.target.length > 0) {
+                    const hasTarget = activeFilters.target.some(target => {
+                        if (target === 'SMMEs') return f.SMMEs === 'SMMEs';
+                        if (target === 'no') return f.SMMEs === 'no';
+                        if (target === 'Non-specific') return f.SMMEs === 'Non-specific';
+                        return false;
+                    });
+                    if (!hasTarget) return false;
+                }
+                
                 return true;
             });
+            
             renderFunding();
         }
 
+        // Render funding data
         function renderFunding() {
-            elements.fundingList.innerHTML = '';
-            elements.fundingGrid.innerHTML = '';
-            if (!filteredFunding.length) {
-                elements.noResults.classList.remove('hidden');
+            const elements = getElements();
+            if (!elements.fundingList || !elements.fundingGrid) {
+                console.error('Required DOM elements not found');
                 return;
             }
-            elements.noResults.classList.add('hidden');
-            const totalPages = Math.ceil(filteredFunding.length / itemsPerPage);
-            const start = currentPage * itemsPerPage;
-            const pageItems = filteredFunding.slice(start, start + itemsPerPage);
-            pageItems.forEach(f => {
-                elements.fundingList.appendChild(createListItem(f));
-                elements.fundingGrid.appendChild(createGridItem(f));
-            });
-            // Simple pagination UI
-            // remove existing pager
-            const existingPager = document.querySelector('.funding-pager');
-            if (existingPager) existingPager.remove();
-            if (totalPages > 1) {
-                const pager = document.createElement('div');
-                pager.className = 'funding-pager flex justify-center items-center mt-6 gap-4';
-                const prev = document.createElement('button');
-                prev.textContent = 'Previous';
-                prev.disabled = currentPage === 0;
-                prev.addEventListener('click', () => { currentPage = Math.max(0, currentPage-1); renderFunding(); });
-                const next = document.createElement('button');
-                next.textContent = 'Next';
-                next.disabled = currentPage >= totalPages-1;
-                next.addEventListener('click', () => { currentPage = Math.min(totalPages-1, currentPage+1); renderFunding(); });
-                const info = document.createElement('span');
-                info.textContent = `Page ${currentPage+1} of ${totalPages}`;
-                pager.appendChild(prev);
-                pager.appendChild(info);
-                pager.appendChild(next);
-                if (elements.fundingList) elements.fundingList.appendChild(pager);
-            }
-        }
 
-        // Kick off initial load
-        loadFundingOpportunities();
+            // Clear existing content
+            elements.fundingList.innerHTML = '';
+            elements.fundingGrid.innerHTML = '';
+
+            if (!filteredFunding.length) {
+                if (elements.noResults) elements.noResults.classList.remove('hidden');
+                return;
+            }
+
+            if (elements.noResults) elements.noResults.classList.add('hidden');
+
+            // Render items
+            filteredFunding.forEach(funding => {
+                const listItem = createListItem(funding);
+                const gridItem = createGridItem(funding);
+                
+                // Add event listeners
+                listItem.querySelector('.edit-btn').addEventListener('click', () => editFundingOpportunity(funding.id));
+                listItem.querySelector('.delete-btn').addEventListener('click', () => deleteFundingOpportunity(funding.id));
+                gridItem.querySelector('.edit-btn').addEventListener('click', () => editFundingOpportunity(funding.id));
+                gridItem.querySelector('.delete-btn').addEventListener('click', () => deleteFundingOpportunity(funding.id));
+                
+                elements.fundingList.appendChild(listItem);
+                elements.fundingGrid.appendChild(gridItem);
+            });
+        }
 
         // Edit funding opportunity
         async function editFundingOpportunity(id) {
             if (!auth.currentUser) {
-                alert('You must be logged in to edit funding opportunities.');
+                showErrorMessage('You must be logged in to edit funding opportunities.');
+                setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
                 return;
             }
+            
             try {
                 const docRef = doc(db, "funding", id);
                 const docSnap = await getDoc(docRef);
@@ -781,10 +1229,14 @@
                     return;
                 }
                 const data = docSnap.data();
+                const elements = getElements();
+                
+                // Populate form
                 elements.fundingForm.querySelector('#doc-id').value = id;
                 elements.fundingForm.querySelector('#funding-name').value = data['Name of funding opportunity'] || '';
                 elements.fundingForm.querySelector('#disbursement-channel').value = data['Name of disbursement channel'] || '';
                 elements.fundingForm.querySelector('#channel-type').value = data['Type of Disbursement Channel'] || '';
+                
                 let websiteUrl = data.Website || '';
                 if (websiteUrl.startsWith('http://')) {
                     websiteUrl = websiteUrl.substring(7);
@@ -792,6 +1244,7 @@
                     websiteUrl = websiteUrl.substring(8);
                 }
                 elements.websiteInput.value = websiteUrl;
+                
                 elements.fundingForm.querySelector('#contact-email').value = data['Contact Email'] !== 'no' ? data['Contact Email'] : '';
                 elements.fundingForm.querySelector('#contact-number').value = data['Contact Number'] !== 'no' ? data['Contact Number'] : '';
                 elements.fundingForm.querySelector('#focus').value = data['Focus of Fund'] !== 'no' ? data['Focus of Fund'] : '';
@@ -799,6 +1252,7 @@
                 elements.fundingForm.querySelector('#keywords2').value = data['Key Words2'] !== 'no' ? data['Key Words2'] : '';
                 elements.fundingForm.querySelector('#keywords3').value = data['Key Words3'] !== 'no' ? data['Key Words3'] : '';
                 elements.fundingForm.querySelector('#ticket-size').value = data['Ticket Size'] !== 'no' ? data['Ticket Size'] : '';
+                
                 elements.logoUrlInput.value = data.logo || '';
                 if (data.logo) {
                     elements.logoPreview.src = data.logo;
@@ -806,30 +1260,28 @@
                 } else {
                     elements.logoPreview.style.display = 'none';
                 }
-                const targetRadios = elements.fundingForm.querySelectorAll('input[name="target"]');
-                targetRadios.forEach(radio => {
-                    radio.checked = false;
-                    radio.parentElement.classList.remove('selected');
+
+                // Clear all selections first
+                document.querySelectorAll('.checkbox-item').forEach(item => {
+                    item.classList.remove('selected');
+                    const input = item.querySelector('input');
+                    input.checked = false;
                 });
-                if (data.SMMEs === 'SMMEs') {
-                    const smmeRadio = elements.fundingForm.querySelector('input[name="target"][value="SMMEs"]');
-                    if (smmeRadio) {
-                        smmeRadio.checked = true;
-                        smmeRadio.parentElement.classList.add('selected');
-                    }
-                } else {
-                    const nonSmmeRadio = elements.fundingForm.querySelector('input[name="target"][value="no"]');
-                    if (nonSmmeRadio) {
-                        nonSmmeRadio.checked = true;
-                        nonSmmeRadio.parentElement.classList.add('selected');
-                    }
+
+                // Set target (now checkboxes)
+                if (data.SMMEs) {
+                    const targetValues = Array.isArray(data.SMMEs) ? data.SMMEs : [data.SMMEs];
+                    targetValues.forEach(targetValue => {
+                        const targetCheckbox = elements.fundingForm.querySelector(`input[name="target"][value="${targetValue}"]`);
+                        if (targetCheckbox) {
+                            targetCheckbox.checked = true;
+                            targetCheckbox.parentElement.classList.add('selected');
+                        }
+                    });
                 }
+
+                // Set funding types
                 const fundingTypes = ['Grant', 'Debt', 'Equity', 'Working Capital', 'Business Development or Technical Assistance'];
-                const fundingCheckboxes = elements.fundingForm.querySelectorAll('input[name="funding-type"]');
-                fundingCheckboxes.forEach(checkbox => {
-                    checkbox.checked = false;
-                    checkbox.parentElement.classList.remove('selected');
-                });
                 fundingTypes.forEach(type => {
                     if (data[type] === true || data[type] === type) {
                         const checkbox = elements.fundingForm.querySelector(`input[name="funding-type"][value="${type}"]`);
@@ -839,12 +1291,9 @@
                         }
                     }
                 });
+
+                // Set sectors
                 const sectors = ['Energy', 'Agriculture', 'Climate Finance', 'Waste', 'Water and Sanitation', 'Green Infrastructure'];
-                const sectorCheckboxes = elements.fundingForm.querySelectorAll('input[name="sector"]');
-                sectorCheckboxes.forEach(checkbox => {
-                    checkbox.checked = false;
-                    checkbox.parentElement.classList.remove('selected');
-                });
                 sectors.forEach(sector => {
                     if (data[sector] === true || data[sector] === sector) {
                         const checkbox = elements.fundingForm.querySelector(`input[name="sector"][value="${sector}"]`);
@@ -854,7 +1303,14 @@
                         }
                     }
                 });
-                // Open modal after populating form
+
+                // Update selection summaries
+                updateSelectionSummaries();
+
+                // Update modal title
+                elements.modalTitle.textContent = 'Edit Funding Opportunity';
+                
+                // Open modal
                 toggleModal();
             } catch (error) {
                 console.error('Error retrieving funding opportunity:', error);
@@ -862,250 +1318,410 @@
             }
         }
 
-        // Delete funding opportunity
+        // Delete funding opportunity - UPDATED WITH MODAL
         async function deleteFundingOpportunity(id) {
             if (!auth.currentUser) {
-                alert('You must be logged in to delete funding opportunities.');
+                showErrorMessage('You must be logged in to delete funding opportunities.');
+                setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
                 return;
             }
-            if (confirm('Are you sure you want to delete this funding opportunity?')) {
-                try {
-                    await deleteDoc(doc(db, "funding", id));
-                    loadFundingOpportunities();
-                    alert('Funding opportunity deleted successfully.');
-                } catch (error) {
-                    console.error('Error deleting funding opportunity:', error);
-                    showErrorMessage('Error deleting funding opportunity. Please try again.');
+            
+            currentDeleteId = id;
+            showConfirmModal(
+                'Delete Funding Opportunity',
+                'Are you sure you want to delete this funding opportunity? This action cannot be undone.',
+                async () => {
+                    try {
+                        await deleteDoc(doc(db, "funding", currentDeleteId));
+                        await loadFundingOpportunities();
+                        showSuccessModal('Funding opportunity deleted successfully.');
+                    } catch (error) {
+                        console.error('Error deleting funding opportunity:', error);
+                        showErrorMessage('Error deleting funding opportunity: ' + error.message);
+                    }
+                    currentDeleteId = null;
                 }
-            }
+            );
         }
 
         // Toggle modal visibility
         function toggleModal() {
-            elements.fundingModal.classList.toggle('hidden');
+            const elements = getElements();
+            if (elements.fundingModal) {
+                elements.fundingModal.classList.toggle('hidden');
+            }
         }
 
-        // Event listeners
-        function setupEventListeners() {
+        // Update selection summaries
+        function updateSelectionSummaries() {
+            // Funding Type Summary
+            const fundingTypeSummary = document.getElementById('funding-type-summary');
+            const selectedFundingTypes = Array.from(document.querySelectorAll('input[name="funding-type"]:checked'))
+                .map(checkbox => checkbox.value);
+            
+            fundingTypeSummary.innerHTML = '';
+            if (selectedFundingTypes.length > 0) {
+                selectedFundingTypes.forEach(type => {
+                    const tag = document.createElement('span');
+                    tag.className = 'selection-tag';
+                    tag.innerHTML = `<i class="fas fa-check"></i> ${type}`;
+                    fundingTypeSummary.appendChild(tag);
+                });
+            }
+            
+            // Target Summary
+            const targetSummary = document.getElementById('target-summary');
+            const selectedTargets = Array.from(document.querySelectorAll('input[name="target"]:checked'))
+                .map(checkbox => checkbox.value);
+            
+            targetSummary.innerHTML = '';
+            if (selectedTargets.length > 0) {
+                selectedTargets.forEach(target => {
+                    const tag = document.createElement('span');
+                    tag.className = 'selection-tag';
+                    let icon = 'fas fa-store';
+                    if (target === 'no') icon = 'fas fa-building';
+                    if (target === 'Non-specific') icon = 'fas fa-globe';
+                    tag.innerHTML = `<i class="${icon}"></i> ${target}`;
+                    targetSummary.appendChild(tag);
+                });
+            }
+            
+            // Sector Summary
+            const sectorSummary = document.getElementById('sector-summary');
+            const selectedSectors = Array.from(document.querySelectorAll('input[name="sector"]:checked'))
+                .map(checkbox => checkbox.value);
+            
+            sectorSummary.innerHTML = '';
+            if (selectedSectors.length > 0) {
+                selectedSectors.forEach(sector => {
+                    const tag = document.createElement('span');
+                    tag.className = 'selection-tag';
+                    let icon = 'fas fa-bolt';
+                    if (sector === 'Agriculture') icon = 'fas fa-tractor';
+                    if (sector === 'Climate Finance') icon = 'fas fa-cloud-sun';
+                    if (sector === 'Waste') icon = 'fas fa-trash';
+                    if (sector === 'Water and Sanitation') icon = 'fas fa-tint';
+                    if (sector === 'Green Infrastructure') icon = 'fas fa-leaf';
+                    tag.innerHTML = `<i class="${icon}"></i> ${sector}`;
+                    sectorSummary.appendChild(tag);
+                });
+            }
+        }
+
+        // Setup checkbox highlighting
+        function setupCheckboxHighlighting() {
+            // Handle checkbox items in the funding modal
             document.querySelectorAll('.checkbox-item').forEach(item => {
-                item.removeEventListener('click', handleCheckboxClick);
-                item.addEventListener('click', handleCheckboxClick);
-            });
-            function handleCheckboxClick() {
-                const input = this.querySelector('input');
-                if (input.type === 'radio') {
-                    document.querySelectorAll(`input[name="${input.name}"]`).forEach(radio => {
-                        radio.parentElement.classList.remove('selected');
-                    });
-                }
-                this.classList.toggle('selected');
-                if (input.type === 'checkbox') {
+                item.addEventListener('click', function() {
+                    const input = this.querySelector('input');
+                    
+                    // Toggle selected class for the clicked item
+                    this.classList.toggle('selected');
+                    
+                    // Update the actual input state
                     input.checked = !input.checked;
-                } else {
-                    input.checked = true;
-                }            }
+                    
+                    // Update selection summaries
+                    updateSelectionSummaries();
+                });
+            });
+
+            // Handle filter options
             document.querySelectorAll('.filter-option').forEach(option => {
-                option.removeEventListener('click', handleFilterClick);
-                option.addEventListener('click', handleFilterClick);
+                option.addEventListener('click', function() {
+                    this.classList.toggle('selected');
+                });
             });
-            function handleFilterClick() {
-                this.classList.toggle('selected');            }
-            elements.applyFiltersBtn.addEventListener('click', () => {
-                activeFilters = { sector: [], type: [], target: [] };
-                document.querySelectorAll('.filter-option.selected').forEach(option => {
-                    const filterType = option.getAttribute('data-filter');
-                    const filterValue = option.getAttribute('data-value');
-                    activeFilters[filterType].push(filterValue);
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            const elements = getElements();
+
+            // Setup checkbox highlighting
+            setupCheckboxHighlighting();
+
+            // Apply filters
+            if (elements.applyFiltersBtn) {
+                elements.applyFiltersBtn.addEventListener('click', () => {
+                    activeFilters = { sector: [], type: [], target: [] };
+                    document.querySelectorAll('.filter-option.selected').forEach(option => {
+                        const filterType = option.getAttribute('data-filter');
+                        const filterValue = option.getAttribute('data-value');
+                        activeFilters[filterType].push(filterValue);
+                    });
+                    currentPage = 0;
+                    filterFunding();
+                    elements.filtersPanel.classList.add('hidden');
                 });
-                currentPage = 0;
-                filterFunding();
-                elements.filtersPanel.classList.add('hidden');
-            });
-            elements.clearFiltersBtn.addEventListener('click', () => {
-                document.querySelectorAll('.filter-option.selected').forEach(option => {
-                    option.classList.remove('selected');
+            }
+
+            // Clear filters
+            if (elements.clearFiltersBtn) {
+                elements.clearFiltersBtn.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-option.selected').forEach(option => {
+                        option.classList.remove('selected');
+                    });
+                    activeFilters = { sector: [], type: [], target: [] };
+                    currentPage = 0;
+                    filterFunding();
+                    elements.filtersPanel.classList.add('hidden');
                 });
-                activeFilters = { sector: [], type: [], target: [] };
-                currentPage = 0;
-                filterFunding();
-                elements.filtersPanel.classList.add('hidden');
-            });
-            elements.fundingForm.addEventListener('submit', async e => {
-                e.preventDefault();
-                const name = elements.fundingForm.querySelector('#funding-name').value.trim();
-                const channel = elements.fundingForm.querySelector('#disbursement-channel').value.trim();
-                const channelType = elements.fundingForm.querySelector('#channel-type').value.trim();
-                let websiteUrl = elements.websiteInput.value.trim();
-                if (!name || !channel || !channelType || !websiteUrl) {
-                    alert('Please fill in all required fields.');
-                    return;
-                }
-                if (!/^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w- ./?%&=]*)?$/.test(websiteUrl)) {
-                    alert('Please enter a valid website URL.');
-                    return;
-                }
-                if (!websiteUrl.startsWith('http://') && !websiteUrl.startsWith('https://')) {
-                    websiteUrl = 'https://' + websiteUrl;
-                }
-                const fundingData = {
-                    'Name of funding opportunity': name,
-                    'Name of disbursement channel': channel,
-                    'Type of Disbursement Channel': channelType,
-                    'Website': websiteUrl || 'no',
-                    'Contact Email': elements.fundingForm.querySelector('#contact-email').value.trim() || 'no',
-                    'Contact Number': elements.fundingForm.querySelector('#contact-number').value.trim() || 'no',
-                    'Focus of Fund': elements.fundingForm.querySelector('#focus').value.trim() || 'no',
-                    'Key Words': elements.fundingForm.querySelector('#keywords').value.trim() || 'no',
-                    'Key Words2': elements.fundingForm.querySelector('#keywords2').value.trim() || 'no',
-                    'Key Words3': elements.fundingForm.querySelector('#keywords3').value.trim() || 'no',
-                    'Ticket Size': elements.fundingForm.querySelector('#ticket-size').value.trim() || 'no',
-                    'Key': 'no',
-                    'SMMEs': elements.fundingForm.querySelector('input[name="target"]:checked')?.value || 'no',
-                    'Business Development or Technical Assistance': false,
-                    'Climate Finance': false,
-                    'Energy': false,
-                    'Agriculture': false,
-                    'Waste': false,
-                    'Water and Sanitation': false,
-                    'Green Infrastructure': false,
-                    'Grant': false,
-                    'Debt': false,
-                    'Equity': false,
-                    'Working Capital': false,
-                    'updatedAt': new Date()
-                };
-                const logoUrl = elements.logoUrlInput.value.trim();
-                if (logoUrl) fundingData.logo = logoUrl;
-                document.querySelectorAll('input[name="funding-type"]:checked').forEach(checkbox => {
-                    fundingData[checkbox.value] = true;
+            }
+
+            // Filter button
+            if (elements.filterBtn) {
+                elements.filterBtn.addEventListener('click', () => {
+                    elements.filtersPanel.classList.toggle('hidden');
+                // Update filter options to match current active filters
+                    document.querySelectorAll('.filter-option').forEach(option => {
+                        const filterType = option.getAttribute('data-filter');
+                        const filterValue = option.getAttribute('data-value');
+                        if (activeFilters[filterType].includes(filterValue)) {
+                            option.classList.add('selected');
+                        } else {
+                            option.classList.remove('selected');
+                        }
+                    });
                 });
-                document.querySelectorAll('input[name="sector"]:checked').forEach(checkbox => {
-                    fundingData[checkbox.value] = true;
+            }
+
+            // Search input
+            if (elements.searchInput) {
+                elements.searchInput.addEventListener('input', () => {
+                    currentPage = 0;
+                    filterFunding();
                 });
-                try {
-                    const user = auth.currentUser;
-                    if (!user) {
-                        alert('You must be logged in to save funding opportunities.');
+            }
+
+            // Tabs
+            if (elements.tabs) {
+                elements.tabs.forEach(tab => {
+                    tab.addEventListener('click', function() {
+                        elements.tabs.forEach(t => t.classList.remove('active'));
+                        this.classList.add('active');
+                        if (this.getAttribute('data-tab') === 'list') {
+                            elements.fundingList.classList.remove('hidden');
+                            elements.fundingGrid.classList.add('hidden');
+                        } else {
+                            elements.fundingList.classList.add('hidden');
+                            elements.fundingGrid.classList.remove('hidden');
+                        }
+                    });
+                });
+            }
+
+            // Add funding button
+            if (elements.addFundingBtn) {
+                elements.addFundingBtn.addEventListener('click', () => {
+                    if (!auth.currentUser) {
+                        showErrorMessage('You must be logged in to add funding opportunities.');
+                        setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
                         return;
                     }
-                    const docId = elements.fundingForm.querySelector('#doc-id').value;
-                    if (docId) {
-                        await updateDoc(doc(db, "funding", docId), fundingData);
-                        alert('Funding opportunity updated successfully.');
-                    } else {
-                        fundingData.createdAt = new Date();
-                        await addDoc(fundingRef, fundingData);
-                        alert('Funding opportunity added successfully.');
-                    }
+                    
                     elements.fundingForm.reset();
+                    elements.fundingForm.querySelector('#doc-id').value = '';
                     elements.logoPreview.style.display = 'none';
+                    elements.modalTitle.textContent = 'Add New Funding Opportunity';
+                    
+                    // Clear selected states
+                    document.querySelectorAll('.checkbox-item.selected').forEach(item => {
+                        item.classList.remove('selected');
+                    });
+                    document.querySelectorAll('.checkbox-item input').forEach(input => {
+                        input.checked = false;
+                    });
+                    
+                    // Clear selection summaries
+                    updateSelectionSummaries();
+                    
                     toggleModal();
-                    loadFundingOpportunities();
-                } catch (error) {
-                    console.error('Error saving funding opportunity:', error);
-                    showErrorMessage('Error saving funding opportunity: ' + error.message);
-                }
-            });
-            elements.fetchLogoBtn.addEventListener('click', async () => {
-                let websiteUrl = elements.websiteInput.value.trim();
-                if (!websiteUrl) {
-                    alert('Please enter a website URL first.');
-                    return;
-                }
-                if (!/^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w- ./?%&=]*)?$/.test(websiteUrl)) {
-                    alert('Please enter a valid website URL.');
-                    return;
-                }
-                try {
-                    const logoUrl = await fetchWebsiteLogo(websiteUrl);
-                    if (logoUrl) {
-                        elements.logoPreview.src = logoUrl;
-                        elements.logoPreview.style.display = 'block';
-                        elements.logoUrlInput.value = logoUrl;
-                    } else {
-                        alert('Could not find a logo for this website.');
-                    }
-                } catch (error) {
-                    console.error('Error fetching logo:', error);
-                    showErrorMessage('Error fetching logo. Please try again or enter a URL manually.');
-                }
-            });
-            elements.filterBtn.addEventListener('click', () => {
-                elements.filtersPanel.classList.toggle('hidden');
-            });
-            elements.searchInput.addEventListener('input', () => {
-                currentPage = 0;
-                filterFunding();
-            });
-            elements.tabs.forEach(tab => {
-                tab.removeEventListener('click', handleTabClick);
-                tab.addEventListener('click', handleTabClick);
-            });
-            function handleTabClick() {
-                elements.tabs.forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-                if (this.getAttribute('data-tab') === 'list') {
-                    elements.fundingList.classList.remove('hidden');
-                    elements.fundingGrid.classList.add('hidden');
-                } else {
-                    elements.fundingList.classList.add('hidden');
-                    elements.fundingGrid.classList.remove('hidden');
-                }
-                filterFunding();
+                });
             }
-            elements.websiteInput.addEventListener('input', function() {
-                this.setCustomValidity('');
-            });
-            elements.addFundingBtn.addEventListener('click', () => {
-                if (!auth.currentUser) {
-                    alert('You must be logged in to add funding opportunities.');
+
+            // Close modal
+            if (elements.closeModalBtn) {
+                elements.closeModalBtn.addEventListener('click', toggleModal);
+            }
+
+            // Cancel button
+            if (elements.cancelBtn) {
+                elements.cancelBtn.addEventListener('click', toggleModal);
+            }
+
+            // Logout button
+            if (elements.logoutBtn) {
+                elements.logoutBtn.addEventListener('click', () => {
+                    console.log('DEBUG: Logout button clicked');
+                    resetAdminSession();
+                });
+            }
+
+            // Fetch logo button - UPDATED WITH RELIABLE SERVICES
+            if (elements.fetchLogoBtn) {
+                elements.fetchLogoBtn.addEventListener('click', async () => {
+                    let websiteUrl = elements.websiteInput.value.trim();
+                    if (!websiteUrl) {
+                        alert('Please enter a website URL first.');
+                        return;
+                    }
+                    
+                    try {
+                        const logoUrl = await fetchWebsiteLogo(websiteUrl);
+                        if (logoUrl) {
+                            elements.logoPreview.src = logoUrl;
+                            elements.logoPreview.style.display = 'block';
+                            elements.logoUrlInput.value = logoUrl;
+                            showSuccessMessage('Logo fetched successfully!');
+                        } else {
+                            alert('Could not find a logo for this website. Please enter a URL manually.');
+                        }
+                    } catch (error) {
+                        console.error('Error fetching logo:', error);
+                        showErrorMessage('Error fetching logo: ' + error.message);
+                    }
+                });
+            }
+
+            // Form submission - UPDATED WITH SUCCESS MODAL
+            if (elements.fundingForm) {
+                elements.fundingForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const elements = getElements();
+                    
+                    const name = elements.fundingForm.querySelector('#funding-name').value.trim();
+                    const channel = elements.fundingForm.querySelector('#disbursement-channel').value.trim();
+                    const channelType = elements.fundingForm.querySelector('#channel-type').value.trim();
+                    let websiteUrl = elements.websiteInput.value.trim();
+                    
+                    if (!name || !channel || !channelType || !websiteUrl) {
+                        alert('Please fill in all required fields.');
+                        return;
+                    }
+                    
+                    if (!websiteUrl.startsWith('http://') && !websiteUrl.startsWith('https://')) {
+                        websiteUrl = 'https://' + websiteUrl;
+                    }
+                    
+                    const fundingData = {
+                        'Name of funding opportunity': name,
+                        'Name of disbursement channel': channel,
+                        'Type of Disbursement Channel': channelType,
+                        'Website': websiteUrl || 'no',
+                        'Contact Email': elements.fundingForm.querySelector('#contact-email').value.trim() || 'no',
+                        'Contact Number': elements.fundingForm.querySelector('#contact-number').value.trim() || 'no',
+                        'Focus of Fund': elements.fundingForm.querySelector('#focus').value.trim() || 'no',
+                        'Key Words': elements.fundingForm.querySelector('#keywords').value.trim() || 'no',
+                        'Key Words2': elements.fundingForm.querySelector('#keywords2').value.trim() || 'no',
+                        'Key Words3': elements.fundingForm.querySelector('#keywords3').value.trim() || 'no',
+                        'Ticket Size': elements.fundingForm.querySelector('#ticket-size').value.trim() || 'no',
+                        'Key': 'no',
+                        'Business Development or Technical Assistance': false,
+                        'Climate Finance': false,
+                        'Energy': false,
+                        'Agriculture': false,
+                        'Waste': false,
+                        'Water and Sanitation': false,
+                        'Green Infrastructure': false,
+                        'Grant': false,
+                        'Debt': false,
+                        'Equity': false,
+                        'Working Capital': false,
+                        'updatedAt': new Date()
+                    };
+                    
+                    const logoUrl = elements.logoUrlInput.value.trim();
+                    if (logoUrl) fundingData.logo = logoUrl;
+                    
+                    // Set funding types
+                    document.querySelectorAll('input[name="funding-type"]:checked').forEach(checkbox => {
+                        fundingData[checkbox.value] = true;
+                    });
+                    
+                    // Set sectors
+                    document.querySelectorAll('input[name="sector"]:checked').forEach(checkbox => {
+                        fundingData[checkbox.value] = true;
+                    });
+                    
+                    // Set targets (now as array for multiple selection)
+                    const selectedTargets = Array.from(document.querySelectorAll('input[name="target"]:checked'))
+                        .map(checkbox => checkbox.value);
+                    fundingData.SMMEs = selectedTargets.length > 0 ? selectedTargets : 'no';
+                    
+                    try {
+                        const user = auth.currentUser;
+                        if (!user) {
+                            showErrorMessage('You must be logged in to save funding opportunities.');
+                            setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
+                            return;
+                        }
+                        
+                        const docId = elements.fundingForm.querySelector('#doc-id').value;
+                        if (docId) {
+                            await updateDoc(doc(db, "funding", docId), fundingData);
+                            showSuccessModal('Funding opportunity updated successfully.');
+                        } else {
+                            fundingData.createdAt = new Date();
+                            await addDoc(collection(db, "funding"), fundingData);
+                            showSuccessModal('Funding opportunity added successfully.');
+                        }
+                        
+                        elements.fundingForm.reset();
+                        elements.logoPreview.style.display = 'none';
+                        toggleModal();
+                        await loadFundingOpportunities();
+                    } catch (error) {
+                        console.error('Error saving funding opportunity:', error);
+                        showErrorMessage('Error saving funding opportunity: ' + error.message);
+                    }
+                });
+            }
+        }
+
+        // Initialize the page
+        function initializePage() {
+            console.log('DEBUG: Initializing funding page...');
+            
+            // Wait for Firebase auth state
+            onAuthStateChanged(auth, async (user) => {
+                console.log('DEBUG: Firebase auth state checked, user:', user ? user.email : 'null');
+                
+                if (!user) {
+                    console.log('DEBUG: No user signed in, redirecting to VerifyCode.html');
+                    showErrorMessage('You must be logged in to access this page.');
+                    setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
                     return;
                 }
-                elements.fundingForm.reset();
-                elements.fundingForm.querySelector('#doc-id').value = '';
-                elements.logoPreview.style.display = 'none';
-                // Clear selected checkbox UI and inputs inside the funding form
-                document.querySelectorAll('.checkbox-item.selected').forEach(item => item.classList.remove('selected'));
-                document.querySelectorAll('.checkbox-item input').forEach(input => input.checked = false);
-                toggleModal();
-            });
-            elements.closeModalBtn.addEventListener('click', toggleModal);
-            elements.cancelBtn.addEventListener('click', toggleModal);
-            elements.logoutBtn.addEventListener('click', () => {
-                console.log('DEBUG: Logout button clicked');
-                resetAdminSession();
+
+                // User is authenticated, load funding data
+                try {
+                    await loadFundingOpportunities();
+                    setupEventListeners();
+                    finalizeLoading();
+                } catch (error) {
+                    console.error('Error loading funding data:', error);
+                    showErrorMessage(error.message);
+                    finalizeLoading();
+                }
             });
         }
 
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                console.log('DOM fully loaded for manage_funding.html at', new Date().toLocaleString('en-ZA'));
-                if (!customElements.get('green-economy-header') || !customElements.get('green-economy-footer')) {
-                    console.warn('Custom elements not defined. Ensure MasterPage.js is loaded.');
-                    showErrorMessage('Custom components failed to load. Some features may be unavailable.');
-                }
-                setupEventListeners();
-            } catch (error) {
-                console.error('Error in DOMContentLoaded:', error);
-                showErrorMessage('Error loading page. Please try again.');
-                document.body.classList.remove('loading');
-                document.body.classList.add('loaded');
-                document.querySelector('.loading-overlay').style.display = 'none';
-            }
+        // Start the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM fully loaded for manage_funding.html at', new Date().toLocaleString('en-ZA'));
+            initializePage();
         });
 
         // Fallback timeout
         setTimeout(() => {
             if (document.body.classList.contains('loading')) {
-                console.warn('Loading timeout reached, forcing content display');                document.body.classList.remove('loading');
-                document.body.classList.add('loaded');
-                document.querySelector('.loading-overlay').style.display = 'none';
-                showErrorMessage('Page load timeout. Displaying default content.');
+                console.warn('Loading timeout reached, forcing content display');
+                finalizeLoading();
+                showErrorMessage('Page load timeout. Some features may not work properly.');
             }
         }, 10000);
     </script>
 </body>
 </html>
-
-
