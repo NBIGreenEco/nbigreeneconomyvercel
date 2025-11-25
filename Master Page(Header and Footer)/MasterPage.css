@@ -18,16 +18,16 @@ body {
     padding: 0 1rem;
 }
 
-/* Header Styles - EXACT ORIGINAL POSITIONING */
+/* Header Styles - Fixed on mobile */
 .header-outer {
-    width: 100vw;
-    position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     background: linear-gradient(to right, #ffffff, #ffffff);
     z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .header {
@@ -250,44 +250,104 @@ body {
     background-color: #4ec3b0;
 }
 
-/* Mobile styles - IMPROVED RESPONSIVENESS */
+/* Mobile styles - ENHANCED RESPONSIVENESS */
 @media (max-width: 1024px) {
+    /* Ensure body has padding to account for fixed header */
+    body {
+        padding-top: 70px;
+    }
+    
+    /* Adjust header height for mobile */
+    .header {
+        height: 70px;
+        padding: 0;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Make sure header-outer takes full width */
+    .header-outer {
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+    }
+    
     .mobile-menu-button {
         display: flex !important;
-        margin-right: 15px;
+        margin: 0 15px 0 auto;
+        padding: 10px;
+        background: rgba(43, 149, 137, 0.1);
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        order: 2;
+    }
+    
+    .mobile-menu-button:hover {
+        background: rgba(43, 149, 137, 0.2);
     }
 
-    .header {
-        position: relative;
-        padding: 10px 0;
+    /* Mobile menu overlay */
+    .mobile-menu-overlay {
+        display: none;
+        position: fixed;
+        top: 70px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 999;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        backdrop-filter: blur(2px);
     }
-
+    
+    .mobile-menu-overlay.active {
+        display: block;
+        opacity: 1;
+    }
+    
     .nav {
-        position: absolute;
-        top: 100%;
+        position: fixed;
+        top: 70px;
         left: 0;
         right: 0;
         width: 100%;
         background-color: #ffffff;
         flex-direction: column;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
         z-index: 1000;
         max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.35s ease, padding 0.35s ease, opacity 0.3s ease;
+        overflow-y: auto;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         opacity: 0;
         padding: 0 15px !important;
         border-top: 1px solid #e2e8f0;
-        border-radius: 0 0 8px 8px;
-        /* Remove display: none/flex here — let JS control it directly */
+        border-radius: 0 0 12px 12px;
+        -webkit-overflow-scrolling: touch;
+        transform: translateY(-10px);
+        will-change: transform, opacity, max-height;
+        /* Ensure content below is pushed down */
+        margin-bottom: 0;
     }
 
     /* When active → full height, visible, padded */
     .nav.active {
-        max-height: 90vh !important;     /* Better than fixed 1000px */
-        opacity: 1 !important;
-        padding: 20px 15px !important;
-        overflow-y: auto !important;
+        max-height: 100vh !important;
+        opacity: 1;
+        padding: 24px 18px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        transform: translateY(0);
+        border: 1px solid #e2e8f0;
+        border-top: none;
     }
 
     /* Make items clearly visible and tappable */
@@ -301,68 +361,132 @@ body {
     .language-selector,
     .search-icon {
         width: 100% !important;
-        min-height: 45px !important;
-        padding: 12px 20px !important;
-        margin: 4px 0 !important;
-        border-radius: 0 !important;
+        min-height: 56px !important;
+        padding: 14px 18px !important;
+        margin: 8px 0 !important;
+        border-radius: 10px !important;
         font-size: 15px !important;
+        font-weight: 600 !important;
         display: flex !important;
         align-items: center !important;
-        background-color: #f8fafc !important;
-        color: #2b9589 !important;
-        border: 1px solid #e2e8f0 !important;
+        background-color: #ffffff !important;
+        color: #1a5d56 !important;
+        border: 1.5px solid #c0e0d8 !important;
         text-align: left !important;
         box-sizing: border-box !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
 
     .nav a:hover,
     .language-selector:hover,
     .search-icon:hover {
-        background-color: #e6f7f5 !important;
-        transform: none;
+        background-color: #f5fbfa !important;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(43, 149, 137, 0.08);
+        color: #2b9589 !important;
+    }
+    
+    .nav a:active,
+    .language-selector:active,
+    .search-icon:active {
+        transform: translateY(0);
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
     }
 
     /* Language selector specific */
     #langSelect {
         width: 100% !important;
-        min-height: 45px !important;
+        min-height: 56px !important;
         font-size: 15px !important;
         padding: 12px 20px !important;
         background-color: #f8fafc !important;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%232b9589' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+        background-repeat: no-repeat !important;
+        background-position: right 15px center !important;
+        background-size: 16px 16px !important;
         color: #2b9589 !important;
         border: 1px solid #e2e8f0 !important;
-        margin: 4px 0 !important;
+        border-radius: 8px !important;
+        margin: 5px 0 !important;
         box-sizing: border-box !important;
         -webkit-appearance: none !important;
         appearance: none !important;
+        padding-right: 45px !important;
     }
 }
 
 /* Small mobile improvements */
 @media (max-width: 480px) {
+    body {
+        padding-top: 54px;
+    }
+    
     .header {
-        padding: 5px 0;
+        height: 54px;
+        padding: 0;
+    }
+    
+    .header-outer {
+        height: 54px;
+    }
+    
+    .mobile-menu-overlay,
+    .nav {
+        top: 54px;
     }
     
     .logo {
-        padding: 0.5rem;
+        padding: 0.4rem;
     }
     
     .logo img {
-        max-width: 150px;
+        max-width: 120px;
+    }
+    
+    .mobile-menu-overlay {
+        top: 54px;
+    }
+    
+    .nav {
+        top: 54px !important;
+        padding: 0 10px !important;
     }
     
     .nav.active {
-        padding: 8px 12px 15px;
+        padding: 16px !important;
+        max-height: 100vh !important;
     }
     
-    .nav a, .language-selector, .search-icon {
-        padding: 10px 12px;
-        font-size: 14px;
+    .nav a, 
+    .language-selector, 
+    .search-icon, 
+    #langSelect {
+        padding: 12px 14px !important;
+        font-size: 14px !important;
+        min-height: 50px !important;
+        margin: 6px 0 !important;
+        border-radius: 8px !important;
     }
     
     .mobile-menu-button {
-        margin-right: 10px;
+        margin-right: 6px;
+        width: 28px;
+        height: 22px;
+        padding: 6px 5px;
+    }
+    
+    .menu-icon {
+        height: 2px;
+        border-radius: 1px;
+    }
+    
+    /* Active state for menu items */
+    .nav a.active {
+        background-color: #eefaf9 !important;
+        color: #2b9589 !important;
+        font-weight: 700 !important;
+        border-left: 2px solid #2b9589 !important;
     }
 }
 
