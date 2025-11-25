@@ -837,7 +837,7 @@
                 }
             ];
 
-            let allOpportunities = opportunityCards;
+            let allOpportunities = [];
             let currentOpportunitiesFilter = '';
             let opportunitiesSearchTerm = '';
             let currentOpportunitiesPage = 1;
@@ -851,13 +851,39 @@
                 'enterprise-development': ['enterprise', 'sme', 'business', 'artisan']
             };
 
-            function loadOpportunities() {
+            async function loadOpportunities() {
                 const opportunitiesGrid = document.querySelector('.opportunities-grid');
                 if (!opportunitiesGrid) {
                     console.error('DEBUG: Opportunities grid container not found');
                     return;
                 }
-                opportunitiesGrid.innerHTML = '<p>Loading opportunities...</p>';                setupOpportunitiesFilters();
+                opportunitiesGrid.innerHTML = '<p>Loading opportunities...</p>';
+                
+                try {
+                    const opportunitiesSnapshot = await getDocs(collection(db, 'opportunities'));
+                    allOpportunities = [];
+                    
+                    opportunitiesSnapshot.forEach(doc => {
+                        const opportunity = doc.data();
+                        allOpportunities.push({
+                            id: doc.id,
+                            title: opportunity.name || opportunity.title || 'No Title',
+                            desc: opportunity.description || opportunity.desc || 'No Description',
+                            details: opportunity.link || '#',
+                            detailsText: opportunity.linkText || 'View details',
+                            category: opportunity.category || 'General',
+                            image: opportunity.image || 'https://tse1.mm.bing.net/th/id/OIP.yIX5VZ9brQRaw7JnY3QHFAHaDe?w=1600&h=750&rs=1&pid=ImgDetMain&o=7&rm=3'
+                        });
+                    });
+                    
+                    console.log('✅ Opportunities loaded from Firestore:', allOpportunities.length, 'items');
+                } catch (error) {
+                    console.error('❌ Error loading opportunities:', error);
+                    opportunitiesGrid.innerHTML = '<p>Error loading opportunities. Please try again later.</p>';
+                    return;
+                }
+                
+                setupOpportunitiesFilters();
                 renderOpportunities();
             }
 
