@@ -599,8 +599,25 @@
     <green-economy-footer></green-economy-footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Admin Auth Check Module -->
+    <script type="module" src="/ADMIN/scripts/adminAuthCheck.js"></script>
     <script type="module">
-        // Firebase configuration
+        // ✅ Use MODULAR Firebase SDK (v10.12.4) - SAME as SignIn page!
+        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+        import { getApps, initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
+
+        // Simple page-level error display (define early)
+        function showErrorMessage(msg) {
+            const err = document.getElementById('errorMessage');
+            if (err) {
+                err.textContent = msg;
+                err.classList.remove('d-none');
+            } else {
+                console.error('showErrorMessage:', msg);
+            }
+        }
+
         const firebaseConfig = {
             apiKey: "AIzaSyCfa827mvCLf1ETts6B_DmCfb7owTohBxk",
             authDomain: "nbi-green-economy.firebaseapp.com",
@@ -611,17 +628,66 @@
             measurementId: "G-37VRZ5CGE4"
         };
 
-        // Initialize Firebase
-        let db, opportunitiesRef;
+        // Initialize Firebase with modular SDK
+        let db, auth, opportunitiesRef;
+        let authReady = false;  // Track if auth has been initialized
+        let currentAuthUser = null;  // Store the current user
+        
         try {
-            firebase.initializeApp(firebaseConfig);
-            db = firebase.firestore();
-            opportunitiesRef = db.collection("opportunities");
-            console.log('Firebase initialized successfully');
+            const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+            auth = getAuth(app);
+            db = getFirestore(app);
+            opportunitiesRef = collection(db, "opportunities");
+            console.log('✅ Firebase (v10.12.4 Modular) initialized successfully');
+            
+            // Load opportunities immediately if session is verified
+            const isVerified = sessionStorage.getItem('verified') === 'true';
+            if (isVerified) {
+                console.log('DEBUG: Session verified, will load opportunities after DOM initialization');
+            } else {
+                console.log('DEBUG: No valid session, waiting for Firebase auth');
+            }
+
+            // Wait for Firebase Auth state
+            onAuthStateChanged(auth, async (user) => {
+                console.log('DEBUG: Firebase auth state checked, user:', user ? user.email : 'null');
+                authReady = true;  // Mark auth as ready
+                currentAuthUser = user;  // Store user
+                
+                if (!user) {
+                    console.log('DEBUG: Auth is null, checking session...');
+                    const isVerified = sessionStorage.getItem('verified') === 'true';
+                    if (!isVerified) {
+                        console.log('DEBUG: No session, redirecting to VerifyCode.html');
+                        showErrorMessage('You must be logged in to access this page.');
+                        setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
+                    }
+                    return;
+                }
+
+                console.log('✅ User authenticated:', user.email);
+                
+                // Initialize page with authenticated user
+                initializePageWithAdmin(user);
+            });
         } catch (error) {
             console.error('Firebase initialization failed:', error);
             showErrorMessage('Failed to initialize Firebase. Please check your configuration.');
         }
+        
+        // Initialize page with user
+        async function initializePageWithAdmin(user) {
+            console.log('📋 Page initialized with user:', user.email);
+            window.firebaseModules = { db, auth, opportunitiesRef, user };
+        }
+
+        // Load opportunities data
+        async function loadOpportunitiesData() {
+            await loadOpportunities();
+        }
+        
+        // Export to global scope for other scripts to use
+        window.firebaseModules = window.firebaseModules || { db, auth, opportunitiesRef };
 
         // DOM references and state
         const opportunitiesTableBody = document.getElementById('opportunitiesTableBody');
@@ -654,29 +720,24 @@
         let currentOpportunityId = null;
         let deleteOpportunityId = null;
 
-        // Simple page-level error display
-        function showErrorMessage(msg) {
-            const err = document.getElementById('errorMessage');
-            if (err) {
-                err.textContent = msg;
-                err.classList.remove('d-none');
-            } else {
-                console.error('showErrorMessage:', msg);
-            }
-        }
-
         // Load opportunities from Firestore
         async function loadOpportunities() {
             const loadingIndicator = document.getElementById('loadingIndicator');
             try {
-                const snapshot = await opportunitiesRef.get();
+                console.log('📥 Loading opportunities from Firestore...');
+                const snapshot = await getDocs(opportunitiesRef);
+                console.log('✅ Firestore query successful, found', snapshot.docs.length, 'opportunities');
                 allOpportunities = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderOpportunities(allOpportunities);
                 loadingIndicator.classList.add('d-none');
             } catch (error) {
-                console.error("Error getting opportunities: ", error);
+                console.error("❌ Error getting opportunities: ", error);
+                console.error("Error code:", error.code);
+                console.error("Error message:", error.message);
                 loadingIndicator.classList.add('d-none');
-                showErrorMessage('Error loading opportunities. Please try again.');
+                showErrorMessage('Error loading opportunities: ' + error.message);
+                // Show at least an empty table even on error
+                renderOpportunities([]);
             }
         }
 
@@ -773,7 +834,6 @@
             
             renderOpportunities(filtered);
         }
-
         // Show add modal
         function showAddModal() {
             currentOpportunityId = null;
@@ -807,10 +867,27 @@
             deleteOpportunityId = id;
             deleteModal.show();
         }
-
         // Handle form submission
         opportunityForm?.addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            // Wait for auth to be ready
+            if (!authReady) {
+                alert('⏳ Authentication is still loading. Please wait a moment and try again.');
+                return;
+            }
+            
+            // Check if session is verified
+            if (sessionStorage.getItem('verified') !== 'true') {
+                alert('❌ Session expired. Please sign in again.');
+                setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 1500);
+                return;
+            }
+            
+            // Get current user from Firebase or use session
+            const user = currentAuthUser || auth.currentUser;
+            
+            console.log('👤 User confirmed:', user?.email || 'nbigreeneconomy@gmail.com');
             
             const title = document.getElementById('opportunityTitle')?.value;
             const category = document.getElementById('opportunityCategory')?.value;
@@ -826,29 +903,58 @@
             submitButtonText.submitSpinner.classList.remove('d-none');
             
             try {
-                const opportunityData = {
-                    name: title,
-                    category: category,
-                    description: description,
-                    link: link || '',
-                    linkText: linkText || '',
-                    updatedAt: firebase.firestore.Timestamp.fromDate(new Date())
-                };
+                const adminEmail = user?.email || 'nbigreeneconomy@gmail.com';
                 
                 if (!currentOpportunityId) {
-                    opportunityData.createdAt = firebase.firestore.Timestamp.fromDate(new Date());
-                    await opportunitiesRef.add(opportunityData);
-                    alert('Opportunity added successfully.');
+                    // CREATE - include all required audit fields
+                    const opportunityData = {
+                        name: title,
+                        category: category,
+                        description: description,
+                        link: link || '',
+                        linkText: linkText || '',
+                        createdAt: serverTimestamp(),
+                        createdBy: adminEmail,
+                        updatedAt: serverTimestamp(),
+                        updatedBy: adminEmail
+                    };
+                    await addDoc(opportunitiesRef, opportunityData);
+                    console.log('✅ Opportunity created by:', adminEmail);
+                    alert('✅ Opportunity added successfully.');
                 } else {
-                    await opportunitiesRef.doc(currentOpportunityId).update(opportunityData);
-                    alert('Opportunity updated successfully.');
+                    // UPDATE - include all fields with current admin
+                    const opportunityData = {
+                        name: title,
+                        category: category,
+                        description: description,
+                        link: link || '',
+                        linkText: linkText || '',
+                        createdAt: serverTimestamp(),
+                        createdBy: adminEmail,
+                        updatedAt: serverTimestamp(),
+                        updatedBy: adminEmail
+                    };
+                    await updateDoc(doc(opportunitiesRef, currentOpportunityId), opportunityData);
+                    console.log('✅ Opportunity updated by:', adminEmail);
+                    alert('✅ Opportunity updated successfully.');
                 }
                 
                 opportunityModal.hide();
                 loadOpportunities();
             } catch (error) {
                 console.error("Error saving opportunity: ", error);
-                alert('Error saving opportunity. Please try again.');
+                console.error("Error code:", error.code);
+                console.error("Error message:", error.message);
+                console.error("Full error:", JSON.stringify(error));
+                
+                let errorMsg = 'Error saving opportunity. Please try again.';
+                if (error.code === 'permission-denied') {
+                    errorMsg = '❌ Permission denied: You do not have permission to add/edit opportunities.\n\nEnsure:\n1. You are logged in as an admin\n2. Admin session is valid (check F12 console)\n3. Firestore rules allow your email';
+                } else if (error.code === 'unauthenticated') {
+                    errorMsg = '❌ Authentication error: Please sign in again.';
+                }
+                
+                alert(errorMsg);
             } finally {
                 submitButtonText.submitSpinner.classList.add('d-none');
             }
@@ -858,14 +964,44 @@
         document.getElementById('confirmDelete')?.addEventListener('click', async () => {
             if (!deleteOpportunityId) return;
             
+            // Wait for auth to be ready
+            if (!authReady) {
+                alert('⏳ Authentication is still loading. Please wait a moment and try again.');
+                return;
+            }
+            
+            // Check if session is verified
+            if (sessionStorage.getItem('verified') !== 'true') {
+                alert('❌ Session expired. Please sign in again.');
+                setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 1500);
+                return;
+            }
+            
+            // Get current user from Firebase or use session
+            const user = currentAuthUser || auth.currentUser;
+            const adminEmail = user?.email || 'nbigreeneconomy@gmail.com';
+            
+            console.log('👤 User confirmed for delete:', adminEmail);
+            
             try {
-                await opportunitiesRef.doc(deleteOpportunityId).delete();
+                await deleteDoc(doc(opportunitiesRef, deleteOpportunityId));
+                console.log('✅ Opportunity deleted by:', adminEmail);
                 deleteModal.hide();
                 loadOpportunities();
-                alert('Opportunity deleted successfully.');
+                alert('✅ Opportunity deleted successfully.');
             } catch (error) {
                 console.error("Error deleting opportunity: ", error);
-                alert('Error deleting opportunity. Please try again.');
+                console.error("Error code:", error.code);
+                console.error("Error message:", error.message);
+                
+                let errorMsg = 'Error deleting opportunity. Please try again.';
+                if (error.code === 'permission-denied') {
+                    errorMsg = '❌ Permission denied: You do not have permission to delete opportunities.\n\nEnsure:\n1. You are logged in as an admin\n2. Firestore rules allow your email';
+                } else if (error.code === 'unauthenticated') {
+                    errorMsg = '❌ Authentication error: Please sign in again.';
+                }
+                
+                alert(errorMsg);
             }
         });
 
@@ -887,31 +1023,41 @@
         // Initialize page
         document.addEventListener('DOMContentLoaded', async () => {
             try {
-                console.log('DOM fully loaded for ManageOpportunities.html at 03:23 AM SAST, Aug 24, 2025');
+                console.log('🔄 DOM fully loaded for ManageOpportunities.html');
+                console.log('📡 Custom elements check...');
                 if (customElements.get('green-economy-header') && customElements.get('green-economy-footer')) {
-                    console.log('Custom elements defined');
+                    console.log('✅ Custom elements defined');
                 } else {
-                    console.warn('Custom elements not defined. Ensure MasterPage.js is loaded correctly.');
+                    console.warn('⚠️ Custom elements not defined. Ensure MasterPage.js is loaded correctly.');
                 }
+                console.log('📥 Starting to load opportunities...');
                 await loadOpportunities();
-            } catch (error) {
-                console.error('Error in DOMContentLoaded:', error);
-                showErrorMessage('Error loading page. Please try again.');
+                console.log('✅ Page initialization complete');
                 document.body.classList.remove('loading');
                 document.body.classList.add('loaded');
-                document.querySelector('.loading-overlay').style.display = 'none';
+                const overlay = document.querySelector('.loading-overlay');
+                if (overlay) overlay.style.display = 'none';
+            } catch (error) {
+                console.error('❌ Error in DOMContentLoaded:', error);
+                showErrorMessage('Error loading page: ' + error.message);
+                document.body.classList.remove('loading');
+                document.body.classList.add('loaded');
+                const overlay = document.querySelector('.loading-overlay');
+                if (overlay) overlay.style.display = 'none';
             }
         });
 
-        // Fallback timeout
+        // Fallback timeout - only show error if page hasn't loaded in 15 seconds
         setTimeout(() => {
             if (document.body.classList.contains('loading')) {
-                console.warn('Loading timeout reached, forcing content display');                document.body.classList.remove('loading');
+                console.warn('⚠️ Loading timeout reached (15s), forcing page display');
+                document.body.classList.remove('loading');
                 document.body.classList.add('loaded');
-                document.querySelector('.loading-overlay').style.display = 'none';
-                showErrorMessage('Page load timeout. Displaying default content.');
+                const overlay = document.querySelector('.loading-overlay');
+                if (overlay) overlay.style.display = 'none';
+                showErrorMessage('⚠️ Page load timeout. Some data may not be loaded. Refresh the page if issues persist.');
             }
-        }, 10000);
+        }, 15000);
     </script>
     <script type="module" src="/Master%20Page(Header%20and%20Footer)/MasterPage.js"></script>
 </body>

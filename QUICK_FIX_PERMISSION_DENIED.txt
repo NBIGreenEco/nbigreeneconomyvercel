@@ -1,0 +1,36 @@
+# Permission Denied - QUICK FIX
+
+## The Problem
+You're getting: "Permission denied: You do not have permission to add/edit opportunities"
+
+## The Solution (3 Options)
+
+### Option 1: You ARE nbigreeneconomy@gmail.com (but getting error)
+1. Go to: `FIRESTORE_RULES_DEBUG.txt`
+2. Copy ALL the content
+3. Go to Firebase Console → Firestore → Rules
+4. Paste the Debug rules
+5. Click Publish
+6. Try adding opportunity again
+
+### Option 2: You're NOT nbigreeneconomy@gmail.com
+1. Add yourself to Firestore:
+   - Firebase Console → Firestore Database
+   - Create collection: `admins` (if not exists)
+   - Create document with ID: **your-email@gmail.com**
+   - Add field: `isAdmin: true`
+2. Sign out and back in
+3. Try adding opportunity again
+
+### Option 3: Check What's Actually Happening
+1. Press **F12** → Console tab
+2. Look for: `✨ HAS ADMIN ACCESS:`
+   - If `✅ YES` → Use Debug rules from Option 1
+   - If `❌ NO` → Use Option 2 to add yourself to `/admins/`
+
+## Files
+- `FIRESTORE_RULES_DEBUG.txt` - Simplified rules without field validation
+- `PERMISSION_DENIED_FIX.md` - Full troubleshooting guide
+
+## Done!
+Once you see "✅ Opportunity added successfully" you're good to go! 🎉

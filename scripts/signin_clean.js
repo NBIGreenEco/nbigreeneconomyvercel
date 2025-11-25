@@ -148,12 +148,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 emailVerified: true
             }, { merge: true });
 
+            // ✅ Initialize admin session here
+            console.log('📝 Setting up admin session...');
+            await window.AdminSessionManager.initializeAdminSession(user);
+            window.AdminSessionManager.logSessionInfo();
+
             await trackInteraction(user.uid, 'login', 'success', email);
 
             const done = await checkQuestionnaireCompletion(user);
-            window.location.href = done
+            const nextPage = done
                 ? `${baseUrl}/Dashboard/dashboard.html?userId=${user.uid}`
                 : `${baseUrl}/questionnaire/questionnaire.html?userId=${user.uid}`;
+            
+            console.log('✅ Login successful, redirecting to:', nextPage);
+            window.location.href = nextPage;
         } catch (err) {
             let msg = "Sign-in failed.";
             if (err.code === 'auth/wrong-password') msg = "Incorrect password.";
