@@ -661,6 +661,10 @@
                         console.log('DEBUG: No session, redirecting to VerifyCode.html');
                         showErrorMessage('You must be logged in to access this page.');
                         setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
+                    } else {
+                        console.log('✅ Session verified without Firebase auth - allowing based on session');
+                        // Session is valid even though Firebase auth is null
+                        // This happens when persistence hasn't restored yet
                     }
                     return;
                 }
@@ -884,8 +888,17 @@
                 return;
             }
             
-            // Get current user from Firebase or use session
+            // Force Firebase auth to refresh and restore
             const user = currentAuthUser || auth.currentUser;
+            
+            // If still no user after auth ready, get fresh auth state
+            if (!user) {
+                try {
+                    await auth.currentUser?.getIdToken(true);  // Force token refresh
+                } catch (e) {
+                    console.log('DEBUG: Token refresh not available, using session');
+                }
+            }
             
             console.log('👤 User confirmed:', user?.email || 'nbigreeneconomy@gmail.com');
             

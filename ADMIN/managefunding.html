@@ -754,6 +754,10 @@
         db = getFirestore(app);
         auth = getAuth(app);
 
+        // Track auth readiness and current user
+        let authReady = false;
+        let currentAuthUser = null;
+
         // ========== IMPROVED DOMAIN PARSING FUNCTIONS ==========
         // Enhanced domain extraction that handles various URL formats
         function extractCleanDomain(url) {
@@ -1624,19 +1628,37 @@
                     fundingData.SMMEs = selectedTargets.length > 0 ? selectedTargets : 'no';
                    
                     try {
-                        const user = auth.currentUser;
+                        // Wait for auth to be ready
+                        if (!authReady) {
+                            alert('⏳ Authentication is still loading. Please wait a moment and try again.');
+                            return;
+                        }
+                        
+                        // Check if session is verified
+                        if (sessionStorage.getItem('verified') !== 'true') {
+                            alert('❌ Session expired. Please sign in again.');
+                            setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 1500);
+                            return;
+                        }
+                        
+                        const user = currentAuthUser || auth.currentUser;
                         if (!user) {
                             showErrorMessage('You must be logged in to save funding opportunities.');
                             setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
                             return;
                         }
+                        
+                        const adminEmail = user?.email || 'nbigreeneconomy@gmail.com';
+                        fundingData.createdBy = adminEmail;
+                        fundingData.updatedBy = adminEmail;
+                        fundingData.createdAt = new Date();
+                        fundingData.updatedAt = new Date();
                        
                         const docId = elements.fundingForm.querySelector('#doc-id').value;
                         if (docId) {
                             await updateDoc(doc(db, "funding", docId), fundingData);
                             showSuccessModal('Funding opportunity updated successfully.');
                         } else {
-                            fundingData.createdAt = new Date();
                             await addDoc(collection(db, "funding"), fundingData);
                             showSuccessModal('Funding opportunity added successfully.');
                         }
@@ -1660,14 +1682,25 @@
             // Wait for Firebase auth state
             onAuthStateChanged(auth, async (user) => {
                 console.log('DEBUG: Firebase auth state checked, user:', user ? user.email : 'null');
+                authReady = true;  // Mark auth as ready
+                currentAuthUser = user;  // Store user
                
                 if (!user) {
-                    console.log('DEBUG: No user signed in, redirecting to VerifyCode.html');
-                    showErrorMessage('You must be logged in to access this page.');
-                    setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
-                    return;
+                    console.log('DEBUG: Auth is null, checking session...');
+                    const isVerified = sessionStorage.getItem('verified') === 'true';
+                    if (!isVerified) {
+                        console.log('DEBUG: No session, redirecting to VerifyCode.html');
+                        showErrorMessage('You must be logged in to access this page.');
+                        setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
+                        return;
+                    } else {
+                        console.log('✅ Session verified without Firebase auth - allowing based on session');
+                    }
+                } else {
+                    console.log('✅ User authenticated:', user.email);
                 }
-                // User is authenticated, load funding data
+                
+                // User is authenticated or session is verified, load funding data
                 try {
                     await loadFundingOpportunities();
                     setupEventListeners();

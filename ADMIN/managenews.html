@@ -456,6 +456,10 @@ if (!getApps().length) {
 db = getFirestore(app);
 auth = getAuth(app);
 
+// Track auth readiness and current user
+let authReady = false;
+let currentAuthUser = null;
+
 // Finalize loading - hide the loading overlay
 function finalizeLoading() {
     const loadingOverlay = document.querySelector('.loading-overlay');
@@ -608,11 +612,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Wait for Firebase Auth state
         onAuthStateChanged(auth, async (user) => {
             console.log('DEBUG: Firebase auth state checked, user:', user ? user.email : 'null');
+            authReady = true;  // Mark auth as ready
+            currentAuthUser = user;  // Store user
+            
             if (!user) {
-                console.log('DEBUG: No user signed in, redirecting to VerifyCode.html');
-                showAlertModal('You must be logged in to access this page.', 'error');
-                setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
-                return;
+                console.log('DEBUG: Auth is null, checking session...');
+                const isVerified = sessionStorage.getItem('verified') === 'true';
+                if (!isVerified) {
+                    console.log('DEBUG: No session, redirecting to VerifyCode.html');
+                    showAlertModal('You must be logged in to access this page.', 'error');
+                    setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
+                } else {
+                    console.log('✅ Session verified without Firebase auth - allowing based on session');
+                }
+                // Don't return, allow session-based access to continue
+            } else {
+                console.log('✅ User authenticated:', user.email);
             }
 
             // Only check admin status for sensitive operations
@@ -627,7 +642,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     if (!button) return;
                     const action = button.dataset.action;
                     const id = button.closest('.news-item').dataset.id;
-                    if (action === 'edit') await editNews(id, user);
+                    if (action === 'edit') await editNews(id, currentAuthUser || user);
                     else if (action === 'delete') await deleteNews(id, user);
                 });
             } else {
@@ -639,6 +654,21 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (addNewsForm) {
                 addNewsForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
+                    
+                    // Wait for auth to be ready
+                    if (!authReady) {
+                        alert('⏳ Authentication is still loading. Please wait a moment and try again.');
+                        return;
+                    }
+                    
+                    // Check if session is verified
+                    if (sessionStorage.getItem('verified') !== 'true') {
+                        alert('❌ Session expired. Please sign in again.');
+                        setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 1500);
+                        return;
+                    }
+                    
+                    const user = currentAuthUser || auth.currentUser;
                     if (!user) {
                         showAlertModal('You must be logged in to add news.', 'error');
                         setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
@@ -656,11 +686,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                         return;
                     }
                     try {
+                        const adminEmail = user?.email || 'nbigreeneconomy@gmail.com';
                         await addDoc(collection(db, 'news'), {
                             title,
                             date,
                             description,
-                            timestamp: Timestamp.fromDate(new Date())
+                            timestamp: Timestamp.fromDate(new Date()),
+                            content: description,
+                            category: '',
+                            createdAt: Timestamp.fromDate(new Date()),
+                            updatedAt: Timestamp.fromDate(new Date()),
+                            createdBy: adminEmail,
+                            updatedBy: adminEmail
                         });
                         addNewsForm.reset();
                         closeModal('add-news-modal');
@@ -695,11 +732,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                         return;
                     }
                     try {
+                        const adminEmail = user?.email || 'nbigreeneconomy@gmail.com';
                         await updateDoc(doc(db, 'news', id), {
                             title,
                             date,
                             description,
-                            timestamp: Timestamp.fromDate(new Date())
+                            timestamp: Timestamp.fromDate(new Date()),
+                            content: description,
+                            category: '',
+                            createdAt: Timestamp.fromDate(new Date()),
+                            updatedAt: Timestamp.fromDate(new Date()),
+                            createdBy: adminEmail,
+                            updatedBy: adminEmail
                         });
                         closeModal('edit-news-modal');
                         await loadNews();
