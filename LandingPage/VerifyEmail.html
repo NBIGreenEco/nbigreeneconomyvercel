@@ -283,6 +283,29 @@
       align-items: center;
       gap: 1.5rem;
     }
+    .verification-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 2rem;
+      background: linear-gradient(135deg, #f8fffe 0%, #e8f5f2 100%);
+      border-radius: 1rem;
+      border: 2px solid var(--green-light);
+      margin: 2rem auto !important;
+      max-width: 400px;
+    }
+    .verification-container .loading-spinner {
+      width: 60px;
+      height: 60px;
+      border-width: 5px;
+    }
+    .loading-subtext {
+      font-size: 0.95rem;
+      color: var(--green-accent);
+      margin: 0;
+      font-weight: 500;
+    }
   </style>
   <script>
     function verifyEmailLink() {
@@ -303,9 +326,10 @@
   <div class="container">
     <h1>Email Verification</h1>
     <p id="message">Processing your email verification...</p>
-    <div class="loading-container" id="verification-loader" style="display: none; margin-top: 2rem;">
+    <div class="verification-container" id="verification-loader" style="display: none; margin-top: 2rem;">
       <div class="loading-spinner"></div>
-      <div class="loading-text">Please Wait...</div>
+      <div class="loading-text">Verifying Email...</div>
+      <p class="loading-subtext">Please wait while we verify your email address</p>
     </div>
     <div id="success-message" class="success-message"></div>
     <div id="error-message" class="error-message"></div>
@@ -436,8 +460,10 @@ async function verifyEmailLink() {
 
   try {
     // Show loading state
-    if (verificationLoader) verificationLoader.style.display = 'flex';
-    message.textContent = 'Verifying your email...';
+    if (verificationLoader) {
+      verificationLoader.style.display = 'flex';
+    }
+    message.textContent = 'Verifying your email address...';
     
     // CRITICAL: applyActionCode doesn't require a signed-in user
     // It validates the verification code on the Firebase backend
@@ -513,8 +539,9 @@ async function verifyEmailLink() {
 
     // Success state
     if (verificationLoader) verificationLoader.style.display = 'none';
-    message.textContent = 'Email verified successfully!';
-    successMessage.textContent = 'Your email has been verified. Redirecting to Sign In...';
+    message.textContent = '✓ Email Verified Successfully!';
+    message.style.color = 'var(--green-primary)';
+    successMessage.innerHTML = '<strong>Redirecting to Sign In...</strong><p style="margin-top: 0.5rem; font-size: 0.9rem;">Taking you to the Sign In page in 3 seconds</p>';
     successMessage.style.display = 'block';
     
     console.log('Preparing to redirect to SignIn.html');
@@ -522,7 +549,7 @@ async function verifyEmailLink() {
       const redirectUrl = `${NETLIFY_BASE_URL}/LandingPage/SignInAndSignUp/SignIn.html`;
       console.log('Redirecting to:', redirectUrl);
       window.location.href = redirectUrl;
-    }, 2000);
+    }, 3000);
   } catch (error) {
     console.error('Error verifying email:', error, { code: error.code, message: error.message });
     if (verificationLoader) verificationLoader.style.display = 'none';
