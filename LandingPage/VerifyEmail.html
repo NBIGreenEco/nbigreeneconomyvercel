@@ -393,8 +393,9 @@ setPersistence(auth, browserLocalPersistence)
 
 async function trackInteraction(userId, category, action, label = "") {
   try {
+    // Match Firestore rules: requires tempUserId, category, action, label, timestamp, language, userAgent
     await addDoc(collection(db, 'interactions'), {
-      userId: userId || `anonymous_${Date.now()}`,
+      tempUserId: userId || `anonymous_${Date.now()}`,
       category: category,
       action: action,
       label: label,
@@ -402,7 +403,7 @@ async function trackInteraction(userId, category, action, label = "") {
       language: document.documentElement.lang || 'en',
       userAgent: navigator.userAgent
     });
-    console.log('Interaction tracked:', { userId, category, action, label });
+    console.log('Interaction tracked:', { tempUserId: userId || `anonymous_${Date.now()}`, category, action, label });
   } catch (error) {
     console.error('Error logging interaction:', error);
   }
