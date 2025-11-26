@@ -45,18 +45,28 @@ service cloud.firestore {
       ) && request.resource.data.keys().hasOnly(['email', 'codeHash', 'createdAt', 'expiresAt']);
     }
 
-    // EMAIL_VERIFICATIONS - Updated to allow writes from VerifyEmail.html (may not have user authenticated)
+    // EMAIL_VERIFICATIONS - Consolidated rules for both authenticated and unauthenticated writes
     match /email_verifications/{email} {
       allow read: if request.auth != null && request.auth.token.email == email;
-      allow write: if request.auth != null && (
-        request.auth.token.email == email ||
-        isAdmin()
-      ) && request.resource.data.keys().hasOnly(['email', 'token', 'isVerified', 'createdAt', 'expiresAt']);
-      // Allow unauthenticated writes during email verification flow (from VerifyEmail.html)
-      allow write: if request.auth == null && 
-        request.resource.data.keys().hasOnly(['isVerified', 'emailVerified', 'verifiedAt', 'uid', 'verificationMethod', 'tokenRefreshAttempts']) &&
-        request.resource.data.isVerified is bool &&
-        request.resource.data.verifiedAt is timestamp;
+      allow write: if (
+        // Case 1: Authenticated writes from signup (email field present)
+        (request.auth != null && (
+          request.auth.token.email == email ||
+          isAdmin()
+        ) && request.resource.data.keys().hasOnly(['email', 'token', 'isVerified', 'createdAt', 'expiresAt']))
+        ||
+        // Case 2: Unauthenticated writes from VerifyEmail.html (no email field, just verification data)
+        (request.auth == null && 
+          request.resource.data.keys().hasOnly(['isVerified', 'emailVerified', 'verifiedAt', 'uid', 'verificationMethod', 'tokenRefreshAttempts']) &&
+          request.resource.data.isVerified is bool &&
+          request.resource.data.verifiedAt is timestamp)
+        ||
+        // Case 3: Authenticated writes from VerifyEmail.html with user context (after signing in)
+        (request.auth != null && 
+          request.resource.data.keys().hasOnly(['isVerified', 'emailVerified', 'verifiedAt', 'uid', 'verificationMethod', 'tokenRefreshAttempts']) &&
+          request.resource.data.isVerified is bool &&
+          request.resource.data.verifiedAt is timestamp)
+      );
       allow delete: if request.auth != null && isAdmin();
     }
 

@@ -472,70 +472,34 @@ async function verifyEmailLink() {
     await applyActionCode(auth, oobCode);
     console.log('applyActionCode completed successfully - Email is now verified on Firebase');
 
-    // Now try to get the current user and refresh their token
+    // Firebase Auth has verified the email - now record it in Firestore (ONCE ONLY)
     let user = auth.currentUser;
-    console.log('Checking auth state after applyActionCode:', user ? { email: user.email, uid: user.uid, emailVerified: user.emailVerified } : 'No user signed in');
+    console.log('Auth state after verification:', user ? { uid: user.uid, email: user.email, emailVerified: user.emailVerified } : 'No user signed in');
     
-    if (user) {
-      // CRITICAL: Multiple reload attempts to ensure Firebase updates the token
-      console.log('Starting aggressive token refresh strategy...');
-      
-      // First reload: reload user object
-      await user.reload();
-      console.log('After first reload - emailVerified:', user.emailVerified);
-      
-      // Second reload: get fresh auth.currentUser
-      const currentUser = auth.currentUser;
-      if (currentUser) {
-        await currentUser.reload();
-        console.log('After currentUser reload - emailVerified:', currentUser.emailVerified);
-      }
-      
-      // Force re-authenticate by getting new ID token
-      try {
-        const idToken = await user.getIdToken(true); // Force refresh
-        console.log('ID token refreshed forcefully');
-        await user.reload();
-        console.log('After token refresh reload - emailVerified:', user.emailVerified);
-      } catch (tokenError) {
-        console.log('Could not force refresh token, continuing:', tokenError.message);
-      }
-
-      // Update Firestore to mark email as verified (CRITICAL - this is the fallback)
-      const emailVerificationRef = doc(db, 'email_verifications', email);
-      await setDoc(emailVerificationRef, {
+    // Record verification in Firestore ONCE - with minimal fields to pass validation
+    try {
+      const verificationData = {
         isVerified: true,
         emailVerified: true,
-        verifiedAt: new Date(),
-        uid: user.uid,
-        verificationMethod: 'link_clicked',
-        tokenRefreshAttempts: 3
-      }, { merge: true });
-      console.log('Email verification recorded in Firestore');
-
-      // Also update the user document in Firestore as backup
-      const userDocRef = doc(db, 'users', user.uid);
-      await setDoc(userDocRef, {
-        emailVerified: true,
-        verifiedAt: new Date(),
-        email: email
-      }, { merge: true });
-      console.log('User document updated with verified status');
-
-      await trackInteraction(user.uid, 'email_verification', 'success', `Email: ${email}, oobCode: ${oobCode}, Firebase emailVerified: ${user.emailVerified}`);
-    } else {
-      // No user signed in, but applyActionCode succeeded - just mark in Firestore
-      console.log('No user signed in, but applyActionCode succeeded. Recording in Firestore only.');
+        verifiedAt: serverTimestamp(),
+        verificationMethod: user ? 'link_clicked_authenticated' : 'link_clicked_unauthenticated'
+      };
+      
+      // Only add uid if user is authenticated
+      if (user) {
+        verificationData.uid = user.uid;
+      }
+      
       const emailVerificationRef = doc(db, 'email_verifications', email);
-      await setDoc(emailVerificationRef, {
-        isVerified: true,
-        emailVerified: true,
-        verifiedAt: new Date(),
-        verificationMethod: 'link_clicked_no_signin'
-      }, { merge: true });
-      console.log('Email verification recorded in Firestore (no user context)');
-
-      await trackInteraction(null, 'email_verification', 'success_no_signin', `Email: ${email}, oobCode: ${oobCode}`);
+      await setDoc(emailVerificationRef, verificationData, { merge: true });
+      console.log('Email verification recorded in Firestore (single write)');
+      
+      // Track interaction
+      await trackInteraction(user?.uid || null, 'email_verification', 'success', `Email: ${email}, verified: true`);
+    } catch (firestoreError) {
+      console.warn('Firestore write failed, but email is already verified in Firebase Auth:', firestoreError.message);
+      // Continue anyway - Firebase Auth verification is what matters most
+      await trackInteraction(user?.uid || null, 'email_verification', 'firestore_write_failed', firestoreError.message);
     }
 
     // Success state
