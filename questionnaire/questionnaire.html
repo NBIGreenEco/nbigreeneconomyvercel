@@ -345,7 +345,7 @@
                     </div>
                     <div class="question-content" data-question="5">
                         <label for="experienceLevel" class="form-label">Your experience level?</label>
-                        <select id="experienceLevel" name="experienceLevel" class="form-select" required>
+                        <select id="experienceLevel" name="experienceLevel" class="form-select">
                             <option value="">Select experience</option>
                             <option value="beginner">Beginner</option>
                             <option value="intermediate">Intermediate</option>
@@ -368,7 +368,7 @@
                     </div>
                     <div class="question-content" data-question="7">
                         <label for="preferredLanguage" class="form-label">Preferred Language</label>
-                        <select id="preferredLanguage" name="preferredLanguage" class="form-select" required>
+                        <select id="preferredLanguage" name="preferredLanguage" class="form-select">
                             <option value="English">English</option>
                             <option value="isiZulu">isiZulu</option>
                             <option value="Setswana">Setswana</option>
@@ -505,7 +505,16 @@
                     nextBtn.style.display = index === 5 ? 'block' : 'none';
                     continueBtn.style.display = index > 1 && index < 7 ? 'block' : 'none';
                     backBtn.style.display = index > 1 ? 'block' : 'none';
-                    finishBtn.style.display = index === 7 && isFormComplete() ? 'block' : 'none';                    }, 400);
+                    
+                    // Show finish button on question 7
+                    if (index === 7) {
+                        const isComplete = isFormComplete();
+                        console.log('DEBUG showQuestion: Question 7, isComplete:', isComplete);
+                        finishBtn.style.display = isComplete ? 'block' : 'none';
+                    } else {
+                        finishBtn.style.display = 'none';
+                    }
+                }, 400);
             }
 
             function isFormComplete() {
@@ -514,11 +523,13 @@
                     2: document.querySelectorAll('.question-content[data-question="2"] .option-button.selected').length > 0,
                     3: document.querySelectorAll('.question-content[data-question="3"] .option-button.selected').length > 0,
                     4: document.querySelectorAll('.question-content[data-question="4"] .option-button.selected').length > 0,
-                    5: document.getElementById('experienceLevel').value !== '',
+                    5: document.getElementById('experienceLevel').value !== '' || true, // Experience is optional for final submission
                     6: document.querySelectorAll('.question-content[data-question="6"] .option-button.selected').length > 0,
                     7: document.getElementById('preferredLanguage').value !== ''
                 };
-                return Object.values(selections).every(val => val);
+                const isComplete = Object.values(selections).every(val => val);
+                console.log('DEBUG isFormComplete:', selections, 'Result:', isComplete);
+                return isComplete;
             }
 
             // Check for authenticated user and questionnaire completion
@@ -621,6 +632,11 @@
                             this.classList.toggle('selected');
                         }
                         resetInactivityTimer(userId);
+                        
+                        // Update button visibility after selection
+                        if (currentQuestion === 7) {
+                            finishBtn.style.display = isFormComplete() ? 'block' : 'none';
+                        }
 
                         if ([1, 2, 3, 4, 6].includes(questionIndex) && this.classList.contains('selected')) {
                             if (document.querySelectorAll(`.question-content[data-question="${questionIndex}"] .option-button.selected`).length === 1) {
@@ -629,6 +645,24 @@
                             }
                         }
                     });
+                });
+                
+                // Add event listeners to select dropdowns
+                document.getElementById('experienceLevel').addEventListener('change', function() {
+                    resetInactivityTimer(userId);
+                    if (currentQuestion === 5) {
+                        continueBtn.style.display = this.value !== '' ? 'block' : 'none';
+                    }
+                    if (currentQuestion === 7) {
+                        finishBtn.style.display = isFormComplete() ? 'block' : 'none';
+                    }
+                });
+                
+                document.getElementById('preferredLanguage').addEventListener('change', function() {
+                    resetInactivityTimer(userId);
+                    if (currentQuestion === 7) {
+                        finishBtn.style.display = isFormComplete() ? 'block' : 'none';
+                    }
                 });
 
                 const form = document.getElementById("questionnaireForm");
