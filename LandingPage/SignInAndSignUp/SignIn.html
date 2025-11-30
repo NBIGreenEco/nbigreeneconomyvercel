@@ -1,26 +1,17 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Firebase Email Verification Redirect -->
+  <!-- Firebase Email Verification Handler -->
   <script>
     (function() {
       const urlParams = new URLSearchParams(window.location.search);
       const mode = urlParams.get('mode');
       const oobCode = urlParams.get('oobCode');
-      const continueUrl = urlParams.get('continueUrl');
      
       if (mode === 'verifyEmail' && oobCode) {
-        let email = urlParams.get('email');
-        if (!email && continueUrl) {
-          const emailMatch = continueUrl.match(/email=([^&]+)/);
-          if (emailMatch) email = decodeURIComponent(emailMatch[1]);
-        }
-       
-        let verifyUrl = '/LandingPage/VerifyEmail.html?oobCode=' + encodeURIComponent(oobCode);
-        if (email) verifyUrl += '&email=' + encodeURIComponent(email);
-       
-        console.log('Firebase email verification detected, redirecting to:', verifyUrl);
-        window.location.href = verifyUrl;
+        // Store the verification code to process after Firebase initializes
+        window.pendingVerificationCode = oobCode;
+        console.log('[SIGNIN] Firebase email verification code detected, will process after auth loads');
       }
     })();
   </script>
@@ -416,9 +407,18 @@
       <div id="verification-modal-overlay"></div>
       <div id="verification-modal">
         <div class="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto">
-          <p class="text-lg font-medium text-gray-900 mb-4">Please verify your email to continue.</p>
-          <p class="text-sm text-gray-600 mb-6">Check your inbox for a verification link.</p>
-          <button id="modal-ok-btn" class="bg-green-primary text-white font-semibold py-2 px-4 rounded-md hover:bg-green-dark w-full">Okay</button>
+          <div style="text-align: center; margin-bottom: 1rem;">
+            <i class="fas fa-envelope text-4xl" style="color: #10b981;"></i>
+          </div>
+          <h3 style="font-size: 1.25rem; font-weight: 600; color: #111827; margin-bottom: 1rem;">Email Verification Required</h3>
+          <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 1rem;">
+            We sent you a verification link to your email address.
+          </p>
+          <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 1.5rem;">
+            <strong>⚠️ Important:</strong> Check your <strong>inbox</strong> or <strong>spam folder</strong> for the verification email. Click the link to verify your account.
+          </p>
+          <button id="modal-ok-btn" class="bg-green-primary text-white font-semibold py-2 px-4 rounded-md hover:bg-green-dark w-full">I've Verified My Email</button>
+          <button id="modal-close-btn" style="margin-top: 0.5rem; background-color: #d1d5db; color: #374151; font-semibold; padding: 0.5rem 1rem; border-radius: 0.375rem; width: 100%; border: none; cursor: pointer;">Back</button>
         </div>
       </div>
     </main>

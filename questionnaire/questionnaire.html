@@ -382,6 +382,24 @@
             </div>
         </div>
     </div>
+
+    <!-- Email Verification Modal -->
+    <div id="email-verification-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 9999; justify-content: center; align-items: center;">
+        <div style="background: white; padding: 2rem; border-radius: 1rem; max-width: 400px; text-align: center; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+            <div style="font-size: 3rem; color: #ff9800; margin-bottom: 1rem;">✉️</div>
+            <h2 style="color: #005d6a; margin-bottom: 1rem; font-size: 1.5rem;">Email Verification Required</h2>
+            <p style="color: #555; margin-bottom: 1.5rem; line-height: 1.6;">
+                Before you can access the questionnaire, you need to verify your email address.
+            </p>
+            <p style="color: #777; margin-bottom: 1.5rem; font-size: 0.95rem;">
+                Check your inbox or spam folder for a verification email and click the link to verify your email.
+            </p>
+            <button id="email-verification-ok-btn" style="background-color: #4eb5a6; color: white; padding: 12px 28px; border-radius: 4px; border: none; font-weight: 600; cursor: pointer; font-size: 1rem; transition: background-color 0.3s;">
+                Go to Sign In
+            </button>
+        </div>
+    </div>
+
     <green-economy-footer></green-economy-footer>
     <script type="module">
         import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
@@ -539,6 +557,52 @@
                         userId = user.uid;
                         showLoader();
                         try {
+                            // ⚠️ CRITICAL GATE: Check email verification FIRST (using Firestore rules)
+                            await user.reload();
+                            console.log(`[QUESTIONNAIRE] User ${user.uid} authenticated. Checking email verification...`);
+                            console.log(`[QUESTIONNAIRE] Firebase emailVerified: ${user.emailVerified}`);
+                            
+                            // Check Firestore email_verifications collection (matches Firestore rules structure)
+                            let verified = false;
+                            try {
+                                const verDoc = await getDoc(doc(db, 'email_verifications', user.email));
+                                if (verDoc.exists()) {
+                                    const verData = verDoc.data();
+                                    // Check if isVerified is true (from Firestore rules field)
+                                    verified = verData.isVerified === true;
+                                    console.log(`[QUESTIONNAIRE] ✅ Firestore email_verifications found:`, verData);
+                                    console.log(`[QUESTIONNAIRE] isVerified: ${verified}`);
+                                } else {
+                                    console.log(`[QUESTIONNAIRE] ❌ No email_verifications document found for: ${user.email}`);
+                                    verified = false;
+                                }
+                            } catch (err) {
+                                console.error(`[QUESTIONNAIRE] ❌ Firestore lookup error: ${err.message}`);
+                                verified = false;
+                            }
+                            
+                            // ❌ BLOCK if not verified
+                            if (!verified) {
+                                console.log(`[QUESTIONNAIRE] ❌ BLOCKED - Email not verified. Showing verification modal.`);
+                                hideLoader();
+                                await auth.signOut();
+                                await trackUserInteraction(userId, 'questionnaire', 'access_denied', 'Email not verified');
+                                
+                                // Show email verification modal
+                                const modal = document.getElementById('email-verification-modal');
+                                const okBtn = document.getElementById('email-verification-ok-btn');
+                                if (modal && okBtn) {
+                                    modal.style.display = 'flex';
+                                    okBtn.onclick = () => {
+                                        modal.style.display = 'none';
+                                        window.location.href = `${baseUrl}/LandingPage/SignInAndSignUp/SignIn.html?reason=verify_email&t=${Date.now()}`;
+                                    };
+                                }
+                                return;
+                            }
+                            
+                            console.log(`[QUESTIONNAIRE] ✅ Email verified. Proceeding to questionnaire...`);
+
                             const userDoc = await getDoc(doc(db, 'users', userId));
                             if (userDoc.exists() && userDoc.data().questionnaireCompleted && userDoc.data().questionnaireResponseId) {
                                 const responseDoc = await getDoc(doc(db, 'questionnaire_responses', userDoc.data().questionnaireResponseId));

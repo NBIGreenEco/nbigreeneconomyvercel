@@ -355,7 +355,9 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const HARDCODED_CODE = 'K7mP!qR9@wT#xY';
-const NETLIFY_BASE_URL = 'https://www.greeneconomytoolkit.com'; // Production URL
+// Use dynamic baseUrl instead of hardcoded production URL
+const baseUrl = window.location.origin;
+console.log('Using baseUrl:', baseUrl);
 
 // Ensure page is visible after 3 seconds if Firebase is slow
 setTimeout(() => {
@@ -476,28 +478,26 @@ async function verifyEmailLink() {
     let user = auth.currentUser;
     console.log('Auth state after verification:', user ? { uid: user.uid, email: user.email, emailVerified: user.emailVerified } : 'No user signed in');
     
-    // Record verification in Firestore ONCE - with minimal fields to pass validation
+    // Record verification in Firestore ONCE - with fields matching Firestore rules
     try {
       const verificationData = {
         isVerified: true,
         emailVerified: true,
         verifiedAt: serverTimestamp(),
-        verificationMethod: user ? 'link_clicked_authenticated' : 'link_clicked_unauthenticated'
+        uid: user?.uid || '',
+        verificationMethod: 'email_link',
+        tokenRefreshAttempts: 0
       };
       
-      // Only add uid if user is authenticated
-      if (user) {
-        verificationData.uid = user.uid;
-      }
-      
+      console.log(`[VERIFY] Writing to Firestore: email_verifications/${email}`, verificationData);
       const emailVerificationRef = doc(db, 'email_verifications', email);
       await setDoc(emailVerificationRef, verificationData, { merge: true });
-      console.log('Email verification recorded in Firestore (single write)');
+      console.log(`[VERIFY] ✅ Successfully updated email_verifications/${email} with isVerified: true`);
       
       // Track interaction
       await trackInteraction(user?.uid || null, 'email_verification', 'success', `Email: ${email}, verified: true`);
     } catch (firestoreError) {
-      console.warn('Firestore write failed, but email is already verified in Firebase Auth:', firestoreError.message);
+      console.warn(`[VERIFY] ❌ Firestore write failed: ${firestoreError.message}`, firestoreError);
       // Continue anyway - Firebase Auth verification is what matters most
       await trackInteraction(user?.uid || null, 'email_verification', 'firestore_write_failed', firestoreError.message);
     }
@@ -509,10 +509,10 @@ async function verifyEmailLink() {
     successMessage.innerHTML = '<strong>Redirecting to Sign In...</strong><p style="margin-top: 0.5rem; font-size: 0.9rem;">Taking you to the Sign In page in 3 seconds</p>';
     successMessage.style.display = 'block';
     
-    console.log('Preparing to redirect to SignIn.html');
+    console.log(`[VERIFY] ✅ Email verified. Redirecting to Sign-In page...`);
     setTimeout(() => {
-      const redirectUrl = `${NETLIFY_BASE_URL}/LandingPage/SignInAndSignUp/SignIn.html`;
-      console.log('Redirecting to:', redirectUrl);
+      const redirectUrl = `${baseUrl}/LandingPage/SignInAndSignUp/SignIn.html`;
+      console.log(`[VERIFY] Redirecting to: ${redirectUrl}`);
       window.location.href = redirectUrl;
     }, 3000);
   } catch (error) {

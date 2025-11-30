@@ -20,6 +20,23 @@ const firebaseConfig = {
 const baseUrl = window.location.origin;
 console.log("DEBUG: Using baseUrl:", baseUrl);
 
+// ✅ Helper function for debugging verification status
+window.checkVerificationStatus = async (email) => {
+    try {
+        const verDoc = await getDoc(doc(db, 'email_verifications', email));
+        if (verDoc.exists()) {
+            console.log(`✅ email_verifications/${email} exists:`, verDoc.data());
+            return verDoc.data();
+        } else {
+            console.log(`❌ email_verifications/${email} does NOT exist`);
+            return null;
+        }
+    } catch (error) {
+        console.error(`Error checking verification: ${error.message}`);
+    }
+};
+console.log('💡 TIP: Run window.checkVerificationStatus("your@email.com") in console to check verification status');
+
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -45,8 +62,30 @@ function showError(msg) {
 function showVerificationModal() {
     const m = document.getElementById('verification-modal'), o = document.getElementById('verification-modal-overlay');
     if (m && o) { m.style.display = 'block'; o.style.display = 'block'; }
-    const btn = document.getElementById('modal-ok-btn');
-    if (btn) btn.onclick = () => { m.style.display = 'none'; o.style.display = 'none'; };
+    
+    // "I've Verified My Email" button - allows retry
+    const okBtn = document.getElementById('modal-ok-btn');
+    if (okBtn) {
+        okBtn.onclick = () => { 
+            console.log('[SIGNIN] User clicked "I\'ve Verified My Email" - closing modal');
+            m.style.display = 'none'; 
+            o.style.display = 'none'; 
+        };
+    }
+    
+    // "Back" button - clears form
+    const closeBtn = document.getElementById('modal-close-btn');
+    if (closeBtn) {
+        closeBtn.onclick = () => { 
+            console.log('[SIGNIN] User clicked "Back" - closing modal and clearing form');
+            m.style.display = 'none'; 
+            o.style.display = 'none';
+            emailInput.value = '';
+            if (document.getElementById('password')) {
+                document.getElementById('password').value = '';
+            }
+        };
+    }
 }
 
 async function trackInteraction(uid, cat, act, lbl = "") {
@@ -125,23 +164,45 @@ document.addEventListener('DOMContentLoaded', () => {
             const user = cred.user; 
             await user.reload();
 
-            let verified = user.emailVerified;
-            if (!verified) {
-                const v = await getDoc(doc(db, 'email_verifications', email));
-                verified = v.exists() && v.data().isVerified;
+            console.log(`[SIGNIN] ✅ User authenticated: ${user.uid}, Email: ${user.email}`);
+            console.log(`[SIGNIN] Firebase emailVerified: ${user.emailVerified}`);
+
+            // ⚠️ CRITICAL: Check email verification from Firestore email_verifications collection
+            // This matches the Firestore rules structure
+            let verified = false;
+            console.log(`[SIGNIN] Checking Firestore email_verifications for: ${email}`);
+            
+            try {
+                const verDoc = await getDoc(doc(db, 'email_verifications', email));
+                if (verDoc.exists()) {
+                    const verData = verDoc.data();
+                    // Check if isVerified is true (matches Firestore rules field)
+                    verified = verData.isVerified === true;
+                    console.log(`[SIGNIN] ✅ Firestore email_verifications found:`, verData);
+                    console.log(`[SIGNIN] isVerified value: ${verData.isVerified}, Verified: ${verified}`);
+                } else {
+                    console.log(`[SIGNIN] ❌ No email_verifications document found for: ${email}`);
+                    verified = false;
+                }
+            } catch (fsErr) {
+                console.error(`[SIGNIN] ❌ Firestore lookup error: ${fsErr.message}`);
+                verified = false;
             }
 
+            // ❌ BLOCK if not verified
             if (!verified) {
+                console.log(`[SIGNIN] ❌ BLOCKED - Email not verified. Signing user out.`);
                 await auth.signOut();
+                hideLoader();
                 showVerificationModal();
-                showError("Verify your email first.");
-                await trackInteraction(null, 'login', 'failure', 'unverified');
-                hideLoader(); 
+                showError("Please verify your email first before signing in.");
+                await trackInteraction(null, 'login', 'failure', `unverified_email: ${email}`);
                 signInBtn.disabled = false; 
                 processing = false;
                 return;
             }
 
+            console.log(`[SIGNIN] ✅ Email verified. Proceeding to next step...`);
             await setDoc(doc(db, 'users', user.uid), {
                 email: user.email,
                 language: 'en',
@@ -167,6 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (err.code === 'auth/wrong-password') msg = "Incorrect password.";
             else if (err.code === 'auth/user-not-found') msg = "No account found.";
             else if (err.code === 'auth/invalid-email') msg = "Invalid email.";
+            console.error(`[SIGNIN] Error: ${err.code} - ${err.message}`);
             showError(msg);
             await trackInteraction(null, 'login', 'failure', err.code);
         } finally {

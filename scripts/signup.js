@@ -152,7 +152,7 @@ try {
             const token = generateVerificationToken();
             const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes expiry
             const actionCodeSettings = {
-                url: `${config.baseUrl}/LandingPage/SignInAndSignUp/VerifyEmail.html?email=${encodeURIComponent(email)}&token=${encodeURIComponent(token)}&tempUserId=${tempUserId}`,
+                url: `${config.baseUrl}/LandingPage/SignInAndSignUp/SignIn.html?email=${encodeURIComponent(email)}&tempUserId=${tempUserId}`,
                 handleCodeInApp: true
             };
             await sendEmailVerification(user, actionCodeSettings);
@@ -249,7 +249,7 @@ try {
                             createdAt: serverTimestamp()
                         }, { merge: true });
 
-                        console.log("User created and email verification sent to VerifyEmail.html");
+                        console.log("User created and email verification sent. User will complete verification from Sign In page.");
                         await trackInteraction('signup', 'success', `Email: ${email}`);
                         hideLoader();
                         showSpamWarningModal(email);
@@ -297,7 +297,7 @@ try {
                         const token = generateVerificationToken();
                         const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
                         const actionCodeSettings = {
-                            url: `${config.baseUrl}/LandingPage/SignInAndSignUp/VerifyEmail.html?email=${encodeURIComponent(user.email)}&token=${encodeURIComponent(token)}&tempUserId=${tempUserId}`,
+                            url: `${config.baseUrl}/LandingPage/SignInAndSignUp/SignIn.html?email=${encodeURIComponent(user.email)}&tempUserId=${tempUserId}`,
                             handleCodeInApp: true
                         };
                         await sendEmailVerification(user, actionCodeSettings);
