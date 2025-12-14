@@ -485,6 +485,416 @@
         .pagination-btn:not(:disabled):hover {
             background: var(--green-light);
         }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        
+        /* Tablet & Small Screens (1024px and below) */
+        @media (max-width: 1024px) {
+            .news-grid, .opportunities-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1rem;
+            }
+            
+            .news-section, .opportunities-section {
+                padding: 1.5rem;
+                margin: 0 1rem 2rem 1rem !important;
+            }
+            
+            .news-header, .opportunities-header {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+            
+            .filter-buttons {
+                width: 100%;
+                gap: 0.25rem;
+            }
+            
+            .filter-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.75rem;
+                flex: 1;
+            }
+            
+            .opportunities-search {
+                width: 100%;
+                flex-direction: column;
+            }
+            
+            .opportunities-search input,
+            .opportunities-search select {
+                width: 100%;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 1rem !important;
+            }
+            
+            .dashboard-card {
+                padding: 1.25rem !important;
+            }
+            
+            .card-title {
+                font-size: 1rem !important;
+            }
+            
+            .card-description {
+                font-size: 0.8rem !important;
+            }
+            
+            .search-container {
+                margin: 0 1rem !important;
+            }
+            
+            .hero {
+                padding: 2rem 1rem !important;
+            }
+            
+            .hero h1 {
+                font-size: 1.8rem !important;
+            }
+            
+            .section-title {
+                font-size: 1.3rem !important;
+            }
+            
+            .news-item, .opportunity-item {
+                gap: 0.75rem;
+            }
+            
+            .news-image, .opportunity-image {
+                width: 70px;
+                height: 70px;
+            }
+        }
+        
+        /* Mobile Screens (768px and below) */
+        @media (max-width: 768px) {
+            body {
+                font-size: 14px;
+            }
+            
+            .news-grid, .opportunities-grid {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+            
+            .news-section, .opportunities-section {
+                padding: 1rem;
+                margin: 0 0.75rem 1.5rem 0.75rem !important;
+                border-radius: 0.5rem;
+            }
+            
+            .news-header, .opportunities-header {
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            .news-title-section, .opportunities-title-section {
+                width: 100%;
+            }
+            
+            .news-live-indicator, .opportunities-live-indicator {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            
+            .filter-buttons {
+                width: 100%;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            
+            .filter-btn {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.7rem;
+                flex: 1;
+                min-width: 60px;
+            }
+            
+            .opportunities-search {
+                width: 100%;
+                flex-direction: column;
+            }
+            
+            .opportunities-search select {
+                width: 100%;
+                padding: 0.4rem;
+                font-size: 0.8rem;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr !important;
+                gap: 0.75rem !important;
+                margin: 0 0.75rem 1.5rem 0.75rem !important;
+            }
+            
+            .dashboard-card {
+                padding: 1rem !important;
+            }
+            
+            .card-icon {
+                width: 2rem !important;
+                height: 2rem !important;
+            }
+            
+            .card-title {
+                font-size: 0.95rem !important;
+            }
+            
+            .card-description {
+                font-size: 0.75rem !important;
+            }
+            
+            .card-stats {
+                gap: 0.5rem !important;
+            }
+            
+            .card-stats span {
+                font-size: 0.7rem !important;
+            }
+            
+            .search-section {
+                margin: 0 0.75rem 1.5rem 0.75rem !important;
+            }
+            
+            .search-container {
+                margin: 0 !important;
+            }
+            
+            .search-input {
+                font-size: 0.9rem !important;
+                padding: 0.5rem !important;
+            }
+            
+            .hero {
+                padding: 1.5rem 0.75rem !important;
+            }
+            
+            .hero h1 {
+                font-size: 1.5rem !important;
+            }
+            
+            .hero p {
+                font-size: 0.9rem !important;
+            }
+            
+            .section-title {
+                font-size: 1.1rem !important;
+            }
+            
+            .news-icon, .opportunities-icon {
+                width: 2rem !important;
+                height: 2rem !important;
+            }
+            
+            .news-item, .opportunity-item {
+                gap: 0.5rem;
+                padding: 0.75rem;
+            }
+            
+            .news-image, .opportunity-image {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .news-title, .opportunity-title {
+                font-size: 0.8rem;
+            }
+            
+            .news-description, .opportunity-description {
+                font-size: 0.7rem;
+            }
+            
+            .news-meta, .opportunity-meta {
+                font-size: 0.65rem;
+            }
+            
+            .pagination {
+                gap: 0.5rem;
+                margin-top: 0.75rem;
+            }
+            
+            .pagination-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.7rem;
+                flex: 1;
+            }
+            
+            .modal-content {
+                padding: 1.5rem;
+                width: 95%;
+                max-width: 100%;
+            }
+            
+            .modal-content h2 {
+                font-size: 1.4rem;
+            }
+            
+            .modal-content p {
+                font-size: 0.9rem;
+            }
+            
+            .modal-close {
+                font-size: 1.2rem;
+            }
+        }
+        
+        /* Small Mobile (480px and below) */
+        @media (max-width: 480px) {
+            body {
+                font-size: 13px;
+            }
+            
+            .news-grid, .opportunities-grid {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+            
+            .news-section, .opportunities-section {
+                padding: 0.75rem;
+                margin: 0 0.5rem 1rem 0.5rem !important;
+                border-radius: 0.4rem;
+            }
+            
+            .news-header, .opportunities-header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .filter-buttons {
+                gap: 0.25rem;
+            }
+            
+            .filter-btn {
+                padding: 0.3rem 0.5rem;
+                font-size: 0.65rem;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr !important;
+                gap: 0.5rem !important;
+                margin: 0 0.5rem 1rem 0.5rem !important;
+            }
+            
+            .dashboard-card {
+                padding: 0.8rem !important;
+            }
+            
+            .card-icon {
+                width: 1.5rem !important;
+                height: 1.5rem !important;
+            }
+            
+            .card-title {
+                font-size: 0.85rem !important;
+            }
+            
+            .card-description {
+                font-size: 0.65rem !important;
+            }
+            
+            .card-stats {
+                flex-direction: column;
+                gap: 0.25rem !important;
+            }
+            
+            .card-stats span {
+                font-size: 0.65rem !important;
+            }
+            
+            .search-section {
+                margin: 0 0.5rem 1rem 0.5rem !important;
+            }
+            
+            .search-input {
+                font-size: 0.85rem !important;
+                padding: 0.4rem !important;
+            }
+            
+            .hero {
+                padding: 1rem 0.5rem !important;
+            }
+            
+            .hero h1 {
+                font-size: 1.3rem !important;
+            }
+            
+            .hero p {
+                font-size: 0.8rem !important;
+            }
+            
+            .section-title {
+                font-size: 1rem !important;
+            }
+            
+            .news-icon, .opportunities-icon {
+                width: 1.75rem !important;
+                height: 1.75rem !important;
+            }
+            
+            .news-item, .opportunity-item {
+                gap: 0.4rem;
+                padding: 0.5rem;
+                flex-direction: column;
+            }
+            
+            .news-image, .opportunity-image {
+                width: 100%;
+                height: 50px;
+            }
+            
+            .news-title, .opportunity-title {
+                font-size: 0.75rem;
+            }
+            
+            .news-description, .opportunity-description {
+                font-size: 0.65rem;
+            }
+            
+            .news-category, .opportunity-category {
+                font-size: 0.65rem;
+                padding: 0.2rem 0.4rem;
+            }
+            
+            .news-meta, .opportunity-meta {
+                font-size: 0.6rem;
+                flex-direction: column;
+                gap: 0.2rem;
+            }
+            
+            .pagination {
+                gap: 0.25rem;
+                flex-direction: column;
+            }
+            
+            .pagination-btn {
+                padding: 0.35rem 0.6rem;
+                font-size: 0.65rem;
+                width: 100%;
+            }
+            
+            .modal-content {
+                padding: 1rem;
+                max-width: 100%;
+            }
+            
+            .modal-content h2 {
+                font-size: 1.2rem;
+            }
+            
+            .modal-content p {
+                font-size: 0.8rem;
+            }
+            
+            .modal-close {
+                font-size: 1rem;
+                top: 0.5rem;
+                right: 0.5rem;
+            }
+        }
     </style>
     <script type="module">        import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
         import { getAuth, onAuthStateChanged, setPersistence, browserSessionPersistence } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
@@ -837,7 +1247,7 @@
                 }
             ];
 
-            let allOpportunities = opportunityCards;
+            let allOpportunities = [];
             let currentOpportunitiesFilter = '';
             let opportunitiesSearchTerm = '';
             let currentOpportunitiesPage = 1;
@@ -851,13 +1261,39 @@
                 'enterprise-development': ['enterprise', 'sme', 'business', 'artisan']
             };
 
-            function loadOpportunities() {
+            async function loadOpportunities() {
                 const opportunitiesGrid = document.querySelector('.opportunities-grid');
                 if (!opportunitiesGrid) {
                     console.error('DEBUG: Opportunities grid container not found');
                     return;
                 }
-                opportunitiesGrid.innerHTML = '<p>Loading opportunities...</p>';                setupOpportunitiesFilters();
+                opportunitiesGrid.innerHTML = '<p>Loading opportunities...</p>';
+                
+                try {
+                    const opportunitiesSnapshot = await getDocs(collection(db, 'opportunities'));
+                    allOpportunities = [];
+                    
+                    opportunitiesSnapshot.forEach(doc => {
+                        const opportunity = doc.data();
+                        allOpportunities.push({
+                            id: doc.id,
+                            title: opportunity.name || opportunity.title || 'No Title',
+                            desc: opportunity.description || opportunity.desc || 'No Description',
+                            details: opportunity.link || '#',
+                            detailsText: opportunity.linkText || 'View details',
+                            category: opportunity.category || 'General',
+                            image: opportunity.image || 'https://tse1.mm.bing.net/th/id/OIP.yIX5VZ9brQRaw7JnY3QHFAHaDe?w=1600&h=750&rs=1&pid=ImgDetMain&o=7&rm=3'
+                        });
+                    });
+                    
+                    console.log('✅ Opportunities loaded from Firestore:', allOpportunities.length, 'items');
+                } catch (error) {
+                    console.error('❌ Error loading opportunities:', error);
+                    opportunitiesGrid.innerHTML = '<p>Error loading opportunities. Please try again later.</p>';
+                    return;
+                }
+                
+                setupOpportunitiesFilters();
                 renderOpportunities();
             }
 

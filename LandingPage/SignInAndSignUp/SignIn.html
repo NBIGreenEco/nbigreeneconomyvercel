@@ -1,63 +1,76 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-<head>
-  <!-- Firebase Email Verification Redirect -->
-  <script>
-    (function() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const mode = urlParams.get('mode');
-      const oobCode = urlParams.get('oobCode');
-      const continueUrl = urlParams.get('continueUrl');
-     
-      if (mode === 'verifyEmail' && oobCode) {
-        let email = urlParams.get('email');
-        if (!email && continueUrl) {
-          const emailMatch = continueUrl.match(/email=([^&]+)/);
-          if (emailMatch) email = decodeURIComponent(emailMatch[1]);
-        }
-       
-        let verifyUrl = '/LandingPage/VerifyEmail.html?oobCode=' + encodeURIComponent(oobCode);
-        if (email) verifyUrl += '&email=' + encodeURIComponent(email);
-       
-        console.log('Firebase email verification detected, redirecting to:', verifyUrl);
-        window.location.href = verifyUrl;
-      }
-    })();
-  </script>
+  <head>
+    <!-- Firebase Email Verification Redirect -->
+    <script>
+      (function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get("mode");
+        const oobCode = urlParams.get("oobCode");
+        const continueUrl = urlParams.get("continueUrl");
 
-  <!-- Google Translate Proxy Fix -->
-  <script>
-    (function() {
-      try {
-        const ref = document.referrer || '';
-        if (!ref) return;
-        const refOrigin = new URL(ref).origin;
-        const hostname = window.location.hostname || '';
-        const isProxy = /translate|googleusercontent|goog/.test(hostname) && refOrigin.indexOf(hostname) === -1;
-        if (!isProxy) return;
-
-        const map = [['link','href'], ['script','src'], ['img','src'], ['a','href']];
-        map.forEach(([tag, attr]) => {
-          const nodes = document.getElementsByTagName(tag);
-          for (let i = 0; i < nodes.length; i++) {
-            const el = nodes[i];
-            let v = el.getAttribute(attr);
-            if (!v) continue;
-            if (v.startsWith('/')) el.setAttribute(attr, refOrigin + v);
-            else if (v.startsWith('./')) el.setAttribute(attr, refOrigin + v.slice(1));
+        if (mode === "verifyEmail" && oobCode) {
+          let email = urlParams.get("email");
+          if (!email && continueUrl) {
+            const emailMatch = continueUrl.match(/email=([^&]+)/);
+            if (emailMatch) email = decodeURIComponent(emailMatch[1]);
           }
-        });
 
-        let base = document.querySelector('base');
-        if (!base) {
-          base = document.createElement('base');
-          document.head.insertBefore(base, document.head.firstChild);
+          let verifyUrl =
+            "/LandingPage/VerifyEmail.html?oobCode=" +
+            encodeURIComponent(oobCode);
+          if (email) verifyUrl += "&email=" + encodeURIComponent(email);
+
+          console.log(
+            "Firebase email verification detected, redirecting to:",
+            verifyUrl
+          );
+          window.location.href = verifyUrl;
         }
-        base.setAttribute('href', refOrigin + '/');
+      })();
+    </script>
 
-        const protectiveStyle = document.createElement('style');
-        protectiveStyle.id = 'navbar-protection-css';
-        protectiveStyle.innerHTML = `
+    <!-- Google Translate Proxy Fix -->
+    <script>
+      (function () {
+        try {
+          const ref = document.referrer || "";
+          if (!ref) return;
+          const refOrigin = new URL(ref).origin;
+          const hostname = window.location.hostname || "";
+          const isProxy =
+            /translate|googleusercontent|goog/.test(hostname) &&
+            refOrigin.indexOf(hostname) === -1;
+          if (!isProxy) return;
+
+          const map = [
+            ["link", "href"],
+            ["script", "src"],
+            ["img", "src"],
+            ["a", "href"],
+          ];
+          map.forEach(([tag, attr]) => {
+            const nodes = document.getElementsByTagName(tag);
+            for (let i = 0; i < nodes.length; i++) {
+              const el = nodes[i];
+              let v = el.getAttribute(attr);
+              if (!v) continue;
+              if (v.startsWith("/")) el.setAttribute(attr, refOrigin + v);
+              else if (v.startsWith("./"))
+                el.setAttribute(attr, refOrigin + v.slice(1));
+            }
+          });
+
+          let base = document.querySelector("base");
+          if (!base) {
+            base = document.createElement("base");
+            document.head.insertBefore(base, document.head.firstChild);
+          }
+          base.setAttribute("href", refOrigin + "/");
+
+          const protectiveStyle = document.createElement("style");
+          protectiveStyle.id = "navbar-protection-css";
+          protectiveStyle.innerHTML = `
           .header-outer, .header, .nav, .nav-links, .nav-utils, .nav a, .search-icon, .language-selector, #google_translate_element {
             display: block !important; visibility: visible !important; opacity: 1 !important;
           }
@@ -68,370 +81,479 @@
           .goog-te-combo:hover { background-color: #4ec3b0 !important; }
           .goog-te-banner-frame { display: none !important; }
         `;
-        document.head.appendChild(protectiveStyle);
-        console.log('Google Translate proxy fix applied');
-      } catch (e) {
-        console.warn('Translate proxy fix failed:', e);
+          document.head.appendChild(protectiveStyle);
+          console.log("Google Translate proxy fix applied");
+        } catch (e) {
+          console.warn("Translate proxy fix failed:", e);
+        }
+      })();
+    </script>
+
+    <!-- Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-37VRZ5CGE4"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
       }
-    })();
-  </script>
+      gtag("js", new Date());
+      gtag("config", "G-37VRZ5CGE4");
+    </script>
 
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-37VRZ5CGE4"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-37VRZ5CGE4');
-  </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Cache-Control"
+      content="no-store, no-cache, must-revalidate"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>Green Economy Toolkit - Login</title>
 
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-  <title>Green Economy Toolkit - Login</title>
+    <!-- Tailwind + Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
 
-  <!-- Tailwind + Icons -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Master Page + Translation -->
+    <script
+      type="module"
+      src="/Master%20Page(Header%20and%20Footer)/MasterPage.js"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="/Master%20Page(Header%20and%20Footer)/MasterPage.css"
+    />
+    <link
+      rel="stylesheet"
+      href="/LandingPage/SignInAndSignUp/signupandsignin.css"
+    />
 
-  <!-- Master Page + Translation -->
-  <script type="module" src="/Master%20Page(Header%20and%20Footer)/MasterPage.js"></script>
-  <link rel="stylesheet" href="/Master%20Page(Header%20and%20Footer)/MasterPage.css">
-  <link rel="stylesheet" href="/LandingPage/SignInAndSignUp/signupandsignin.css">
+    <style>
+      :root {
+        --green-primary: #000000;
+        --green-dark: #000000;
+        --radius: 0.5rem;
+      }
 
-  <style>
-    :root {
-      --green-primary: #000000;
-      --green-dark: #000000;
-      --radius: 0.5rem;
-    }
+      .blurry-bg {
+        background-image: url("https://images.unsplash.com/photo-1506744038136-46273834b3fb");
+        background-size: cover;
+        background-position: center;
+        filter: blur(8px);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+      }
 
-    .blurry-bg {
-      background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb');
-      background-size: cover;
-      background-position: center;
-      filter: blur(8px);
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      z-index: -1;
-    }
+      .form-container {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: var(--radius);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        position: relative;
+        z-index: 5;
+        max-width: 28rem;
+        width: 100%;
+        margin: 0 auto;
+        padding: 2rem;
+      }
 
-    .form-container {
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: var(--radius);
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      position: relative;
-      z-index: 5;
-      max-width: 28rem;
-      width: 100%;
-      margin: 0 auto;
-      padding: 2rem;
-    }
+      .sign-in-btn {
+        background-color: var(--green-primary);
+        color: white;
+        font-weight: 600;
+        padding: 0.75rem 1rem;
+        border-radius: var(--radius);
+        width: 100%;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
 
-    .sign-in-btn {
-      background-color: var(--green-primary);
-      color: white;
-      font-weight: 600;
-      padding: 0.75rem 1rem;
-      border-radius: var(--radius);
-      width: 100%;
-      border: none;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
+      .sign-in-btn:hover {
+        background-color: var(--green-dark);
+      }
 
-    .sign-in-btn:hover {
-      background-color: var(--green-dark);
-    }
+      .sign-in-btn:disabled {
+        background-color: #9ca3af !important;
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
 
-    .sign-in-btn:disabled {
-      background-color: #9CA3AF !important;
-      cursor: not-allowed;
-      opacity: 0.6;
-    }
+      .error-message {
+        color: #dc2626;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        text-align: center;
+      }
 
-    .error-message {
-      color: #dc2626;
-      font-size: 0.875rem;
-      margin-top: 0.5rem;
-      text-align: center;
-    }
+      .error-message.hidden {
+        display: none;
+      }
 
-    .error-message.hidden { display: none; }
+      .loader {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80px;
+        height: 80px;
+        border: 8px solid #e5e7eb;
+        border-top: 8px solid var(--green-primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        z-index: 1000;
+      }
 
-    .loader {
-      display: none;
-      position: fixed;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 80px; height: 80px;
-      border: 8px solid #e5e7eb;
-      border-top: 8px solid var(--green-primary);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      z-index: 1000;
-    }
+      .loader-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+      }
 
-    .loader-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 999;
-    }
+      @keyframes spin {
+        to {
+          transform: translate(-50%, -50%) rotate(360deg);
+        }
+      }
 
-    @keyframes spin {
-      to { transform: translate(-50%, -50%) rotate(360deg); }
-    }
+      #verification-modal,
+      #verification-modal-overlay {
+        display: none;
+        position: fixed;
+        z-index: 1001;
+      }
 
-    #verification-modal,
-    #verification-modal-overlay {
-      display: none;
-      position: fixed;
-      z-index: 1001;
-    }
+      #verification-modal-overlay {
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+      }
 
-    #verification-modal-overlay {
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-    }
+      #verification-modal {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        max-width: 400px;
+        width: 90%;
+        text-align: center;
+      }
 
-    #verification-modal {
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      padding: 1.5rem;
-      border-radius: 0.5rem;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      max-width: 400px;
-      width: 90%;
-      text-align: center;
-    }
+      #verification-modal button {
+        background-color: var(--green-primary);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        font-weight: 600;
+        margin-top: 1rem;
+        width: 100%;
+      }
 
-    #verification-modal button {
-      background-color: var(--green-primary);
-      color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 0.375rem;
-      font-weight: 600;
-      margin-top: 1rem;
-      width: 100%;
-    }
+      #verification-modal button:hover {
+        background-color: var(--green-dark);
+      }
 
-    #verification-modal button:hover {
-      background-color: var(--green-dark);
-    }
+      @media (max-width: 768px) {
+        .form-container {
+          padding: 1.5rem;
+        }
+      }
 
-    @media (max-width: 768px) {
-      .form-container { padding: 1.5rem; }
-    }
+      @media (max-width: 480px) {
+        .form-container {
+          padding: 1rem;
+        }
+      }
+    </style>
 
-    @media (max-width: 480px) {
-      .form-container { padding: 1rem; }
-    }
-  </style>
+    <style>
+      :root {
+        --green-primary: #000000;
+        --green-dark: #000000;
+        --radius: 0.5rem;
+      }
 
-  <style>
-    :root {
-      --green-primary: #000000;
-      --green-dark: #000000;
-      --radius: 0.5rem;
-    }
+      .blurry-bg {
+        background-image: url("https://images.unsplash.com/photo-1506744038136-46273834b3fb");
+        background-size: cover;
+        background-position: center;
+        filter: blur(8px);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+      }
 
-    .blurry-bg {
-      background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb');
-      background-size: cover;
-      background-position: center;
-      filter: blur(8px);
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      z-index: -1;
-    }
+      .form-container {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: var(--radius);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        position: relative;
+        z-index: 5;
+        max-width: 28rem;
+        width: 100%;
+        margin: 0 auto;
+        padding: 2rem;
+      }
 
-    .form-container {
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: var(--radius);
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      position: relative;
-      z-index: 5;
-      max-width: 28rem;
-      width: 100%;
-      margin: 0 auto;
-      padding: 2rem;
-    }
+      .sign-in-btn {
+        background-color: var(--green-primary);
+        color: white;
+        font-weight: 600;
+        padding: 0.75rem 1rem;
+        border-radius: var(--radius);
+        width: 100%;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
 
-    .sign-in-btn {
-      background-color: var(--green-primary);
-      color: white;
-      font-weight: 600;
-      padding: 0.75rem 1rem;
-      border-radius: var(--radius);
-      width: 100%;
-      border: none;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
+      .sign-in-btn:hover {
+        background-color: var(--green-dark);
+      }
 
-    .sign-in-btn:hover {
-      background-color: var(--green-dark);
-    }
+      .sign-in-btn:disabled {
+        background-color: #9ca3af !important;
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
 
-    .sign-in-btn:disabled {
-      background-color: #9CA3AF !important;
-      cursor: not-allowed;
-      opacity: 0.6;
-    }
+      .error-message {
+        color: #dc2626;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        text-align: center;
+      }
 
-    .error-message {
-      color: #dc2626;
-      font-size: 0.875rem;
-      margin-top: 0.5rem;
-      text-align: center;
-    }
+      .error-message.hidden {
+        display: none;
+      }
 
-    .error-message.hidden { display: none; }
+      .loader {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80px;
+        height: 80px;
+        border: 8px solid #e5e7eb;
+        border-top: 8px solid var(--green-primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        z-index: 1000;
+      }
 
-    .loader {
-      display: none;
-      position: fixed;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 80px; height: 80px;
-      border: 8px solid #e5e7eb;
-      border-top: 8px solid var(--green-primary);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      z-index: 1000;
-    }
+      .loader-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+      }
 
-    .loader-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 999;
-    }
+      @keyframes spin {
+        to {
+          transform: translate(-50%, -50%) rotate(360deg);
+        }
+      }
 
-    @keyframes spin {
-      to { transform: translate(-50%, -50%) rotate(360deg); }
-    }
+      #verification-modal,
+      #verification-modal-overlay {
+        display: none;
+        position: fixed;
+        z-index: 1001;
+      }
 
-    #verification-modal,
-    #verification-modal-overlay {
-      display: none;
-      position: fixed;
-      z-index: 1001;
-    }
+      #verification-modal-overlay {
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+      }
 
-    #verification-modal-overlay {
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-    }
+      #verification-modal {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        max-width: 400px;
+        width: 90%;
+        text-align: center;
+      }
 
-    #verification-modal {
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      padding: 1.5rem;
-      border-radius: 0.5rem;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      max-width: 400px;
-      width: 90%;
-      text-align: center;
-    }
+      #verification-modal button {
+        background-color: var(--green-primary);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        font-weight: 600;
+        margin-top: 1rem;
+        width: 100%;
+      }
 
-    #verification-modal button {
-      background-color: var(--green-primary);
-      color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 0.375rem;
-      font-weight: 600;
-      margin-top: 1rem;
-      width: 100%;
-    }
+      #verification-modal button:hover {
+        background-color: var(--green-dark);
+      }
 
-    #verification-modal button:hover {
-      background-color: var(--green-dark);
-    }
+      @media (max-width: 768px) {
+        .form-container {
+          padding: 1.5rem;
+        }
+      }
 
-    @media (max-width: 768px) {
-      .form-container { padding: 1.5rem; }
-    }
+      @media (max-width: 480px) {
+        .form-container {
+          padding: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <green-economy-header></green-economy-header>
 
-    @media (max-width: 480px) {
-      .form-container { padding: 1rem; }
-    }
-  </style>
+      <main class="flex-grow flex items-center justify-center py-16 relative">
+        <div class="blurry-bg"></div>
 
-</head>
-<body>
-  <div id="root">
-    <green-economy-header></green-economy-header>
-
-    <main class="flex-grow flex items-center justify-center py-16 relative">
-      <div class="blurry-bg"></div>
-
-      <div class="form-container">
-        <div class="flex justify-center mb-4">
-          <i class="fas fa-lock text-4xl text-green-primary"></i>
-        </div>
-        <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">Login to Your Account</h2>
-
-        <div class="space-y-6">
-          <div>
-            <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-            <input id="email" type="email" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-primary focus:border-green-primary" placeholder="you@example.com">
+        <div class="form-container">
+          <div class="flex justify-center mb-4">
+            <i class="fas fa-lock text-4xl text-green-primary"></i>
           </div>
+          <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">
+            Login to Your Account
+          </h2>
 
-          <div id="password-field">
-            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-            <input id="password" type="password" class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-primary focus:border-green-primary" placeholder="....................">
-          </div>
-
-          <div id="error-message" class="error-message hidden"></div>
-
-          <div class="flex items-center justify-between">
-            <div class="flex items-center">
-              <input id="remember-me" type="checkbox" class="h-4 w-4 text-green-primary focus:ring-green-primary border-gray-300 rounded">
-              <label for="remember-me" class="ml-2 text-sm text-gray-600">Remember me</label>
+          <div class="space-y-6">
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700"
+                >Email Address</label
+              >
+              <input
+                id="email"
+                type="email"
+                required
+                class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-primary focus:border-green-primary"
+                placeholder="you@example.com"
+              />
             </div>
+
+            <div id="password-field">
+              <label
+                for="password"
+                class="block text-sm font-medium text-gray-700"
+                >Password</label
+              >
+              <input
+                id="password"
+                type="password"
+                class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-primary focus:border-green-primary"
+                placeholder="...................."
+              />
+            </div>
+
+            <div class="text-right">
+              <a
+                href="forgotPassword.html"
+                class="text-sm text-green-primary hover:underline"
+              >
+                Forgot password?
+              </a>
+            </div>
+
+            <div id="error-message" class="error-message hidden"></div>
+
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                <input
+                  id="remember-me"
+                  type="checkbox"
+                  class="h-4 w-4 text-green-primary focus:ring-green-primary border-gray-300 rounded"
+                />
+                <label for="remember-me" class="ml-2 text-sm text-gray-600"
+                  >Remember me</label
+                >
+              </div>
+            </div>
+
+            <button
+              id="sign-in-btn"
+              class="sign-in-btn"
+              onclick="if(window.handleSignInClick) window.handleSignInClick(event);"
+            >
+              Sign In
+            </button>
           </div>
 
-          <button id="sign-in-btn" class="sign-in-btn" onclick="if(window.handleSignInClick) window.handleSignInClick(event);">Sign In</button>
+          <p class="mt-6 text-center text-sm text-gray-600">
+            <span>Don't have an account?</span>
+            <a href="SignUp.html" class="text-green-primary hover:underline"
+              >Sign Up</a
+            >
+          </p>
         </div>
 
-        <p class="mt-6 text-center text-sm text-gray-600">
-          <span>Don't have an account?</span>
-          <a href="SignUp.html" class="text-green-primary hover:underline">Sign Up</a>
-        </p>
-      </div>
-
-      <!-- Verification Modal -->
-      <div id="verification-modal-overlay"></div>
-      <div id="verification-modal">
-        <div class="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto">
-          <p class="text-lg font-medium text-gray-900 mb-4">Please verify your email to continue.</p>
-          <p class="text-sm text-gray-600 mb-6">Check your inbox for a verification link.</p>
-          <button id="modal-ok-btn" class="bg-green-primary text-white font-semibold py-2 px-4 rounded-md hover:bg-green-dark w-full">Okay</button>
+        <!-- Verification Modal -->
+        <div id="verification-modal-overlay"></div>
+        <div id="verification-modal">
+          <div class="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto">
+            <p class="text-lg font-medium text-gray-900 mb-4">
+              Please verify your email to continue.
+            </p>
+            <p class="text-sm text-gray-600 mb-6">
+              Check your inbox for a verification link.
+            </p>
+            <button
+              id="modal-ok-btn"
+              class="bg-green-primary text-white font-semibold py-2 px-4 rounded-md hover:bg-green-dark w-full"
+            >
+              Okay
+            </button>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
 
-    <green-economy-footer></green-economy-footer>
-  </div>
+      <green-economy-footer></green-economy-footer>
+    </div>
 
-  <div class="loader-overlay" id="loader-overlay"></div>
-  <div class="loader" id="loader"></div>
+    <div class="loader-overlay" id="loader-overlay"></div>
+    <div class="loader" id="loader"></div>
 
-  <!-- Firebase + Sign-In Logic -->
-  <script type="module" src="/scripts/signin_clean.js"></script>
-</body>
+    <!-- Admin Session Manager -->
+    <script src="/scripts/adminSessionManager.js"></script>
+
+    <!-- Firebase + Sign-In Logic -->
+    <script type="module" src="/scripts/signin_clean.js"></script>
+  </body>
 </html>
-
-

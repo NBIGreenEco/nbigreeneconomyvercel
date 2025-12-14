@@ -448,6 +448,10 @@ if (!getApps().length) {
 db = getFirestore(app);
 auth = getAuth(app);
 
+// Track auth readiness and current user
+let authReady = false;
+let currentAuthUser = null;
+
 // Finalize loading - hide the loading overlay
 function finalizeLoading() {
     const loadingOverlay = document.querySelector('.loading-overlay');
@@ -601,11 +605,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Wait for Firebase Auth state
         onAuthStateChanged(auth, async (user) => {
             console.log('DEBUG: Firebase auth state checked, user:', user ? user.email : 'null');
+            authReady = true;  // Mark auth as ready
+            currentAuthUser = user;  // Store user
+            
             if (!user) {
-                console.log('DEBUG: No user signed in, redirecting to VerifyCode.html');
-                showAlertModal('You must be logged in to access this page.', 'error');
-                setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
-                return;
+                console.log('DEBUG: Auth is null, checking session...');
+                const isVerified = sessionStorage.getItem('verified') === 'true';
+                if (!isVerified) {
+                    console.log('DEBUG: No session, redirecting to VerifyCode.html');
+                    showAlertModal('You must be logged in to access this page.', 'error');
+                    setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
+                } else {
+                    console.log('✅ Session verified without Firebase auth - allowing based on session');
+                }
+                // Don't return, allow session-based access to continue
+            } else {
+                console.log('✅ User authenticated:', user.email);
             }
 
             // Only check admin status for sensitive operations
@@ -620,8 +635,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     if (!button) return;
                     const action = button.dataset.action;
                     const id = button.closest('.event-item').dataset.id;
-                    if (action === 'edit') await editEvent(id, user);
-                    else if (action === 'delete') await deleteEvent(id, user);
+                    if (action === 'edit') await editEvent(id, currentAuthUser || user);
+                    else if (action === 'delete') await deleteEvent(id, currentAuthUser || user);
                 });
             } else {
                 console.error('Events list container not found');
@@ -632,7 +647,22 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (addEventForm) {
                 addEventForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
-                    if (!user) {
+                    
+                    // Wait for auth to be ready
+                    if (!authReady) {
+                        alert('⏳ Authentication is still loading. Please wait a moment and try again.');
+                        return;
+                    }
+                    
+                    // Check if session is verified
+                    if (sessionStorage.getItem('verified') !== 'true') {
+                        alert('❌ Session expired. Please sign in again.');
+                        setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 1500);
+                        return;
+                    }
+                    
+                    const authUser = currentAuthUser || auth.currentUser;
+                    if (!authUser) {
                         showAlertModal('You must be logged in to add events.', 'error');
                         setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
                         return;
@@ -649,12 +679,17 @@ document.addEventListener('DOMContentLoaded', async () => {
                         return;
                     }
                     try {
+                        const adminEmail = user?.email || 'nbigreeneconomy@gmail.com';
                         await addDoc(collection(db, 'events'), {
                             title,
                             date,
                             details,
                             location: '',
-                            timestamp: Timestamp.fromDate(new Date())
+                            timestamp: Timestamp.fromDate(new Date()),
+                            createdAt: Timestamp.fromDate(new Date()),
+                            updatedAt: Timestamp.fromDate(new Date()),
+                            createdBy: adminEmail,
+                            updatedBy: adminEmail
                         });
                         addEventForm.reset();
                         closeModal('add-event-modal');
@@ -671,7 +706,22 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (editEventForm) {
                 editEventForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
-                    if (!user) {
+                    
+                    // Wait for auth to be ready
+                    if (!authReady) {
+                        alert('⏳ Authentication is still loading. Please wait a moment and try again.');
+                        return;
+                    }
+                    
+                    // Check if session is verified
+                    if (sessionStorage.getItem('verified') !== 'true') {
+                        alert('❌ Session expired. Please sign in again.');
+                        setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 1500);
+                        return;
+                    }
+                    
+                    const authUser = currentAuthUser || auth.currentUser;
+                    if (!authUser) {
                         showAlertModal('You must be logged in to update events.', 'error');
                         setTimeout(() => window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html'), 2000);
                         return;
@@ -689,12 +739,17 @@ document.addEventListener('DOMContentLoaded', async () => {
                         return;
                     }
                     try {
+                        const adminEmail = authUser?.email || 'nbigreeneconomy@gmail.com';
                         await updateDoc(doc(db, 'events', id), {
                             title,
                             date,
                             details,
                             location: '',
-                            timestamp: Timestamp.fromDate(new Date())
+                            timestamp: Timestamp.fromDate(new Date()),
+                            updatedAt: Timestamp.fromDate(new Date()),
+                            updatedBy: adminEmail,
+                            createdAt: Timestamp.fromDate(new Date()),
+                            createdBy: adminEmail
                         });
                         closeModal('edit-event-modal');
                         await loadEvents();

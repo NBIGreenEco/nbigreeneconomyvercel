@@ -259,13 +259,31 @@
             background: rgba(0, 0, 0, 0.5);
             z-index: 1000;
         }
+        #verification-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 550px;
+            width: 90%;
+            z-index: 1001;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
         #verification-modal button {
             background-color: #10b981;
             color: white;
-            padding: 8px 16px;
+            padding: 10px 24px;
             border-radius: 4px;
             font-weight: 600;
             transition: background-color 0.3s;
+            border: none;
+            cursor: pointer;
         }
         #verification-modal button:hover {
             background-color: #059669;
@@ -434,9 +452,20 @@
                 </p>
             </div>
             <div id="verification-modal-overlay" class="hidden"></div>
-            <div id="verification-modal" class="hidden">
-                <p class="text-lg font-medium text-gray-900 mb-4">You Have Been Sent Link On Email For Verification</p>
-                <button id="modal-ok-btn">Okay</button>
+            <div id="verification-modal" class="hidden" style="display: none;">
+                <div style="text-align: center;">
+                    <h2 style="font-size: 1.5rem; color: #4eb5a6; margin-bottom: 1rem;">Verification Email Sent</h2>
+                    <p id="modal-email" style="font-size: 1rem; color: #555; margin-bottom: 1.5rem;">
+                        We've sent a verification link to your email address.
+                    </p>
+                    <p style="font-size: 0.95rem; color: #777; margin-bottom: 2rem; line-height: 1.6;">
+                        Please check your email and click the verification link.<br/>
+                        Once verified, you'll be redirected to the Sign In page.
+                    </p>
+                    <button id="modal-ok-btn" style="background-color: #4eb5a6; color: white; padding: 10px 24px; border-radius: 4px; font-weight: 600; border: none; cursor: pointer; font-size: 1rem; transition: background-color 0.3s;">
+                        Got It
+                    </button>
+                </div>
             </div>
         </main>
         <green-economy-footer></green-economy-footer>

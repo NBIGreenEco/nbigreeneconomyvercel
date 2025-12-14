@@ -1,0 +1,166 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Enhanced isAdmin() function - checks both hardcoded email AND admin collection
+    // This provides a fallback so if admin collection isn't set up, the hardcoded email still works
+    function isAdmin() {
+      return request.auth != null && (
+        request.auth.token.email == 'nbigreeneconomy@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.token.email))
+      );
+    }
+
+    match /admin_config/password_hash {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.token.email == 'nbigreeneconomy@gmail.com';
+    }
+
+    match /admin_config/{docId} {
+      allow read, write: if request.auth != null && request.auth.token.email == 'nbigreeneconomy@gmail.com';
+      allow create: if false;
+    }
+
+    match /users/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if request.auth != null && (
+        request.auth.uid == userId ||
+        isAdmin()
+      );
+    }
+
+    match /newsletterSubscriptions/{document} {
+      allow read: if isAdmin();
+      allow write: if request.auth != null &&
+        request.resource.data.keys().hasOnly(['email', 'name', 'subscribedAt', 'status', 'source']) &&
+        request.resource.data.email is string &&
+        request.resource.data.subscribedAt is timestamp &&
+        request.resource.data.status is string &&
+        request.resource.data.source is string;
+    }
+
+    match /verification_codes/{email} {
+      allow read: if request.auth != null && request.auth.token.email == email && resource.data.expiresAt > request.time;
+      allow write, delete: if request.auth != null && (
+        request.auth.token.email == email ||
+        isAdmin()
+      ) && request.resource.data.keys().hasOnly(['email', 'codeHash', 'createdAt', 'expiresAt']);
+    }
+
+    match /email_verifications/{email} {
+      allow read, write: if request.auth != null && request.auth.token.email == email;
+      allow delete: if request.auth != null && isAdmin();
+    }
+
+    // Events - Allow any authenticated user to write/delete
+    match /events/{eventId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+
+    // News - Allow any authenticated user to write/delete
+    match /news/{newsId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+
+    // Translations - Allow any authenticated user to write/delete
+    match /translations/{translationId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+
+    match /translation_metadata/{docId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+    }
+
+    // Allow unauthenticated writes for tracking interactions during sign-up
+    match /interactions/{interactionId} {
+      allow read: if isAdmin();
+      allow write: if request.resource.data.keys().hasOnly(['tempUserId', 'category', 'action', 'label', 'timestamp', 'language', 'userAgent']) &&
+                       request.resource.data.tempUserId is string &&
+                       request.resource.data.category is string &&
+                       request.resource.data.action is string &&
+                       request.resource.data.label is string &&
+                       request.resource.data.language is string &&
+                       request.resource.data.userAgent is string;
+    }
+
+    match /admins/{adminEmail} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && (
+        request.auth.token.email == adminEmail ||
+        isAdmin()
+      ) && request.resource.data.keys().hasOnly(['isAdmin']);
+    }
+
+    match /questionnaire_responses/{responseId} {
+      allow read: if request.auth != null && (
+        resource.data.userId == request.auth.uid ||
+        isAdmin()
+      );
+      allow write: if request.auth != null && (
+        request.auth.uid == request.resource.data.userId ||
+        isAdmin()
+      ) && request.resource.data.keys().hasOnly([
+        'responseId', 'experienceLevel', 'preferredLanguage', 'role',
+        'primaryInterest', 'fundingType', 'businessSector', 'greenTools',
+        'userId', 'timestamp'
+      ]);
+      allow delete: if isAdmin();
+    }
+
+    // OPPORTUNITIES - Admin-only with field validation
+    match /opportunities/{opportunityId} {
+      allow read: if true;
+      allow create: if isAdmin() && request.resource.data.keys().hasOnly(['name', 'category', 'description', 'link', 'linkText', 'createdAt', 'updatedAt']);
+      allow update: if isAdmin() && request.resource.data.keys().hasOnly(['name', 'category', 'description', 'link', 'linkText', 'createdAt', 'updatedAt']);
+      allow delete: if isAdmin();
+    }
+
+    // FUNDING - Allow any authenticated user to write/delete
+    match /funding/{fundingId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+
+    match /funding_applications/{applicationId} {
+      allow read: if request.auth != null && (
+        resource.data.userId == request.auth.uid ||
+        isAdmin()
+      );
+      allow write: if request.auth != null && (
+        request.auth.uid == request.resource.data.userId ||
+        isAdmin()
+      );
+      allow delete: if isAdmin();
+    }
+
+    match /projects/{projectId} {
+      allow read: if request.auth != null && isAdmin();
+      allow write: if request.auth != null && isAdmin();
+      allow delete: if request.auth != null && isAdmin();
+    }
+
+    match /metadata/{documentId} {
+      allow read: if request.auth != null && isAdmin();
+      allow write: if request.auth != null && isAdmin();
+      allow delete: if request.auth != null && isAdmin();
+    }
+
+    match /apis/{apiId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Default deny all other operations
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

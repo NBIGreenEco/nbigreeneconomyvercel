@@ -20,7 +20,7 @@ This error occurs when Firebase Email Authentication is not configured to accept
 3. Add the following domains:
 
 #### Required Domains:
-- ✅ `nbigreeneconomyvercel.vercel.app`
+- ✅ `www.greeneconomytoolkit.com`
 - ✅ `greeneconomytoolkit.com`
 - ✅ `www.greeneconomytoolkit.com`
 - ✅ `localhost:3000` (for local development)
@@ -78,7 +78,7 @@ This error occurs when Firebase Email Authentication is not configured to accept
 ## 🐛 If You Still See Errors
 
 ### Error: "FirebaseError: Firebase: Domain not allowlisted"
-- **Action**: Double-check that `nbigreeneconomyvercel.vercel.app` is in Authorized domains
+- **Action**: Double-check that `www.greeneconomytoolkit.com` is in Authorized domains
 - **Wait**: Changes can take a few minutes to propagate
 - **Clear cache**: Hard refresh (Ctrl+Shift+R)
 
@@ -106,7 +106,7 @@ This error occurs when Firebase Email Authentication is not configured to accept
 
 - [ ] Log into Firebase Console
 - [ ] Navigate to Authentication → Settings
-- [ ] Add `nbigreeneconomyvercel.vercel.app` to Authorized domains
+- [ ] Add `www.greeneconomytoolkit.com` to Authorized domains
 - [ ] Add `greeneconomytoolkit.com` to Authorized domains
 - [ ] Add `www.greeneconomytoolkit.com` to Authorized domains
 - [ ] Click Save

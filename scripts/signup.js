@@ -77,18 +77,44 @@ try {
         }
     }
 
-    function showVerificationModal(email) {
+    function showSpamWarningModal(email) {
         const modal = document.getElementById('verification-modal');
         const modalOverlay = document.getElementById('verification-modal-overlay');
         const okBtn = document.getElementById('modal-ok-btn');
         if (modal && modalOverlay && okBtn) {
+            // Update modal content with spam warning
+            modal.innerHTML = `
+                <div style="text-align: center;">
+                    <h2 style="font-size: 1.5rem; color: #4eb5a6; margin-bottom: 1rem;"> Check Your Email</h2>
+                    <p style="font-size: 1rem; color: #555; margin-bottom: 1.5rem;">
+                        A verification link has been sent to:<br/>
+                        <strong>${email}</strong>
+                    </p>
+                    <div style="background-color: #fff3cd; border: 1px solid #ffc107; border-radius: 0.25rem; padding: 1.5rem; margin-bottom: 2rem; text-align: left;">
+                        <p style="color: #ff6b6b; font-weight: 600; margin: 0 0 0.5rem 0;">⚠️ Important:</p>
+                        <p style="color: #555; margin: 0; font-size: 0.95rem; line-height: 1.6;">
+                            The verification email might end up in your <strong>Spam</strong> or <strong>Promotions</strong> folder. 
+                            Please check these folders if you don't see the email in your inbox.
+                        </p>
+                    </div>
+                    <p style="font-size: 0.95rem; color: #777; margin-bottom: 2rem; line-height: 1.6;">
+                        Click the verification link to complete your sign-up and you'll be redirected to the Sign In page.
+                    </p>
+                    <button id="modal-ok-btn" style="background-color: #4eb5a6; color: white; padding: 12px 28px; border-radius: 4px; font-weight: 600; border: none; cursor: pointer; font-size: 1rem; transition: background-color 0.3s;">
+                        Understood
+                    </button>
+                </div>
+            `;
+            
             modal.style.display = 'block';
             modalOverlay.style.display = 'block';
-            okBtn.onclick = () => {
+            
+            const newOkBtn = document.getElementById('modal-ok-btn');
+            newOkBtn.onclick = () => {
                 modal.style.display = 'none';
                 modalOverlay.style.display = 'none';
-                console.log(`Verification email sent, waiting for user action: ${email}`);
-                // Optionally redirect to a waiting page or stay on the signup page
+                console.log(`User acknowledged spam warning for: ${email}`);
+                window.location.href = `SignIn.html?tempUserId=${tempUserId}`;
             };
         } else {
             console.error("Modal elements not found");
@@ -144,7 +170,7 @@ try {
             await setDoc(doc(db, 'admins', email), { isAdmin: true }, { merge: true });
 
             hideLoader();
-            showVerificationModal(email);
+            showSpamWarningModal(email);
             await trackInteraction('signup', 'code_sent', `Email: ${email}, Token: ${token}, URL: ${actionCodeSettings.url}`);
         } catch (error) {
             hideLoader();
@@ -226,12 +252,7 @@ try {
                         console.log("User created and email verification sent to VerifyEmail.html");
                         await trackInteraction('signup', 'success', `Email: ${email}`);
                         hideLoader();
-                        errorMessage.textContent = "Account created! Please verify your email.";
-                        errorMessage.classList.remove('hidden');
-                        setTimeout(() => {
-                            errorMessage.classList.add('hidden');
-                            window.location.href = `SignIn.html?tempUserId=${tempUserId}`;
-                        }, 3000);
+                        showSpamWarningModal(email);
                     }
                 } catch (error) {
                     hideLoader();
@@ -294,7 +315,7 @@ try {
                         await setDoc(doc(db, 'admins', user.email), { isAdmin: true }, { merge: true });
 
                         hideLoader();
-                        showVerificationModal(user.email);
+                        showSpamWarningModal(user.email);
                         await trackInteraction('signup', 'code_sent', `Email: ${user.email}, Token: ${token}, URL: ${actionCodeSettings.url}`);
                     } else {
                         window.location.href = `/questionnaire/questionnaire.html?tempUserId=${tempUserId}`;

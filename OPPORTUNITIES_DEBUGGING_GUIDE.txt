@@ -1,0 +1,196 @@
+# Manage Opportunities - Troubleshooting Checklist
+
+## Quick Fix Summary
+
+### What was wrong:
+1. Firebase authentication scripts weren't properly loaded
+2. Firestore security rules weren't checking admin status correctly
+3. Error messages were too generic to identify the real problem
+
+### What I fixed:
+1. ✅ Added missing Firebase auth-compat library
+2. ✅ Improved isAdmin() function to check both hardcoded email AND admin collection
+3. ✅ Added detailed error logging and user-friendly error messages
+4. ✅ Added authentication status debugging to console
+
+---
+
+## How to Test if It's Working
+
+### Step 1: Open Browser Console
+1. Press **F12** on your keyboard
+2. Click the **Console** tab
+3. Look for messages like:
+   - ✅ "Firebase initialized successfully"
+   - ✅ "👤 User authenticated: your-email@gmail.com"
+
+### Step 2: Check These Console Messages
+When you load the Manage Opportunities page, you should see:
+
+```
+✅ Firebase initialized successfully
+👤 User authenticated: nbigreeneconomy@gmail.com
+📧 User email: nbigreeneconomy@gmail.com
+🔑 Email verified: true
+```
+
+If you see: ⚠️ "No user authenticated" → **You're not signed in!**
+
+### Step 3: Try Adding an Opportunity
+1. Click **Add Opportunity** button
+2. Fill in the form
+3. Click **Save**
+
+**If it works:** ✅ Great! You should see "Opportunity added successfully."
+
+**If you get an error:**
+- Look at the error message
+- Check the console (F12) for detailed error codes
+- Share the error code and message for debugging
+
+---
+
+## Firestore Rules - What Changed
+
+### Old Rule (BROKEN):
+```
+match /opportunities/{opportunityId} {
+  allow read: if true;
+  allow write: if isAdmin();
+  allow delete: if isAdmin();
+}
+```
+
+### New Rule (FIXED):
+```
+match /opportunities/{opportunityId} {
+  allow read: if true;
+  allow create: if isAdmin() && request.resource.data.keys().hasOnly(['name', 'category', 'description', 'link', 'linkText', 'createdAt', 'updatedAt']);
+  allow update: if isAdmin() && request.resource.data.keys().hasOnly(['name', 'category', 'description', 'link', 'linkText', 'createdAt', 'updatedAt']);
+  allow delete: if isAdmin();
+}
+```
+
+### Enhanced isAdmin() Function (FIXED):
+```
+function isAdmin() {
+  return request.auth != null && (
+    request.auth.token.email == 'nbigreeneconomy@gmail.com' ||
+    exists(/databases/$(database)/documents/admins/$(request.auth.token.email))
+  );
+}
+```
+
+This now checks:
+1. User is authenticated (request.auth != null)
+2. AND either:
+   - Their email is the hardcoded admin email, OR
+   - Their email exists in the /admins/ collection
+
+---
+
+## Required Firestore Collection Setup
+
+### Admin Collection Structure
+You MUST have this in Firestore:
+
+**Collection:** `admins`
+**Document ID:** `nbigreeneconomy@gmail.com` (your admin email)
+**Fields:**
+```json
+{
+  "isAdmin": true
+}
+```
+
+### Example Path: `/admins/nbigreeneconomy@gmail.com`
+```
+admins/
+└── nbigreeneconomy@gmail.com (document)
+    └── isAdmin: true (boolean field)
+```
+
+---
+
+## Common Error Messages & Solutions
+
+### ❌ "Permission denied: You do not have permission..."
+**Cause:** You're not recognized as an admin
+**Solution:**
+1. Check if document exists in `/admins/` collection
+2. Verify your email matches exactly (case-sensitive)
+3. Make sure `isAdmin: true` is set
+4. Sign out and sign back in
+
+### ❌ "Authentication error: Please sign in again"
+**Cause:** Firebase can't verify your identity
+**Solution:**
+1. Click sign out (if available)
+2. Sign in again with your admin email
+3. Clear browser cache (Ctrl+Shift+Delete)
+4. Try a different browser
+
+### ❌ "Error saving opportunity. Please try again."
+**Cause:** Unknown error
+**Solution:**
+1. Open console (F12)
+2. Look for detailed error message
+3. Check if fields are correct (name, category, description required)
+4. Try again
+
+### ✅ "Opportunity added successfully" → Works!
+
+---
+
+## Debug Info to Share if It Still Doesn't Work
+
+If problems persist, open console (F12) and share:
+
+1. **The full error message from the alert**
+2. **The error code** (e.g., "permission-denied", "unauthenticated")
+3. **Console output** - Copy all messages that start with:
+   - "Firebase..."
+   - "Error..."
+   - "👤 User..."
+   - Anything in red
+
+Example:
+```
+Console output:
+✅ Firebase initialized successfully
+👤 User authenticated: nbigreeneconomy@gmail.com
+Uncaught Error: missing/invalid FIREBASE_DATABASE_URL
+```
+
+---
+
+## Files That Were Updated
+
+1. **ManageOpprtunities.html**
+   - Added Firebase auth-compat library
+   - Fixed Firebase initialization order
+   - Enhanced error messages
+   - Added auth status logging
+
+2. **FIRESTORE_RULES_FIXED.txt**
+   - Contains corrected security rules
+   - Copy these to Firebase Console → Firestore → Rules
+
+3. **This file (guide)**
+   - Troubleshooting checklist
+   - How to verify the fix works
+
+---
+
+## Next Steps
+
+1. ✅ Update Firestore rules (if not already done)
+2. ✅ Verify admin collection exists and has correct document
+3. ✅ Sign in as admin
+4. ✅ Test adding/editing/deleting opportunities
+5. ✅ Check console for any errors
+6. 📞 If still not working, share console errors for debugging
+
+---
+
+**Last Updated:** November 25, 2025
