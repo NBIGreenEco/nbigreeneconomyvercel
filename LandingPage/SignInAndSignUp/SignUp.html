@@ -1,33 +1,38 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <!-- Firebase Email Verification Redirect -->
     <script>
       // Intercept Firebase email verification links and redirect to VerifyEmail.html
-      (function() {
+      (function () {
         const urlParams = new URLSearchParams(window.location.search);
-        const mode = urlParams.get('mode');
-        const oobCode = urlParams.get('oobCode');
-        const continueUrl = urlParams.get('continueUrl');
-        
+        const mode = urlParams.get("mode");
+        const oobCode = urlParams.get("oobCode");
+        const continueUrl = urlParams.get("continueUrl");
+
         // If this is a Firebase email verification link, redirect to VerifyEmail.html
-        if (mode === 'verifyEmail' && oobCode) {
+        if (mode === "verifyEmail" && oobCode) {
           // Extract email from continueUrl if available
-          let email = urlParams.get('email');
+          let email = urlParams.get("email");
           if (!email && continueUrl) {
             const emailMatch = continueUrl.match(/email=([^&]+)/);
             if (emailMatch) {
               email = decodeURIComponent(emailMatch[1]);
             }
           }
-          
+
           // Build the redirect URL
-          let verifyUrl = '/LandingPage/VerifyEmail.html?oobCode=' + encodeURIComponent(oobCode);
+          let verifyUrl =
+            "/LandingPage/VerifyEmail.html?oobCode=" +
+            encodeURIComponent(oobCode);
           if (email) {
-            verifyUrl += '&email=' + encodeURIComponent(email);
+            verifyUrl += "&email=" + encodeURIComponent(email);
           }
-          
-          console.log('Firebase email verification detected, redirecting to:', verifyUrl);
+
+          console.log(
+            "Firebase email verification detected, redirecting to:",
+            verifyUrl
+          );
           window.location.href = verifyUrl;
         }
       })();
@@ -35,443 +40,589 @@
 
     <!-- Fix for Google Translate proxy: when translate serves a proxied page, root-relative URLs (starting with /) point to the proxy origin and break asset loading. -->
     <script>
-      (function() {
+      (function () {
         try {
-          var ref = document.referrer || '';
+          var ref = document.referrer || "";
           if (!ref) return;
           var refOrigin = new URL(ref).origin;
-          var hostname = window.location.hostname || '';
-          var isProxy = /translate|googleusercontent|goog/.test(hostname) && refOrigin.indexOf(hostname) === -1;
+          var hostname = window.location.hostname || "";
+          var isProxy =
+            /translate|googleusercontent|goog/.test(hostname) &&
+            refOrigin.indexOf(hostname) === -1;
           if (!isProxy) return;
-          var map = [ ['link','href'], ['script','src'], ['img','src'], ['a','href'] ];
-          map.forEach(function(pair) {
-            var tag = pair[0], attr = pair[1];
+          var map = [
+            ["link", "href"],
+            ["script", "src"],
+            ["img", "src"],
+            ["a", "href"],
+          ];
+          map.forEach(function (pair) {
+            var tag = pair[0],
+              attr = pair[1];
             var nodes = document.getElementsByTagName(tag);
             for (var i = 0; i < nodes.length; i++) {
               var el = nodes[i];
               var v = el.getAttribute(attr);
               if (!v) continue;
-              if (v.indexOf('/') === 0) {
+              if (v.indexOf("/") === 0) {
                 el.setAttribute(attr, refOrigin + v);
-              } else if (v.indexOf('./') === 0) {
+              } else if (v.indexOf("./") === 0) {
                 el.setAttribute(attr, refOrigin + v.slice(1));
               }
             }
           });
-          var base = document.querySelector('base');
+          var base = document.querySelector("base");
           if (!base) {
-            base = document.createElement('base');
+            base = document.createElement("base");
             document.head.insertBefore(base, document.head.firstChild);
           }
-          base.setAttribute('href', refOrigin + '/');
+          base.setAttribute("href", refOrigin + "/");
 
           // Inject protective CSS to override Google Translate's hiding rules
-          var protectiveStyle = document.createElement('style');
-          protectiveStyle.id = 'navbar-protection-css';
-          protectiveStyle.innerHTML = 
-            '.header-outer, .header, .nav, .nav-links, .nav-utils, ' +
-            '.nav a, .search-icon, .language-selector, #google_translate_element { ' +
-            'display: block !important; visibility: visible !important; opacity: 1 !important; } ' +
-            '.header { display: flex !important; } ' +
-            '.nav, .nav-links, .nav-utils { display: flex !important; } ' +
-            '.nav a { color: white !important; background-color: #2b9589 !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 0 2rem !important; padding-top: 0 !important; } ' +
-            '.nav a:nth-child(2), .nav a:nth-child(3), .nav a:nth-child(4) { padding-top: 12px !important; } ' +
-            '.search-icon { color: white !important; background-color: #2b9589 !important; display: flex !important; } ' +
-            '.language-selector { background-color: #207e74 !important; color: white !important; padding-top: 12px !important; } ' +
-            '#google_translate_element { display: inline-block !important; background: transparent !important; border: none !important; } ' +
-            '.goog-te-gadget { background-color: transparent !important; border: none !important; font-size: 0 !important; } ' +
-            '.goog-te-combo { display: inline-flex !important; align-items: center !important; justify-content: center !important; background-color: #2b9589 !important; color: white !important; border: none !important; height: 70px !important; padding: 0 2rem !important; padding-top: 12px !important; margin: 0 !important; font-size: 0.9rem !important; font-weight: 600 !important; line-height: 1.2 !important; } ' +
-            '.goog-te-combo:hover { background-color: #4ec3b0 !important; } ' +
-            '.goog-te-banner-frame { display: none !important; }';
+          var protectiveStyle = document.createElement("style");
+          protectiveStyle.id = "navbar-protection-css";
+          protectiveStyle.innerHTML =
+            ".header-outer, .header, .nav, .nav-links, .nav-utils, " +
+            ".nav a, .search-icon, .language-selector, #google_translate_element { " +
+            "display: block !important; visibility: visible !important; opacity: 1 !important; } " +
+            ".header { display: flex !important; } " +
+            ".nav, .nav-links, .nav-utils { display: flex !important; } " +
+            ".nav a { color: white !important; background-color: #2b9589 !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 0 2rem !important; padding-top: 0 !important; } " +
+            ".nav a:nth-child(2), .nav a:nth-child(3), .nav a:nth-child(4) { padding-top: 12px !important; } " +
+            ".search-icon { color: white !important; background-color: #2b9589 !important; display: flex !important; } " +
+            ".language-selector { background-color: #207e74 !important; color: white !important; padding-top: 12px !important; } " +
+            "#google_translate_element { display: inline-block !important; background: transparent !important; border: none !important; } " +
+            ".goog-te-gadget { background-color: transparent !important; border: none !important; font-size: 0 !important; } " +
+            ".goog-te-combo { display: inline-flex !important; align-items: center !important; justify-content: center !important; background-color: #2b9589 !important; color: white !important; border: none !important; height: 70px !important; padding: 0 2rem !important; padding-top: 12px !important; margin: 0 !important; font-size: 0.9rem !important; font-weight: 600 !important; line-height: 1.2 !important; } " +
+            ".goog-te-combo:hover { background-color: #4ec3b0 !important; } " +
+            ".goog-te-banner-frame { display: none !important; }";
           document.head.appendChild(protectiveStyle);
-          console.log('Applied Google Translate proxy asset fix â€” using origin:', refOrigin);
+          console.log(
+            "Applied Google Translate proxy asset fix â€” using origin:",
+            refOrigin
+          );
         } catch (e) {
-          console.warn('Translate proxy fix failed:', e);
+          console.warn("Translate proxy fix failed:", e);
         }
       })();
     </script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Cache-Control"
+      content="no-store, no-cache, must-revalidate"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <title>Green Economy Toolkit - Sign Up</title>
-    
-  <!-- Translation System (Unofficial Google Translate API) -->
-  <script>
-    let currentLanguage = 'en';
 
-    // Translate a single piece of text
-    async function translateText(text, targetLang) {
-      const sourceLang = currentLanguage || 'en';
-      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-        return data[0].map(seg => seg[0]).join('');
-      } catch (e) {
-        console.error('Translation error:', e);
-        return text;
-      }
-    }
+    <!-- Translation System (Unofficial Google Translate API) -->
+    <script>
+      let currentLanguage = "en";
 
-    // Translate the whole page (all text nodes)
-    async function translatePage(targetLang) {
-      const selector = document.getElementById('langSelect');
-      if (!selector) return;
-      
-      const original = selector.dataset.original || selector.options[selector.selectedIndex].text;
-      selector.dataset.original = original;
-
-      const translating = targetLang === 'en' ? 'English' :
-                          targetLang === 'zu' ? 'isiZulu' :
-                          'Setswana';
-      selector.options[selector.selectedIndex].text = `Translating to ${translating}â€¦`;
-
-      const walker = document.createTreeWalker(
-        document.body,
-        NodeFilter.SHOW_TEXT,
-        {
-          acceptNode: node => {
-            const p = node.parentNode;
-            if (!p) return NodeFilter.FILTER_REJECT;
-            const tag = p.tagName;
-            if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'NOSCRIPT') return NodeFilter.FILTER_REJECT;
-            return node.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
-          }
+      // Translate a single piece of text
+      async function translateText(text, targetLang) {
+        const sourceLang = currentLanguage || "en";
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(
+          text
+        )}`;
+        try {
+          const res = await fetch(url);
+          const data = await res.json();
+          return data[0].map((seg) => seg[0]).join("");
+        } catch (e) {
+          console.error("Translation error:", e);
+          return text;
         }
-      );
-
-      const nodes = [];
-      let n;
-      while (n = walker.nextNode()) nodes.push(n);
-
-      const BATCH = 15;
-      for (let i = 0; i < nodes.length; i += BATCH) {
-        const batch = nodes.slice(i, i + BATCH);
-        const promises = batch.map(node => translateText(node.nodeValue, targetLang));
-        const results = await Promise.all(promises);
-        batch.forEach((node, idx) => node.nodeValue = results[idx]);
       }
 
-      selector.options[selector.selectedIndex].text = original;
-      currentLanguage = targetLang;
-    }      function onLangChange() {
+      // Translate the whole page (all text nodes)
+      async function translatePage(targetLang) {
+        const selector = document.getElementById("langSelect");
+        if (!selector) return;
+
+        const original =
+          selector.dataset.original ||
+          selector.options[selector.selectedIndex].text;
+        selector.dataset.original = original;
+
+        const translating =
+          targetLang === "en"
+            ? "English"
+            : targetLang === "zu"
+            ? "isiZulu"
+            : "Setswana";
+        selector.options[
+          selector.selectedIndex
+        ].text = `Translating to ${translating}â€¦`;
+
+        const walker = document.createTreeWalker(
+          document.body,
+          NodeFilter.SHOW_TEXT,
+          {
+            acceptNode: (node) => {
+              const p = node.parentNode;
+              if (!p) return NodeFilter.FILTER_REJECT;
+              const tag = p.tagName;
+              if (tag === "SCRIPT" || tag === "STYLE" || tag === "NOSCRIPT")
+                return NodeFilter.FILTER_REJECT;
+              return node.nodeValue.trim()
+                ? NodeFilter.FILTER_ACCEPT
+                : NodeFilter.FILTER_REJECT;
+            },
+          }
+        );
+
+        const nodes = [];
+        let n;
+        while ((n = walker.nextNode())) nodes.push(n);
+
+        const BATCH = 15;
+        for (let i = 0; i < nodes.length; i += BATCH) {
+          const batch = nodes.slice(i, i + BATCH);
+          const promises = batch.map((node) =>
+            translateText(node.nodeValue, targetLang)
+          );
+          const results = await Promise.all(promises);
+          batch.forEach((node, idx) => (node.nodeValue = results[idx]));
+        }
+
+        selector.options[selector.selectedIndex].text = original;
+        currentLanguage = targetLang;
+      }
+      function onLangChange() {
         const lang = this.value;
-        if (lang === 'en') {
+        if (lang === "en") {
           location.reload();
           return;
         }
-        translatePage(lang).catch(err => {
+        translatePage(lang).catch((err) => {
           console.error(err);
-          alert('Translation failed â€“ check your internet connection.');
+          alert("Translation failed â€“ check your internet connection.");
         });
       }
     </script>
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lunr@2/lunr.min.js"></script>
-    <script type="module" src="../../Master%20Page(Header%20and%20Footer)/MasterPage.js"></script>
-    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"></script>
-    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"></script>
-    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="../../Master%20Page(Header%20and%20Footer)/MasterPage.css">
-    <link rel="stylesheet" href="signupandsignin.css">
+    <script
+      type="module"
+      src="../../Master%20Page(Header%20and%20Footer)/MasterPage.js"
+    ></script>
+    <script
+      type="module"
+      src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"
+    ></script>
+    <script
+      type="module"
+      src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"
+    ></script>
+    <script
+      type="module"
+      src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../Master%20Page(Header%20and%20Footer)/MasterPage.css"
+    />
+    <link rel="stylesheet" href="signupandsignin.css" />
     <script type="module" src="../../../scripts/enhancedsearch.js"></script>
     <style>
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #f8f9fa;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
+      .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #f8f9fa;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
+      .loading-spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #2b9589;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
         }
-        .loading-spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #2b9589;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
+        100% {
+          transform: rotate(360deg);
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        body.loading {
-            visibility: hidden;
-            opacity: 0;
-        }
-        body.loaded {
-            visibility: visible;
-            opacity: 1;
-            transition: opacity 0.3s;
-        }
-        #loader-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        #loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #2b9589;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            display: none;
-        }
-        #verification-modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 24px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 1001;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-        }
-        #verification-modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-        }
-        #verification-modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 2.5rem;
-            border-radius: 1rem;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            max-width: 550px;
-            width: 90%;
-            z-index: 1001;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        #verification-modal button {
-            background-color: #10b981;
-            color: white;
-            padding: 10px 24px;
-            border-radius: 4px;
-            font-weight: 600;
-            transition: background-color 0.3s;
-            border: none;
-            cursor: pointer;
-        }
-        #verification-modal button:hover {
-            background-color: #059669;
-        }
+      }
+      body.loading {
+        visibility: hidden;
+        opacity: 0;
+      }
+      body.loaded {
+        visibility: visible;
+        opacity: 1;
+        transition: opacity 0.3s;
+      }
+      #loader-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+      #loader {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #2b9589;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        display: none;
+      }
+      #verification-modal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 24px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1001;
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+      }
+      #verification-modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+      }
+      #verification-modal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 2.5rem;
+        border-radius: 1rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        max-width: 550px;
+        width: 90%;
+        z-index: 1001;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      #verification-modal button {
+        background-color: #10b981;
+        color: white;
+        padding: 10px 24px;
+        border-radius: 4px;
+        font-weight: 600;
+        transition: background-color 0.3s;
+        border: none;
+        cursor: pointer;
+      }
+      #verification-modal button:hover {
+        background-color: #059669;
+      }
     </style>
-    <script type="module">        
-        import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
-        import { getAuth, onAuthStateChanged, setPersistence, browserSessionPersistence } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
-        import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+    <script type="module">
+      import {
+        initializeApp,
+        getApps,
+        getApp,
+      } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+      import {
+        getAuth,
+        onAuthStateChanged,
+        setPersistence,
+        browserSessionPersistence,
+      } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+      import {
+        getFirestore,
+        collection,
+        addDoc,
+        serverTimestamp,
+      } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCfa827mvCLf1ETts6B_DmCfb7owTohBxk",
-            authDomain: "nbi-green-economy.firebaseapp.com",
-            projectId: "nbi-green-economy",
-            storageBucket: "nbi-green-economy.firebasestorage.app",
-            messagingSenderId: "53732340059",
-            appId: "1:53732340059:web:3fb3f086c6662e1e9baa7e",
-            measurementId: "G-37VRZ5CGE4"
+      const firebaseConfig = {
+        apiKey: "AIzaSyCfa827mvCLf1ETts6B_DmCfb7owTohBxk",
+        authDomain: "nbi-green-economy.firebaseapp.com",
+        projectId: "nbi-green-economy",
+        storageBucket: "nbi-green-economy.firebasestorage.app",
+        messagingSenderId: "53732340059",
+        appId: "1:53732340059:web:3fb3f086c6662e1e9baa7e",
+        measurementId: "G-37VRZ5CGE4",
+      };
+
+      let app;
+      if (!getApps().length) {
+        app = initializeApp(firebaseConfig);
+      } else {
+        app = getApp();
+      }
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+
+      // Set auth persistence to session-only
+      setPersistence(auth, browserSessionPersistence)
+        .then(() => {
+          console.log("Auth persistence set to session-only");
+        })
+        .catch((error) => {
+          console.error("Error setting auth persistence:", error);
+          const errorMessage = document.getElementById("error-message");
+          if (errorMessage) {
+            errorMessage.textContent =
+              "Failed to initialize session: " + error.message;
+            errorMessage.classList.remove("hidden");
+            setTimeout(() => errorMessage.classList.add("hidden"), 5000);
+          }
+        });
+
+      // Get or generate temporary user ID
+      let tempUserId = new URLSearchParams(window.location.search).get(
+        "tempUserId"
+      );
+      if (!tempUserId) {
+        tempUserId = "guest_" + Math.random().toString(36).substr(2, 9);
+        console.log("Generated guest tempUserId:", tempUserId);
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log(
+          "DOM loaded for SignUp.html at",
+          new Date().toLocaleString("en-ZA")
+        );
+        document.body.classList.add("loading");
+        const loadingOverlay = document.querySelector(".loading-overlay");
+
+        // Track page load using modular Firestore SDK
+        async function trackInteraction(category, action, label = "") {
+          try {
+            await addDoc(collection(db, "interactions"), {
+              tempUserId: tempUserId,
+              category: category,
+              action: action,
+              label: label,
+              timestamp: serverTimestamp(),
+              language: "en",
+              userAgent: navigator.userAgent,
+            });
+            console.log("Interaction tracked:", {
+              tempUserId,
+              category,
+              action,
+              label,
+            });
+          } catch (error) {
+            console.error("Error logging interaction:", error);
+            console.log(
+              `Local log: tempUserId=${tempUserId}, category=${category}, action=${action}, label=${label}`
+            );
+          }
+        }
+        trackInteraction("page", "loaded", "SignUp page");
+
+        const finalizePageLoad = () => {
+          document.body.classList.remove("loading");
+          document.body.classList.add("loaded");
+          if (loadingOverlay) {
+            loadingOverlay.style.display = "none";
+          }
+          console.log("Content displayed, loading overlay hidden");
         };
 
-        let app;
-        if (!getApps().length) {
-            app = initializeApp(firebaseConfig);
-        } else {
-            app = getApp();
-        }
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        const timeout = setTimeout(() => {
+          console.warn("Page initialization timed out");
+          finalizePageLoad();
+        }, 5000);
 
-        // Set auth persistence to session-only
-        setPersistence(auth, browserSessionPersistence)
-            .then(() => {
-                console.log("Auth persistence set to session-only");
-            })
-            .catch(error => {
-                console.error("Error setting auth persistence:", error);
-                const errorMessage = document.getElementById('error-message');
-                if (errorMessage) {
-                    errorMessage.textContent = "Failed to initialize session: " + error.message;
-                    errorMessage.classList.remove('hidden');
-                    setTimeout(() => errorMessage.classList.add('hidden'), 5000);
-                }
-            });
-
-        // Get or generate temporary user ID
-        let tempUserId = new URLSearchParams(window.location.search).get('tempUserId');
-        if (!tempUserId) {
-            tempUserId = 'guest_' + Math.random().toString(36).substr(2, 9);
-            console.log("Generated guest tempUserId:", tempUserId);
+        try {
+          clearTimeout(timeout);
+          finalizePageLoad();
+        } catch (e) {
+          console.error("Error during content loading:", e);
+          clearTimeout(timeout);
+          finalizePageLoad();
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM loaded for SignUp.html at', new Date().toLocaleString('en-ZA'));
-            document.body.classList.add('loading');
-            const loadingOverlay = document.querySelector('.loading-overlay');
-
-            // Track page load using modular Firestore SDK
-            async function trackInteraction(category, action, label = "") {
-                try {
-                    await addDoc(collection(db, 'interactions'), {
-                        tempUserId: tempUserId,
-                        category: category,
-                        action: action,
-                        label: label,
-                        timestamp: serverTimestamp(),
-                        language: 'en',
-                        userAgent: navigator.userAgent
-                    });
-                    console.log("Interaction tracked:", { tempUserId, category, action, label });
-                } catch (error) {
-                    console.error("Error logging interaction:", error);
-                    console.log(`Local log: tempUserId=${tempUserId}, category=${category}, action=${action}, label=${label}`);
-                }
+        // Modified onAuthStateChanged to prevent redirect to VerifyEmail.html
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            console.log(
+              "User authenticated:",
+              user.uid,
+              user.email || "Anonymous"
+            );
+            if (user.emailVerified) {
+              console.log("Email verified, redirecting to dashboard");
+              window.location.href = `../../Dashboard/dashboard.html?tempUserId=${tempUserId}`;
+            } else {
+              console.log("Email not verified, staying on signup page");
+              // Do nothing, let signup.js handle the flow
             }
-            trackInteraction('page', 'loaded', 'SignUp page');
-
-            const finalizePageLoad = () => {
-                document.body.classList.remove('loading');
-                document.body.classList.add('loaded');
-                if (loadingOverlay) {
-                    loadingOverlay.style.display = 'none';
-                }
-                console.log('Content displayed, loading overlay hidden');
-            };
-
-            const timeout = setTimeout(() => {
-                console.warn('Page initialization timed out');
-                finalizePageLoad();
-            }, 5000);
-
-            try {                        clearTimeout(timeout);
-                        finalizePageLoad();
-                    } catch (e) {
-                        console.error('Error during content loading:', e);
-                        clearTimeout(timeout);
-                        finalizePageLoad();
-                    }
-
-            // Modified onAuthStateChanged to prevent redirect to VerifyEmail.html
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    console.log('User authenticated:', user.uid, user.email || 'Anonymous');
-                    if (user.emailVerified) {
-                        console.log('Email verified, redirecting to dashboard');
-                        window.location.href = `../../Dashboard/dashboard.html?tempUserId=${tempUserId}`;
-                    } else {
-                        console.log('Email not verified, staying on signup page');
-                        // Do nothing, let signup.js handle the flow
-                    }
-                } else {
-                    console.log('No user authenticated');
-                }
-            });
+          } else {
+            console.log("No user authenticated");
+          }
         });
+      });
     </script>
     <!-- Google Translate Script (initializes the google_translate_element used by MasterPage.js) -->
-   
-    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-</head>
-<body class="loading">
+
+    <script
+      type="text/javascript"
+      src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+    ></script>
+  </head>
+  <body class="loading">
     <div class="loading-overlay">
-        <div class="loading-spinner"></div>
+      <div class="loading-spinner"></div>
     </div>
     <div id="loader-overlay">
-        <div id="loader"></div>
+      <div id="loader"></div>
     </div>
     <div id="root">
-        <green-economy-header></green-economy-header>
-        <main class="flex-grow flex items-center justify-center py-16 relative">
-            <div class="blurry-bg"></div>
-            <div class="form-container max-w-md w-full mx-4 p-8">
-                <div class="flex justify-center mb-4">
-                    <i class="fas fa-user-plus text-4xl text-green-primary"></i>
-                </div>
-                <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">Create Admin Account</h2>
-                <div class="space-y-6">
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-                        <input id="email" type="email" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-primary focus:border-green-primary" placeholder="you@example.com">
-                    </div>
-                    <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                        <input id="password" type="password" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-primary focus:border-green-primary" placeholder="................">
-                    </div>
-                    <div>
-                        <label for="confirm-password" class="block text-sm font-medium text-gray-700">Confirm Password</label>
-                        <input id="confirm-password" type="password" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-primary focus:border-green-primary" placeholder="................">
-                    </div>
-                    <div id="error-message" class="error-message hidden"></div>
-                    <button id="sign-up-btn" class="w-full sign-up-btn font-semibold py-2 px-4 rounded-md transition-all duration-300">Sign Up</button>
-                    <div class="relative">
-                        <div class="absolute inset-0 flex items-center">
-                            <div class="w-full border-t border-gray-300"></div>
-                        </div>
-                        <div class="relative flex justify-center text-sm">
-                            <span class="px-2 bg-white text-gray-500">Or continue with</span>
-                        </div>
-                    </div>
-                    <!-- <button id="google-sign-up-btn" class="google-btn">
+      <green-economy-header></green-economy-header>
+      <main class="flex-grow flex items-center justify-center py-16 relative">
+        <div class="blurry-bg"></div>
+        <div class="form-container max-w-md w-full mx-4 p-8">
+          <div class="flex justify-center mb-4">
+            <i class="fas fa-user-plus text-4xl text-green-primary"></i>
+          </div>
+          <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">
+            Create Account
+          </h2>
+          <div class="space-y-6">
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700"
+                >Email Address</label
+              >
+              <input
+                id="email"
+                type="email"
+                required
+                class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-primary focus:border-green-primary"
+                placeholder="you@example.com"
+              />
+            </div>
+            <div>
+              <label
+                for="password"
+                class="block text-sm font-medium text-gray-700"
+                >Password</label
+              >
+              <input
+                id="password"
+                type="password"
+                required
+                class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-primary focus:border-green-primary"
+                placeholder="................"
+              />
+            </div>
+            <div>
+              <label
+                for="confirm-password"
+                class="block text-sm font-medium text-gray-700"
+                >Confirm Password</label
+              >
+              <input
+                id="confirm-password"
+                type="password"
+                required
+                class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-primary focus:border-green-primary"
+                placeholder="................"
+              />
+            </div>
+            <div id="error-message" class="error-message hidden"></div>
+            <button
+              id="sign-up-btn"
+              class="w-full sign-up-btn font-semibold py-2 px-4 rounded-md transition-all duration-300"
+            >
+              Sign Up
+            </button>
+            <div class="relative">
+              <div class="absolute inset-0 flex items-center">
+                <div class="w-full border-t border-gray-300"></div>
+              </div>
+            </div>
+            <!-- <button id="google-sign-up-btn" class="google-btn">
                         <img src="https://www.google.com/favicon.ico" alt="Google logo">
                         Sign up with Google
                     </button> -->
-                </div>
-                <p class="mt-6 text-center text-sm text-gray-600">
-                    <span>Already have an account?</span> <a href="SignIn.html" class="text-green-primary hover:underline inline-link">Sign In</a>
-                </p>
-            </div>
-            <div id="verification-modal-overlay" class="hidden"></div>
-            <div id="verification-modal" class="hidden" style="display: none;">
-                <div style="text-align: center;">
-                    <h2 style="font-size: 1.5rem; color: #4eb5a6; margin-bottom: 1rem;">Verification Email Sent</h2>
-                    <p id="modal-email" style="font-size: 1rem; color: #555; margin-bottom: 1.5rem;">
-                        We've sent a verification link to your email address.
-                    </p>
-                    <p style="font-size: 0.95rem; color: #777; margin-bottom: 2rem; line-height: 1.6;">
-                        Please check your email and click the verification link.<br/>
-                        Once verified, you'll be redirected to the Sign In page.
-                    </p>
-                    <button id="modal-ok-btn" style="background-color: #4eb5a6; color: white; padding: 10px 24px; border-radius: 4px; font-weight: 600; border: none; cursor: pointer; font-size: 1rem; transition: background-color 0.3s;">
-                        Got It
-                    </button>
-                </div>
-            </div>
-        </main>
-        <green-economy-footer></green-economy-footer>
+          </div>
+          <p class="mt-6 text-center text-sm text-gray-600">
+            <span>Already have an account?</span>
+            <a
+              href="SignIn.html"
+              class="text-green-primary hover:underline inline-link"
+              >Sign In</a
+            >
+          </p>
+        </div>
+        <div id="verification-modal-overlay" class="hidden"></div>
+        <div id="verification-modal" class="hidden" style="display: none">
+          <div style="text-align: center">
+            <h2 style="font-size: 1.5rem; color: #4eb5a6; margin-bottom: 1rem">
+              Verification Email Sent
+            </h2>
+            <p
+              id="modal-email"
+              style="font-size: 1rem; color: #555; margin-bottom: 1.5rem"
+            >
+              We've sent a verification link to your email address.
+            </p>
+            <p
+              style="
+                font-size: 0.95rem;
+                color: #777;
+                margin-bottom: 2rem;
+                line-height: 1.6;
+              "
+            >
+              Please check your email and click the verification link.<br />
+              Once verified, you'll be redirected to the Sign In page.
+            </p>
+            <button
+              id="modal-ok-btn"
+              style="
+                background-color: #4eb5a6;
+                color: white;
+                padding: 10px 24px;
+                border-radius: 4px;
+                font-weight: 600;
+                border: none;
+                cursor: pointer;
+                font-size: 1rem;
+                transition: background-color 0.3s;
+              "
+            >
+              Got It
+            </button>
+          </div>
+        </div>
+      </main>
+      <green-economy-footer></green-economy-footer>
     </div>
     <script type="module" src="../../scripts/signup.js"></script>
-</body>
+  </body>
 </html>
-
-
