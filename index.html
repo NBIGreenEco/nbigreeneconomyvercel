@@ -1,44 +1,63 @@
-﻿<!doctype html>
+﻿<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Green Economy Toolkit</title>
-<script type="text/javascript">
-    (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "u80l2evil9");
-</script>
+    <script type="text/javascript">
+      (function (c, l, a, r, i, t, y) {
+        c[a] =
+          c[a] ||
+          function () {
+            (c[a].q = c[a].q || []).push(arguments);
+          };
+        t = l.createElement(r);
+        t.async = 1;
+        t.src = "https://www.clarity.ms/tag/" + i;
+        y = l.getElementsByTagName(r)[0];
+        y.parentNode.insertBefore(t, y);
+      })(window, document, "clarity", "script", "u80l2evil9");
+    </script>
     <!-- Firebase Email Verification Redirect -->
     <script>
       // Intercept Firebase email verification links and redirect to VerifyEmail.html
-      (function() {
+      (function () {
         const urlParams = new URLSearchParams(window.location.search);
-        const mode = urlParams.get('mode');
-        const oobCode = urlParams.get('oobCode');
-        const continueUrl = urlParams.get('continueUrl');
-        
+        const mode = urlParams.get("mode");
+        const oobCode = urlParams.get("oobCode");
+        const continueUrl = urlParams.get("continueUrl");
+
         // If this is a Firebase email verification link, redirect to VerifyEmail.html
-        if (mode === 'verifyEmail' && oobCode) {
+        if (mode === "verifyEmail" && oobCode) {
           // Extract email from continueUrl if available
-          let email = urlParams.get('email');
+          let email = urlParams.get("email");
           if (!email && continueUrl) {
             const emailMatch = continueUrl.match(/email=([^&]+)/);
             if (emailMatch) {
               email = decodeURIComponent(emailMatch[1]);
             }
           }
-          
+
           // Build the redirect URL
-          let verifyUrl = '/LandingPage/VerifyEmail.html?oobCode=' + encodeURIComponent(oobCode);
+          let verifyUrl =
+            "/LandingPage/VerifyEmail.html?oobCode=" +
+            encodeURIComponent(oobCode);
           if (email) {
-            verifyUrl += '&email=' + encodeURIComponent(email);
+            verifyUrl += "&email=" + encodeURIComponent(email);
           }
-          
-          console.log('Firebase email verification detected, redirecting to:', verifyUrl);
+
+          console.log(
+            "Firebase email verification detected, redirecting to:",
+            verifyUrl
+          );
           window.location.href = verifyUrl;
+        }
+
+        //addition for password resetting
+        if (mode === "resetPassword") {
+          window.location.href =
+            "/LandingPage/ResetPassword.html?oobCode=" +
+            encodeURIComponent(oobCode);
         }
       })();
     </script>
@@ -46,19 +65,36 @@
     <script src="scripts/video-controls.js" defer></script>
     <script src="scripts/navigation.js" defer></script>
     <script src="scripts/cookie-consent.js" defer></script>
-    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"></script>
-    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"></script>
-    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="index.css">
+    <script
+      type="module"
+      src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"
+    ></script>
+    <script
+      type="module"
+      src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"
+    ></script>
+    <script
+      type="module"
+      src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <link rel="stylesheet" href="index.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
 
     <!-- BotPenguin widget (single include) -->
 
     <!-- enhancedsearch.js moved to bottom of body to ensure header is ready (custom elements must be upgraded) -->
-    <script id="messenger-widget-b" src="https://cdn.botpenguin.com/website-bot.js" defer>6912ee821c29f29c0d7d6882,6912edf6e9437105db53226c,agent</script>
+    <script
+      id="messenger-widget-b"
+      src="https://cdn.botpenguin.com/website-bot.js"
+      defer
+    >
+      6912ee821c29f29c0d7d6882,6912edf6e9437105db53226c,agent
+    </script>
 
-    
     <!-- Language Selector Styles -->
     <style>
       .loading-overlay {
@@ -82,8 +118,12 @@
         animation: spin 1s linear infinite;
       }
       @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
       }
       body.loading {
         visibility: hidden;
@@ -96,9 +136,16 @@
       }
     </style>
     <script type="module">
-      import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
-      import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
-      import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        getDocs,
+      } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+      import {
+        getAuth,
+        onAuthStateChanged,
+      } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
       const firebaseConfig = {
         apiKey: "AIzaSyCfa827mvCLf1ETts6B_DmCfb7owTohBxk",
         authDomain: "nbi-green-economy.firebaseapp.com",
@@ -106,7 +153,7 @@
         storageBucket: "nbi-green-economy.firebasestorage.app",
         messagingSenderId: "53732340059",
         appId: "1:53732340059:web:3fb3f086c6662e1e9baa7e",
-        measurementId: "G-37VRZ5CGE4"
+        measurementId: "G-37VRZ5CGE4",
       };
 
       const app = initializeApp(firebaseConfig);
@@ -115,56 +162,62 @@
 
       async function loadNews() {
         try {
-          const newsGrid = document.querySelector('.news-grid');
+          const newsGrid = document.querySelector(".news-grid");
           if (!newsGrid) {
-            console.error('News grid element not found');
+            console.error("News grid element not found");
             return;
           }
-          newsGrid.innerHTML = '';
-          const newsSnapshot = await getDocs(collection(db, 'news'));
+          newsGrid.innerHTML = "";
+          const newsSnapshot = await getDocs(collection(db, "news"));
           if (newsSnapshot.empty) {
-            console.warn('No news items found in Firestore');
-            newsGrid.innerHTML = '<p>No news available.</p>';
+            console.warn("No news items found in Firestore");
+            newsGrid.innerHTML = "<p>No news available.</p>";
             return;
           }
           newsSnapshot.forEach((doc, index) => {
             const news = doc.data();
-            const newsItem = document.createElement('div');
-            newsItem.className = 'news-item';
+            const newsItem = document.createElement("div");
+            newsItem.className = "news-item";
             newsItem.innerHTML = `
-              <div class="news-date">${news.date || 'Date not available'}</div>
-              <h3>${news.title || 'Untitled News'}</h3>
-              <p>${news.description || 'No description available'}</p>
+              <div class="news-date">${news.date || "Date not available"}</div>
+              <h3>${news.title || "Untitled News"}</h3>
+              <p>${news.description || "No description available"}</p>
             `;
             newsGrid.appendChild(newsItem);
           });
         } catch (error) {
-          console.error('Error loading news:', error);
-          if (error.code === 'permission-denied') {
-            console.warn('Permission denied accessing news collection');
+          console.error("Error loading news:", error);
+          if (error.code === "permission-denied") {
+            console.warn("Permission denied accessing news collection");
           }
-          const newsGrid = document.querySelector('.news-grid');
+          const newsGrid = document.querySelector(".news-grid");
           if (newsGrid) {
-            newsGrid.innerHTML = '<p>Failed to load news. Please try again later.</p>';
+            newsGrid.innerHTML =
+              "<p>Failed to load news. Please try again later.</p>";
           }
         }
       }
 
       async function loadEvents() {
         try {
-          const upcomingEventsContent = document.querySelector('.event-card:nth-child(1) .event-content');
-          const pastEventsContent = document.querySelector('.event-card:nth-child(2) .event-content');
+          const upcomingEventsContent = document.querySelector(
+            ".event-card:nth-child(1) .event-content"
+          );
+          const pastEventsContent = document.querySelector(
+            ".event-card:nth-child(2) .event-content"
+          );
           if (!upcomingEventsContent || !pastEventsContent) {
-            console.error('Event content elements not found');
+            console.error("Event content elements not found");
             return;
           }
-          upcomingEventsContent.innerHTML = '';
-          pastEventsContent.innerHTML = '';
-          const eventsSnapshot = await getDocs(collection(db, 'events'));
+          upcomingEventsContent.innerHTML = "";
+          pastEventsContent.innerHTML = "";
+          const eventsSnapshot = await getDocs(collection(db, "events"));
           if (eventsSnapshot.empty) {
-            console.warn('No events found in Firestore');
-            upcomingEventsContent.innerHTML = '<p>No upcoming events available.</p>';
-            pastEventsContent.innerHTML = '<p>No past events available.</p>';
+            console.warn("No events found in Firestore");
+            upcomingEventsContent.innerHTML =
+              "<p>No upcoming events available.</p>";
+            pastEventsContent.innerHTML = "<p>No past events available.</p>";
             return;
           }
           const currentDate = new Date();
@@ -174,23 +227,27 @@
             try {
               eventDate = new Date(event.date);
               if (isNaN(eventDate)) {
-                console.warn(`Invalid date format for event ${event.title}: ${event.date}`);
+                console.warn(
+                  `Invalid date format for event ${event.title}: ${event.date}`
+                );
                 return;
               }
             } catch (e) {
-              console.warn(`Error parsing date for event ${event.title}: ${e.message}`);
+              console.warn(
+                `Error parsing date for event ${event.title}: ${e.message}`
+              );
               return;
             }
-            const eventItem = document.createElement('div');
-            eventItem.className = 'event-item';
+            const eventItem = document.createElement("div");
+            eventItem.className = "event-item";
             eventItem.innerHTML = `
               <div class="event-date">
                 <span class="dot">â—</span>
-                <span>${event.date || 'Date not available'}</span>
+                <span>${event.date || "Date not available"}</span>
               </div>
               <div class="event-details">
-                <h4>${event.title || 'Untitled Event'}</h4>
-                <p>${event.details || 'No details available'}</p>
+                <h4>${event.title || "Untitled Event"}</h4>
+                <p>${event.details || "No details available"}</p>
               </div>
             `;
             if (eventDate >= currentDate) {
@@ -200,33 +257,41 @@
             }
           });
         } catch (error) {
-          console.error('Error loading events:', error);
-          if (error.code === 'permission-denied') {
-            console.warn('Permission denied accessing events collection');
+          console.error("Error loading events:", error);
+          if (error.code === "permission-denied") {
+            console.warn("Permission denied accessing events collection");
           }
-          const upcomingEventsContent = document.querySelector('.event-card:nth-child(1) .event-content');
-          const pastEventsContent = document.querySelector('.event-card:nth-child(2) .event-content');
+          const upcomingEventsContent = document.querySelector(
+            ".event-card:nth-child(1) .event-content"
+          );
+          const pastEventsContent = document.querySelector(
+            ".event-card:nth-child(2) .event-content"
+          );
           if (upcomingEventsContent) {
-            upcomingEventsContent.innerHTML = '<p>Failed to load upcoming events.</p>';
+            upcomingEventsContent.innerHTML =
+              "<p>Failed to load upcoming events.</p>";
           }
           if (pastEventsContent) {
-            pastEventsContent.innerHTML = '<p>Failed to load past events.</p>';
+            pastEventsContent.innerHTML = "<p>Failed to load past events.</p>";
           }
         }
       }
 
-      document.addEventListener('DOMContentLoaded', () => {
-        console.log('DOM loaded for index.html at', new Date().toLocaleString('en-ZA'));
-        document.body.classList.add('loading');
-        const loadingOverlay = document.querySelector('.loading-overlay');
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log(
+          "DOM loaded for index.html at",
+          new Date().toLocaleString("en-ZA")
+        );
+        document.body.classList.add("loading");
+        const loadingOverlay = document.querySelector(".loading-overlay");
 
         const finalizePageLoad = () => {
-          document.body.classList.remove('loading');
-          document.body.classList.add('loaded');
+          document.body.classList.remove("loading");
+          document.body.classList.add("loaded");
           if (loadingOverlay) {
-            loadingOverlay.style.display = 'none';
+            loadingOverlay.style.display = "none";
           }
-          console.log('Content displayed, loading overlay hidden');
+          console.log("Content displayed, loading overlay hidden");
         };
 
         try {
@@ -234,20 +299,27 @@
           loadEvents();
           finalizePageLoad();
         } catch (e) {
-          console.error('Error during content loading:', e);
+          console.error("Error during content loading:", e);
           finalizePageLoad();
         }
 
         onAuthStateChanged(auth, (user) => {
           if (user) {
-            console.log('User authenticated:', user.uid, user.email || 'Anonymous');
+            console.log(
+              "User authenticated:",
+              user.uid,
+              user.email || "Anonymous"
+            );
           } else {
-            console.log('No user authenticated. Some features may require login.');
-            const loginButton = document.querySelector('.hero-button');
+            console.log(
+              "No user authenticated. Some features may require login."
+            );
+            const loginButton = document.querySelector(".hero-button");
             if (loginButton) {
-              loginButton.addEventListener('click', () => {
-                console.log('Login button clicked, redirecting to SignIn.html');
-                window.location.href = 'LandingPage/SignInAndSignUp/SignIn.html';
+              loginButton.addEventListener("click", () => {
+                console.log("Login button clicked, redirecting to SignIn.html");
+                window.location.href =
+                  "LandingPage/SignInAndSignUp/SignIn.html";
               });
             }
           }
@@ -256,63 +328,69 @@
     </script>
 
     <!-- MasterPage for header/footer/search -->
-    <script type="module" src="/Master Page(Header and Footer)/MasterPage.js?v=20251117-search-fix"></script>
-    <link rel="stylesheet" href="/Master Page(Header and Footer)/MasterPage.css?v=20251117">
-
+    <script
+      type="module"
+      src="/Master Page(Header and Footer)/MasterPage.js?v=20251117-search-fix"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="/Master Page(Header and Footer)/MasterPage.css?v=20251117"
+    />
   </head>
   <body>
     <!-- Global search popup toggle function -->
     <script>
       // Direct global function for search popup toggle - works without waiting for custom element
-      window.toggleSearchGlobal = function() {
-        console.log('🔍 [GLOBAL] toggleSearchGlobal called');
-        
+      window.toggleSearchGlobal = function () {
+        console.log("🔍 [GLOBAL] toggleSearchGlobal called");
+
         // Try multiple ways to find and toggle the search popup
-        let searchPopup = document.getElementById('search-popup');
-        
+        let searchPopup = document.getElementById("search-popup");
+
         if (!searchPopup) {
-          console.log('🔍 [GLOBAL] Searching within green-economy-header...');
-          const header = document.querySelector('green-economy-header');
+          console.log("🔍 [GLOBAL] Searching within green-economy-header...");
+          const header = document.querySelector("green-economy-header");
           if (header && header.shadowRoot) {
-            searchPopup = header.shadowRoot.getElementById('search-popup');
-            console.log('🔍 [GLOBAL] Found in shadowRoot:', !!searchPopup);
+            searchPopup = header.shadowRoot.getElementById("search-popup");
+            console.log("🔍 [GLOBAL] Found in shadowRoot:", !!searchPopup);
           }
         }
-        
+
         if (!searchPopup) {
-          console.error('❌ [GLOBAL] search-popup element not found anywhere');
+          console.error("❌ [GLOBAL] search-popup element not found anywhere");
           return;
         }
-        
-        const isHidden = searchPopup.style.display === 'none' || !searchPopup.style.display;
-        console.log('🔍 [GLOBAL] Current hidden state:', isHidden);
-        
+
+        const isHidden =
+          searchPopup.style.display === "none" || !searchPopup.style.display;
+        console.log("🔍 [GLOBAL] Current hidden state:", isHidden);
+
         if (isHidden) {
-          searchPopup.style.display = 'block';
-          searchPopup.classList.add('animate-in');
-          searchPopup.classList.remove('animate-out');
-          document.body.style.overflow = 'hidden';
-          console.log('✅ [GLOBAL] Popup SHOWN');
-          
+          searchPopup.style.display = "block";
+          searchPopup.classList.add("animate-in");
+          searchPopup.classList.remove("animate-out");
+          document.body.style.overflow = "hidden";
+          console.log("✅ [GLOBAL] Popup SHOWN");
+
           // Try to focus input
           setTimeout(() => {
-            let input = document.getElementById('smartSearch');
+            let input = document.getElementById("smartSearch");
             if (!input) {
-              const header = document.querySelector('green-economy-header');
+              const header = document.querySelector("green-economy-header");
               if (header && header.shadowRoot) {
-                input = header.shadowRoot.getElementById('smartSearch');
+                input = header.shadowRoot.getElementById("smartSearch");
               }
             }
             if (input) input.focus();
           }, 100);
         } else {
-          searchPopup.classList.add('animate-out');
-          searchPopup.classList.remove('animate-in');
+          searchPopup.classList.add("animate-out");
+          searchPopup.classList.remove("animate-in");
           setTimeout(() => {
-            searchPopup.style.display = 'none';
-            document.body.style.overflow = '';
+            searchPopup.style.display = "none";
+            document.body.style.overflow = "";
           }, 300);
-          console.log('✅ [GLOBAL] Popup HIDDEN');
+          console.log("✅ [GLOBAL] Popup HIDDEN");
         }
       };
     </script>
@@ -320,13 +398,15 @@
     <!-- Wait for custom elements to load -->
     <script>
       Promise.all([
-        customElements.whenDefined('green-economy-header'),
-        customElements.whenDefined('green-economy-footer')
-      ]).then(() => {
-        console.log('✅ Header and Footer custom elements loaded');
-      }).catch(err => {
-        console.error('❌ Error loading custom elements:', err);
-      });
+        customElements.whenDefined("green-economy-header"),
+        customElements.whenDefined("green-economy-footer"),
+      ])
+        .then(() => {
+          console.log("✅ Header and Footer custom elements loaded");
+        })
+        .catch((err) => {
+          console.error("❌ Error loading custom elements:", err);
+        });
     </script>
     <div class="loading-overlay">
       <div class="loading-spinner"></div>
@@ -343,17 +423,40 @@
               playsinline
               controls
               class="hero-video"
-              style="width: 100%; height: 100%; object-fit: cover;"
+              style="width: 100%; height: 100%; object-fit: cover"
             >
-              <source src="Videos/Introduction-to-the-Green-Economy.mp4" type="video/mp4">
+              <source
+                src="Videos/Introduction-to-the-Green-Economy.mp4"
+                type="video/mp4"
+              />
               Your browser does not support the video tag.
             </video>
           </div>
           <div class="hero-buttons">
-            <button class="hero-button" onclick="window.location.href='LandingPage/Opportunities/opportunities.html'">Get Funding</button>
-            <button class="hero-button" onclick="window.location.href='LandingPage/Opportunities/opportunities.html'">Opportunities</button>
-            <button class="hero-button" onclick="window.location.href='LandingPage/Knowledge-Hub/knowledge-hub.html'">Training</button>
-            <button class="hero-button" onclick="window.location.href='LandingPage/SignInAndSignUp/SignIn.html'">Log In</button>
+            <button
+              class="hero-button"
+              onclick="window.location.href='LandingPage/Opportunities/opportunities.html'"
+            >
+              Get Funding
+            </button>
+            <button
+              class="hero-button"
+              onclick="window.location.href='LandingPage/Opportunities/opportunities.html'"
+            >
+              Opportunities
+            </button>
+            <button
+              class="hero-button"
+              onclick="window.location.href='LandingPage/Knowledge-Hub/knowledge-hub.html'"
+            >
+              Training
+            </button>
+            <button
+              class="hero-button"
+              onclick="window.location.href='LandingPage/SignInAndSignUp/SignIn.html'"
+            >
+              Log In
+            </button>
           </div>
         </div>
         <div class="hero-text">
@@ -385,47 +488,103 @@
         <p>(Green Economy Summit, 2010)</p>
       </div>
       <div class="focus-grid">
-        <a href="agriculture.html" class="focus-item" style="background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&h=300&fit=crop');">
+        <a
+          href="agriculture.html"
+          class="focus-item"
+          style="
+            background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&h=300&fit=crop');
+          "
+        >
           <div class="focus-content">
             <h3>Agriculture</h3>
           </div>
         </a>
-        <a href="energy.html" class="focus-item" style="background-image: url('https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=400&h=300&fit=crop');">
+        <a
+          href="energy.html"
+          class="focus-item"
+          style="
+            background-image: url('https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=400&h=300&fit=crop');
+          "
+        >
           <div class="focus-content">
             <h3>Energy (clean and efficient)</h3>
           </div>
         </a>
-        <a href="natural.html" class="focus-item" style="background-image: url('https://static.vecteezy.com/system/resources/previews/006/037/285/large_2x/close-up-hand-holding-young-green-tree-sprout-and-planting-in-soil-free-photo.JPG');">
+        <a
+          href="natural.html"
+          class="focus-item"
+          style="
+            background-image: url('https://static.vecteezy.com/system/resources/previews/006/037/285/large_2x/close-up-hand-holding-young-green-tree-sprout-and-planting-in-soil-free-photo.JPG');
+          "
+        >
           <div class="focus-content">
-            <h3>Natural resource conservation and management (including mining)</h3>
+            <h3>
+              Natural resource conservation and management (including mining)
+            </h3>
           </div>
         </a>
-        <a href="transport.html" class="focus-item" style="background-image: url('https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400&h=300&fit=crop');">
+        <a
+          href="transport.html"
+          class="focus-item"
+          style="
+            background-image: url('https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400&h=300&fit=crop');
+          "
+        >
           <div class="focus-content">
             <h3>Sustainable transport and infrastructure</h3>
           </div>
         </a>
-        <a href="environment.html" class="focus-item" style="background-image: url('https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=400&h=300&fit=crop');">
+        <a
+          href="environment.html"
+          class="focus-item"
+          style="
+            background-image: url('https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=400&h=300&fit=crop');
+          "
+        >
           <div class="focus-content">
             <h3>Environmental sustainability, including tourism education</h3>
           </div>
         </a>
-        <a href="building.html" class="focus-item" style="background-image: url('https://d1v1e13ebw3o15.cloudfront.net/data/42690/pool_and_spa_master/..jpg');">
+        <a
+          href="building.html"
+          class="focus-item"
+          style="
+            background-image: url('https://d1v1e13ebw3o15.cloudfront.net/data/42690/pool_and_spa_master/..jpg');
+          "
+        >
           <div class="focus-content">
             <h3>Green buildings and the built environment</h3>
           </div>
         </a>
-        <a href="waste.html" class="focus-item" style="background-image: url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop');">
+        <a
+          href="waste.html"
+          class="focus-item"
+          style="
+            background-image: url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop');
+          "
+        >
           <div class="focus-content">
             <h3>Sustainable waste management and recycling</h3>
           </div>
         </a>
-        <a href="water.html"class="focus-item" style="background-image: url('https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&h=300&fit=crop');">
+        <a
+          href="water.html"
+          class="focus-item"
+          style="
+            background-image: url('https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&h=300&fit=crop');
+          "
+        >
           <div class="focus-content">
             <h3>Water management</h3>
           </div>
         </a>
-        <a href="production.html" class="focus-item" style="background-image: url('https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=400&h=300&fit=crop');">
+        <a
+          href="production.html"
+          class="focus-item"
+          style="
+            background-image: url('https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=400&h=300&fit=crop');
+          "
+        >
           <div class="focus-content">
             <h3>Sustainable production and consumption</h3>
           </div>
@@ -440,7 +599,9 @@
         <div class="business-card green-card">
           <div
             class="business-card-image"
-            style="background-image: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=200&fit=crop');"
+            style="
+              background-image: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=200&fit=crop');
+            "
           ></div>
           <div class="business-card-content">
             <h3>For your business</h3>
@@ -458,16 +619,21 @@
               some of this work?
             </p>
           </div>
-          
-          <a href="LandingPage/Opportunities/opportunities.html" class="business-card-button blue-button"    style="text-decoration: none;">
-           Discover More
-          </a>
 
+          <a
+            href="LandingPage/Opportunities/opportunities.html"
+            class="business-card-button blue-button"
+            style="text-decoration: none"
+          >
+            Discover More
+          </a>
         </div>
         <div class="business-card blue-card">
           <div
             class="business-card-image"
-            style="background-image: url('https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=400&h=200&fit=crop');"
+            style="
+              background-image: url('https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=400&h=200&fit=crop');
+            "
           ></div>
           <div class="business-card-content">
             <h3>For your future</h3>
@@ -483,8 +649,12 @@
             </p>
             <p>Find out about green economy opportunities in the IRM sector.</p>
           </div>
-          
-          <a href="LandingPage/IRM-Sector/IRMSector.html" class="business-card-button green-button"    style="text-decoration: none;">
+
+          <a
+            href="LandingPage/IRM-Sector/IRMSector.html"
+            class="business-card-button green-button"
+            style="text-decoration: none"
+          >
             Discover More
           </a>
         </div>
@@ -551,7 +721,13 @@
             <div class="event-content">
               <!-- Upcoming events will be dynamically loaded here -->
             </div>
-            <a href="https://www.nbi.org.za/category/in-the-news/" target="_blank" class="event-button" style="text-decoration: none;">View more</a>
+            <a
+              href="https://www.nbi.org.za/category/in-the-news/"
+              target="_blank"
+              class="event-button"
+              style="text-decoration: none"
+              >View more</a
+            >
           </div>
           <div class="event-card">
             <div class="event-header">
@@ -560,39 +736,80 @@
             <div class="event-content">
               <!-- Past events will be dynamically loaded here -->
             </div>
-            <a href="https://www.nbi.org.za/category/in-the-news/" target="_blank" class="event-button outline" style="text-decoration: none;">View more</a>
+            <a
+              href="https://www.nbi.org.za/category/in-the-news/"
+              target="_blank"
+              class="event-button outline"
+              style="text-decoration: none"
+              >View more</a
+            >
           </div>
         </div>
       </div>
     </section>
     <section class="partners">
       <div class="partners-content">
-        <img src="Images/giz-logo_2024-11-11-133203_nara.jpg" alt="GIZ Logo" class="partner-logo">
-        <img src="Images/SECO-Logo.jpg" alt="SECO Logo" class="partner-logo">
-        <img src="Images/GDED-Logo.jpg" alt="GDED Logo" class="partner-logo">
-        <img src="Images/LMS-Platform-Logo.png" alt="LMS Platform Logo" class="partner-logo">
-        <img src="Images/NBI-Logo.jpg" alt="NBI Logo" class="partner-logo">
+        <img
+          src="Images/giz-logo_2024-11-11-133203_nara.jpg"
+          alt="GIZ Logo"
+          class="partner-logo"
+        />
+        <img src="Images/SECO-Logo.jpg" alt="SECO Logo" class="partner-logo" />
+        <img src="Images/GDED-Logo.jpg" alt="GDED Logo" class="partner-logo" />
+        <img
+          src="Images/LMS-Platform-Logo.png"
+          alt="LMS Platform Logo"
+          class="partner-logo"
+        />
+        <img src="Images/NBI-Logo.jpg" alt="NBI Logo" class="partner-logo" />
       </div>
     </section>
     <section class="login-section">
-      <div style="position: relative; max-width: 700px; margin: 0 auto;">
-        <h2 style="color: white; font-size: 20px; margin-bottom: 25px; max-width: 600px; margin-left: auto; margin-right: auto;">
+      <div style="position: relative; max-width: 700px; margin: 0 auto">
+        <h2
+          style="
+            color: white;
+            font-size: 20px;
+            margin-bottom: 25px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+          "
+        >
           Subscribe to our newsletter to get the latest information
         </h2>
-        <form style="position: relative; padding-bottom: 20px;">
-          <input 
-            type="email" 
-            placeholder="Your email" 
-           
-            style="width: 100%; padding: 18px 50px 18px 25px; border: none; border-radius: 4px; font-size: 16px; color: #333; background: white;"
+        <form style="position: relative; padding-bottom: 20px">
+          <input
+            type="email"
+            placeholder="Your email"
+            style="
+              width: 100%;
+              padding: 18px 50px 18px 25px;
+              border: none;
+              border-radius: 4px;
+              font-size: 16px;
+              color: #333;
+              background: white;
+            "
+          />
+          <button
+            type="submit"
+            style="
+              position: absolute;
+              right: 10px;
+              top: 50%;
+              transform: translateY(-50%);
+              background: none;
+              border: none;
+              font-size: 22px;
+              color: #009381;
+              cursor: pointer;
+            "
           >
-          <button 
-            type="submit" 
-            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 22px; color: #009381; cursor: pointer;"
-          > →</button>
+            →
+          </button>
         </form>
       </div>
-     
     </section>
     <!-- Digital Human Widget -->
     <div class="video-overlay" id="videoOverlay">
@@ -625,35 +842,42 @@
     <green-economy-chatbot></green-economy-chatbot>
     <green-economy-footer></green-economy-footer>
     <script type="module">
-      document.addEventListener('DOMContentLoaded', async () => {
+      document.addEventListener("DOMContentLoaded", async () => {
         try {
-          await customElements.whenDefined('green-economy-header');
+          await customElements.whenDefined("green-economy-header");
           // Give header a frame to render internal DOM
-          await new Promise(r => requestAnimationFrame(r));
-          console.log('Initializing global search after header is ready');
+          await new Promise((r) => requestAnimationFrame(r));
+          console.log("Initializing global search after header is ready");
           if (window.initializeSearch) {
             await window.initializeSearch();
           }
         } catch (e) {
-          console.error('Failed to initialize search after header ready:', e);
+          console.error("Failed to initialize search after header ready:", e);
         }
       });
     </script>
     <script type="text/javascript">
-      (function(c,l,a,r,i,t,y){
-          c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-          t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-          y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+      (function (c, l, a, r, i, t, y) {
+        c[a] =
+          c[a] ||
+          function () {
+            (c[a].q = c[a].q || []).push(arguments);
+          };
+        t = l.createElement(r);
+        t.async = 1;
+        t.src = "https://www.clarity.ms/tag/" + i;
+        y = l.getElementsByTagName(r)[0];
+        y.parentNode.insertBefore(t, y);
       })(window, document, "clarity", "script", "s9a5dtbonc");
     </script>
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        const video = document.querySelector('.hero-video');
+      document.addEventListener("DOMContentLoaded", function () {
+        const video = document.querySelector(".hero-video");
         if (video) {
           // Video controls
-          video.addEventListener('click', function() {
+          video.addEventListener("click", function () {
             if (video.paused) {
-              video.play().catch(e => console.log('Play failed:', e));
+              video.play().catch((e) => console.log("Play failed:", e));
             } else {
               video.pause();
             }
@@ -663,7 +887,9 @@
     </script>
     <script>
       function navigateToFocusArea(area) {
-        window.location.href = 'LandingPage/Focus-Area/focus-area.html?area=' + encodeURIComponent(area);
+        window.location.href =
+          "LandingPage/Focus-Area/focus-area.html?area=" +
+          encodeURIComponent(area);
       }
     </script>
   </body>
