@@ -29,9 +29,12 @@ resetBtn.addEventListener("click", async () => {
   }
 
   try {
-    await sendPasswordResetEmail(auth, email, {
+    /*await sendPasswordResetEmail(auth, email, {
       url: window.location.origin + "/SignIn.html"
     });
+    */
+    await sendPasswordResetEmail(auth, email);
+
 
     errorMessage.textContent =
       "Password reset email sent. Please check your inbox.";
