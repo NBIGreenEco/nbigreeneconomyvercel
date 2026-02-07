@@ -665,18 +665,9 @@ class GreenEconomyFooter extends HTMLElement {
                 <li><a href="${basePath}LandingPage/Opportunities/opportunities.html">Opportunities</a></li>
               </ul>
             </div>
-            <div class="footer-column">
-              <h4>Information</h4>
-              <ul>
-                <li><a href="https://nbi.org.za/">FAQ</a></li>
-                <li><a href="https://nbi.org.za/">Terms & Conditions</a></li>
-                <li><a href="https://nbi.org.za/">Privacy Policy</a></li>
-                <li><a href="https://nbi.org.za/">Help</a></li>
-              </ul>
-            </div>
           </div>
           <div class="footer-bottom">
-            <p>© ${new Date().getFullYear()} Green Economy Network. All rights reserved.</p>
+            <p>© ${new Date().getFullYear()} <a href="https://www.nbi.org.za/" style="color: inherit; text-decoration: none">National Business Initiative</a> | <a href="https://www.nbi.org.za/privacy-policy/" style="color: inherit; text-decoration: none">Privacy Policy</a> | All rights reserved.</p>
           </div>
         </div>
       </footer>

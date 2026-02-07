@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -48,7 +48,7 @@
 
           console.log(
             "Firebase email verification detected, redirecting to:",
-            verifyUrl
+            verifyUrl,
           );
           window.location.href = verifyUrl;
         }
@@ -201,10 +201,10 @@
       async function loadEvents() {
         try {
           const upcomingEventsContent = document.querySelector(
-            ".event-card:nth-child(1) .event-content"
+            ".event-card:nth-child(1) .event-content",
           );
           const pastEventsContent = document.querySelector(
-            ".event-card:nth-child(2) .event-content"
+            ".event-card:nth-child(2) .event-content",
           );
           if (!upcomingEventsContent || !pastEventsContent) {
             console.error("Event content elements not found");
@@ -228,13 +228,13 @@
               eventDate = new Date(event.date);
               if (isNaN(eventDate)) {
                 console.warn(
-                  `Invalid date format for event ${event.title}: ${event.date}`
+                  `Invalid date format for event ${event.title}: ${event.date}`,
                 );
                 return;
               }
             } catch (e) {
               console.warn(
-                `Error parsing date for event ${event.title}: ${e.message}`
+                `Error parsing date for event ${event.title}: ${e.message}`,
               );
               return;
             }
@@ -262,10 +262,10 @@
             console.warn("Permission denied accessing events collection");
           }
           const upcomingEventsContent = document.querySelector(
-            ".event-card:nth-child(1) .event-content"
+            ".event-card:nth-child(1) .event-content",
           );
           const pastEventsContent = document.querySelector(
-            ".event-card:nth-child(2) .event-content"
+            ".event-card:nth-child(2) .event-content",
           );
           if (upcomingEventsContent) {
             upcomingEventsContent.innerHTML =
@@ -280,7 +280,7 @@
       document.addEventListener("DOMContentLoaded", () => {
         console.log(
           "DOM loaded for index.html at",
-          new Date().toLocaleString("en-ZA")
+          new Date().toLocaleString("en-ZA"),
         );
         document.body.classList.add("loading");
         const loadingOverlay = document.querySelector(".loading-overlay");
@@ -308,11 +308,11 @@
             console.log(
               "User authenticated:",
               user.uid,
-              user.email || "Anonymous"
+              user.email || "Anonymous",
             );
           } else {
             console.log(
-              "No user authenticated. Some features may require login."
+              "No user authenticated. Some features may require login.",
             );
             const loginButton = document.querySelector(".hero-button");
             if (loginButton) {
@@ -435,25 +435,36 @@
           <div class="hero-buttons">
             <button
               class="hero-button"
-              onclick="window.location.href='LandingPage/Opportunities/opportunities.html'"
+              onclick="
+                window.location.href =
+                  'LandingPage/Opportunities/opportunities.html'
+              "
             >
               Get Funding
             </button>
             <button
               class="hero-button"
-              onclick="window.location.href='LandingPage/Opportunities/opportunities.html'"
+              onclick="
+                window.location.href =
+                  'LandingPage/Opportunities/opportunities.html'
+              "
             >
               Opportunities
             </button>
             <button
               class="hero-button"
-              onclick="window.location.href='LandingPage/Knowledge-Hub/knowledge-hub.html'"
+              onclick="
+                window.location.href =
+                  'LandingPage/Knowledge-Hub/knowledge-hub.html'
+              "
             >
               Training
             </button>
             <button
               class="hero-button"
-              onclick="window.location.href='LandingPage/SignInAndSignUp/SignIn.html'"
+              onclick="
+                window.location.href = 'LandingPage/SignInAndSignUp/SignIn.html'
+              "
             >
               Log In
             </button>
@@ -461,6 +472,26 @@
         </div>
         <div class="hero-text">
           <h1>A GREEN ECONOMY TOOLKIT</h1>
+          <h2>For South African SMME’s in the IRM sector</h2>
+          <br />
+          <p>
+            As South Africa transitions to a low-carbon economy, we're unlocking
+            <strong>decent work opportunities</strong> and ensuring
+            <strong>no one is left behind</strong>. Climate change demands that
+            we adapt our infrastructure to become more climate-friendly,
+            creating unprecedented demand for green skills and services. The
+            Green Economy Toolkit is your
+            <strong>exclusive digital resource</strong>
+            to transform how your business participates in South Africa's just
+            economic transition. We provide entrepreneurs and SMMEs with the
+            tools, funding access, and market insights needed to thrive in the
+            evolving green landscape. Developed by the National Business
+            Initiative as part of our IRM Initiative, this toolkit helps
+            businesses transition from conventional models to
+            <strong>climate-resilient operations</strong>, positioning you to
+            succeed in a greener global economy.
+          </p>
+          <!-- Removed paragraph
           <p>
             South Africa and the world are switching to green economy, and that
             is creating a lot of opportunities for businesses in the renewable,
@@ -479,20 +510,24 @@
             benefits of a green economy and position your business to operate in
             a greener global
           </p>
+          -->
         </div>
       </div>
     </section>
     <section class="focus-areas">
       <div class="focus-title">
-        <h2>Nine priority focus areas for the green economy in South Africa</h2>
-        <p>(Green Economy Summit, 2010)</p>
+        <h2>South Africa's Nine Green Economy Priority Areas</h2>
+        <p>
+          Driving our nation's just transition to a low-carbon,
+          climate-resilient future
+        </p>
       </div>
       <div class="focus-grid">
         <a
           href="agriculture.html"
           class="focus-item"
           style="
-            background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&h=300&fit=crop');
+            background-image: url(&quot;https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&h=300&fit=crop&quot;);
           "
         >
           <div class="focus-content">
@@ -503,7 +538,7 @@
           href="energy.html"
           class="focus-item"
           style="
-            background-image: url('https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=400&h=300&fit=crop');
+            background-image: url(&quot;https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=400&h=300&fit=crop&quot;);
           "
         >
           <div class="focus-content">
@@ -514,7 +549,7 @@
           href="natural.html"
           class="focus-item"
           style="
-            background-image: url('https://static.vecteezy.com/system/resources/previews/006/037/285/large_2x/close-up-hand-holding-young-green-tree-sprout-and-planting-in-soil-free-photo.JPG');
+            background-image: url(&quot;https://static.vecteezy.com/system/resources/previews/006/037/285/large_2x/close-up-hand-holding-young-green-tree-sprout-and-planting-in-soil-free-photo.JPG&quot;);
           "
         >
           <div class="focus-content">
@@ -527,7 +562,7 @@
           href="transport.html"
           class="focus-item"
           style="
-            background-image: url('https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400&h=300&fit=crop');
+            background-image: url(&quot;https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400&h=300&fit=crop&quot;);
           "
         >
           <div class="focus-content">
@@ -538,7 +573,7 @@
           href="environment.html"
           class="focus-item"
           style="
-            background-image: url('https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=400&h=300&fit=crop');
+            background-image: url(&quot;https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=400&h=300&fit=crop&quot;);
           "
         >
           <div class="focus-content">
@@ -549,7 +584,7 @@
           href="building.html"
           class="focus-item"
           style="
-            background-image: url('https://d1v1e13ebw3o15.cloudfront.net/data/42690/pool_and_spa_master/..jpg');
+            background-image: url(&quot;https://d1v1e13ebw3o15.cloudfront.net/data/42690/pool_and_spa_master/..jpg&quot;);
           "
         >
           <div class="focus-content">
@@ -560,7 +595,7 @@
           href="waste.html"
           class="focus-item"
           style="
-            background-image: url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop');
+            background-image: url(&quot;https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop&quot;);
           "
         >
           <div class="focus-content">
@@ -571,7 +606,7 @@
           href="water.html"
           class="focus-item"
           style="
-            background-image: url('https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&h=300&fit=crop');
+            background-image: url(&quot;https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&h=300&fit=crop&quot;);
           "
         >
           <div class="focus-content">
@@ -582,7 +617,7 @@
           href="production.html"
           class="focus-item"
           style="
-            background-image: url('https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=400&h=300&fit=crop');
+            background-image: url(&quot;https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=400&h=300&fit=crop&quot;);
           "
         >
           <div class="focus-content">
@@ -600,23 +635,25 @@
           <div
             class="business-card-image"
             style="
-              background-image: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=200&fit=crop');
+              background-image: url(&quot;https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=200&fit=crop&quot;);
             "
           ></div>
           <div class="business-card-content">
             <h3>For your business</h3>
             <p>
-              The world is moving towards a green economy, and South Africa must
-              do so too if it is to continue trading internationally. Our
-              existing buildings and new projects must be designed, built,
-              operated, maintained, and owned and operated more sustainably, and
-              new infrastructure must be built according to green principles, so
-              it does not use too much energy and water, and the country's
-              quality of work needs to be done.
+              Buildings and infrastructure must adapt to become climate-friendly
+              - this is no longer optional. As pressure mounts from climate
+              change, there's increasing demand for IRM services and products
+              that support South Africa's transition to a sustainable future.
             </p>
             <p>
-              This is where you come in. But how do you make sure you can get
-              some of this work?
+              This transition presents a critical opportunity for installation,
+              repair, and maintenance businesses.
+            </p>
+            <p>
+              But how do you position your enterprise to capture this growing
+              market while ensuring your workforce has the right skills for the
+              new green economy?
             </p>
           </div>
 
@@ -632,22 +669,27 @@
           <div
             class="business-card-image"
             style="
-              background-image: url('https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=400&h=200&fit=crop');
+              background-image: url(&quot;https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=400&h=200&fit=crop&quot;);
             "
           ></div>
           <div class="business-card-content">
             <h3>For your future</h3>
             <p>
-              The South African government has chosen nine areas to focus on in
-              the switch to a green economy: agriculture, energy (clean and
-              efficient), natural resource conservation and management
-              (including mining), sustainable transport and infrastructure,
-              environmental sustainability (including tourism education), green
-              buildings and the built environment, sustainable waste management
-              and recycling, water management, and sustainable production and
-              consumption.
+              To ensure a just economic transition where no one is left behind,
+              we must create decent work opportunities in the low-carbon
+              economy.
             </p>
-            <p>Find out about green economy opportunities in the IRM sector.</p>
+            <p>
+              The Green Economy Toolkit empowers businesses and workers
+              transition from conventional skills to those needed in nine
+              government-priority sectors.
+            </p>
+            <p>
+              Discover how to position your IRM business in agriculture, clean
+              energy, sustainable infrastructure, green buildings, water
+              management, and other key sectors driving South Africa's green
+              transition.
+            </p>
           </div>
 
           <a
@@ -666,29 +708,46 @@
           <div class="info-icon">
             <div></div>
           </div>
-          <h3>Join the SAGE Green Economy Network</h3>
+          <h3>
+            <a
+              href="https://www.greeneconomytoolkit.com/LandingPage/SignInAndSignUp/SignIn.html"
+              style="color: inherit; text-decoration: none"
+              >Join Our Green Economy Network</a
+            >
+          </h3>
           <p>
-            Access opportunities for entrepreneurship within the green economy
-            value chains, to help connect entrepreneurs to each other and to
-            markets, as well as to finance, business training
+            Connect with entrepreneurs, access green finance, and find market
+            opportunities within green economy value chains. Our network ensures
+            <strong>no one is left behind</strong> in South Africa's just
+            transition
           </p>
         </div>
         <div class="info-item">
           <div class="info-icon">
             <div></div>
           </div>
-          <h3>Opportunities</h3>
+          <h3>
+            <a
+              href="https://www.greeneconomytoolkit.com/LandingPage/Opportunities/opportunities.html"
+              style="color: inherit; text-decoration: none"
+              >Opportunities</a
+            >
+          </h3>
           <p>
-            Find out the latest job opportunities as they become available
-            within the green economy space â€“ from research and innovation to
-            production and services
+            Access green economy opportunities as they emerge in research,
+            innovation, production, and services. We track opportunities
+            specifically for IRM businesses transitioning to the green economy.
           </p>
         </div>
         <div class="info-item">
           <div class="info-icon">
             <div></div>
           </div>
-          <h3>Live Events Calendar</h3>
+          <h3>
+            <a href="#events" style="color: inherit; text-decoration: none"
+              >Green Economy Events & Networking</a
+            >
+          </h3>
           <p>
             View the live events calendar and network with entrepreneurs and
             experts within the green economy space via our events platform
@@ -698,7 +757,7 @@
     </section>
     <section class="news-section" id="news">
       <div class="news-header">
-        <h2>Green economy news and updates</h2>
+        <h2>Green Economy Insights & Updates</h2>
       </div>
       <div class="news-grid">
         <!-- News items will be dynamically loaded here -->
