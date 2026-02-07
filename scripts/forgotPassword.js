@@ -16,7 +16,7 @@ const auth = getAuth(app);
 
 const emailInput = document.getElementById("email");
 const resetBtn = document.getElementById("reset-btn");
-const errorMessage = document.getElementById("error-message");
+const errorMessage = document.getElementById("error-message1");
 
 resetBtn.addEventListener("click", async () => {
   const email = emailInput.value.trim();

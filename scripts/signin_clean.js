@@ -35,7 +35,7 @@ function hideLoader() {
 }
 
 function showError(msg) {
-    const el = document.getElementById('error-message');
+    const el = document.getElementById('error-message1');
     if (!el) return;
     el.textContent = msg; 
     el.classList.remove('hidden');

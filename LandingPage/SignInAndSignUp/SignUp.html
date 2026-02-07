@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <!-- Firebase Email Verification Redirect -->
@@ -31,7 +31,7 @@
 
           console.log(
             "Firebase email verification detected, redirecting to:",
-            verifyUrl
+            verifyUrl,
           );
           window.location.href = verifyUrl;
         }
@@ -99,7 +99,7 @@
           document.head.appendChild(protectiveStyle);
           console.log(
             "Applied Google Translate proxy asset fix â€” using origin:",
-            refOrigin
+            refOrigin,
           );
         } catch (e) {
           console.warn("Translate proxy fix failed:", e);
@@ -124,7 +124,7 @@
       async function translateText(text, targetLang) {
         const sourceLang = currentLanguage || "en";
         const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(
-          text
+          text,
         )}`;
         try {
           const res = await fetch(url);
@@ -150,11 +150,10 @@
           targetLang === "en"
             ? "English"
             : targetLang === "zu"
-            ? "isiZulu"
-            : "Setswana";
-        selector.options[
-          selector.selectedIndex
-        ].text = `Translating to ${translating}â€¦`;
+              ? "isiZulu"
+              : "Setswana";
+        selector.options[selector.selectedIndex].text =
+          `Translating to ${translating}â€¦`;
 
         const walker = document.createTreeWalker(
           document.body,
@@ -170,7 +169,7 @@
                 ? NodeFilter.FILTER_ACCEPT
                 : NodeFilter.FILTER_REJECT;
             },
-          }
+          },
         );
 
         const nodes = [];
@@ -181,7 +180,7 @@
         for (let i = 0; i < nodes.length; i += BATCH) {
           const batch = nodes.slice(i, i + BATCH);
           const promises = batch.map((node) =>
-            translateText(node.nodeValue, targetLang)
+            translateText(node.nodeValue, targetLang),
           );
           const results = await Promise.all(promises);
           batch.forEach((node, idx) => (node.nodeValue = results[idx]));
@@ -344,6 +343,16 @@
       #verification-modal button:hover {
         background-color: #059669;
       }
+      .error-message1 {
+        color: #dc2626;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        text-align: center;
+      }
+
+      .error-message1.hidden {
+        display: none;
+      }
     </style>
     <script type="module">
       import {
@@ -390,7 +399,7 @@
         })
         .catch((error) => {
           console.error("Error setting auth persistence:", error);
-          const errorMessage = document.getElementById("error-message");
+          const errorMessage = document.getElementById("error-message1");
           if (errorMessage) {
             errorMessage.textContent =
               "Failed to initialize session: " + error.message;
@@ -401,7 +410,7 @@
 
       // Get or generate temporary user ID
       let tempUserId = new URLSearchParams(window.location.search).get(
-        "tempUserId"
+        "tempUserId",
       );
       if (!tempUserId) {
         tempUserId = "guest_" + Math.random().toString(36).substr(2, 9);
@@ -411,7 +420,7 @@
       document.addEventListener("DOMContentLoaded", () => {
         console.log(
           "DOM loaded for SignUp.html at",
-          new Date().toLocaleString("en-ZA")
+          new Date().toLocaleString("en-ZA"),
         );
         document.body.classList.add("loading");
         const loadingOverlay = document.querySelector(".loading-overlay");
@@ -437,7 +446,7 @@
           } catch (error) {
             console.error("Error logging interaction:", error);
             console.log(
-              `Local log: tempUserId=${tempUserId}, category=${category}, action=${action}, label=${label}`
+              `Local log: tempUserId=${tempUserId}, category=${category}, action=${action}, label=${label}`,
             );
           }
         }
@@ -472,7 +481,7 @@
             console.log(
               "User authenticated:",
               user.uid,
-              user.email || "Anonymous"
+              user.email || "Anonymous",
             );
             if (user.emailVerified) {
               console.log("Email verified, redirecting to dashboard");
@@ -553,7 +562,7 @@
                 placeholder="................"
               />
             </div>
-            <div id="error-message" class="error-message hidden"></div>
+            <div id="error-message1" class="error-message1 hidden"></div>
             <button
               id="sign-up-btn"
               class="w-full sign-up-btn font-semibold py-2 px-4 rounded-md transition-all duration-300"

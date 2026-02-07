@@ -39,9 +39,9 @@ try {
         })
         .catch(error => {
             console.error("Error setting auth persistence:", error);
-            const errorMessage = document.getElementById('error-message');
+            const errorMessage = document.getElementById('error-message1');
             if (errorMessage) {
-                errorMessage.textContent = "Failed to initialize session: " + error.message;
+                errorMessage.textContent = "Failed to initialize session: " + getFriendlyAuthError(error);
                 errorMessage.classList.remove('hidden');
                 setTimeout(() => errorMessage.classList.add('hidden'), 5000);
             }
@@ -177,12 +177,30 @@ try {
             signUpBtn.disabled = false;
             console.error("Admin sign-up error:", error, { code: error.code, message: error.message });
             await trackInteraction('signup', 'failure', `Error: ${error.message}`);
-            const errorMessage = document.getElementById('error-message');
+            const errorMessage = document.getElementById('error-message1');
             if (errorMessage) {
                 errorMessage.textContent = error.message || "Failed to send verification code. Please try again.";
                 errorMessage.classList.remove('hidden');
                 setTimeout(() => errorMessage.classList.add('hidden'), 5000);
             }
+        }
+    }
+
+    //helper function for Firebase errors
+    function getFriendlyAuthError(error) {
+        switch (error.code) {
+            case 'auth/invalid-email':
+                return 'Please enter a valid email address.';
+            case 'auth/email-already-in-use':
+                return 'This email is already registered. Try signing in instead.';
+            case 'auth/weak-password':
+                return 'Your password must be at least 6 characters long.';
+            case 'auth/missing-password':
+                return 'Please enter a password.';
+            case 'auth/network-request-failed':
+                return 'Network error. Please check your internet connection.';
+            default:
+                return 'Something went wrong. Please try again.';
         }
     }
 
@@ -203,9 +221,11 @@ try {
                 const email = document.getElementById('email')?.value;
                 const password = document.getElementById('password')?.value;
                 const confirmPassword = document.getElementById('confirm-password')?.value;
-                const errorMessage = document.getElementById('error-message');
+                const errorMessage = document.getElementById('error-message1');
                 if (!email || !password || !confirmPassword || !errorMessage) {
-                    console.error("Form elements not found");
+                    errorMessage.textContent = "Please fill in all fields.";
+                    errorMessage.classList.remove('hidden');
+                    setTimeout(() => errorMessage.classList.add('hidden'), 5000);
                     isProcessing = false;
                     return;
                 }
@@ -260,7 +280,7 @@ try {
                     console.error("Sign-up error:", error);
                     // Track failure (may fallback to local log if not authenticated)
                     await trackInteraction('signup', 'failure', error.message);
-                    errorMessage.textContent = error.message;
+                    errorMessage.textContent = getFriendlyAuthError(error);
                     errorMessage.classList.remove('hidden');
                     setTimeout(() => errorMessage.classList.add('hidden'), 5000);
                 }
@@ -326,9 +346,9 @@ try {
                     console.error("Google sign-up error:", error);
                     // Track failure (may fallback to local log if not authenticated)
                     await trackInteraction('signup', 'failure', error.message);
-                    const errorMessage = document.getElementById('error-message');
+                    const errorMessage = document.getElementById('error-message1');
                     if (errorMessage) {
-                        errorMessage.textContent = error.message;
+                        errorMessage.textContent = getFriendlyAuthError(error);
                         errorMessage.classList.remove('hidden');
                         setTimeout(() => errorMessage.classList.add('hidden'), 5000);
                     }
@@ -343,9 +363,11 @@ try {
     });
 } catch (error) {
     console.error("Firebase initialization failed:", error);
-    const errorMessage = document.getElementById('error-message');
+    const errorMessage = document.getElementById('error-message1');
     if (errorMessage) {
-        errorMessage.textContent = "Firebase initialization failed: " + error.message;
+        errorMessage.textContent = "Firebase initialization failed: " + getFriendlyAuthError(error);
+        
+
         errorMessage.classList.remove('hidden');
         setTimeout(() => errorMessage.classList.add('hidden'), 5000);
     }

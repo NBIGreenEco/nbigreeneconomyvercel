@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <!-- Firebase Email Verification Redirect -->
@@ -23,7 +23,7 @@
 
           console.log(
             "Firebase email verification detected, redirecting to:",
-            verifyUrl
+            verifyUrl,
           );
           window.location.href = verifyUrl;
         }
@@ -188,14 +188,14 @@
         opacity: 0.6;
       }
 
-      .error-message {
+      .error-message1 {
         color: #dc2626;
         font-size: 0.875rem;
         margin-top: 0.5rem;
         text-align: center;
       }
 
-      .error-message.hidden {
+      .error-message1.hidden {
         display: none;
       }
 
@@ -341,17 +341,6 @@
         opacity: 0.6;
       }
 
-      .error-message {
-        color: #dc2626;
-        font-size: 0.875rem;
-        margin-top: 0.5rem;
-        text-align: center;
-      }
-
-      .error-message.hidden {
-        display: none;
-      }
-
       .loader {
         display: none;
         position: fixed;
@@ -492,7 +481,7 @@
               </a>
             </div>
 
-            <div id="error-message" class="error-message hidden"></div>
+            <div id="error-message1" class="error-message1 hidden"></div>
 
             <div class="flex items-center justify-between">
               <div class="flex items-center">
@@ -510,7 +499,9 @@
             <button
               id="sign-in-btn"
               class="sign-in-btn"
-              onclick="if(window.handleSignInClick) window.handleSignInClick(event);"
+              onclick="
+                if (window.handleSignInClick) window.handleSignInClick(event);
+              "
             >
               Sign In
             </button>
