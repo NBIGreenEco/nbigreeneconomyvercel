@@ -667,7 +667,7 @@ class GreenEconomyFooter extends HTMLElement {
             </div>
           </div>
           <div class="footer-bottom">
-            <p>© ${new Date().getFullYear()} <a href="https://www.nbi.org.za/" style="color: inherit; text-decoration: none">National Business Initiative</a> | <a href="https://www.nbi.org.za/privacy-policy/" style="color: inherit; text-decoration: none">Privacy Policy</a> | All rights reserved.</p>
+            <p>© ${new Date().getFullYear()} <a href="https://www.nbi.org.za/ " style="color: inherit; text-decoration: none">National Business Initiative</a> | <a href="https://www.nbi.org.za/privacy-policy/" style="color: inherit; text-decoration: none">Privacy Policy</a> | All rights reserved.</p>
           </div>
         </div>
       </footer>
