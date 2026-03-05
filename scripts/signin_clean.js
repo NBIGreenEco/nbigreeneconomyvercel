@@ -88,9 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    emailInput?.addEventListener('blur', () => {
-        passwordField.style.display = emailInput.value.trim() === 'nbigreeneconomy@gmail.com' ? 'none' : 'block';
-    });
+    if (passwordField) passwordField.style.display = 'block';
 
     let processing = false;
     
@@ -103,19 +101,11 @@ document.addEventListener('DOMContentLoaded', () => {
         signInBtn.disabled = true;
 
         const email = emailInput.value.trim();
+        const normalizedEmail = email.toLowerCase();
         const password = document.getElementById('password')?.value;
 
         if (!email) { showError("Enter email."); processing = false; signInBtn.disabled = false; return; }
         await trackInteraction(null, 'login', 'attempt', email);
-
-        if (email === 'nbigreeneconomy@gmail.com') {
-            showLoader();
-            setTimeout(() => {
-                hideLoader();
-                window.location.href = `${baseUrl}/LandingPage/SignInAndSignUp/verifycode.html?email=${encodeURIComponent(email)}`;
-            }, 1000);
-            return;
-        }
 
         if (!password) { showError("Password required."); processing = false; signInBtn.disabled = false; return; }
 
@@ -148,10 +138,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 emailVerified: true
             }, { merge: true });
 
-            // ✅ Initialize admin session here
-            console.log('📝 Setting up admin session...');
-            await window.AdminSessionManager.initializeAdminSession(user);
-            window.AdminSessionManager.logSessionInfo();
+            // Admin users require code verification before dashboard access
+            const adminDoc = await getDoc(doc(db, 'admins', normalizedEmail));
+            const isAdmin = adminDoc.exists() && adminDoc.data()?.isAdmin !== false;
+            if (isAdmin) {
+                sessionStorage.setItem('pendingAdminEmail', normalizedEmail);
+                await trackInteraction(user.uid, 'login', 'admin_pending_verification', normalizedEmail);
+                hideLoader();
+                window.location.href = `${baseUrl}/LandingPage/SignInAndSignUp/verifycode.html`;
+                return;
+            }
 
             await trackInteraction(user.uid, 'login', 'success', email);
 

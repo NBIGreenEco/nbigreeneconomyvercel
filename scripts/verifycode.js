@@ -1,5 +1,5 @@
 import { getApps, initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
-import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
 import { getFirestore, doc, getDoc, addDoc, collection, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
 
 const firebaseConfig = {
@@ -15,20 +15,6 @@ const firebaseConfig = {
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 const auth = getAuth(app);
 const db = getFirestore(app);
-
-// Attempt anonymous sign-in and expose a promise so callers can wait for auth
-const authReady = signInAnonymously(auth)
-  .then(() => {
-    console.log('DEBUG: Anonymous authentication successful');
-    return true;
-  })
-  .catch(error => {
-    console.error('DEBUG: Anonymous authentication error:', error, {
-      code: error.code,
-      message: error.message
-    });
-    return false;
-  });
 
 async function hashCode(code) {
   console.log('DEBUG: Hashing input code');
@@ -103,6 +89,50 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
+  const getCurrentUser = () => new Promise((resolve) => {
+    if (auth.currentUser) {
+      resolve(auth.currentUser);
+      return;
+    }
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      unsubscribe();
+      resolve(user || null);
+    });
+  });
+
+  const currentUser = await getCurrentUser();
+  if (!currentUser || !currentUser.email) {
+    errorMessage.textContent = 'Please sign in first.';
+    errorMessage.classList.remove('hidden');
+    setTimeout(() => {
+      window.location.href = '/LandingPage/SignInAndSignUp/SignIn.html';
+    }, 1200);
+    return;
+  }
+
+  const normalizedEmail = currentUser.email.toLowerCase();
+  const pendingAdminEmail = (sessionStorage.getItem('pendingAdminEmail') || '').toLowerCase();
+  if (pendingAdminEmail && pendingAdminEmail !== normalizedEmail) {
+    errorMessage.textContent = 'Admin verification session mismatch. Please sign in again.';
+    errorMessage.classList.remove('hidden');
+    setTimeout(() => {
+      window.location.href = '/LandingPage/SignInAndSignUp/SignIn.html';
+    }, 1200);
+    return;
+  }
+
+  const adminDoc = await getDoc(doc(db, 'admins', normalizedEmail));
+  const isAdmin = adminDoc.exists() && adminDoc.data()?.isAdmin !== false;
+  if (!isAdmin) {
+    errorMessage.textContent = 'This account is not authorized for admin access.';
+    errorMessage.classList.remove('hidden');
+    await trackInteraction(currentUser.uid, 'verify_code', 'not_admin_blocked', normalizedEmail);
+    setTimeout(() => {
+      window.location.href = '/LandingPage/SignInAndSignUp/SignIn.html';
+    }, 1200);
+    return;
+  }
+
   verifyBtn.style.opacity = '1';
   verifyBtn.style.cursor = 'pointer';
   console.log('DEBUG: Verify button initialized as enabled');
@@ -128,16 +158,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     errorMessage.classList.add('hidden');
     verificationMessage.classList.add('hidden');
     try {
-      // Ensure auth is available before reading protected configuration
-      const authAvailable = await authReady;
-      if (!authAvailable && !auth.currentUser) {
-        console.warn('DEBUG: Anonymous auth not available; attempting sign-in again');
-        try {
-          await signInAnonymously(auth);
-        } catch (e) {
-          console.warn('DEBUG: Retry anonymous sign-in failed', e);
-        }
-      }
       const passwordHash = await hashCode(password);
       const storedHash = await getStoredPasswordHash();
       console.log('DEBUG: Comparing hashes:', { enteredHash: passwordHash, storedHash });
@@ -163,9 +183,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log('DEBUG: Admin code verification successful');
         sessionStorage.setItem('verified', 'true');
         sessionStorage.setItem('sessionStart', Date.now().toString()); // Set session start time
+        sessionStorage.setItem('verifiedAdminEmail', normalizedEmail);
+        sessionStorage.removeItem('pendingAdminEmail');
         verificationMessage.textContent = 'Admin code verified successfully! Redirecting to dashboard...';
         verificationMessage.classList.remove('hidden');
-        await trackInteraction(`anonymous_${Date.now()}`, 'verify_code', 'success', 'Admin code verified');
+        await trackInteraction(currentUser.uid, 'verify_code', 'success', 'Admin code verified');
         setTimeout(() => {
           console.log('DEBUG: Redirecting to /ADMIN/admin-dashboard.html');
           window.location.href = '/ADMIN/admin-dashboard.html';

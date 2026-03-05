@@ -4,7 +4,6 @@
  * Provides functions to: set, get, check, and validate admin sessions
  */
 
-const ADMIN_EMAILS = ['nbigreeneconomy@gmail.com'];
 const ADMIN_SESSION_KEY = 'nbi_admin_session';
 const ADMIN_SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
 
@@ -14,7 +13,7 @@ class AdminSessionManager {
      * @param {Object} firebaseUser - User object from Firebase Auth
      * @returns {Object|null} Admin session object or null if invalid
      */
-    static async initializeAdminSession(firebaseUser) {
+    static async initializeAdminSession(firebaseUser, isAdmin = false) {
         // If no user provided, try to use existing session
         if (!firebaseUser) {
             console.warn('⚠️ No Firebase user provided - checking for existing session');
@@ -28,9 +27,6 @@ class AdminSessionManager {
 
         console.log('🔐 Initializing admin session for:', firebaseUser.email);
 
-        // Check if user is hardcoded admin
-        const isHardcodedAdmin = ADMIN_EMAILS.includes(firebaseUser.email);
-        
         // Create session object
         const adminSession = {
             uid: firebaseUser.uid,
@@ -38,7 +34,7 @@ class AdminSessionManager {
             displayName: firebaseUser.displayName || firebaseUser.email,
             photoURL: firebaseUser.photoURL || null,
             emailVerified: firebaseUser.emailVerified,
-            isAdmin: isHardcodedAdmin,
+            isAdmin: Boolean(isAdmin),
             createdAt: Date.now(),
             expiresAt: Date.now() + ADMIN_SESSION_TIMEOUT
         };

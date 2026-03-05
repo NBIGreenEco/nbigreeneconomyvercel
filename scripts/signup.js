@@ -139,53 +139,6 @@ try {
         }
     }
 
-    function generateVerificationToken() {
-        return Math.random().toString(36).substring(2) + Date.now().toString(36);
-    }
-
-    async function sendAdminVerificationEmail(email, password, signUpBtn) {
-        try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-            console.log(`Created admin user: ${email}`);
-
-            const token = generateVerificationToken();
-            const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes expiry
-            const actionCodeSettings = {
-                url: `${config.baseUrl}/LandingPage/SignInAndSignUp/VerifyEmail.html?email=${encodeURIComponent(email)}&token=${encodeURIComponent(token)}&tempUserId=${tempUserId}`,
-                handleCodeInApp: true
-            };
-            await sendEmailVerification(user, actionCodeSettings);
-            console.log(`Verification email sent to ${email} with token: ${token}`);
-
-            await setDoc(doc(db, 'email_verifications', email), {
-                email: email,
-                token: token,
-                isVerified: false,
-                createdAt: serverTimestamp(),
-                expiresAt: expiresAt
-            }, { merge: true });
-            console.log('Email verification token stored in Firestore');
-
-            await setDoc(doc(db, 'admins', email), { isAdmin: true }, { merge: true });
-
-            hideLoader();
-            showSpamWarningModal(email);
-            await trackInteraction('signup', 'code_sent', `Email: ${email}, Token: ${token}, URL: ${actionCodeSettings.url}`);
-        } catch (error) {
-            hideLoader();
-            signUpBtn.disabled = false;
-            console.error("Admin sign-up error:", error, { code: error.code, message: error.message });
-            await trackInteraction('signup', 'failure', `Error: ${error.message}`);
-            const errorMessage = document.getElementById('error-message1');
-            if (errorMessage) {
-                errorMessage.textContent = error.message || "Failed to send verification code. Please try again.";
-                errorMessage.classList.remove('hidden');
-                setTimeout(() => errorMessage.classList.add('hidden'), 5000);
-            }
-        }
-    }
-
     //helper function for Firebase errors
     function getFriendlyAuthError(error) {
         switch (error.code) {
@@ -242,38 +195,32 @@ try {
                 signUpBtn.disabled = true;
 
                 try {
-                    if (email === 'nbigreeneconomy@gmail.com') {
-                        await sendAdminVerificationEmail(email, password, signUpBtn);
-                        // Track attempt after successful creation (now authenticated)
-                        await trackInteraction('signup', 'attempt', `Email: ${email}`);
-                    } else {
-                        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                        const user = userCredential.user;
-                        // Track attempt after successful creation (now authenticated)
-                        await trackInteraction('signup', 'attempt', `Email: ${email}`);
-                        
-                        // Send verification email with proper continueUrl
-                        // Remove the full path - Firebase will use the default continue URL
-                        const actionCodeSettings = {
-                            url: `${config.baseUrl}/LandingPage/SignUp.html`,
-                            handleCodeInApp: true
-                        };
-                        await sendEmailVerification(user, actionCodeSettings);
-                        console.log('Verification email sent with actionCodeSettings:', actionCodeSettings);
-                        
-                        await setDoc(doc(db, 'users', user.uid), {
-                            userId: user.uid,
-                            email: user.email,
-                            isAdmin: false,
-                            language: 'en' || 'en',
-                            createdAt: serverTimestamp()
-                        }, { merge: true });
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    const user = userCredential.user;
+                    // Track attempt after successful creation (now authenticated)
+                    await trackInteraction('signup', 'attempt', `Email: ${email}`);
+                    
+                    // Send verification email with proper continueUrl
+                    // Remove the full path - Firebase will use the default continue URL
+                    const actionCodeSettings = {
+                        url: `${config.baseUrl}/LandingPage/SignUp.html`,
+                        handleCodeInApp: true
+                    };
+                    await sendEmailVerification(user, actionCodeSettings);
+                    console.log('Verification email sent with actionCodeSettings:', actionCodeSettings);
+                    
+                    await setDoc(doc(db, 'users', user.uid), {
+                        userId: user.uid,
+                        email: user.email,
+                        isAdmin: false,
+                        language: 'en' || 'en',
+                        createdAt: serverTimestamp()
+                    }, { merge: true });
 
-                        console.log("User created and email verification sent to VerifyEmail.html");
-                        await trackInteraction('signup', 'success', `Email: ${email}`);
-                        hideLoader();
-                        showSpamWarningModal(email);
-                    }
+                    console.log("User created and email verification sent to VerifyEmail.html");
+                    await trackInteraction('signup', 'success', `Email: ${email}`);
+                    hideLoader();
+                    showSpamWarningModal(email);
                 } catch (error) {
                     hideLoader();
                     signUpBtn.disabled = false;
@@ -303,7 +250,7 @@ try {
                     await setDoc(doc(db, 'users', user.uid), {
                         userId: user.uid,
                         email: user.email,
-                        isAdmin: user.email === 'nbigreeneconomy@gmail.com',
+                        isAdmin: false,
                         language: 'en' || 'en',
                         createdAt: serverTimestamp()
                     }, { merge: true });
@@ -313,33 +260,7 @@ try {
                     hideLoader();
                     googleSignUpBtn.disabled = false;
 
-                    if (user.email === 'nbigreeneconomy@gmail.com') {
-                        const token = generateVerificationToken();
-                        const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
-                        const actionCodeSettings = {
-                            url: `${config.baseUrl}/LandingPage/SignInAndSignUp/VerifyEmail.html?email=${encodeURIComponent(user.email)}&token=${encodeURIComponent(token)}&tempUserId=${tempUserId}`,
-                            handleCodeInApp: true
-                        };
-                        await sendEmailVerification(user, actionCodeSettings);
-                        console.log(`Verification email sent to ${user.email} with token: ${token}`);
-
-                        await setDoc(doc(db, 'email_verifications', user.email), {
-                            email: user.email,
-                            token: token,
-                            isVerified: false,
-                            createdAt: serverTimestamp(),
-                            expiresAt: expiresAt
-                        }, { merge: true });
-                        console.log('Email verification token stored in Firestore');
-
-                        await setDoc(doc(db, 'admins', user.email), { isAdmin: true }, { merge: true });
-
-                        hideLoader();
-                        showSpamWarningModal(user.email);
-                        await trackInteraction('signup', 'code_sent', `Email: ${user.email}, Token: ${token}, URL: ${actionCodeSettings.url}`);
-                    } else {
-                        window.location.href = `/questionnaire/questionnaire.html?tempUserId=${tempUserId}`;
-                    }
+                    window.location.href = `/questionnaire/questionnaire.html?tempUserId=${tempUserId}`;
                 } catch (error) {
                     hideLoader();
                     googleSignUpBtn.disabled = false;

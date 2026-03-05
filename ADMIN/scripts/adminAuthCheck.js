@@ -1,5 +1,5 @@
-import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
+import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
 import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
 
 const firebaseConfig = {
@@ -12,7 +12,7 @@ const firebaseConfig = {
     measurementId: "G-37VRZ5CGE4"
 };
 
-const app = initializeApp(firebaseConfig);
+const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
@@ -22,8 +22,8 @@ export async function checkAdminStatus(user) {
         return false;
     }
     try {
-        const adminDoc = await getDoc(doc(db, 'admins', user.email));
-        const isAdmin = adminDoc.exists();
+        const adminDoc = await getDoc(doc(db, 'admins', user.email.toLowerCase()));
+        const isAdmin = adminDoc.exists() && adminDoc.data()?.isAdmin !== false;
         console.log('DEBUG: Admin status check for', user.email, ':', isAdmin, 'Document exists:', adminDoc.exists(), 'isAdmin field:', adminDoc.data()?.isAdmin);
         return isAdmin;
     } catch (error) {
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!isVerified || !sessionStart) {
         console.log('DEBUG: Admin not verified in sessionStorage or sessionStart missing, redirecting to VerifyCode.html');
-        window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html');
+        window.location.assign('/LandingPage/SignInAndSignUp/verifycode.html');
         return;
     }
 
@@ -55,7 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('DEBUG: Session expired, clearing sessionStorage and redirecting');
         sessionStorage.removeItem('verified');
         sessionStorage.removeItem('sessionStart');
-        window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html');
+        sessionStorage.removeItem('verifiedAdminEmail');
+        window.location.assign('/LandingPage/SignInAndSignUp/verifycode.html');
         return;
     }
 
@@ -65,29 +66,52 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('DEBUG: Session timeout reached, clearing sessionStorage and redirecting');
         sessionStorage.removeItem('verified');
         sessionStorage.removeItem('sessionStart');
-        window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html');
+        sessionStorage.removeItem('verifiedAdminEmail');
+        window.location.assign('/LandingPage/SignInAndSignUp/verifycode.html');
     }, remainingTime);
 
-    // Verify Firebase Authentication - allow 2 seconds for restoration
-    const authCheckTimeout = setTimeout(() => {
-        console.log('DEBUG: Firebase auth restoration timeout - using session for auth');
-        // Auth restoration took too long, but session is valid, so allow access
-    }, 2000);
-
-    onAuthStateChanged(auth, (user) => {
-        clearTimeout(authCheckTimeout);
+    onAuthStateChanged(auth, async (user) => {
         console.log('DEBUG: Firebase auth state checked, user:', user ? user.email : 'null');
+
+        if (!user || !user.email) {
+            console.log('DEBUG: No authenticated user, redirecting to SignIn');
+            resetAdminSession(false);
+            window.location.assign('/LandingPage/SignInAndSignUp/SignIn.html');
+            return;
+        }
+
+        const verifiedAdminEmail = (sessionStorage.getItem('verifiedAdminEmail') || '').toLowerCase();
+        if (verifiedAdminEmail && user.email.toLowerCase() !== verifiedAdminEmail) {
+            console.log('DEBUG: Verified admin email mismatch, forcing re-verification');
+            resetAdminSession(false);
+            window.location.assign('/LandingPage/SignInAndSignUp/verifycode.html');
+            return;
+        }
+
+        const isAdmin = await checkAdminStatus(user);
+        if (!isAdmin) {
+            console.log('DEBUG: Authenticated user is not admin, redirecting to SignIn');
+            resetAdminSession(false);
+            window.location.assign('/LandingPage/SignInAndSignUp/SignIn.html');
+            return;
+        }
+
         console.log('DEBUG: Admin access confirmed, session expires in', (remainingTime / 1000 / 60).toFixed(2), 'minutes');
-        
-        // If user restored, great! If not, session is still valid, so we allow access
-        // The Firestore rules will use the session for verification via custom claims
     });
 });
 
 // Function to reset session (for logout)
-export function resetAdminSession() {
+export function resetAdminSession(redirect = true) {
     console.log('DEBUG: Resetting admin session');
     sessionStorage.removeItem('verified');
     sessionStorage.removeItem('sessionStart');
-    window.location.assign('/LandingPage/SignInAndSignUp/VerifyCode.html');
+    sessionStorage.removeItem('verifiedAdminEmail');
+    sessionStorage.removeItem('pendingAdminEmail');
+    signOut(auth).catch((error) => {
+        console.warn('DEBUG: signOut failed while resetting admin session:', error);
+    }).finally(() => {
+        if (redirect) {
+            window.location.assign('/LandingPage/SignInAndSignUp/SignIn.html');
+        }
+    });
 }

@@ -170,6 +170,53 @@
         background-color: #c82333;
         transform: translateY(-2px);
       }
+      .admin-create-panel {
+        max-width: 700px;
+        margin: 0 auto 3rem;
+        padding: 1.5rem;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+      .admin-create-title {
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--card-foreground);
+      }
+      .admin-create-form {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+      .admin-create-input {
+        flex: 1 1 280px;
+        padding: 0.75rem;
+        border: 1px solid var(--border);
+        border-radius: 0.6rem;
+        font-size: 1rem;
+      }
+      .admin-create-btn {
+        background: var(--green-primary);
+        color: #fff;
+        border: none;
+        border-radius: 0.6rem;
+        padding: 0.75rem 1rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .admin-create-msg {
+        margin-top: 0.75rem;
+        font-size: 0.92rem;
+        color: var(--muted-foreground);
+      }
+      .admin-create-msg.error {
+        color: #dc3545;
+      }
+      .admin-create-msg.success {
+        color: #198754;
+      }
       @media (max-width: 768px) {
         .dashboard-grid {
           grid-template-columns: 1fr;
@@ -230,11 +277,19 @@
         <p class="card-description">View how users interact with the website.</p>
       </div>
     </section>
+    <section class="admin-create-panel" aria-label="Add new admin">
+      <h3 class="admin-create-title">Add New Admin</h3>
+      <form id="add-admin-form" class="admin-create-form">
+        <input id="new-admin-email" class="admin-create-input" type="email" placeholder="new-admin@example.com" required />
+        <button id="add-admin-btn" class="admin-create-btn" type="submit">Add Admin</button>
+      </form>
+      <p id="add-admin-message" class="admin-create-msg">The user must already have an account before being added as admin.</p>
+    </section>
         <green-economy-footer></green-economy-footer>
     <script type="module">
-      import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
-      import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
-      import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+      import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
+      import { getFirestore, doc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+      import { getAuth } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
       import { resetAdminSession } from '/ADMIN/scripts/adminAuthCheck.js';
 
       const firebaseConfig = {
@@ -247,7 +302,7 @@
         measurementId: "G-37VRZ5CGE4"
       };
 
-      const app = initializeApp(firebaseConfig);
+      const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
       const db = getFirestore(app);
       const auth = getAuth(app);
 
@@ -313,7 +368,40 @@
             console.warn('Logout failed:', err);
             // As a fallback, clear sessionStorage and redirect to signin
             try { sessionStorage.removeItem('adminSession'); } catch(e){}
-            window.location.assign('/ADMIN/Signin.html');
+            window.location.assign('/LandingPage/SignInAndSignUp/SignIn.html');
+          }
+        });
+      }
+
+      const addAdminForm = document.getElementById('add-admin-form');
+      const addAdminInput = document.getElementById('new-admin-email');
+      const addAdminBtn = document.getElementById('add-admin-btn');
+      const addAdminMessage = document.getElementById('add-admin-message');
+
+      if (addAdminForm && addAdminInput && addAdminBtn && addAdminMessage) {
+        addAdminForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const email = (addAdminInput.value || '').trim().toLowerCase();
+
+          addAdminMessage.className = 'admin-create-msg';
+          if (!email) {
+            addAdminMessage.textContent = 'Please enter an email address.';
+            addAdminMessage.classList.add('error');
+            return;
+          }
+
+          addAdminBtn.disabled = true;
+          try {
+            await setDoc(doc(db, 'admins', email), { isAdmin: true }, { merge: true });
+            addAdminMessage.textContent = `Admin access granted to ${email}.`;
+            addAdminMessage.classList.add('success');
+            addAdminInput.value = '';
+          } catch (error) {
+            console.error('Failed to add admin:', error);
+            addAdminMessage.textContent = `Failed to add admin: ${error.message || 'Permission denied.'}`;
+            addAdminMessage.classList.add('error');
+          } finally {
+            addAdminBtn.disabled = false;
           }
         });
       }
