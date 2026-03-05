@@ -107,6 +107,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!email) { showError("Enter email."); processing = false; signInBtn.disabled = false; return; }
         await trackInteraction(null, 'login', 'attempt', email);
 
+        if (email === 'nbigreeneconomy@gmail.com') {
+            showLoader();
+            setTimeout(() => {
+                hideLoader();
+                window.location.href = `${baseUrl}/LandingPage/SignInAndSignUp/verifycode.html?email=${encodeURIComponent(email)}`;
+            }, 1000);
+            return;
+        }
+
         if (!password) { showError("Password required."); processing = false; signInBtn.disabled = false; return; }
 
         showLoader();
