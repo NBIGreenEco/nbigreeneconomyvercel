@@ -138,14 +138,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 emailVerified: true
             }, { merge: true });
 
-            // Admin users require code verification before dashboard access
+            // Admin users go directly to the admin dashboard after authentication.
             const adminDoc = await getDoc(doc(db, 'admins', normalizedEmail));
             const isAdmin = adminDoc.exists() && adminDoc.data()?.isAdmin !== false;
             if (isAdmin) {
-                sessionStorage.setItem('pendingAdminEmail', normalizedEmail);
-                await trackInteraction(user.uid, 'login', 'admin_pending_verification', normalizedEmail);
+                sessionStorage.setItem('verified', 'true');
+                sessionStorage.setItem('sessionStart', Date.now().toString());
+                sessionStorage.setItem('verifiedAdminEmail', normalizedEmail);
+                sessionStorage.removeItem('pendingAdminEmail');
+                await trackInteraction(user.uid, 'login', 'admin_direct_dashboard', normalizedEmail);
                 hideLoader();
-                window.location.href = `${baseUrl}/LandingPage/SignInAndSignUp/verifycode.html`;
+                window.location.href = `${baseUrl}/ADMIN/admin-dashboard.html`;
                 return;
             }
 

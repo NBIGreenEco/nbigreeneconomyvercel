@@ -288,7 +288,7 @@
         <green-economy-footer></green-economy-footer>
     <script type="module">
       import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
-      import { getFirestore, doc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+      import { getFirestore, doc, setDoc, addDoc, collection, serverTimestamp, getDocs, query, where, limit } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
       import { getAuth } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
       import { resetAdminSession } from '/ADMIN/scripts/adminAuthCheck.js';
 
@@ -378,6 +378,36 @@
       const addAdminBtn = document.getElementById('add-admin-btn');
       const addAdminMessage = document.getElementById('add-admin-message');
 
+      async function userExistsByEmail(email) {
+        const usersQuery = query(
+          collection(db, 'users'),
+          where('email', '==', email),
+          limit(1)
+        );
+        const usersSnap = await getDocs(usersQuery);
+        return !usersSnap.empty;
+      }
+
+      async function queueAdminPromotionEmail(email) {
+        // Uses Trigger Email extension convention: write to /mail collection.
+        await addDoc(collection(db, 'mail'), {
+          to: [email],
+          message: {
+            subject: 'You now have admin access',
+            text: `Your account (${email}) has been granted admin access to the Green Economy Toolkit.`,
+            html: `
+              <p>Hello,</p>
+              <p>Your account <strong>${email}</strong> has been granted admin access to the Green Economy Toolkit.</p>
+              <p>You can now sign in and access the Admin Dashboard.</p>
+            `
+          },
+          meta: {
+            type: 'admin_promotion'
+          },
+          createdAt: serverTimestamp()
+        });
+      }
+
       if (addAdminForm && addAdminInput && addAdminBtn && addAdminMessage) {
         addAdminForm.addEventListener('submit', async (e) => {
           e.preventDefault();
@@ -392,8 +422,21 @@
 
           addAdminBtn.disabled = true;
           try {
+            const exists = await userExistsByEmail(email);
+            if (!exists) {
+              addAdminMessage.textContent = `Cannot add admin: ${email} does not exist in the user database.`;
+              addAdminMessage.classList.add('error');
+              return;
+            }
+
             await setDoc(doc(db, 'admins', email), { isAdmin: true }, { merge: true });
-            addAdminMessage.textContent = `Admin access granted to ${email}.`;
+            try {
+              await queueAdminPromotionEmail(email);
+              addAdminMessage.textContent = `Admin access granted to ${email}.`;
+            } catch (emailError) {
+              console.error('Admin added, but email notification failed:', emailError);
+              addAdminMessage.textContent = `Admin access granted to ${email}, but email notification failed: ${emailError.message || 'mail queue error'}.`;
+            }
             addAdminMessage.classList.add('success');
             addAdminInput.value = '';
           } catch (error) {
